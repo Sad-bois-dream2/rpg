@@ -2066,6 +2066,150 @@ modifier_npc_dota_hero_abyssal_underlord_talent_48_cd = modifier_npc_dota_hero_a
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48_cd"] = LUA_MODIFIER_MOTION_NONE
 
+-- modifier_npc_dota_hero_abyssal_underlord_talent_48 (Behemoth)
+modifier_npc_dota_hero_abyssal_underlord_talent_49 = modifier_npc_dota_hero_abyssal_underlord_talent_49 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_49:OnPostTakeDamage(damageTable)
+    if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_49")) then
+        Aggro:Add(damageTable.attacker, damageTable.victim, Aggro:Get(damageTable.attacker, damageTable.victim) * 0.05)
+    end
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_49:GetPrimaryAttributePercentBonus()
+    return 0.4
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_49"] = LUA_MODIFIER_MOTION_NONE
+
+-- modifier_npc_dota_hero_abyssal_underlord_talent_50 (Inferno Meteor)
+modifier_npc_dota_hero_abyssal_underlord_talent_50 = modifier_npc_dota_hero_abyssal_underlord_talent_50 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_50:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeam()
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_50:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster) then
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.caster:GetAbsOrigin(),
+                nil,
+                600,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(pidx3, 0, position)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(pidx3, false)
+            ParticleManager:ReleaseParticleIndex(pidx3)
+        end)
+        local keys = {}
+        for k in pairs(enemies) do
+            table.insert(keys, k)
+        end
+        if (#enemies > 0) then
+            local randomEnemy = enemies[keys[math.random(#keys)]]
+            local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, randomEnemy)
+            Timers:CreateTimer(1.0, function()
+                ParticleManager:DestroyParticle(pidx3, false)
+                ParticleManager:ReleaseParticleIndex(pidx3)
+            end)
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = randomEnemy
+            damageTable.ability = nil
+            damageTable.damage = Units:GetAttackDamage(self.caster) * 0.8
+            damageTable.infernodmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_50"] = LUA_MODIFIER_MOTION_NONE
+
+-- modifier_npc_dota_hero_abyssal_underlord_talent_51 (Inferno Meteor)
+modifier_npc_dota_hero_abyssal_underlord_talent_51 = modifier_npc_dota_hero_abyssal_underlord_talent_51 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_51:OnTakeDamage(damageTable)
+    if (damageTable.damage > 0 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_51")) then
+        if (RollPercentage(35)) then
+            damageTable.damage = 0
+            return damageTable
+        end
+    end
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_51"] = LUA_MODIFIER_MOTION_NONE
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_terror_lord", MotionController)
@@ -2079,4 +2223,6 @@ if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_47, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_48, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_49, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_51, 'OnTakeDamage'))
 end
