@@ -1,0 +1,11 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/windows/talenttree_window.css" />
+	</styles>
+	<Panel class="TreeBranchPanel">
+		<Panel class="TreeBranchImagePanel">
+			<Image id="TreeBranchImage" src="file://{images}/spellicons/drow_ranger_wave_of_silence.png"/>
+		</Panel>
+		<Label class="TreeBranchLabel" id="TreeBranchLabel" text="TreeBranchText" />
+	</Panel>
+</root>

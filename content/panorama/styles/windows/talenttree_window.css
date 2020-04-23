@@ -1,0 +1,167 @@
+.TalentPanel .Root
+{
+	width: 100%;
+	height: 100%;
+}
+
+.TalentTreeWindow 
+{
+	margin-top: 0px;
+	visibility: collapse;
+}
+
+.TalentTree {
+	flow-children: down;
+}
+
+.TalentPanel
+{
+	width: 80px;
+	height: 80px;
+}
+
+.HeroSpecificTalentPanel
+{
+	margin-left: 45px;
+}
+.TalentLevelAnimation
+{
+	width: 100%;
+	height: 100%;
+	visibility: collapse;
+	margin-left: -8px;
+}
+
+.TalentLevel {
+	horizontal-align: center;
+	width: fill-parent-flow (1.0);
+	text-align: center;
+	font-size: 16px;
+	color: white;
+	font-weight: bold;
+	font-family: platformfont;
+	text-transform: uppercase;
+	width: 100%;
+	height: 100%;
+	margin-top: 45px;
+	background-color: black;
+	opacity: 0.8;
+}
+
+.TalentImageAndLevel {
+	width: 64px;
+	height: 64px;
+	border: 1px solid grey;
+	border-radius: 5px;
+}
+
+.TalentImageAndLevel:hover 
+{
+	border: 1px solid white;
+}
+
+.TalentPanel.lvlup .TalentLevelAnimation
+{
+	visibility: visible;
+}
+
+.TalentPanel.disabled .TalentImageAndLevel .TalentImage
+{
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.TalentPanel.is_skill .TalentImageAndLevel #TalentImage
+{
+    visibility: collapse;
+}
+
+.TalentPanel .TalentImageAndLevel #TalentSkillImage
+{
+    visibility: collapse;
+}
+
+.TalentPanel.is_skill .TalentImageAndLevel #TalentSkillImage
+{
+    visibility: visible;
+}
+
+.TalentPanel.disabled .TalentImageAndLevel .TalentLevel
+{
+	visibility: collapse;
+}
+
+.TalentsRow 
+{
+	flow-children: right;
+	padding-left: 120px;
+}
+
+.TalentsColumn
+{
+	flow-children: right;
+	width: fill-parent-flow (1.0);
+	height: 64px;
+	margin-top: 30px;
+}
+
+.TreeBranchPanel 
+{
+	width: 225px;
+	height: 64px;
+	border: 1px solid grey;
+	border-radius: 5px;
+	/*
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%; */
+	margin-left: -45px;
+	flow-children: right;
+}
+
+.TreeBranchImagePanel
+{
+	width: 64px;
+	height: 64px;
+}
+
+.TreeBranchLabel
+{
+	width: 100%;
+	height: 20px;
+	text-align: center;
+	margin-left: 10px;
+	margin-right: 10px;
+	color: white;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: platformfont;
+	text-overflow: shrink;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.TreeBranchPanel.disabled .TreeBranchImagePanel Image
+{
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.TreeBranchPanel.disabled .TreeBranchLabel
+{
+	color: gray;
+}
+
+.TotalTalentPointsLabel
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	font-size: 20px;
+	color: white;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+	font-family: platformfont;
+}

@@ -1,0 +1,12 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css" />
+        <include src="file://{resources}/styles/windows/inventory_window.css" />
+    </styles>
+    <Panel class="BoxedAttribute">
+        <Panel class="BoxedAttributeIcon" hittest="false">
+            <Image id="AttributeImage" src="s2r://panorama/images/hud/pip_int_png.vtex" scaling="stretch-to-fit-preserve-aspect" />
+        </Panel>
+        <Label id="AttributeLabel" class="WindowText BoxedAttributeLabel" text="999%" />
+    </Panel>
+</root>

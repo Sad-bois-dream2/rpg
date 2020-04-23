@@ -1,0 +1,287 @@
+.RootPanel {
+	flow-children: down;
+	height: 100%;
+	width: 400px;
+	padding-top: 45px;
+}
+.RootMemberPanel {
+	width: 400px;
+	margin-bottom: 5px;
+}
+
+.HeroPortrait {
+	width: 96px;
+	height: 96px;
+	border-radius: 50px;
+	border: 2px solid #7F8C8D;
+}
+
+.HeroOwnerName {
+	horizontal-align: center;
+	margin-left: 80px;
+	margin-top: -4px;
+	text-align: center;
+	width: 100%;
+	width: 100%;
+	font-family: platformfont;
+}
+
+.HeroPortraitPanel.Small .HeroOwnerName {
+	margin-left: 60px;
+	font-size: 14px;
+}
+
+.HeroPortraitPanel.Small .HeroPortrait {
+	width: 64px;
+	height: 64px;
+	border-radius: 50px;
+	border: 1px solid #7F8C8D;
+	margin-left: 10px;
+}
+
+.HeroPortrait.is_dead {
+	blur: gaussian( 1 );
+	opacity: 0.5;
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.HeroPortraitPanel {
+	width: 280px;
+	height: 110px;
+	margin-left: 10px;
+}
+.HeroPortraitPanel.Small {
+	width: 240px;
+	height: 75px;
+}
+
+.HeroHpBarPanel {
+	width: 100%;
+	height: 25px;
+	border: 1px solid grey;
+	margin-left: 78px;
+	margin-top: 15px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	border-radius: 8px;
+}
+
+.HeroDeathTimer {
+	width: 100px;
+	height: 90px;
+}
+
+.HeroDeathTimer #HeroDeathTimer {
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 30px;
+	color: white;
+	font-family: platformfont;
+	visibility: collapse;
+}
+
+.HeroPortraitPanel.Small .HeroHpBarPanel {
+	height: 20px;
+	margin-left: 55px;
+	margin-top: 13px;
+}
+
+.HeroHpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #74D680 ), to( #378B29 ) );
+}
+
+.HeroMpBarPanel {
+	width: 100%;
+	height: 25px;
+	border: 1px solid grey;
+	margin-left: 78px;
+	margin-top: 38px;
+	border-radius: 8px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+}
+
+.HeroPortraitPanel.Small .HeroMpBarPanel {
+	height: 20px;
+	margin-left: 55px;
+	margin-top: 30px;
+}
+
+.HeroLivesPanel {
+	flow-children: right;
+	margin-top: 86px;
+	margin-left: 80px;
+	horizontal-align: center;
+}
+.HeroPortraitPanel.Small .HeroLivesPanel {
+	margin-left: 70px;
+	margin-top: 53px;
+	width: 160px;
+	height: fit-children;
+}
+.HeroPortraitPanel.Small .HeroLivesPanel .HeroLife {
+	width: 20px;
+	height: 20px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+.HeroLife {
+	width: 25px;
+	height: 25px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.HeroLife.consumed {
+	width: 25px;
+	height: 25px;
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.HeroMpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
+}
+
+.HeroHpMpBarValue
+{
+	color: white;
+	font-size: 14px;
+	vertical-align: center;
+	horizontal-align: center;
+	font-family: platformfont;
+}
+
+.HeroPortraitPanel.Small .HeroHpMpBarValue {
+	font-size: 12px;
+}
+
+.HeroHpMpBarRegValue {
+	color: white;
+	font-size: 14px;
+	vertical-align: center;
+	horizontal-align: right;
+	margin-right: 4px;
+	font-family: platformfont;
+}
+
+.HeroPortraitPanel.Small .HeroHpMpBarRegValue {
+	font-size: 12px;
+}
+
+.HeroExpBarPanel {
+	width: 100%;
+	height: 24px;
+	border: 1px solid grey;
+	margin-left: 78px;
+	margin-top: 60px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	border-radius: 8px;
+}
+
+.HeroPortraitPanel.Small .HeroExpBarPanel {
+	visibility: collapse;
+}
+
+.HeroExpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #2F1C53 ), to( #A46DFF ) );
+}
+
+#ManaBurner,
+#HealthBurner,
+#ExpBurner
+{
+	width: 100%;
+	height: 100%;
+}
+
+#ManaBurner
+{
+	hue-rotation: 100deg;
+}
+
+#ExpBurner
+{
+	hue-rotation: 160deg;
+}
+
+.LevelBar {
+	width: 60px;
+	border: 2px solid grey;
+	border-radius: 25px;
+	margin-top: 75px;
+	margin-left: 18px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #434343 ), to( #000000 ) );
+}
+
+.LevelBarValue {
+	color: white;
+	font-size: 17px;
+	vertical-align: center;
+	horizontal-align: center;
+	font-family: platformfont;
+	padding: 2px;
+	font-weight: bold;
+}
+
+.HeroPortraitPanel.Small .LevelBar {
+	width: 40px;
+	margin-top: 50px;
+	margin-left: 23px;
+}
+.HeroPortraitPanel.Small .LevelBarValue {
+	font-size: 12px;
+}
+
+.ButtonBackground {
+	width: 25px;
+	height: 25px;
+	border: 1px solid grey;
+	border-radius: 2px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #434343 ), to( #000000 ) );
+}
+
+.ButtonImage:hover {
+	opacity: 0.5;
+}
+
+.ResizeButton {
+	wash-color: grey;
+}
+
+.HeroPortraitPanel.Small .ButtonBackground {
+	width: 20px;
+	height: 20px;
+}
+
+@define HeroTransitionDuration: 0.46s;
+
+.OverviewHeroRender
+{
+	opacity: 0.01; /* hack to make sure that Paint is called which will actually cause it to load */
+	pre-transform-scale2d: 1.0;
+	/*transition-property: opacity, width, height, transform, pre-transform-scale2d, opacity-mask ;
+	transition-duration: 0.10s, 1s, 0.6s;
+	transition-timing-function: cubic-bezier( 0.785, 0.385, 0.555, 1.505 ); */
+}
+
+.OverviewHeroRender.SceneLoaded
+{
+	opacity: 1;
+	pre-transform-scale2d: 1;
+	/*transition-duration: 0.10s, 0.3s, HeroTransitionDuration, HeroTransitionDuration, HeroTransitionDuration, HeroTransitionDuration, 0.2s; */
+}

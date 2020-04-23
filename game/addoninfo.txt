@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+  "maps"      "map_rpg"
+  "IsPlayable"  "1"
+  "map_rpg"
+  {
+	"MaxPlayers"                    "5"
+  }
+}

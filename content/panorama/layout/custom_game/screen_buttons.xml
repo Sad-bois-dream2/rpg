@@ -1,0 +1,18 @@
+<root>
+<styles>
+	<include src="file://{resources}/styles/custom_game/screen_buttons.css" />	
+</styles>
+<scripts>
+	<include src="file://{resources}/scripts/custom_game/screen_buttons.js" />	
+</scripts>
+<Panel class="Root" hittest="false">
+	<Panel id="ButtonsRoot" class="ButtonsContainer">
+		<Panel class="Button" onactivate="OnInventoryButtonClicked()" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Inventory_Title', '#DOTA_Inventory_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+			<Image class="ButtonImage" src="file://{resources}/images/custom_game/hud/inventory.png" />
+		</Panel>
+		<Panel class="Button" onactivate="OnTalentTreeButtonClicked()" onmouseover="DOTAShowTitleTextTooltip('#DOTA_TalentTree_Title', '#DOTA_TalentTree_Description')" onmouseout="DOTAHideTitleTextTooltip()">>
+			<Image class="ButtonImage" src="file://{resources}/images/custom_game/hud/talent_tree.png" />
+		</Panel>
+	</Panel>
+</Panel>
+</root>

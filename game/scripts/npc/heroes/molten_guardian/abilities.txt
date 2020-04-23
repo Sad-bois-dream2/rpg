@@ -1,0 +1,340 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Molten Guardian: Scorching Clash
+	//=================================================================================================================
+	"molten_guardian_scorching_clash"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_scorching_clash"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"10 20 30 40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dash_range"				"800"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dash_speed"				"1250"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"base_damage"				"800 1000 1200 1500"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dot_dmg"				"1 2 3 4"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dot_tick"				"1"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dot_duration"				"3"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"0 0 0 0.5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_radius"				"300"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+            "particle"  "particles/units/heroes/hero_ember_spirit/ember_spirit_remnant_dash.vpcf"
+            "particle"  "particles/units/molten_guardian/scorching_clash/scorching_clash_explosion.vpcf"
+            "particle"  "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
+		}
+	}
+	//=================================================================================================================
+	// Molten Guardian: Volcanic Blow
+	//=================================================================================================================
+	"molten_guardian_volcanic_blow"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_volcanic_blow"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+		"AbilitySound"					"Hero_Mars.Shield.Cast"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+		"AbilityCastRange"				"100"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"2 2.5 2.8 3"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"2 3 4 5"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"block_chance"				"10 12 15 18"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"block_duration"				"3"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/molten_guardian/volcanic_blow/volcanic_blow_impact.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Molten Guardian: Lava Skin
+	//=================================================================================================================
+	"molten_guardian_lava_skin"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_lava_skin"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"1"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"ms_slow"				"-15 -20 -25 -30"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"phys_dmg_reduce"				"12 15 18 20"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_to_damage"				"20 25 30 35"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_radius"				"350"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"ms_slow_duration"				"3"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_base.vpcf"
+            "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf"
+            "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf"
+		}
+	}
+	//=================================================================================================================
+	// Molten Guardian: Molten Fortress
+	//=================================================================================================================
+    "mars_arena_of_blood"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+ 		"AbilitySound"					"Hero_Mars.ArenaOfBlood.Start"
+ 		"AbilityTextureName"			"molten_guardian_molten_fortress"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"400"
+		"AbilityCastPoint"				"0.25"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"60"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"10 20 30 40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"radius"			"600"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"width"				"100"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spear_damage"		"0"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"formation_time"	"0.6"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spear_distance_from_wall"	"160"
+			}
+			"07"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"spear_attack_interval"	"99999"
+			}
+			"08"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"warrior_count"		"14"
+			}
+			"09"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"first_warrior_angle"	"0.0"
+			}
+			"10"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"warrior_fade_min_dist"	"350.0"
+			}
+			"11"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"warrior_fade_max_dist"	"450.0"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_bonus"				"10 15 20 25"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"as_bonus"				"50 100 150 200"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sph_bonus"				"5 10 15 20"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/molten_guardian/molten_fortress/lava_buff.vpcf"
+            "particle"  "particles/units/molten_guardian/molten_fortress/lava_thing.vpcf"
+		}
+	}
+}

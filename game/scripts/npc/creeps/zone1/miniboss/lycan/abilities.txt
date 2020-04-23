@@ -1,0 +1,349 @@
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Lycan : Leader's Call
+    //=================================================================================================================
+        "lycan_call"
+       	{
+       		// General
+       		//-------------------------------------------------------------------------------------------------------------
+       		"BaseClass"						"ability_lua"
+            "ScriptFile"					"creeps/zone1/miniboss/lycan"
+            "AbilityTextureName"			"lycan_call"
+            "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+       		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
+       		"MaxLevel"						"3"
+    		// Casting
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+            "AbilityCastPoint"				"0.3"
+
+       		// Time
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilityCooldown"				"30"
+
+       		// Special
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilitySpecial"
+       		{
+       			"01"
+       			{
+       				"var_type"					"FIELD_FLOAT"
+       				"numbers"				    "1 2 3"
+       			}
+       			"02"
+       			{
+       				"var_type"					"FIELD_FLOAT"
+       				"range"	    	"2500"
+       			}
+       			"03"
+       			{
+       				"var_type"					"FIELD_FLOAT"
+       				"duration"			"30"
+       			}
+       		}
+    		"precache"
+    		{
+    			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ogre_magi.vsndevts"
+    		}
+    }
+    //=================================================================================================================
+	// Lycan : Wolves Companion
+	//=================================================================================================================
+	"lycan_companion"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "AbilityTextureName"			"lycan_companion"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilitySound"					"Hero_OgreMagi.Bloodlust.Target"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"1"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"chance"				    "20 35 50"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"max"		                "2 3 5"
+			}
+			"03"
+             {
+                 "var_type"					"FIELD_FLOAT"
+                 "duration"			"30"
+             }
+		}
+
+	}
+    //=================================================================================================================
+	// Lycan : Wounding strike
+	//=================================================================================================================
+	"lycan_wound"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"creeps/zone1/miniboss/lycan"
+		"AbilityTextureName"			"lycan_wound"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "3"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastRange"  "150"
+        "AbilityCastPoint"				"0.3"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"range"				"150"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"initial_damage"				"25 50 75"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dot"				"0 5 10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"duration"				"3 4 5"
+			}
+		}
+		"precache"
+        	{       "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+        			"soundfile"			"sounds/weapons/hero/bloodseeker/rupture.vsnd"
+        	}
+	}
+    //=================================================================================================================
+    // Lycan :
+    //=================================================================================================================
+    "ursa_roar"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/miniboss/ursa"
+        "AbilityTextureName"			"ursa_rush"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
+   		"MaxLevel"						"3"
+
+   		// Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AnimationPlaybackRate"         "0.4"
+        "AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2.0"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   		    "01"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"radius"				    "500 800 1300"
+             }
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"				    "1 2 4"
+   			}
+   		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+			"particle" "particles/units/heroes/hero_slardar/slardar_crush.vpcf"
+			"particle" "particles/units/heroes/hero_slardar/slardar_crush_entity.vpcf"
+		}
+	}
+    //=================================================================================================================
+    // Ursa : Swift
+    //=================================================================================================================
+    "ursa_swift"
+    {
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/miniboss/ursa"
+        "AbilityTextureName"			"ursa_swift"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilitySound"					"Hero_OgreMagi.Bloodlust.Target"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10 7 3"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+                "chance"               "10 25 50"
+            }
+		}
+		"precache"
+        		{
+        			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+        			"particle" "particles/units/heroes/hero_slardar/slardar_crush.vpcf"
+        			"particle" "particles/units/heroes/hero_slardar/slardar_crush_entity.vpcf"
+        		}
+	}
+    //=================================================================================================================
+    // Ursa : Slam
+    //=================================================================================================================
+    "ursa_slam"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/miniboss/ursa"
+        "AbilityTextureName"			"ursa_slam"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AnimationPlaybackRate"         "0.4"
+        "AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2.0"
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "500 800 1300"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"	    	    "500 1500 5000"
+   			}
+
+   			"03"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"ms_slow"	    	        "-80 -80 -80"
+   			}
+   			"04"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"as_slow"	    	        "-80 -80 -80"
+   			}
+   			"05"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"sph_slow"	    	        "-80 -80 -80"
+   			}
+   			"06"
+   			 {
+            	"var_type"				    "FIELD_FLOAT"
+               	"duration"	    	            "2 4 6"
+             }
+   		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+		}
+	}
+    //=================================================================================================================
+    // Lycan : Bleeding hit
+    //=================================================================================================================
+    "lycan_bleeding"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/miniboss/ursa"
+        "AbilityTextureName"			"ursa_hunt"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "7 12 25"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage_increase_outgoing_pct"			"100 200 300"
+   			}
+            "03"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"damage_increase_incoming_pct"			"25 20 15"
+    		}
+            "04"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"health_heal_pct"			"10 13 16"
+    		}
+   		}
+	}
+	"precache"
+    		{ "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+    		}
+
+}

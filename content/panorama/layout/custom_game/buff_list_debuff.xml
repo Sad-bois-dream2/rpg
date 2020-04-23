@@ -1,0 +1,43 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/buff_list.css" />
+	</styles>
+	<script>
+		function OnBuffClicked()
+		{
+			var queryUnit = $.GetContextPanel().Data().m_QueryUnit;
+			var buffSerial = $.GetContextPanel().Data().m_BuffSerial;
+			var alertBuff = GameUI.IsAltDown();			
+			Players.BuffClicked( queryUnit, buffSerial, alertBuff );
+		}
+
+		function BuffShowTooltip()
+		{
+			var queryUnit = $.GetContextPanel().Data().m_QueryUnit;
+			var buffSerial = $.GetContextPanel().Data().m_BuffSerial;
+			var isEnemy = Entities.IsEnemy( queryUnit );
+			$.DispatchEvent( "DOTAShowBuffTooltip", $.GetContextPanel(), queryUnit, buffSerial, isEnemy );
+		}
+
+		function BuffHideTooltip()
+		{
+			$.DispatchEvent( "DOTAHideBuffTooltip", $.GetContextPanel() );
+		}
+	</script>
+	<Panel class="BuffRoot" hittest="false">
+		<Panel id="BuffBorder" scaling="stretch-to-cover-preserve-aspect" style="background-color: red;"/>	
+		<Button id="BuffFrame"
+							onactivate="OnBuffClicked()"
+							onmouseover="BuffShowTooltip()"
+							onmouseout="BuffHideTooltip()"
+							>
+			<Panel id="BuffImage">
+				<DOTAAbilityImage id="AbilityImage" scaling="stretch-to-cover-preserve-aspect"/>
+				<Image id="AbilityImagePanel" scaling="stretch-to-cover-preserve-aspect"/>
+				<DOTAItemImage id="ItemImage" scaling="stretch-to-cover-preserve-aspect"  />
+			</Panel>
+			<Label id="StackCount" />
+		</Button>
+	</Panel>
+</root>
+

@@ -1,0 +1,518 @@
+.Root {
+	width: 100%;
+	height: 100%;
+}
+
+.LeftBackground, .RightBackground {
+	height: 100px;
+	vertical-align: bottom;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	border-radius: 10px;
+	border: 1px solid gray;
+}
+
+.LeftBackground {
+	horizontal-align: center;
+	margin-right: 520px;
+	width: 410px;
+	flow-children: right;
+}
+
+.RightBackground {
+	horizontal-align: center;
+	margin-left: 620px;
+	width: 516px;
+}
+
+.HPMPBars {
+	flow-children: down;
+	width: 320px;
+	height: 100%;
+	padding-top: 7px;
+	padding-left: 5px;
+	padding-bottom: 5px;
+}
+
+.HeroHpBarPanel {
+	width: 100%;
+	border: 1px solid grey;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	border-radius: 4px;
+}
+
+.HeroHpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #74D680 ), to( #378B29 ) );
+}
+
+.HeroMpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
+}
+
+.HeroHpMpBarValue
+{
+	color: white;
+	font-size: 14px;
+	vertical-align: center;
+	horizontal-align: center;
+	font-family: platformfont;
+}
+
+.HeroMpBarPanel {
+	width: 100%;
+	border: 1px solid grey;
+	border-radius: 4px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	margin-top: -3px;
+}
+
+.HeroHpMpBarRegValue {
+	color: white;
+	font-size: 14px;
+	vertical-align: center;
+	horizontal-align: right;
+	margin-right: 4px;
+	font-family: platformfont;
+}
+
+.HeroExpBarPanel {
+	width: 100%;
+	border: 1px solid grey;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	border-radius: 4px;
+	margin-top: -3px;
+}
+
+.HeroExpBar
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #2F1C53 ), to( #A46DFF ) );
+}
+
+.HeroHpBarPanel, .HeroMpBarPanel, .HeroExpBarPanel {
+	height: 30px;
+}
+
+#ManaBurner,
+#HealthBurner,
+#ExpBurner
+{
+	width: 100%;
+	height: 100%;
+}
+
+#ManaBurner
+{
+	hue-rotation: 100deg;
+}
+
+#ExpBurner
+{
+	hue-rotation: 160deg;
+}
+
+.HeroStats {
+	width: 80px;
+	height: 100%;
+	flow-children: down;
+	margin-left: -5px;
+}
+
+.HeroPortrait {
+	border-radius: 30px;
+	border: 2px solid gray;
+	width: 130px;
+	height: 150px;
+	horizontal-align: center;
+	vertical-align: bottom;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+.HeroPortrait.is_dead {
+	blur: gaussian( 1 );
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.HeroDeathTimer {
+	width: 100px;
+	height: 90px;
+	vertical-align: bottom;
+	horizontal-align: center;
+}
+
+.HeroDeathTimer #HeroDeathTimer {
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 50px;
+	color: white;
+	font-family: platformfont;
+	visibility: collapse;
+	margin-top: -30px;
+}
+
+.HeroNamePanel {
+	width: 140px;
+	height: 30px;
+	border: 1px solid grey;
+	border-radius: 5px;
+	horizontal-align: center;
+	vertical-align: bottom;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+.HeroNameValue {
+	color: white;
+	font-size: 18px;
+	vertical-align: center;
+	horizontal-align: center;
+	text-align: center;
+	font-family: platformfont;
+	padding: 2px;
+	white-space: normal;
+	text-overflow: shrink;
+}
+
+.AbilityOverlayRoot
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	flow-children: down;
+}
+.AbilityLevelUpPanel {
+	width: 72px; 
+	height: 150px; 
+	margin-left: 8px; 
+	margin-bottom: 2px; 
+	flow-children:down;
+}
+
+.AbilityLevelUpPanelFiller {
+	width: 72px; 
+	height: 150px; 
+	margin-left: 8px; 
+	margin-bottom: 2px; 
+}
+
+.LevelUpBurstFX {
+	margin-top: 18px; 
+	width: 65px; 
+	height: 100px;
+}
+
+.LevelUpTab {
+	width: 100%; 
+	vertical-align: bottom; 
+	margin-left: 1px; 
+	margin-bottom: -8px;
+}
+
+.LevelUpButton {
+	height: 35px;
+}
+
+.LevelUpIcon {
+	width: 32px; 
+	height: 32px; 
+	vertical-align: center; 
+	horizontal-align: center;
+}
+
+#AbilityLevelUpButton
+{
+	margin-left: 53px;
+	vertical-align: top;
+	horizontal-align: left;
+	min-width: 18px;
+	min-height: 18px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #393939 ), to( #414849 ) );
+	border: 1px solid #ffffff05;
+	box-shadow: fill black 1px 1px 2px 2px;
+	border-radius: 5px;
+}
+
+#AbilityLevelUpButtonText
+{
+	color: #bba995;
+ 	text-shadow: 1px 1px 2px 2 #000000;
+    font-size: 17px;
+    font-weight: bold;
+	vertical-align: center;
+	text-align: center;
+	width: 100%;
+	margin: -2px;
+}
+
+#ability_list
+{
+	flow-children: right;
+}
+
+.AbilityPanel
+{
+	margin-left: 8px;
+	margin-right: 8px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.AbilityPanel.no_ability
+{
+	visibility: collapse;
+}
+
+#LevelUpButton
+{
+    background-color: #c4a529;
+	width: 64px;
+	height: 48px;
+	visibility: collapse;
+}
+
+.could_level_up #LevelUpButton
+{
+	visibility: visible;
+}
+
+#LevelUpButton:hover
+{
+    background-color: #9e8b2c;
+}
+
+#LevelUpButtonInset
+{
+	width: 100%;
+	height: 100%;
+	border: 2px solid black;
+    background-color: gradient( linear, 0% 0%, 0% 100%, from( #ffffff ), color-stop( 0.1, #c4a529 ), color-stop( 0.75, #9e8b2c ), color-stop( 0.9, #c4a529 ), to( #ffffff ) );
+}
+
+#LevelUpButton:hover #LevelUpButtonInset
+{
+    background-color: gradient( linear, 0% 0%, 0% 100%, from( #ffffff ), color-stop( 0.2, #c4a529 ), color-stop( 0.75, #9e8b2c ), color-stop( 0.8, #c4a529 ), to( #ffffff ) );
+}
+
+#LevelUpButton Label
+{
+	text-transform: uppercase;
+	text-shadow: 0px 1px 3px 2.5 #000000;
+	color: white;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+#ButtonAndLevel
+{
+	flow-children: down;
+}
+
+#AbilityButton
+{
+	width: 63px;
+	height: 64px;
+	border: 1px solid grey;
+	border-radius: 6px; 
+}
+
+.is_passive #AbilityButton
+{
+}
+
+#UpgradeBorder
+{
+	background-color: transparent;
+}
+
+.learnable_ability #UpgradeBorder
+{
+   background-color: gradient( linear, 0% 0%, 0% 100%, from( #ffffff ), color-stop( 0.1, #c4a529 ), color-stop( 0.75, #9e8b2c ), color-stop( 0.9, #c4a529 ), to( #ffffff ) );
+   border-radius: 6px;
+}
+
+#AbilityButton:hover
+{
+	border: 2px solid white;
+}
+
+#AbilityButton:active
+{
+	border: 4px solid white;
+}
+.no_level DOTAAbilityImage
+{
+	saturation: 0;
+	wash-color: #303030;
+}
+
+.insufficient_mana DOTAAbilityImage
+{
+	saturation: 0;
+	wash-color: #1569be;
+}
+
+.potential_upgrade.no_level DOTAAbilityImage
+{
+	saturation: 1;
+	wash-color: white;
+}
+
+#AbilityStatusBorder
+{
+	border: 2px solid transparent;
+}
+
+.auto_cast_enabled #AbilityStatusBorder
+{
+	border: 4px solid orange;
+}
+
+.toggle_enabled #AbilityStatusBorder
+{
+	border: 2px solid gold;
+	border-radius: 7px;
+}
+
+#AbilityLevelContainer
+{
+	flow-children: right-wrap;
+	height: 16px;
+	width: 60px;
+	margin-left: 5px;
+}
+
+.LevelPanel
+{
+	width: 12px;
+	height: 12px;
+	margin-left: 1px;
+	margin-right: 1px;
+	border-radius: 3px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #2e2716 ), to( #020302 ) );
+	border: 2px solid #ffffff05;
+}
+
+.active_level.LevelPanel
+{
+	background-color: #ceaa31;
+	border: 2px solid #734918;
+	
+}
+
+#LevelUpButton
+{
+	background-image: url("s2r://panorama/images/hud/reborn/levelup_button_psd.vtex");
+	background-size: 100% 100%;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	
+	transition-property: opacity, brightness, pre-transform-scale2d;
+	transition-timing-function: ease-in-out;
+	transition-duration: .12s;	
+	height: 40px;	
+}
+
+#LevelUpIcon
+{
+	background-image: url("s2r://panorama/images/hud/reborn/levelup_plus_well_psd.vtex");
+	background-size: 100% 100%;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	transition-property: background-image;
+	transition-duration: .12s;
+	width: 32px;
+	height: 32px;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+#Strength
+{
+	tooltip-position: top;
+	tooltip-body-position: 0% 50%;
+}
+
+#StrengthIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_str_png.vtex");
+    brightness: 1.3;
+}
+
+#Agility
+{
+	tooltip-position: top;
+	tooltip-body-position: 0% 50%;
+}
+
+#AgilityIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_agi_png.vtex");
+    brightness: 1.6;
+}
+
+#Intelligence
+{
+	tooltip-position: top;
+	tooltip-body-position: 0% 50%;
+}
+
+#IntelligenceIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_int_png.vtex");
+    brightness: 1.3;
+}
+#IntelligenceIcon, #AgilityIcon, #StrengthIcon 
+{
+	width: 32px;
+	height: 32px;
+}
+
+.StatIcon
+{
+	width: 14px;
+	height: 14px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.AttrIconContainer
+{
+	width: fit-children;
+	height: fill-parent-flow( 1.0 );
+	padding-left: 5px;
+	horizontal-align: left;
+	vertical-align: center;
+	flow-children: right;
+}
+
+.StatIcon
+{
+	width: 14px;
+	height: 14px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.StatLabel
+{
+	font-size: 16px;
+	color: offWhite;
+	font-weight: thin;
+	text-overflow: shrink;
+	vertical-align: center;
+}

@@ -1,0 +1,97 @@
+#ItemTooltip 
+{
+	width: 300px; 
+	border: 1px solid gray;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	border-radius: 4px;
+	flow-children: down;
+	transform-origin: 0% 0%;
+}
+
+.ItemTooltipImage 
+{
+	width: 77px;
+	height: 57px;
+	border-radius: 5px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	border: 1px solid grey;
+}
+
+.ItemTooltipName 
+{
+	width: fill-parent-flow (1.0);
+	height: 60px;
+	font-size: 16px;
+	margin: 5px;
+	letter-spacing: 1px;
+	color: white;
+	font-weight: bold;
+	font-family: platformfont;
+	text-transform: uppercase;
+}
+
+.ItemTooltipDescription 
+{
+	margin: 5px;
+	margin-top: -2px;
+	padding-top: 0px;
+	flow-children: down;
+	height: fit-children;
+}
+
+.ItemTooltipNameLabel {
+	text-transform: uppercase;
+	horizontal-align: left;
+	vertical-align: center;
+}
+
+.ItemTooltipInfoContainer
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.ItemTooltipRarityLabel
+{
+	max-width: 190px;
+	overflow: clip squish;
+	height: 20px;
+	color: grey;
+	font-size: 16px;
+	font-family: platformfont;
+	vertical-align: center;
+	horizontal-align: left;
+	margin-top: 1px;
+}
+
+.ItemTooltipTypeLabel 
+{
+	color: grey;
+	font-size: 16px;
+	font-family: platformfont;
+	vertical-align: center;
+	horizontal-align: right;
+	margin-right: 2px;
+}
+
+.ItemTooltipLabel 
+{
+	color: white;
+	font-size: 14px;
+	font-family: platformfont;
+	horizontal-align: center;
+	vertical-align: center;
+	margin-top: 10px;
+}
+
+.ItemTooltipHeader 
+{
+	flow-children: right;
+	width: 100%;
+	padding: 5px;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}

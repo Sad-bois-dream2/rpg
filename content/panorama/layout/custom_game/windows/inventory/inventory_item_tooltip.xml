@@ -1,0 +1,11 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/windows/inventory_window.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/windows/inventory.js" />
+	</scripts>
+	<Panel hittest="false">
+		<DOTAItemImage hittest="false" id="ItemImage" scaling="stretch-to-fit-preserve-aspect"/>
+	</Panel>
+</root>

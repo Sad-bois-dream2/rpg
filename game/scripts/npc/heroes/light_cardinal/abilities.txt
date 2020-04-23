@@ -1,0 +1,582 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Light Cardinal: Piety
+	//=================================================================================================================
+	"light_cardinal_piety"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_piety"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+        "AbilityCastRange"  "900"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"15"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing"				"25 30 35 40"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hot_duration"				"4"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"900"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_chance"				"10 12 15 18"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_duration"				"2"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"silence_duration"				"0 0 0 0.3"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/piety/light_sphere.vpcf"
+			"particle" "particles/units/light_cardinal/piety/light_sphere_buff.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Light Cardinal: Purification
+	//=================================================================================================================
+	"light_cardinal_purification"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_purification"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+        "AbilityCastRange"  "900"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"15"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"protection_duration"				"1 2 3 4"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/items_fx/black_king_bar_avatar.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Light Cardinal: Sublimation
+	//=================================================================================================================
+	"light_cardinal_sublimation"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_sublimation"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+        "AbilityCastRange"  "900"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_reduction"				"10 15 20 25"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"regeneration"				"1 2 3 4"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/sublimation/sublimation_buff.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Light Cardinal: Salvation
+	//=================================================================================================================
+	"light_cardinal_salvation"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_salvation"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+        "AbilityCastRange"  "900"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"90"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"900"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing"				"200 300 400 500"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"health_cost"				"50"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"respawn_hp"				"50"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"respawn_cd"				"200"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"silence_duration"				"3"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aura_radius"				"1500"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/salvation/light.vpcf"
+			"particle" "particles/units/light_cardinal/salvation/aura_ray.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_items.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Light Cardinal: Harmony
+	//=================================================================================================================
+	"light_cardinal_harmony"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_harmony"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_bonus"				"2 3 4 5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"int_bonus"				"2 4 6 8"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/harmony/harmony_effect.vpcf"
+		}
+	}
+	//=================================================================================================================
+	// Light Cardinal: Spirit Shield
+	//=================================================================================================================
+	"light_cardinal_spirit_shield"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_spirit_shield"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+        "AbilityCastRange"  "900"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"25 20 15 10"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"absorb"				"20 30 40 50"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/spirit_shield/spirit_shield.vpcf"
+		}
+	}
+
+	//=================================================================================================================
+	// Light Cardinal: Desecration
+	//=================================================================================================================
+	"light_cardinal_desecration"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_light_cardinal"
+		"AbilityTextureName"			"light_cardinal_desecration"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"1"
+	    "AnimationPlaybackRate"  "0.3"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"5 10 15 20"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/light_cardinal/desecration/desecration.vpcf"
+		}
+	}
+
+	//=================================================================================================================
+    // Light Cardinal: Consecration
+    //=================================================================================================================
+    "light_cardinal_consecration"
+    {
+    	// General
+    	//-------------------------------------------------------------------------------------------------------------
+    	"BaseClass"						"ability_lua"
+    	"ScriptFile"					"talents/talents_light_cardinal"
+    	"AbilityTextureName"			"light_cardinal_consecration"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+    	"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+        "MaxLevel"               "4"
+        "RequiredLevel"          "0"
+        "LevelsBetweenUpgrades"  "0"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastRange"  "400"
+   		// Casting
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+   		"AbilityCastGestureSlot"		"DEFAULT"
+   		"AbilityCastPoint"				"0.25"
+    	// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"1"
+    	// Cost
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityManaCost"				"0"
+    	// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"damage"				"70 80 90 100"
+   			}
+   			"02"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"tick"				"1"
+   			}
+   			"03"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"radius"				"400"
+   			}
+   		}
+   		"precache"
+   		{
+   		    "particle"  "particles/units/light_cardinal/consecration/consecration.vpcf"
+   		    "particle"  "particles/units/light_cardinal/consecration/consecration_impact.vpcf"
+   		    "particle"  "particles/units/light_cardinal/consecration/consecration_wave.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+    	}
+    }
+
+	//=================================================================================================================
+    // Light Cardinal: Smite
+    //=================================================================================================================
+    "light_cardinal_smite"
+    {
+    	// General
+    	//-------------------------------------------------------------------------------------------------------------
+    	"BaseClass"						"ability_lua"
+    	"ScriptFile"					"talents/talents_light_cardinal"
+    	"AbilityTextureName"			"light_cardinal_smite"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+    	"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+        "MaxLevel"               "4"
+        "RequiredLevel"          "0"
+        "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastRange"  "600"
+   		// Casting
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+   		"AbilityCastGestureSlot"		"DEFAULT"
+   		"AbilityCastPoint"				"2"
+	    "AnimationPlaybackRate"  "0.1"
+    	// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"0"
+    	// Cost
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityManaCost"				"40"
+    	// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"damage"				"50 60 70 80"
+   			}
+   		}
+   		"precache"
+   		{
+   		    "particle"  "particles/units/light_cardinal/smite/smite.vpcf"
+    	}
+    }
+
+	//=================================================================================================================
+    // Light Cardinal: Patronage
+    //=================================================================================================================
+    "light_cardinal_patronage"
+    {
+    	// General
+    	//-------------------------------------------------------------------------------------------------------------
+    	"BaseClass"						"ability_lua"
+    	"ScriptFile"					"talents/talents_light_cardinal"
+    	"AbilityTextureName"			"light_cardinal_patronage"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+        "MaxLevel"               "4"
+        "RequiredLevel"          "0"
+        "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		// Casting
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+   		"AbilityCastGestureSlot"		"DEFAULT"
+    	// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"60 50 40 30"
+    	// Cost
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityManaCost"				"40"
+    	// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"crit_factor"				"200"
+   			}
+   			"02"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"crit_chance"				"100"
+   			}
+   			"03"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"duration"				"5"
+   			}
+   			"04"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"debuff_dmgred"				"25"
+   			}
+   			"05"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"debuff_spelldmg"				"50"
+   			}
+   			"06"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"debuff_duration"				"5"
+   			}
+   		}
+   		"precache"
+   		{
+   		    "particle"  "particles/units/light_cardinal/patronage/patronage.vpcf"
+    	}
+    }
+}

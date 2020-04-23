@@ -1,0 +1,200 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 128
+	m_BoundingBoxMin = [ -70.0, -70.0, -10.0 ]
+	m_BoundingBoxMax = [ 70.0, 70.0, 10.0 ]
+	m_nGroupID = 3
+	m_flMaxDrawDistance = 2000.0
+	m_bShouldSort = false
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
+			m_bBlendFramesSeq0 = false
+			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
+			m_flAnimationRate = 0.5
+			m_bDisableOperator = true
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_BasicMovement"
+			m_flOpTimeOffsetMax = 1.0
+			m_fDrag = 0.15
+			m_Gravity = [ 0.0, 0.0, -50.0 ]
+		},
+		{
+			_class = "C_OP_Decay"
+			m_flOpTimeOffsetMax = 1.0
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flOpTimeOffsetMax = 1.0
+			m_flEndScale = 2.0
+		},
+		{
+			_class = "C_OP_FadeOutSimple"
+			m_flFadeOutTime = 0.5
+		},
+		{
+			_class = "C_OP_SpinUpdate"
+		},
+		{
+			_class = "C_OP_VectorNoise"
+			m_bAdditive = true
+			m_vecOutputMax = [ 3.0, 3.0, 3.0 ]
+			m_vecOutputMin = [ -3.0, -3.0, -3.0 ]
+			m_nFieldOutput = "0"
+			m_fl4NoiseScale = 0.88
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flOpTimeOffsetMax = 1.0
+			m_flRadiusMax = 60.0
+			m_flRadiusMin = 30.0
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_flOpTimeOffsetMax = 1.0
+			m_fLifetimeMax = 2.25
+			m_fLifetimeMin = 1.75
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+			m_flOpTimeOffsetMax = 1.0
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMax = 75
+			m_nAlphaMin = 25
+			m_flOpTimeOffsetMax = 1.0
+		},
+		{
+			_class = "C_INIT_RandomSequence"
+			m_nSequenceMax = 4
+		},
+		{
+			_class = "C_INIT_CreateWithinSphere"
+			m_fSpeedMax = 200.0
+			m_fSpeedMin = 150.0
+			m_fRadiusMax = 10.0
+			m_LocalCoordinateSystemSpeedMin = [ 0.0, 0.0, 100.0 ]
+			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 250.0 ]
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 196, 179, 164, 255 ]
+			m_ColorMax = [ 138, 123, 113, 255 ]
+		},
+		{
+			_class = "C_INIT_RandomRotationSpeed"
+			m_flDegreesMax = 40.0
+			m_flDegreesMin = 20.0
+		},
+		{
+			_class = "C_INIT_RandomYawFlip"
+			m_flOpTimeOffsetMax = 1.0
+		},
+		{
+			_class = "C_INIT_InitialVelocityNoise"
+			m_flNoiseScaleLoc = 0.77
+			m_vecOutputMax = [ 564.0, 564.0, 164.0 ]
+			m_vecOutputMin = [ -564.0, -564.0, -164.0 ]
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_bDisableOperator = true
+		},
+	]
+	m_ForceGenerators = 
+	[
+		{
+			_class = "C_OP_AttractToControlPoint"
+			m_fFalloffPower = 0.2
+			m_fForceAmount = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = -400.0
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explosion_d.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/units/light_cardinal/smite/smite_explosion_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explosion_shock.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explode_beam.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/units/light_cardinal/smite/smite_explosion_sparks.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explode_flash.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/units/light_cardinal/smite/smite_explosion_core.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explosion_warp.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explode_arcs.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explode_proj.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lanaya/lanaya_epit_trap/templar_assassin_epit_trap_explode_shards_bright.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/lina/lina_ti7/lina_spell_light_strike_array_ti7_gold_impact_sparks.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/units/light_cardinal/smite/smite_flying_thing.vpcf"
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 8
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+}

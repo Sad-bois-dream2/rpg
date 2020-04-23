@@ -1,0 +1,14 @@
+/.idea/
+/*.iml
+/src/
+/game/tools_thumbnail_cache.bin
+/game/tools_asset_info.bin
+/game/panorama_debugger.cfg
+/game/particles/
+/game/panorama/images/
+/game/panorama/layout/
+/game/panorama/scripts/
+/game/panorama/styles/
+/game/materials/
+/game/network_measurement.txt
+/game/maps/

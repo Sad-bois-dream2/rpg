@@ -1,0 +1,7 @@
+<root> 
+  <styles>
+    <include src="file://{resources}/styles/custom_loading_screen.css" />
+  </styles>
+  <Panel class="AddonLoadingRoot">
+  </Panel>
+</root>

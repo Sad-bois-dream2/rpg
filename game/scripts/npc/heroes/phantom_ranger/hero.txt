@@ -1,0 +1,42 @@
+"DOTAHeroes"
+{
+	"rpg_dota_hero_phantom_ranger"
+	{
+		"AbilityLayout" "6"
+		"override_hero" "npc_dota_hero_drow_ranger"
+		"Ability1"		"phantom_ranger_phantom_harmonic"
+		"Ability2"		"phantom_ranger_void_disciple"
+		"Ability3"		"phantom_ranger_soul_echo"
+		"Ability4"	"phantom_ranger_shadow_waves"
+		"Ability5"	"empty5"
+		"Ability6"		"antimage_blink"
+		"AbilityTalentStart"		"7"
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+		"Ability17"	""
+		"ArmorPhysical"                "0"
+		"MagicalResistance"            "0"
+		"AttackDamageMin"            "34"       // Damage range min.
+		"AttackDamageMax"            "34"       // Damage range max.
+		"BountyXP"                    "0"            // Experience earn.
+		"BountyGoldMin"                "0"           // Gold earned min.
+		"BountyGoldMax"                "0"           // Gold earned max.
+		"StatusHealthRegen"           "0"         // Health regeneration rate.
+		"StatusManaRegen"             "0"         // Mana regeneration rate.
+		"AttributePrimary"             "DOTA_ATTRIBUTE_AGILITY"
+		"AttributeBaseStrength"        "18"            // Base strength
+		"AttributeStrengthGain"        "1.9"            // Strength bonus per level.
+		"AttributeBaseAgility"         "20"            // Base agility
+		"AttributeAgilityGain"         "2.9"            // Agility bonus per level.
+		"AttributeBaseIntelligence"    "15"            // Base intelligence
+		"AttributeIntelligenceGain"    "1.4"            // Intelligence bonus per level.
+	}
+}

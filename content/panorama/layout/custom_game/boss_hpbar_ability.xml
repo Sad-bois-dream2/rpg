@@ -1,0 +1,27 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/boss_hpbar.css" />
+	</styles>
+	<script>
+		function ShowAbilityTooltip() {
+			var abilityName = $('#BossAbility').abilityname;
+			if(abilityName !== "empty") {
+				$.DispatchEvent( "DOTAShowAbilityTooltip", $.GetContextPanel(), abilityName);
+			}
+		}
+				
+		function HideAbilityTooltip() {
+			$.DispatchEvent( "DOTAHideAbilityTooltip", $.GetContextPanel());
+		}
+	</script>
+	<Panel hittest="true" onmouseover="ShowAbilityTooltip()" onmouseout="HideAbilityTooltip()">
+		<DOTAAbilityImage id="BossAbility" class="AbilityImage"/>
+		<Panel id="Cooldown">
+			<Panel id="CooldownOverlay" />
+			<Label id="CooldownTimer" />
+		</Panel>
+		<Label id="ManaCost" text=""/>
+	</Panel>
+</root>
+
+

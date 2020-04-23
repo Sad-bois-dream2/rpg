@@ -1,0 +1,55 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/dotastyles.css" />
+		<include src="file://{resources}/styles/custom_game/action_bar.css" />
+		<include src="file://{resources}/styles/custom_game/ability_shared.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/action_bar_ability.js" />
+	</scripts>
+	<Panel style="flow-children: down; padding: 0px; margin: 0px;">
+			<Panel id="AbilityLevelPanel" class="AbilityLevelUpPanel">
+			<DOTAScenePanel class="LevelUpBurstFX"  map="scenes/hud/levelupburst" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+			<Button class="LevelUpTab" hittest="true" onactivate="OnLevelUpClicked()">
+				<Panel id="LevelUpButton">
+					<Panel id="LevelUpIcon" />
+				</Panel>
+				<Panel id="LearnModeButton" hittest="false"/>					
+			</Button>
+			</Panel>
+			<Panel id="AbilityLevelPanelFiller" class="AbilityLevelUpPanelFiller" />
+	<Panel class="AbilityPanel" style="">
+		<Panel id="ButtonAndLevel">
+			<Panel id="UpgradeBorder">
+				<Panel id="AbilityStatusBorder">
+					<Button id="AbilityButton"
+							onmouseover="AbilityShowTooltip()"
+							onmouseout="AbilityHideTooltip()"
+							onactivate="ActivateAbility()"
+							ondblclick="DoubleClickAbility()"
+							oncontextmenu="RightClickAbility()"
+							>
+						<DOTAAbilityImage id="AbilityImage"/>
+						<Panel id="Cooldown">
+							<Panel id="CooldownOverlay" />
+							<Label id="CooldownTimer" />
+						</Panel>
+						<Panel id="ActiveAbility" />
+						<!--<Label id="ManaCost" /> -->
+					</Button>
+				</Panel>
+			</Panel>
+			<Panel hittest="false" id="AbilityLevelContainer"/>
+		</Panel>
+		<Panel id="Hotkey">
+			<Label id="HotkeyText" />
+		</Panel>
+		<!--<Panel id="AbilityLevelUpButton" onactivate="OnLevelUpClicked()">
+			<Label id="AbilityLevelUpButtonText" text="+" />
+		</Panel> -->
+		<Label id="ManaCost" />
+	</Panel>
+		</Panel>
+</root>
+
+

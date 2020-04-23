@@ -1,0 +1,249 @@
+-- This is example how to add modifiers to each item and how make any modifier affect any hero stat. Items may work without modifier, but idk reason because they will not give anything.
+-- Don't forgot to require item file in items/require.lua
+
+modifier_inventory_item_example = modifier_inventory_item_example or class({
+    IsDebuff = function(self)
+        return false -- prevent some weird shit
+    end,
+    IsHidden = function(self)
+        return true -- make them hidden pls
+    end,
+    IsPurgable = function(self)
+        return false -- prevent shit with that too pls
+    end,
+    RemoveOnDeath = function(self)
+        return false -- this happens
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false -- this happens too sometimes
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT -- always add MODIFIER_ATTRIBUTE_PERMANENT to prevent weird shit.
+    end,
+})
+
+-- Every Get() function below must return number (can be negative) else will be ignored
+-- For all percent Get() functions below: 1.0 = 100%
+function modifier_inventory_item_example:GetStrengthBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetStrengthPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAgilityBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAgilityPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetIntellectBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetIntellectPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetPrimaryAttributeBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetPrimaryAttributePercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackDamagePercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackSpeedBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackSpeedPercentBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%, pls no
+function modifier_inventory_item_example:GetSpellHasteBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackRangeBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAttackRangePercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetCastRangeBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetCastRangePercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetMoveSpeedBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetMoveSpeedPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHealthRegenerationBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHealthRegenerationPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetManaRegenerationBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetManaRegenerationPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetManaBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetManaPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHealthBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHealthPercentBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetDamageReductionBonus()
+    return 0
+end
+
+-- for all elemental dmg/protection: 1.0 = 100%
+function modifier_inventory_item_example:GetFireProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetFrostProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetEarthProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetVoidProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHolyProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetNatureProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetInfernoProtectionBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetFireDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetFrostDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetEarthDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetVoidDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetHolyDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetNatureDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetInfernoDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetBlockBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetBlockPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetMagicBlockBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetMagicBlockPercentBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetArmorBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetArmorPercentBonus()
+    return 0
+end
+
+-- use this if you wanna make taunt (force creeps nearby ignore all aggro and focus target with taunt modifier)
+function modifier_inventory_item_example:IsTaunt()
+    return false
+end
+
+-- use this if you wanna make skill/something else that force creeps ignore aggro and focus one target, must return valid target to focus or will be ignored
+-- p.s. works only for creeps
+function modifier_inventory_item_example:GetIgnoreAggroTarget()
+    return self:GetParent()
+end
+
+-- 1.0 = 100%, pls no
+function modifier_inventory_item_example:GetCooldownReduction()
+    return 0.0
+end
+
+-- exact value
+function modifier_inventory_item_example:GetBaseAttackTime()
+    return 1.7
+end
+
+-- Don't forget basic stuff too
+LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)

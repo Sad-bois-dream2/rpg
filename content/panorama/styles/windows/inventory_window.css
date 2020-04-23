@@ -1,0 +1,401 @@
+.InventoryContainer 
+{
+	width: fill-parent-flow(1.0);
+	flow-children: down;
+}
+
+.InventoryRow 
+{
+	flow-children: right;
+	width: 100%;
+	height: fit-children;
+}
+
+.InventorySlot, .InventoryEquippedSlot
+{
+	width: fill-parent-flow (1.0);
+	height: 44px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	border: 1px solid grey;
+}
+
+.InventorySlot DOTAItemImage
+{
+	width: 100%;
+	height: 100%;
+}
+
+.InventoryEquippedSlot 
+{
+	width: 77px;
+	height: 57px;
+	margin: 10px; /* change that in OnInventorySlotDragEnd too (slotSpacingX/Y) */
+	border: 1px solid gray;
+	border-radius: 5px;
+}
+
+.InventoryEquippedSlot Label 
+{
+	visibility: collapse;
+}
+
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage0,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage1,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage2, 
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage3,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage4,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage5,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage6,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage7,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage8,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage9,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage10,
+.InventoryEquippedSlot.empty #InventoryEquippedSlotImage11
+{
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.RightItemSlots, .LeftItemSlots, .MiddleItemSlots 
+{
+	flow-children: down;
+}
+
+.LeftItemSlots 
+{
+	margin-left: 4px;
+}
+
+.RightItemSlots 
+{
+	horizontal-align: right;
+	margin-right: 4px;
+}
+
+.MiddleItemSlots 
+{
+	horizontal-align: center;
+	vertical-align: top;
+	flow-children: down;
+	margin: 0px;
+	padding: 0px;
+}
+
+.MiddleItemSlots.FromBottom 
+{
+	vertical-align: bottom;
+	flow-children: right;
+	margin-bottom: 0px;
+}
+
+.LeftRings, .RightRings
+{
+	flow-children: down;
+}
+
+#ItemImage 
+{
+	height: 100%;
+}
+
+.WindowContent 
+{
+	flow-children: down;
+	margin-top: 0px;
+}
+
+.HeroContainer 
+{
+	width: 100%;
+	height: 60%;
+	flow-children: right;
+}
+
+.HeroItems 
+{
+	border: 1px solid grey;
+	width: 399px;
+	height: 100%;
+}
+
+.HeroStats 
+{
+	border: 1px solid grey;
+	width: 401px;
+	height: 100%;
+	flow-children: down;
+	padding: 5px;
+}
+
+.HeroStatsPage 
+{
+	flow-children: down;
+	width: 100%;
+	overflow: squish scroll;
+}
+
+.InventoryAttributeWithValue 
+{
+	width: 100%;
+	flow-children: right;
+	padding-left: 25px;
+}
+
+.InventoryAttributeLabel 
+{
+	vertical-align: center;
+	horizontal-align: left;
+	margin-left: 10px;
+	margin-bottom: 5px;
+}
+
+.InventoryAttributeValue 
+{
+	vertical-align: center;
+	horizontal-align: right;
+	padding-right: 25px;
+}
+
+.InventoryAttributeGrouplabel 
+{
+	margin-top: 10px;
+	margin-left: 29px;
+	margin-bottom: 10px;
+}
+
+.WindowCloseIcon 
+{
+	margin-top: 2px;
+	margin-right: 4px;
+}
+
+.HeroNameContainer 
+{
+	margin-top: 15px;
+	flow-children: right;
+	horizontal-align: center;
+}
+
+.HeroIcon 
+{
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.HeroName 
+{
+	vertical-align: center;
+	padding-left: 6px;
+	padding-bottom: -4px;
+}
+
+.BoxedAttributes 
+{
+	margin-top: 10px;
+	flow-children: right-wrap;
+	horizontal-align: center;
+	width: 100%;
+	margin-left: 20px;
+}
+
+.BoxedAttribute {
+	width: 50px;
+	height: fit-children;
+	flow-children: down;
+	margin-left: 1px;
+	margin-right: 1px;
+	margin-bottom: 10px;
+}
+
+.BoxedAttributeIcon 
+{
+	width: 40px;
+	height: 40px;
+	horizontal-align: center;
+	margin-right: 8px;
+}
+
+.BoxedAttribute #AttributeLabel {
+	font-size: 12px;
+}
+
+.BoxedAttributeLabel
+{
+	font-size: 12px;
+	horizontal-align: center;
+}
+
+.SwitchPageButtons {
+	horizontal-align: center;
+	flow-children: right;
+	margin-bottom: 4px;
+}
+
+.InventoryButton {
+	width: fit-children;
+	height: 24px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	border-radius: 5px;
+	border: 1px solid grey;
+	vertical-align: center;
+	margin-right: 10px;
+	padding-right: 10px; 
+	padding-left: 10px;
+}
+
+.InventoryButton.Normal {
+	height: 50px;
+}
+
+.InventoryButton.is_pressed  Label {
+	color: grey;
+}
+
+.InventoryButton:hover {
+	opacity: 0.5;
+}
+
+.InventoryButton Label {
+	color: white;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 16px;
+}
+#HeroModelContainer
+{
+    width: 100%;
+    height: 100%;
+}
+
+.HeroModel {
+	width: 100%;
+	height: 480px;
+	margin-top: -20px;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.StatIcon
+{
+	width: 24px;
+	height: 24px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+	margin-right: 3px;
+	visibility: collapse;
+}
+
+#StrengthIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_str_png.vtex");
+    brightness: 1.3;
+	width: 32px;
+	height: 32px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#AgilityIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_agi_png.vtex");
+    brightness: 1.6;
+	width: 32px;
+	height: 32px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#IntelligenceIcon
+{
+	background-image: url("s2r://panorama/images/hud/pip_int_png.vtex");
+    brightness: 1.3;
+	width: 32px;
+	height: 32px;
+	background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#ConflictDialogPanel 
+{
+	width: 620px; 
+	min-height: 350px;
+	height: fit-children;
+	border: 1px solid gray;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	border-radius: 4px;
+	flow-children: down;
+	transform-origin: 0% 0%;
+	color: red;
+	horizontal-align: center;
+	vertical-align: center;
+	visibility: collapse;
+}
+
+#ConflictDialogPanel .ItemPanel
+{
+	width: 100%;
+	height: fit-children;
+	flow-children: right;
+}
+
+#ConflictDialogPanel .ItemPanel .Item
+{
+	width: 250px;
+	height: fit-children;
+	flow-children: down;
+	margin: 5px;
+	margin-left: 35px;
+}
+#ConflictDialogPanel .ItemPanel .Item .ItemTooltipDescription .ItemTooltipLabel
+{
+	min-height: 140px;
+}
+
+#ConflictDialogPanel .NewLabel 
+{
+	color: white;
+	vertical-align: center;
+	text-align: center;
+	height: 30px;
+	font-size: 18px;
+	margin-left: 40px;
+	margin-top: 20px;
+	padding-top: 5px;
+	font-family: platformfont;
+	font-weight: bold;
+	width: 240px;
+}
+
+#ConflictDialogPanel .OldLabel 
+{
+	color: white;
+	vertical-align: center;
+	text-align: center;
+	height: 30px;
+	width: 240px;
+	padding-top: 5px;
+	font-size: 18px;
+	margin-left: 50px;
+	margin-top: 20px;
+	font-family: platformfont;
+	font-weight: bold;
+}
+
+.OldNewLabelsContainer 
+{
+	flow-children: right;
+}
+
+#npc_dota_hero_axe, #npc_dota_hero_underlord, #npc_dota_hero_mars, #npc_dota_hero_doom_bringer,
+#npc_dota_hero_phantom_assassin, #npc_dota_hero_juggernaut, #npc_dota_hero_drow_ranger, #npc_dota_hero_windrunner,
+#npc_dota_hero_silencer, #npc_dota_hero_enchantress, #npc_dota_hero_crystal_maiden, #npc_dota_hero_invoker
+{
+	visibility: collapse;
+}

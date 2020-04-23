@@ -1,0 +1,148 @@
+.Root {
+	width: 100%;
+	height: 100%;
+}
+
+.DebuffListRoot
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 110px;
+	margin-left: 630px;
+	width: 495px; /* 55 per debuff */
+	height: 218px;
+	transform: rotateX(180deg);
+}
+
+.BuffListRoot
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	flow-children: right;
+	margin-bottom: 110px;
+	margin-left: -260px;
+	width: 390px; /* 55 per buff */
+	height: 218px;
+	transform: rotateX(180deg);
+}
+
+#debuffs_list
+{
+	flow-children: right-wrap;
+	height: 100%;
+	width: 100%;
+}
+
+#buffs_list
+{
+	flow-children: right-wrap;
+	height: 100%;
+	width: 100%;
+}
+
+.BuffRoot
+{
+	margin: 3px;
+	border-radius: 4px;
+	transform: rotateX(180deg);
+	width: 46px;
+}
+
+.no_buff.BuffRoot
+{
+	visibility: collapse;
+}
+
+#BuffFrame
+{
+	padding: 1px;
+}
+
+#BuffBorder
+{
+	width: 100%;
+	height: 100%;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #00ff22 ), to( #056625 ) );
+	clip: radial(50% 50%, 0deg, 360deg);
+}
+
+.is_debuff
+{
+	/*
+		change in buff_list.js. Idk why dota ignore that.
+	*/
+}
+
+#StackCount
+{
+	text-shadow: 0px 0px 6px 6 #000000;
+	margin: 2px;
+	vertical-align: bottom;
+	horizontal-align: right;
+	font-size: 18px;
+	font-family: Goudy Trajan Medium;
+	color: white;
+	visibility: collapse;
+	text-overflow: shrink;
+	text-align: center;
+	horizontal-align: right;
+}
+
+.has_stacks #StackCount
+{
+	visibility: visible;
+}
+
+#BuffImage
+{
+	width: 40px;
+	height: 40px;
+}
+
+#AbilityImage,
+#ItemImage,
+#BuffFrame,
+#AbilityImagePanel
+{
+	border-top:		2px solid #000000CC;
+	border-bottom:	2px solid #FFFFFF22;
+	border-left:	2px solid #000000CC;
+	border-right:	2px solid #FFFFFF22;
+}
+
+#BuffFrame
+{
+	border-top:		2px solid #FFFFFF22;
+	border-bottom:	2px solid #000000CC;
+	border-left:	2px solid #FFFFFF22;
+	border-right:	2px solid #000000CC;
+}
+
+#AbilityImage
+{
+	width: 100%;
+	height: 100%;
+}
+
+#AbilityImagePanel
+{
+	width: 100%;
+	height: 100%;
+	visibility: collapse;
+}
+
+.item_buff #AbilityImage
+{
+	visibility: collapse;
+}
+
+#ItemImage
+{
+	width: 100%;
+	height: 100%;
+}
+
+.ability_buff #ItemImage
+{
+	visibility: collapse;
+}

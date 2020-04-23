@@ -1,0 +1,289 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/windows/basic_window.css" />
+		<include src="file://{resources}/styles/windows/inventory_window.css" />
+		<include src="file://{resources}/styles/windows/item_tooltip.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/windows/inventory.js" />
+		<include src="file://{resources}/scripts/windows/basic_window.js" />
+	</scripts>
+	<Panel class="Root" hittest="false">
+		<Panel id="MainWindow" class="Window" style="width: 800px; height: 770px; visibility: collapse;">
+			<!--<Panel class="WindowHeader" style="horizontal-align: left;">
+					<Image class="WindowIcon" src="file://{images}/custom_game/hud/inventory.png" />
+					<Label class="WindowName" text="Inventory" />
+			</Panel> -->
+			<Panel class="WindowContent">
+				<Panel class="HeroContainer">
+					<Panel class="HeroItems">
+						<Panel id="HeroModelContainer" />
+						<Panel id="LeftItemSlots" class="LeftItemSlots">
+							<Panel id="InventoryEquippedSlot0" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(0)" onmouseover="ShowEquippedItemTooltip(0)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage0" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_claymore"/>
+								<Label text="Main hand"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot1" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(1)" onmouseover="ShowEquippedItemTooltip(1)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage1" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_chainmail"/>
+								<Label text="Body"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot2" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(2)" onmouseover="ShowEquippedItemTooltip(2)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage2" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_inventory_legs_background"/>
+								<Label text="Legs"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot3" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(3)" onmouseover="ShowEquippedItemTooltip(3)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage3" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_boots"/>
+								<Label text="Boots"/>
+							</Panel>
+						</Panel>
+						<Panel id="RightItemSlots" class="RightItemSlots">
+							<Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)" onmouseover="ShowEquippedItemTooltip(5)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage5" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_poor_mans_shield"/>
+								<Label text="Off hand"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot6" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(6)" onmouseover="ShowEquippedItemTooltip(6)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage6" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_cloak"/>
+								<Label text="Cape"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot7" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(7)" onmouseover="ShowEquippedItemTooltip(7)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage7" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shivas_guard"/>
+								<Label text="Shoulders"/>
+							</Panel>
+							<Panel id="InventoryEquippedSlot8" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(8)" onmouseover="ShowEquippedItemTooltip(8)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage8" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_gloves"/>
+								<Label text="Gloves"/>
+							</Panel>
+						</Panel>
+						<Panel id="MiddleItemSlots" class="MiddleItemSlots">
+							<Panel id="InventoryEquippedSlot4" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(4)" onmouseover="ShowEquippedItemTooltip(4)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage4" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_helm_of_iron_will"/>
+								<Label text="Helmet"/>
+							</Panel>
+						</Panel>
+						<Panel id="MiddleItemSlotsFromBottom" class="MiddleItemSlots FromBottom">
+							<Panel class="LeftRings">
+								<Panel id="InventoryEquippedSlot9" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(9)" onmouseover="ShowEquippedItemTooltip(9)" onmouseout="HideItemTooltip()" showtooltip="false">
+									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage9" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_ring_of_protection"/>
+									<Label text="Ring1"/>
+								</Panel>
+							</Panel>
+							<Panel id="InventoryEquippedSlot10" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(10)" onmouseover="ShowEquippedItemTooltip(10)" onmouseout="HideItemTooltip()" showtooltip="false">
+								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage10" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_belt_of_strength"/>
+								<Label text="Belt"/>
+							</Panel>
+							<Panel class="RightRings">
+								<Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)" onmouseover="ShowEquippedItemTooltip(11)" onmouseout="HideItemTooltip()" showtooltip="false">
+									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage11" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shadow_amulet"/>
+									<Label text="Ring2"/>
+								</Panel>
+							</Panel>
+						</Panel>
+					</Panel>
+					<Panel class="HeroStats" style="padding-top: 30px;">
+						<Panel class="SwitchPageButtons">
+							<Panel id="Page0Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(0)">
+								<Label text ="I" />
+							</Panel>
+							<Panel id="Page1Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(1)">
+								<Label text ="II" />
+							</Panel>
+							<Panel id="Page2Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(2)">
+								<Label text ="III" />
+							</Panel>
+						</Panel>
+						<Panel class="HeroNameContainer">
+							<DOTAHeroImage id="HeroIcon" class="HeroIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="icon" />
+							<DOTAUserName id="HeroName" class="WindowText HeroName" steamid="local" />
+						</Panel>
+						<Panel id="Page0" class="HeroStatsPage">
+						<Label class="InventoryAttributeGrouplabel WindowText" text="#DOTA_Tooltip_Attributes" />
+						<Panel class="InventoryAttributeWithValue">
+							<Panel id="StrengthIcon" class="StrengthIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" style="margin-left: 0px; margin-bottom: 0px;" text="#DOTA_Tooltip_Strength" />
+							<Label id="StrengthLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel class="InventoryAttributeWithValue">
+							<Panel id="AgilityIcon" class="AgilityIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" style="margin-left: 0px; margin-bottom: 0px;" text="#DOTA_Tooltip_Agility" />
+							<Label id="AgilityLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel class="InventoryAttributeWithValue">
+							<Panel id="IntelligenceIcon" class="IntelligenceIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" style="margin-left: 0px; margin-bottom: 0px;" text="#DOTA_Tooltip_Intelligence" />
+							<Label id="IntelligenceLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Label class="InventoryAttributeGrouplabel WindowText" text="#DOTA_Tooltip_GeneralStats" />
+						<Panel class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/health.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Health" />
+							<Label id="HealthLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="Mana" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/mana.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Mana" />
+							<Label id="ManaLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="Level" class="InventoryAttributeWithValue">
+							<Panel id="IntelligenceIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HeroLevel" />
+							<Label id="LevelLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="CurrentXP" class="InventoryAttributeWithValue">
+							<Panel id="IntelligenceIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_CurrentXP" />
+							<Label id="CurrentXPLabel" class="WindowText InventoryAttributeValue" text="0/0" />
+						</Panel>
+						</Panel>
+						<Panel id="Page1" class="HeroStatsPage">
+						<Label class="InventoryAttributeGrouplabel WindowText" text="#DOTA_Tooltip_OffensiveStats" />
+						<Panel id="SpellDamage" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_SpellDamage', '#DOTA_Tooltip_SpellDamage_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/spelldamage.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_SpellDamage" />
+							<Label id="SpellDamageLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
+						<Panel id="Spellhaste" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_SpellHaste', '#DOTA_Tooltip_SpellHaste_Description')" onmouseout="DOTAHideTitleTextTooltip()">>
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/spellhaste.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_SpellHaste" />
+							<Label id="SpellhasteLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
+						<Panel id="AttackRange" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_attack_range_psd.vtex" style="wash-color: grey;"/>
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_AttackRange" />
+							<Label id="AttackRangeLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="AttackSpeed" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_attack_speed2_psd.vtex" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_AttackSpeed" />
+							<Label id="AttackSpeedLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="Attack Damage" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_AttackDamage" />
+							<Label id="AttackDamageLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="MoveSpeed" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_MoveSpeed" />
+							<Label id="MoveSpeedLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="ManaRegen" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/manaregen.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_ManaRegen" />
+							<Label id="ManaRegenLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="OffensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsDamage', '#DOTA_Tooltip_ElementsDamage_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
+						</Panel>
+						<Panel id="Page2" class="HeroStatsPage">
+						<Label class="InventoryAttributeGrouplabel WindowText" text="#DOTA_Tooltip_DefensiveStats" />
+						<Panel id="PhysArmor" class="InventoryAttributeWithValue">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Armor" />
+							<Label id="PhysArmorLabel" class="WindowText InventoryAttributeValue" text="0 (0%)" />
+						</Panel>
+						<Panel id="HealthRegen" class="InventoryAttributeWithValue">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HealthRegen" />
+							<Label id="HealthRegenLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="PhysBlock" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_Block', '#DOTA_Tooltip_Block_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Block"/>
+							<Label id="PhysBlockLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="MagicBlock" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_MagicBlock', '#DOTA_Tooltip_MagicBlock_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_MagicBlock" />
+							<Label id="MagicBlockLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>	
+						<Panel id="DamageReduction" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_DamageReduction', '#DOTA_Tooltip_DamageReduction_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DamageReduction" />
+							<Label id="DamageReductionLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>	
+						<Panel id="DefensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsProtection', '#DOTA_Tooltip_ElementsProtection_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel id="InventoryContainer" class="InventoryContainer"/>
+			</Panel>
+			<Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+		</Panel>
+		<Panel id="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+			<Panel class="ItemTooltipHeader">
+				<Panel>
+					<DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
+				</Panel>
+				<Panel class="ItemTooltipName">
+					<Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+				</Panel>
+			</Panel>
+			<Panel class="ItemTooltipDescription">
+				<Panel class="ItemTooltipInfoContainer">
+					<Label id="ItemTooltipRarityLabel" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
+					<Label id="ItemTooltipTypeLabel" html="true" class="ItemTooltipTypeLabel"  text="Ring" />
+				</Panel>
+				<Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8" />
+			</Panel>
+		</Panel>
+		<Panel id="ConflictDialogPanel">
+			<Panel class="OldNewLabelsContainer">
+				<Label text="#DOTA_Inventory_new_item" class="NewLabel" />
+				<Label text="#DOTA_Inventory_current_item" class="OldLabel" />
+			</Panel>
+			<Panel class="ItemPanel">
+				<Panel class="Item">
+					<Panel class="ItemTooltipHeader">
+						<Panel>
+							<DOTAItemImage id="ItemTooltipImage1" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
+						</Panel>
+						<Panel class="ItemTooltipName">
+							<Label id="ItemTooltipNameLabel1" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+						</Panel>
+					</Panel>
+					<Panel class="ItemTooltipDescription">
+						<Panel class="ItemTooltipInfoContainer">
+							<Label id="ItemTooltipRarityLabel1" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
+							<Label id="ItemTooltipTypeLabel1" html="true" class="ItemTooltipTypeLabel" text="Ring" />
+						</Panel>
+						<Label id="ItemTooltipLabel1" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8" />
+					</Panel>
+				</Panel>
+				<Panel class="Item">
+					<Panel class="ItemTooltipHeader">
+						<Panel>
+							<DOTAItemImage id="ItemTooltipImage2" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
+						</Panel>
+						<Panel class="ItemTooltipName">
+							<Label id="ItemTooltipNameLabel2" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+						</Panel>
+					</Panel>
+					<Panel class="ItemTooltipDescription">
+						<Panel class="ItemTooltipInfoContainer">
+							<Label id="ItemTooltipRarityLabel2" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
+							<Label id="ItemTooltipTypeLabel2" html="true" class="ItemTooltipTypeLabel" text="Ring" />
+						</Panel>
+						<Label id="ItemTooltipLabel2" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8\nVery looooooooooooooong123\nVery looooooooooooooong123" />
+					</Panel>
+				</Panel>
+			</Panel>
+			<Panel styte="flow-children: right; width: 100%; height: 150px;">
+				<Panel class="InventoryButton Normal" style="margin-left: 100px; margin-bottom: 30px;" onactivate="OnInventoryChangeEquippedItemClicked()">
+					<Label text ="#DOTA_Inventory_btn_replace" />
+				</Panel>
+				<Panel class="InventoryButton Normal" style="margin-left: 400px; margin-bottom: 30px;" onactivate="OnInventoryKeepBothClicked()">
+					<Label text ="#DOTA_Inventory_btn_keep_both" />
+				</Panel>
+			</Panel>
+		</Panel>
+		<!-- weird hack to make them auto recompile -->
+		<Panel style="visibility: collapse;" >
+		<Image src="file://{images}/custom_game/hud/fire_element.png" />
+		<Image src="file://{images}/custom_game/hud/inferno_element.png" />
+		<Image src="file://{images}/custom_game/hud/frost_element.png" />
+		<Image src="file://{images}/custom_game/hud/earth_element.png" />
+		<Image src="file://{images}/custom_game/hud/nature_element.png" />
+		<Image src="file://{images}/custom_game/hud/holy_element.png" />
+		<Image src="file://{images}/custom_game/hud/void_element.png" />
+		</Panel>
+	</Panel>
+</root>

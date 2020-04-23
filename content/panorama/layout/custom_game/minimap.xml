@@ -1,0 +1,15 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/minimap.css" />
+		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
+		<include src="s2r://panorama/styles/hudstyles.vcss_c" />
+		<include src="s2r://panorama/styles/hud/hud_reborn.vcss_c" />
+		<include src="s2r://panorama/styles/custom_ui.vcss_c" />
+		<include src="s2r://panorama/styles/hud/dota_hud_stat_branch.vcss_c" />		
+		<include src="s2r://panorama/styles/hud/dota_hud_ability_panel.vcss_c" />	
+	</styles>
+<Panel class="MinimapRoot" hittest='true' hittestchildren='true' maptexture="materials/overviews/titan_tga_245bd277.vtex">
+	<DOTAHUDOverlayMap id="OverlayMap" hittest="true" hittestchildren="true" class="Minimap" mapscale="1" maptexture="materials/overviews/titan_tga_245bd277.vtex" mapscroll="true"/>
+	<!--<DOTAMinimap id="OverlayMap" maptexture="materials/overviews/titan_tga_245bd277.vtex" mapscroll="false" texture="materials/overviews/titan_tga_245bd277.vtex" map="materials/overviews/titan_tga_245bd277.vtex"/>-->
+</Panel>
+</root>

@@ -1,0 +1,171 @@
+"DOTAUnits"
+{
+	"npc_creep_lycan_call_wolf"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/heroes/lycan/summon_wolves.vmdl"	// Model.
+		"BaseClass"					"npc_dota_creature"
+		"SoundSet"					"Hero_Lycan.SummonWolves"
+		"Level"						"0"
+		"ModelScale" 				"1"
+		"IsNeutralUnitType"			"0"
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"lycan_double_strike"			// Ability 1
+		"Ability2"					"lycan_bleeding"			// Ability 2
+		"Ability3"					""			// Ability 3
+		"Ability4"					""			// Ability 4
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"			// Physical protection.
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"1"		// Damage range min.
+		"AttackDamageMax"			"1"		// Damage range max.
+		"AttackRate"				"1.0"		// Speed of attack.
+		"AttackAnimationPoint"		"0.3"		// Normalized time in animation cycle to attack.
+		"AttackAcquisitionRange"	"800"		// Range within a target can be acquired.
+		"AttackRange"				"150"		// Range within a target can be attacked.
+		"ProjectileModel"			"" // Particle system model for projectile.
+		"ProjectileSpeed"			"0"		// Speed of projectile.
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"45"
+		"HealthBarOffset"			"190"
+		// Bounty
+		//----------------------------------------------------------------
+		"BountyXP"					"0"		// Experience earn.
+		"BountyGoldMin"				"0"		// Gold earned min.
+		"BountyGoldMax"				"0"		// Gold earned max.
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"350"		// Speed.
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"1000"		// Base health.
+		"StatusHealthRegen"			"0"		// Health regeneration rate.
+		"StatusMana"				"0"		// Base mana.
+		"StatusManaRegen"			"0"		// Mana regeneration rate.
+
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"		// Range of vision during day light.
+		"VisionNighttimeRange"		"800"		// Range of vision at night time.
+	}
+	"npc_creep_lycan_companion_wolf"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/heroes/lycan/summon_wolves.vmdl"	// Model.
+		"BaseClass"					"npc_dota_creature"
+		"SoundSet"					"Hero_Lycan.SummonWolves"
+		"Level"						"0"
+		"ModelScale" 					"1"
+		"IsNeutralUnitType"			"0"
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"lycan_double_strike"			// Ability 1
+		"Ability2"					"lycan_bleeding"			// Ability 2
+		"Ability3"					""			// Ability 3
+		"Ability4"					""			// Ability 4
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"			// Physical protection.
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"1"		// Damage range min.
+		"AttackDamageMax"			"1"		// Damage range max.
+		"AttackRate"				"1.0"		// Speed of attack.
+		"AttackAnimationPoint"		"0.3"		// Normalized time in animation cycle to attack.
+		"AttackAcquisitionRange"	"800"		// Range within a target can be acquired.
+		"AttackRange"				"150"		// Range within a target can be attacked.
+		"ProjectileModel"			"" // Particle system model for projectile.
+		"ProjectileSpeed"			"0"		// Speed of projectile.
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"45"
+		"HealthBarOffset"			"190"
+		// Bounty
+		//----------------------------------------------------------------
+		"BountyXP"					"0"		// Experience earn.
+		"BountyGoldMin"				"0"		// Gold earned min.
+		"BountyGoldMax"				"0"		// Gold earned max.
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"350"		// Speed.
+		"MovementTurnRate"			"1"
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"1000"		// Base health.
+		"StatusHealthRegen"			"0"		// Health regeneration rate.
+		"StatusMana"				"0"		// Base mana.
+		"StatusManaRegen"			"0"		// Mana regeneration rate.
+
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"		// Range of vision during day light.
+		"VisionNighttimeRange"		"800"		// Range of vision at night time.
+	}
+	"npc_creep_lycan_cursed_wolf"
+    	{
+    		// General
+    		//----------------------------------------------------------------
+    		"Model"						"models/items/enigma/eidolon/tentacular_conqueror_tentacular_conqueror_eidolons/tentacular_conqueror_tentacular_conqueror_eidolons.vmdl"	// Model.
+    		"BaseClass"					"npc_dota_creature"
+    		"SoundSet"					"Hero_Lycan.SummonWolves"
+    		"Level"						"1"
+    		"ModelScale" 					"1.5"
+    		"IsNeutralUnitType"			"0"
+    		// Abilities
+    		//----------------------------------------------------------------
+    		"Ability1"					"Curse bite"			// Ability 1
+    		"Ability2"					""			// Ability 2
+    		"Ability3"					""			// Ability 3
+    		"Ability4"					""			// Ability 4
+    		// Armor
+    		//----------------------------------------------------------------
+    		"ArmorPhysical"				"0"			// Physical protection.
+
+    		// Attack
+    		//----------------------------------------------------------------
+    		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+    		"AttackDamageMin"			"1"		// Damage range min.
+    		"AttackDamageMax"			"1"		// Damage range max.
+    		"AttackRate"				"1"		// Speed of attack.
+    		"AttackAnimationPoint"		"0.0"		// Normalized time in animation cycle to attack.
+    		"AttackAcquisitionRange"	"2000"		// Range within a target can be acquired.
+    		"AttackRange"				"150"		// Range within a target can be attacked.
+    		"ProjectileModel"			""
+    		"ProjectileSpeed"			"900"		// Speed of projectile.
+    		// Bounds
+    		//----------------------------------------------------------------
+    		"RingRadius"				"45"
+    		"HealthBarOffset"			"190"
+    		// Bounty
+    		//----------------------------------------------------------------
+    		"BountyXP"					"0"		// Experience earn.
+    		"BountyGoldMin"				"0"		// Gold earned min.
+    		"BountyGoldMax"				"0"		// Gold earned max.
+    		// Movement
+    		//----------------------------------------------------------------
+    		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+    		"MovementSpeed"				"200"		// Speed.
+    		// Status
+    		//----------------------------------------------------------------
+    		"StatusHealth"				"1"		// Base health.
+    		"StatusHealthRegen"			"0"		// Health regeneration rate.
+    		"StatusMana"				"0"		// Base mana.
+    		"StatusManaRegen"			"0"		// Mana regeneration rate.
+
+    		// Vision
+    		//----------------------------------------------------------------
+    		"VisionDaytimeRange"		"2000"		// Range of vision during day light.
+    		"VisionNighttimeRange"		"2000"		// Range of vision at night time.
+    	}
+}

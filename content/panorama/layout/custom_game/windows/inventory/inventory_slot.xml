@@ -1,0 +1,45 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/windows/inventory_window.css" />
+	</styles>
+	<script>	
+		function HideItemTooltip() {
+			var thisSlot = $.GetContextPanel();
+			var thisSlotId = thisSlot.id.replace("InventorySlot", "");
+			thisSlot.Data().HideItemTooltip(thisSlotId);
+		}
+
+		function ShowItemTooltip() {
+			var thisSlot = $.GetContextPanel();
+			var thisSlotId = thisSlot.id.replace("InventorySlot", "");
+			thisSlot.Data().ShowItemTooltip(thisSlotId);
+		}
+		
+		function OnDragStart( panelId, dragCallbacks ) {
+			var thisSlot = $.GetContextPanel();
+			thisSlot.Data().OnDragStart(panelId, dragCallbacks);
+			return true;
+		} 
+
+		function OnDragEnd( panelId, draggedPanel ) {
+			var thisSlot = $.GetContextPanel();
+			thisSlot.Data().OnDragEnd(panelId, draggedPanel);
+			return true; 
+		} 
+		
+		function OnRightClickOnSlot() {
+			var thisSlot = $.GetContextPanel();
+			var thisSlotId = thisSlot.id.replace("InventorySlot", "");
+			thisSlot.Data().OnRightClickOnInventorySlot(thisSlotId);
+		}
+		
+		(function() {
+			var thisSlot = $.GetContextPanel();
+			$.RegisterEventHandler( 'DragStart', thisSlot, OnDragStart );
+			$.RegisterEventHandler( 'DragEnd', thisSlot, OnDragEnd);
+		})();
+	</script>
+	<Panel class="InventorySlot" onmouseover="ShowItemTooltip()" onmouseout="HideItemTooltip()" showtooltip="false" oncontextmenu="OnRightClickOnSlot()" draggable="true">
+		<DOTAItemImage showtooltip="false" hittest="false" id="ItemImage" itemname="" scaling="stretch-to-fit-preserve-aspect"/>
+	</Panel>
+</root>

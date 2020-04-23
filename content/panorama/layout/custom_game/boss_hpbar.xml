@@ -1,0 +1,60 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/dotastyles.css"/>
+        <include src="file://{resources}/styles/custom_game/boss_hpbar.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/boss_hpbar.js"/>
+    </scripts>
+    <Panel class="Root" hittest="false">
+        <Panel class="BossPanel">
+            <Panel class="BossPortrait" onactivate="OnPortraitClick()">
+                <DOTAScenePanel id="BossPortraitImage" renderdeferred="false" class="OverviewHeroRender" unit=""
+                                drawbackground="1" allowrotation="false" antialias="true"
+                                activity-modifier="PostGameIdle" particleonly="false"/>
+                <Panel id="BossStats" class="BossStats">
+                    <Panel class="BossStatsLabel">
+                        <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex"/>
+                        <Label id="BossAttackDamage" text="0" />
+                    </Panel>
+                    <Panel class="BossStatsLabel">
+                        <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex"/>
+                        <Label id="BossArmor" text="0" />
+                    </Panel>
+                    <Panel class="BossStatsLabel">
+                        <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex"/>
+                        <Label id="BossElementArmor" text="0" />
+                    </Panel>
+                    <Panel class="BossStatsLabel">
+                        <Image src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex"/>
+                        <Label id="BossMoveSpeed" text="0" />
+                    </Panel>
+                </Panel>
+            </Panel>
+            <Panel class="BossNamePanel">
+                <Label id="BossName" text="Fengu, The Mad Summoner"/>
+            </Panel>
+            <Panel class="BossHpBarPanel" onactivate="OnHPBarClick()">
+                <Panel id="BossHpBar" class="BossHpBar" style="width: 47%;">
+                    <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false"
+                                    rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                </Panel>
+                <Label id="BossHpBarValue" class="BossHpMpBarValue" text="2144354345654 / 45435345345345"/>
+                <Label id="BossHpBarRegValue" class="BossHpMpBarRegValue" text="+87941.4"/>
+            </Panel>
+            <Panel class="BossMpBarPanel" onactivate="OnMPBarClick()">
+                <Panel id="BossMpBar" class="BossMpBar" style="width: 41%;">
+                    <DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false"
+                                    rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                </Panel>
+                <Label id="BossMpBarValue" class="BossHpMpBarValue" text="3453455 / 8234567"/>
+                <Label id="BossMpBarRegValue" class="BossHpMpBarRegValue" text="+14341.2"/>
+            </Panel>
+            <Panel id="BossAbilitiesPanel" class="BossAbilitiesPanel"/>
+            <Panel id="BossModifiersPanel" class="BossModifiersPanel">
+                <Panel id="BossBuffPanel" class="buff_list"/>
+                <Panel id="BossDebuffPanel" class="debuff_list"/>
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

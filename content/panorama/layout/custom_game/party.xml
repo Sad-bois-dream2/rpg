@@ -1,0 +1,10 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/dotastyles.css" />
+		<include src="file://{resources}/styles/custom_game/party.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/party.js" />
+	</scripts>
+	<Panel class="RootPanel" />
+</root>
