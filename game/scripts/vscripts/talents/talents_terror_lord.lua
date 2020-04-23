@@ -1863,6 +1863,69 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_46"] = LUA_MODIFIER_MOTION_NONE
 
+-- modifier_npc_dota_hero_abyssal_underlord_talent_47 (Ashes of Terror)
+modifier_npc_dota_hero_abyssal_underlord_talent_47 = modifier_npc_dota_hero_abyssal_underlord_talent_47 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_47:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_47:OnTakeDamage(damageTable)
+    local casterHealth = damageTable.victim:GetHealth() - damageTable.damage
+    if (damageTable.damage > 0 and casterHealth < 1 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47") and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47_cd")) then
+        damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_47_cd", { Duration = 120 })
+        damageTable.damage = 0
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_47"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_npc_dota_hero_abyssal_underlord_talent_47_cd = modifier_npc_dota_hero_abyssal_underlord_talent_47_cd or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_47.png"
+    end,
+})
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_47_cd"] = LUA_MODIFIER_MOTION_NONE
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_terror_lord", MotionController)
@@ -1871,7 +1934,8 @@ end
 if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_inferno_impulse, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_41, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_42, 'OnPostTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_43, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_42, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_43, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_47, 'OnTakeDamage'))
 end
