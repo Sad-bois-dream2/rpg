@@ -1897,6 +1897,30 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_47:OnTakeDamage(damageT
     if (damageTable.damage > 0 and casterHealth < 1 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47") and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47_cd")) then
         damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_47_cd", { Duration = 120 })
         damageTable.damage = 0
+        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/talents/ashes_of_terror/ashes_of_terror.vpcf", PATTACH_ABSORIGIN, damageTable.victim)
+        Timers:CreateTimer(2, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+        local enemies = FindUnitsInRadius(damageTable.victim:GetTeam(),
+                damageTable.victim:GetAbsOrigin(),
+                nil,
+                800,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = Units:GetAttackDamage(damageTable.victim) * 3
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = damageTable.victim
+            damageTable.target = enemy
+            damageTable.ability = nil
+            damageTable.damage = damage
+            damageTable.infernodmg = true
+            GameMode:DamageUnit(damageTable)
+        end
         return damageTable
     end
 end

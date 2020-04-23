@@ -15,8 +15,11 @@ function Precache(context)
       ]]
 
     DebugPrint("[BAREBONES] Performing pre-load precache")
-    -- Light cardinal talents
+    -- Light Cardinal talents
     PrecacheResource("particle_folder", "particles/units/light_cardinal/talents/divine_cloak", context)
+    -- Terror Lord talents
+    PrecacheResource("particle_folder", "particles/units/terror_lord/talents/vengeance", context)
+    PrecacheResource("particle_folder", "particles/units/terror_lord/talents/ashes_of_terror", context)
 end
 
 -- Create the game mode when we activate
