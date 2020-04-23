@@ -12,8 +12,6 @@
         "AbilityTextureName"			"ursa_rend"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"AbilitySound"					"Hero_OgreMagi.Bloodlust.Target"
-		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
 		"MaxLevel"						"3"
 
 		// Time
@@ -43,6 +41,7 @@
 				"precache"
         		{
         			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+        			"soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
         			"particle" "particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf"
         		}
 	}
@@ -58,7 +57,6 @@
         "AbilityTextureName"			"ursa_fury"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
-   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
    		"MaxLevel"						"3"
 
    		// Time
@@ -87,7 +85,7 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"movespeed_bonus"			"25 50 100"
+   				"movespeed_bonus"			"50 100 300"
    			}
    		}
 		"precache"
@@ -107,7 +105,6 @@
         "AbilityTextureName"			"ursa_roar"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
    		"MaxLevel"						"3"
 
    		// Casting
@@ -153,8 +150,6 @@
         "AbilityTextureName"			"ursa_swift"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"AbilitySound"					"Hero_OgreMagi.Bloodlust.Target"
-		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
 		"MaxLevel"						"3"
 
 		// Time
@@ -183,13 +178,13 @@
                			"04"
                			{
                				"var_type"					"FIELD_FLOAT"
-               				"movespeed_bonus"			"25 50 100"
+               				"movespeed_bonus"			"50 100 300"
                			}
 		}
 				"precache"
         		{
         			"soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
-        		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_ursa.vsndevts"
+
         		}
     }
 
@@ -205,7 +200,6 @@
         "AbilityTextureName"			"ursa_slam"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
    		"MaxLevel"						"3"
 
    		// Time
@@ -276,17 +270,16 @@
         "AbilityTextureName"			"ursa_hunt"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
-   		"AbilitySound"					"Hero_Ogre_Magi.Bloodlust"
    		"MaxLevel"						"3"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"100"
+   		"AbilityCooldown"				"30"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-		"AbilityCastRange"				"0.3"
+        "AbilityCastPoint"				"0.2"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -315,9 +308,12 @@
    		}
    		"precache"
         		{
+        		    "soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
         			"soundfile"	"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
         			"particle"	"particles/status_fx/status_effect_bloodrage.vpcf"
         			"particle"	"particles/generic_gameplay/generic_lifesteal.vpcf"
+        			"particle"  ""particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf""
+        		    "particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
         		}
 
 	}
