@@ -1950,6 +1950,122 @@ modifier_npc_dota_hero_abyssal_underlord_talent_47_cd = modifier_npc_dota_hero_a
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_47_cd"] = LUA_MODIFIER_MOTION_NONE
 
+-- modifier_npc_dota_hero_abyssal_underlord_talent_48 (Remnants of Corruption)
+modifier_npc_dota_hero_abyssal_underlord_talent_48 = modifier_npc_dota_hero_abyssal_underlord_talent_48 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_48:OnTakeDamage(damageTable)
+    if (damageTable.damage > 0 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48")) then
+        local casterCurrentHealth = damageTable.victim:GetHealth()
+        local casterHealth = (casterCurrentHealth - damageTable.damage) / damageTable.victim:GetMaxHealth()
+        if (casterHealth < 0.1 and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48_cd")) then
+            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_48_buff", { Duration = 7 })
+            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_48_cd", { Duration = 150 })
+        end
+        if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48_buff")) then
+            casterCurrentHealth = math.max(1, casterCurrentHealth - damageTable.damageTable)
+            damageTable.victim:SetHealth(casterCurrentHealth)
+            if (casterHealth == 1) then
+                damageTable.damage = 0
+                return damageTable
+            end
+        end
+        if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48_buff")) then
+            local healTable = {}
+            healTable.caster = damageTable.attacker
+            healTable.target = damageTable.attacker
+            healTable.ability = nil
+            healTable.heal = damageTable.damage
+            GameMode:HealUnit(healTable)
+            local pidx = ParticleManager:CreateParticle("particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.attacker)
+            Timers:CreateTimer(2, function()
+                ParticleManager:DestroyParticle(pidx, false)
+                ParticleManager:ReleaseParticleIndex(pidx)
+            end)
+        end
+    end
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_npc_dota_hero_abyssal_underlord_talent_48_buff = modifier_npc_dota_hero_abyssal_underlord_talent_48_buff or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_48.png"
+    end
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_48_buff:GetMoveSpeedPercentBonus()
+    return 0.3
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_48_buff:GetAttackSpeedPercentBonus()
+    return 1.0
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_npc_dota_hero_abyssal_underlord_talent_48_cd = modifier_npc_dota_hero_abyssal_underlord_talent_48_cd or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_48.png"
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48_cd"] = LUA_MODIFIER_MOTION_NONE
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_terror_lord", MotionController)
@@ -1962,4 +2078,5 @@ if (IsServer()) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_43, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_47, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_48, 'OnTakeDamage'))
 end
