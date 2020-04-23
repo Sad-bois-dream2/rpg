@@ -881,6 +881,9 @@ modifier_terror_lord_aura_of_seals_enemy_aura_debuff = modifier_terror_lord_aura
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetTexture = function(self)
+        return terror_lord_aura_of_seals:GetAbilityTextureName()
     end
 })
 
@@ -1721,6 +1724,109 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky:GetMoveSpeedP
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky"] = LUA_MODIFIER_MOTION_NONE
+
+-- modifier_npc_dota_hero_abyssal_underlord_talent_45 (Aura of Destruction)
+modifier_npc_dota_hero_abyssal_underlord_talent_45 = modifier_npc_dota_hero_abyssal_underlord_talent_45 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.radius or 0
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff"
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_45"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff = modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_45.png"
+    end,
+})
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.elementarmor_reduction = 0.1
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetFireProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetFrostProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetEarthProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetVoidProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetHolyProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetNatureProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetInfernoProtectionBonus()
+    return self.elementarmor_reduction or 0
+end
+
+LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
