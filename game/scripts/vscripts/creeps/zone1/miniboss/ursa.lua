@@ -3,10 +3,10 @@
 ---------------------
 ursa_rend = class({
     GetAbilityTextureName = function(self)
-        return "ursa_rend" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_rend"
     end,
     GetIntrinsicModifierName = function(self)
-        return "modifier_ursa_rend" -- modifier name to add when unit get ability, even if ability have lvl0
+        return "modifier_ursa_rend"
     end,
 })
 
@@ -48,6 +48,7 @@ function modifier_ursa_rend:OnAttackLanded(keys)
     end
     if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
         keys.target:EmitSound("Hero_Slardar.Bash")
+        self.parent:EmitSound("ursa_ursa_overpower_05")
         self.ability:ApplyRend(keys.target, self.parent)
         local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
         self.ability:StartCooldown(abilityCooldown)
@@ -197,7 +198,7 @@ LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/miniboss/ursa.lua", LUA_MODI
 -- ability class
 ursa_fury = class({
     GetAbilityTextureName = function(self)
-        return "ursa_fury" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_fury"
     end,
 })
 
@@ -224,7 +225,7 @@ end
 -- ability class
 ursa_roar = class({
     GetAbilityTextureName = function(self)
-        return "ursa_roar" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_roar"
     end,
 })
 
@@ -242,7 +243,6 @@ function ursa_roar:OnSpellStart()
 
         -- Play cast sound
         caster:EmitSound("Hero_Ursa.Enrage")
-
        -- Find all nearby enemies
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
@@ -286,7 +286,7 @@ modifier_ursa_swift = modifier_ursa_swift or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function(sefl)
+    DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
 })
@@ -299,44 +299,74 @@ function modifier_ursa_swift:OnCreated()
     self.chance = self.ability:GetSpecialValueFor("chance")
 end
 
-function modifier_ursa_swift:OnAttackLanded(keys)
-    --proc and remove teleport buff from ursa
-    if (not IsServer()) then
-        return
-    end
-    local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
-    if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
-        --only apply if attack is the caster and proc
-        --roll for chance
-        if RollPercentage(self.chance) then
-            self.ability:StartCooldown(abilityCooldown)
-            if self.parent:HasModifier("modifier_ursa_hunt_buff_stats") then
-                self.ability:Applyfury(keys.attacker, self.parent)
-                else
-
-                self.ability:Blink()
-            end
-
-        end
-    end
-end
-
-
-
 
 LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_swift = class({
     GetAbilityTextureName = function(self)
-        return "ursa_swift" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_swift"
     end,
     GetIntrinsicModifierName = function(self)
-        return "modifier_ursa_swift" -- modifier name to add when unit get ability, even if ability have lvl0
+        return "modifier_ursa_swift"
     end,
 })
 
-function ursa_swift:Applyfury(attacker, parent)
+
+modifier_ursa_swift_phase = modifier_ursa_swift_phase or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+function modifier_ursa_swift_phase:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+
+function ursa_swift:ApplyPhase(parent)
+    -- "phase and flying after blink."
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = parent
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_ursa_swift_phase"
+    modifierTable.duration = 100
+    GameMode:ApplyBuff(modifierTable)
+
+end
+
+function modifier_ursa_swift_phase:CheckState()
+    --phase and fly
+    return {
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+        [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
+    }
+end
+
+
+
+function ursa_swift:ApplyFury(attacker, parent)
     -- "Fury proc instead of swift blink in hunt mode."
     local duration = self:GetSpecialValueFor("duration")
     local modifierTable = {}
@@ -373,19 +403,21 @@ function ursa_swift:Blink()
     -- Teleport
     local caster = self:GetCaster()
     local target = ursa_swift:FindTargetForBlink(caster)
-    --local sound_cast = "Hero_Antimage.Blink_in"
-    --caster:EmitSound(sound_cast)
+    local sound_cast = "Hero_Antimage.Blink_out"
+    caster:EmitSound(sound_cast)
 
     -- Blink
     local targetPosition = target:GetAbsOrigin()
     local vector = (targetPosition - caster:GetAbsOrigin())
-    local distance = vector:Length2D()
+    --local distance = vector:Length2D()
     local direction = vector:Normalized()
-    local blink_point = targetPosition + direction * (distance - 100)
+    local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
     caster:SetAbsOrigin(blink_point)
     Timers:CreateTimer(FrameTime(), function()
         FindClearSpaceForUnit(caster, blink_point, true)
     end)
+    sound_cast = "Hero_Antimage.Blink_in"
+    caster:EmitSound(sound_cast)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
     caster:PerformAttack(target, true, true, true, true, false, false, false)
@@ -396,6 +428,27 @@ function ursa_swift:Blink()
 
 end
 
+function modifier_ursa_swift:OnAttackLanded(keys)
+    --proc and remove teleport buff from ursa
+    if (not IsServer()) then
+        return
+    end
+    local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
+    if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
+        --only apply if attack is the caster and proc
+        --roll for chance
+        if RollPercentage(self.chance) then
+            self.ability:StartCooldown(abilityCooldown)
+            if self.parent:HasModifier("modifier_ursa_hunt_buff_stats") then
+                self.ability:ApplyFury(keys.attacker, self.parent)
+            else
+                self.ability:ApplyPhase(self.parent)
+                self.ability:Blink()
+            end
+
+        end
+    end
+end
 ---------------------
 -- ursa slam
 ---------------------
@@ -403,7 +456,7 @@ end
 -- ability class
 ursa_slam = class({
     GetAbilityTextureName = function(self)
-        return "ursa_slam" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_slam"
     end,
 })
 
@@ -485,7 +538,7 @@ function modifier_ursa_slam_slow:GetAttackSpeedBonus()
 end
 
 function modifier_ursa_slam_slow:GetMoveSpeedPercentBonus()
-    return self.as_slow
+    return self.ms_slow
 end
 
 function modifier_ursa_slam_slow:GetSpellHasteBonus()
@@ -597,7 +650,7 @@ LinkLuaModifier("modifier_ursa_hunt_random_taunt", "creeps/zone1/miniboss/ursa.l
 -- ability class
 ursa_hunt = class({
     GetAbilityTextureName = function(self)
-        return "ursa_hunt" -- used in game, *.txt one used in hero pick screen. Thats how is it
+        return "ursa_hunt"
     end
 })
 
@@ -631,6 +684,7 @@ function ursa_hunt:OnSpellStart()
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable) -- apply bloodrage
     EmitSoundOn("hero_bloodseeker.bloodRage", caster)
+    caster:EmitSound("ursa_ursa_overpower_03")
 end
 
 
