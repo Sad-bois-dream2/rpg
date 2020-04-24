@@ -383,26 +383,44 @@ end
 
 
 function ursa_swift:FindTargetForBlink(caster)
-    local heroes = HeroList:GetAllHeroes()-- counting totalheroes to check distance n runs from 1-5 totalheroes 1-5
+    -- Ability properties
+    -- Ability specials
+    local radius = self:GetSpecialValueFor("radius")
+    -- Find all nearby enemies
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
     local distanceToBoss = 0
     local latestDistance = 0
-    local jumpTarget = HeroList:GetHero(0)
+    local jumpTarget = caster--?????
     local casterPos = caster:GetAbsOrigin()
-    for i, hero in pairs(heroes) do
-        distanceToBoss = (casterPos - hero:GetAbsOrigin()):Length()
+    for _, enemy in pairs(enemies) do
+        -- find the farthest hero from the heroes in range
+        distanceToBoss = (casterPos - enemy:GetAbsOrigin()):Length()
         if distanceToBoss >= latestDistance then
             -- if new distance to boss higher than the max one replace the farthest hero
-            jumpTarget = hero
+            jumpTarget = enemy
             latestDistance = distanceToBoss
         end
     end
-    return jumpTarget
+    if(#enemies > 0) then
+        return jumpTarget
+    else
+        return nil
+
+    end
 end
 
 function ursa_swift:Blink()
     -- Teleport
     local caster = self:GetCaster()
-    local target = ursa_swift:FindTargetForBlink(caster)
+    local target = self:FindTargetForBlink(caster)
     local sound_cast = "Hero_Antimage.Blink_out"
     caster:EmitSound(sound_cast)
 
@@ -484,7 +502,7 @@ function ursa_slam:OnSpellStart()
         local earthshock_particle_fx = ParticleManager:CreateParticle(earthshock_particle, PATTACH_ABSORIGIN, self.caster)
         ParticleManager:SetParticleControl(earthshock_particle_fx, 0, self.caster:GetAbsOrigin())
         ParticleManager:SetParticleControl(earthshock_particle_fx, 1, Vector(1,1,1))
-        Timers:CreateTimer(1.0, function()
+        Timers:CreateTimer(6.0, function()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
@@ -662,20 +680,44 @@ function modifier_ursa_hunt_buff_stats:GetStatusEffectName()
     return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
 end
 
+function ursa_hunt:FindTauntTarget(caster)
+    local radius = self:GetSpecialValueFor("radius")
+    -- Find all nearby enemies
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local keys = {}
+    for k in pairs(enemies) do
+        table.insert(keys, k)
+    end
+    if (#enemies > 0) then
+        local tauntTarget = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
+        if(#enemies > 0) then
+            return tauntTarget
+        else
+            return nil
+        end
+    end
+
+end
 
 function ursa_hunt:OnSpellStart()
     local caster = self:GetCaster() --bloodrage caster
     local duration = self:GetSpecialValueFor("duration")
-    local totalheroes = HeroList:GetHeroCount() - 1 -- counting totalheroes n runs from 1-5 totalheroes 1-5
-    n = RandomInt(0, totalheroes) -- random one hero
-    local taunttarget = HeroList:GetHero(n) -- set as taunt target
+    local tauntTarget = self:FindTauntTarget(caster)
     local modifierTable = {}
     modifierTable.ability = self
-    modifierTable.target = taunttarget
+    modifierTable.target = tauntTarget
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_ursa_hunt_random_taunt"
     modifierTable.duration = duration
-    GameMode:ApplyBuff(modifierTable) --apply taunt buff
+    GameMode:ApplyDebuff(modifierTable) --apply taunt buff
     modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = caster
@@ -686,6 +728,5 @@ function ursa_hunt:OnSpellStart()
     EmitSoundOn("hero_bloodseeker.bloodRage", caster)
     caster:EmitSound("ursa_ursa_overpower_03")
 end
-
 
 

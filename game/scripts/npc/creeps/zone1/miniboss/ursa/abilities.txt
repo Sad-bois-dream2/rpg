@@ -165,21 +165,28 @@
 				"var_type"					"FIELD_FLOAT"
                 "chance"               "20 40 80"
             }
-               			"02"
-               			{
-               				"var_type"					"FIELD_FLOAT"
-               				"duration"				    "3 5 8"
-               			}
-               			"03"
-               			{
+            "02"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"duration"				    "3 5 8"
+            }
+            "03"
+        	{
                				"var_type"					"FIELD_FLOAT"
                				"attackspeed_bonus"	    	"100 300 500"
-               			}
-               			"04"
-               			{
+            }
+            "04"
+            {
                				"var_type"					"FIELD_FLOAT"
                				"movespeed_bonus"			"50 100 300"
-               			}
+            }
+            "05"
+            {
+               				"var_type"					"FIELD_FLOAT"
+               				"radius"			            "2000 2000 2000"
+            }
+
+
 		}
 				"precache"
         		{
@@ -225,7 +232,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"	    	    "0"
+   				"damage"	    	    "500 500 500"
    			}
 
    			"03"
@@ -304,6 +311,11 @@
     		{
     			"var_type"					"FIELD_FLOAT"
     			"health_heal_pct"			"10 13 16"
+    		}
+            "05"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"radius"			            "2000 2000 2000"
     		}
    		}
    		"precache"
