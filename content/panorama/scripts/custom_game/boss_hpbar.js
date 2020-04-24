@@ -183,8 +183,18 @@ function UpdateBuff( buffPanel, queryUnit, buffSerial )
 		stackCount.text = nNumStacks;
 	}
 	var buffTexture = Buffs.GetTexture( queryUnit, buffSerial );
-	if ( itemImage ) itemImage.itemname = buffTexture;
-	if ( abilityImage ) abilityImage.abilityname = buffTexture;
+	var abilityImagePanel = buffPanel.FindChildInLayoutFile( "AbilityImagePanel" );
+	var customIconIdx = buffTexture.indexOf(".png");
+	itemImage.itemname = buffTexture;
+	if(customIconIdx === -1) {
+        abilityImage.abilityname = buffTexture;
+	    abilityImagePanel.style.visibility = "collapse";
+	    abilityImage.style.visibility = "visible";
+	} else {
+	    abilityImagePanel.SetImage(buffTexture);
+	    abilityImagePanel.style.visibility = "visible";
+	    abilityImage.style.visibility = "collapse";
+	}
 	buffPanel.SetHasClass( "item_buff", false );
 	buffPanel.SetHasClass( "ability_buff", true );
 }
