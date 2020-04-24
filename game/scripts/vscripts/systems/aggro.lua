@@ -92,12 +92,12 @@ function Aggro:CalculateAggro(creep)
         newTarget = ignoreAggroTarget
     else
         for hero, aggro in pairs(creep.aggro.enemies) do
-            if (aggro > 0 and Aggro:IsValidTarget(creep, hero)) then
+            if (Aggro:IsValidTarget(creep, hero)) then
                 if (Aggro:HasTaunt(hero)) then
                     newTarget = hero
                     break
                 end
-                if (aggro > latestTargetAggro) then
+                if (aggro > 0 and aggro > latestTargetAggro) then
                     latestTargetAggro = aggro
                     newTarget = hero
                 end
@@ -226,13 +226,6 @@ end
 function modifier_aggro_system:OnIntervalThink()
     if IsServer() then
         Aggro:CalculateAggro(self.creep)
-        --[[local target_to_attack = Aggro:GetUnitCurrentTarget(self.creep)
-        if (target_to_attack) then
-            self.creep:MoveToTargetToAttack(target_to_attack)
-            print("Current target: " .. target_to_attack:GetUnitName() .. " with aggro " .. self.creep.aggro.enemies[target_to_attack:GetEntityIndex()])
-        else
-            print("No target to attack")
-        end --]]
     end
 end
 
