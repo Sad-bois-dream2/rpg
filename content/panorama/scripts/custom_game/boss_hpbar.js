@@ -45,6 +45,11 @@ function OnMPBarClick() {
 	}
 }
 
+function RenderBossModel(bossName) {
+    bossImage.RemoveAndDeleteChildren()
+    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "' onactivate='DOTAGlobalSceneFireEntityInput(BossPortraitScenePanel, " + bossName + ", SetAnimation, portrait)'/>");
+}
+
 function UpdateSelection() {
     var selectedCreep = Players.GetLocalPlayerPortraitUnit();
     if (Entities.GetTeamNumber(selectedCreep) != Players.GetTeam(localPlayerId)) {
@@ -59,7 +64,8 @@ function UpdateSelection() {
             bossAbilties[i].Data().cooldownPanel.SetHasClass("in_cooldown", false);
             bossAbilties[i].Data().ready = false;
         }
-		bossImage.SetUnit(Entities.GetUnitName(selectedCreep), "1", false);
+		//bossImage.SetUnit(Entities.GetUnitName(selectedCreep), "fuckyou", false);
+		RenderBossModel(Entities.GetUnitName(selectedCreep))
         var lastLegitIndex = 0;
         for (var i = 0; i < abiltiesCount; i++) {
             var ability = Entities.GetAbility(selectedCreep, i);

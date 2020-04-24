@@ -9,9 +9,7 @@
     <Panel class="Root" hittest="false">
         <Panel class="BossPanel">
             <Panel class="BossPortrait" onactivate="OnPortraitClick()">
-                <DOTAScenePanel id="BossPortraitImage" renderdeferred="false" class="OverviewHeroRender" unit=""
-                                drawbackground="1" allowrotation="false" antialias="true"
-                                activity-modifier="PostGameIdle" particleonly="false"/>
+                <Panel id="BossPortraitImage" />
                 <Panel id="BossStats" class="BossStats">
                     <Panel class="BossStatsLabel">
                         <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex"/>
