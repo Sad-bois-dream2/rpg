@@ -337,9 +337,6 @@ if (IsServer()) then
                 local abilityLevel = ability:GetLevel()
                 if (abilityLevel > 0) then
                     local reducedCooldown = ability:GetCooldownTimeRemaining()
-                    if (reducedCooldown == 0) then
-                        return
-                    end
                     if (args.isflat) then
                         reducedCooldown = math.max(0, reducedCooldown - reduction)
                     else
@@ -348,6 +345,9 @@ if (IsServer()) then
                         if (reducedCooldown < minCooldown) then
                             reducedCooldown = minCooldown
                         end
+                    end
+                    if (reducedCooldown == 0) then
+                        return
                     end
                     ability:EndCooldown()
                     ability:StartCooldown(reducedCooldown)
