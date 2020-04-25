@@ -336,16 +336,18 @@ if (IsServer()) then
             if (ability ~= nil) then
                 local abilityLevel = ability:GetLevel()
                 if (abilityLevel > 0) then
-                    local abilityCooldown = ability:GetCooldown(abilityLevel)
-                    local minCooldown = abilityCooldown * 0.5
                     local reducedCooldown = ability:GetCooldownTimeRemaining()
+                    if (reducedCooldown == 0) then
+                        return
+                    end
                     if (args.isflat) then
-                        reducedCooldown = reducedCooldown - reduction
+                        reducedCooldown = math.max(0, reducedCooldown - reduction)
                     else
                         reducedCooldown = reducedCooldown * reduction
-                    end
-                    if (reducedCooldown < minCooldown) then
-                        reducedCooldown = minCooldown
+                        local minCooldown = ability:GetCooldown(abilityLevel) * 0.5
+                        if (reducedCooldown < minCooldown) then
+                            reducedCooldown = minCooldown
+                        end
                     end
                     ability:EndCooldown()
                     ability:StartCooldown(reducedCooldown)
@@ -637,7 +639,7 @@ function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
     if (not IsServer()) then
         return
     end
-    if(keys.unit == self.unit) then
+    if (keys.unit == self.unit) then
         local cooldownTable = {}
         cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
         cooldownTable.ability = keys.ability:GetAbilityName()
