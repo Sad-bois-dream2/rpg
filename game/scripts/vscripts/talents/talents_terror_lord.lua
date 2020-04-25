@@ -103,7 +103,8 @@ function terror_lord_flame_of_menace:OnSpellStart(unit, special_cast)
             caster:GetTeamNumber(),
             false
     )
-    if (TalentTree:GetHeroTalentLevel(caster, 34) > 0) then
+    local talentLevel = TalentTree:GetHeroTalentLevel(caster, 34)
+    if (talentLevel > 0) then
         local meteorDistance = 100
         local distance = meteorDistance
         while (distance < length) do
@@ -123,12 +124,13 @@ function terror_lord_flame_of_menace:OnSpellStart(unit, special_cast)
                     DOTA_UNIT_TARGET_FLAG_NONE,
                     FIND_ANY_ORDER,
                     false)
+            local damage = Units:GetAttackDamage(caster) * (0.6 + 0.2 * talentLevel)
             for _, enemy in pairs(enemies) do
                 local damageTable = {}
                 damageTable.caster = caster
                 damageTable.target = enemy
                 damageTable.ability = self
-                damageTable.damage = Units:GetAttackDamage(caster)
+                damageTable.damage = damage
                 damageTable.infernodmg = true
                 GameMode:DamageUnit(damageTable)
             end
@@ -223,7 +225,8 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
             caster.terror_lord_immolation.modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_immolation", { Duration = -1 })
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
-            if (TalentTree:GetHeroTalentLevel(caster, 35) > 0) then
+            local talentLevel = TalentTree:GetHeroTalentLevel(caster, 35)
+            if (talentLevel > 0) then
                 local enemies = FindUnitsInRadius(caster:GetTeam(),
                         caster:GetAbsOrigin(),
                         nil,
@@ -233,7 +236,7 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
                         DOTA_UNIT_TARGET_FLAG_NONE,
                         FIND_ANY_ORDER,
                         false)
-                local damage = Units:GetAttackDamage(caster) * 0.5
+                local damage = Units:GetAttackDamage(caster) * (0.3 + 0.2 * talentLevel)
                 for i, enemy in pairs(enemies) do
                     local damageTable = {}
                     damageTable.caster = caster
@@ -646,7 +649,8 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
     end)
-    if (TalentTree:GetHeroTalentLevel(caster, 38) > 0) then
+    local talentLevel = TalentTree:GetHeroTalentLevel(caster, 38)
+    if (talentLevel > 0) then
         local enemies = FindUnitsInRadius(caster:GetTeam(),
                 targetPos,
                 nil,
@@ -656,7 +660,7 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = Units:GetAttackDamage(caster) * 0.8
+        local damage = Units:GetAttackDamage(caster) * (0.4 + (0.2 * talentLevel))
         for _, enemy in pairs(enemies) do
             local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, enemy)
             ParticleManager:SetParticleControl(pidx3, 0, enemy:GetAbsOrigin())
@@ -997,8 +1001,9 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
             FIND_ANY_ORDER,
             false)
     local stackCount = #enemies
-    if (TalentTree:GetHeroTalentLevel(self.caster, 37) > 0) then
-        stackCount = math.max(stackCount, 1)
+    local talentLevel = TalentTree:GetHeroTalentLevel(self.caster, 37)
+    if (talentLevel > 0) then
+        stackCount = math.max(stackCount, math.min(talentLevel, 5))
     end
     self.reg_modifier:SetStackCount(stackCount)
 end
@@ -1136,8 +1141,14 @@ modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation = modifie
     end
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
 function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:GetMoveSpeedPercentBonus()
-    return 0.1
+    return math.min(0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 35)), 0.3)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation"] = LUA_MODIFIER_MOTION_NONE
@@ -1206,12 +1217,19 @@ modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = modifier_n
     end,
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:GetAttackSpeedBonus()
-    return 50
+    return 25 * TalentTree:GetHeroTalentLevel(self.caster, 36)
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:GetPrimaryAttributePercentBonus()
-    return 0.2
+    return 0.15 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 36))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker"] = LUA_MODIFIER_MOTION_NONE
