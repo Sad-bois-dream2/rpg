@@ -6,6 +6,7 @@
 #base heroes/light_cardinal/units.txt
 #base heroes/terror_lord/units.txt
 #base heroes/blazing_berserker/units.txt
+#base heroes/chosen_invoker/units.txt
 #base creeps/zone1/miniboss/ursa/creep.txt
 #base creeps/zone1/miniboss/ursa/units.txt
 
