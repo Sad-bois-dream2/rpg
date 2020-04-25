@@ -9,7 +9,7 @@
         "Ability3"	"priestess_of_sacred_forest_twilight_breeze"
         "Ability4"	"priestess_of_sacred_forest_tranquility"
         "Ability5"	"empty5"
-        "Ability6"	"empty6"
+        "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""
