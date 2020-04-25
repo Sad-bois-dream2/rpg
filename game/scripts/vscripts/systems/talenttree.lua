@@ -11,42 +11,51 @@ function TalentTree:SetupForHero(hero)
         for i = 1, TalentTree.latest_talent_id do
             hero.talents.level[i] = 0
         end
+        -- for test only, remove later pls
+        hero:FindAbilityByName("antimage_blink"):SetLevel(4)
     end
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:ChangeHeroAbilities(hero)
     if (hero ~= nil and hero.talents ~= nil) then
-        local abilities = {}
+        local talentAbilties = {}
         for i = 19, 24 do
             if (hero.talents.level[i] > 0) then
-                table.insert(abilities, TalentTree:GetTalentAbilityName(hero, i))
+                table.insert(talentAbilties, TalentTree:GetTalentAbilityName(hero, i))
             end
         end
-        if (#abilities > 2) then
+        if (#talentAbilties > 2) then
             DebugPrint("[TALENTTREE] Abilties.count > 2. WTF?")
             DebugPrint("hero=" .. hero:GetUnitName())
-            DebugPrintTable(abilities)
+            DebugPrintTable(talentAbilties)
             return
         end
-        local ability5 = hero:GetAbilityByIndex(4)
-        local ability6 = hero:GetAbilityByIndex(5)
-        if (ability5 ~= nil) then
-            hero:RemoveAbility(ability5:GetAbilityName())
+        local heroAbilties = { hero:GetAbilityByIndex(4), hero:GetAbilityByIndex(5) }
+        for i = 1, 2 do
+            local abilityName = heroAbilties[i]:GetAbilityName()
+            if ((abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) and talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
+                hero:RemoveAbility(abilityName)
+                local ability = hero:AddAbility(talentAbilties[i])
+                ability:SetAbilityIndex(6 - i)
+            end
         end
-        if (ability6 ~= nil) then
-            hero:RemoveAbility(ability6:GetAbilityName())
+    end
+end
+
+---@param hero CDOTA_BaseNPC_Hero
+function TalentTree:RemoveAllTalentAbilities(hero)
+    if (hero ~= nil and hero.talents ~= nil) then
+        for i = 19, 24 do
+            local name = TalentTree:GetTalentAbilityName(hero, i)
+            local ability = hero:FindAbilityByName(name)
+            if (ability) then
+                hero:SetAbilityPoints(hero:GetAbilityPoints() + ability:GetLevel())
+                hero:RemoveAbility(name)
+            end
         end
-        if (abilities[1] == nil or abilities[1] == "") then
-            abilities[1] = "empty5"
-        end
-        if (abilities[2] == nil or abilities[2] == "") then
-            abilities[2] = "antimage_blink" --"empty6", blink for test atm
-        end
-        hero:AddAbility(abilities[1])
-        ability6 = hero:AddAbility(abilities[2])
-        -- for test only, remove it later
-        ability6:SetLevel(4)
+        hero:AddAbility(TalentTree.tempAbilities[1])
+        hero:AddAbility(TalentTree.tempAbilities[2])
     end
 end
 
@@ -54,6 +63,7 @@ function TalentTree:Init()
     -- Changing that require modifying all Get() functions  and IsRequiredPointsForLineConditionMeet() below...
     self.latest_talent_id = 51
     self.max_talent_points = 31
+    self.tempAbilities = { "empty5", "antimage_blink" }
     self.talent_abilities = {
         ["npc_dota_hero_drow_ranger"] = {
             "phantom_ranger_phantom_arrow",
@@ -263,20 +273,20 @@ function TalentTree:SetHeroTalentLevel(hero, talentId, level)
         if (TalentTree:IsHeroHaveTalentTree(hero)) then
             if (TalentTree:IsTalentIdValid(talentId)) then
                 hero.talents.level[talentId] = level
-                if(level == 0 and hero.talents.modifiers[talentId] ~= nil) then
+                if (level == 0 and hero.talents.modifiers[talentId] ~= nil) then
                     hero.talents.modifiers[talentId]:Destroy()
                     hero.talents.modifiers[talentId] = nil
                 end
-                if(level > 0 and hero.talents.modifiers[talentId] == nil) then
+                if (level > 0 and hero.talents.modifiers[talentId] == nil) then
                     local modifier_name = "modifier"
-                    if(TalentTree:IsUniversalTalent(talentId)) then
-                        modifier_name = modifier_name.."_generic_"
+                    if (TalentTree:IsUniversalTalent(talentId)) then
+                        modifier_name = modifier_name .. "_generic_"
                     else
                         local heroName = hero:GetUnitName()
-                        modifier_name = modifier_name.."_"..heroName.."_"
+                        modifier_name = modifier_name .. "_" .. heroName .. "_"
                     end
-                    modifier_name = modifier_name.."talent_"..tostring(talentId)
-                    hero.talents.modifiers[talentId] = hero:AddNewModifier(hero, nil, modifier_name, {duration = -1})
+                    modifier_name = modifier_name .. "talent_" .. tostring(talentId)
+                    hero.talents.modifiers[talentId] = hero:AddNewModifier(hero, nil, modifier_name, { duration = -1 })
                 end
             end
         end
