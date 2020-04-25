@@ -237,7 +237,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_34_embrace"] = LUA_MODIFIER_MOTION_NONE
 
--- modifier_npc_dota_hero_silencer_talent_35 (Possesion)
+-- modifier_npc_dota_hero_silencer_talent_35 (Possession)
 modifier_npc_dota_hero_silencer_talent_35 = modifier_npc_dota_hero_silencer_talent_35 or class({
     IsDebuff = function(self)
         return false
@@ -860,7 +860,7 @@ function light_cardinal_smite:OnSpellStart(unit, special_cast)
     damageTable.holydmg = true
     local modifier = caster:FindModifierByName("modifier_npc_dota_hero_silencer_talent_38_misery")
     if (modifier) then
-        damageTable.damage = damageTable.damage * (1 + (0.05 * modifier:GetStackCount()))
+        damageTable.damage = damageTable.damage * ((1 + (0.04 + (0.01 * TalentTree:GetHeroTalentLevel(caster, 38)))) * modifier:GetStackCount())
     end
     GameMode:DamageUnit(damageTable)
 end
@@ -1096,7 +1096,14 @@ function modifier_light_cardinal_patronage:OnDestroy(keys)
         return
     end
     local caster = self:GetParent()
-    if (TalentTree:GetHeroTalentLevel(caster, 39) > 0) then
+    local talentLevel = TalentTree:GetHeroTalentLevel(caster, 39)
+    if (talentLevel > 0) then
+        local cooldownTable = {}
+        cooldownTable.reduction = talentLevel
+        cooldownTable.ability = keys.ability:GetAbilityName()
+        cooldownTable.isflat = true
+        cooldownTable.target = self.unit
+        GameMode:ReduceAbilityCooldown(cooldownTable)
         return
     end
     local modifierTable = {}
@@ -1285,7 +1292,7 @@ modifier_npc_dota_hero_silencer_talent_44 = modifier_npc_dota_hero_silencer_tale
 
 function modifier_npc_dota_hero_silencer_talent_44:OnTakeDamage(damageTable)
     if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_silencer_talent_44") and not damageTable.attacker.modifier_npc_dota_hero_silencer_talent_44) then
-        damageTable.damage = damageTable.damage + (damageTable.victim:GetMaxHealth() * 0.01)
+        damageTable.damage = damageTable.damage + (damageTable.victim:GetMaxHealth() * math.min(0.01 * TalentTree:GetHeroTalentLevel(damageTable.attacker, 44), 0.05))
         damageTable.attacker.modifier_npc_dota_hero_silencer_talent_44 = true
         local silencer = damageTable.attacker
         Timers:CreateTimer(5, function()
@@ -1339,7 +1346,7 @@ function modifier_npc_dota_hero_silencer_talent_45:GetMoveSpeedPercentBonus()
             buffCount = buffCount + 1
         end
     end
-    return 0.05 * buffCount
+    return (0.03 + (0.02 * TalentTree:GetHeroTalentLevel(self.caster, 45))) * buffCount
 end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_45"] = LUA_MODIFIER_MOTION_NONE
@@ -1439,8 +1446,9 @@ function modifier_npc_dota_hero_silencer_talent_50:OnTakeDamage(damageTable)
         local casterHealth = damageTable.victim:GetHealth()
         local cap = damageTable.victim:GetMaxHealth() * 0.05
         if ((casterHealth - damageTable.damage) <= cap and not damageTable.victim:HasModifier("modifier_npc_dota_hero_silencer_talent_50_nullification_cd")) then
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification_cd", { duration = 120 })
-            local shieldAmount = (damageTable.victim:GetMaxHealth() - casterHealth) * 0.75
+            local talentLevel = TalentTree:GetHeroTalentLevel(damageTable.victim, 50)
+            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification_cd", { duration = math.min(90, 125 - talentLevel) })
+            local shieldAmount = (damageTable.victim:GetMaxHealth() - casterHealth) * (0.60 + (0.15 * talentLevel))
             local shield = damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification", { duration = -1 })
             shield:SetStackCount(math.floor(shieldAmount))
             damageTable.damage = 0
@@ -1453,19 +1461,19 @@ LinkedModifiers["modifier_npc_dota_hero_silencer_talent_50"] = LUA_MODIFIER_MOTI
 
 -- modifier_npc_dota_hero_silencer_talent_51 (ENLIGHTENMENT)
 modifier_npc_dota_hero_silencer_talent_51 = modifier_npc_dota_hero_silencer_talent_51 or class({
-    IsDebuff = function(self)
+    IsDebuff = function()
         return false
     end,
-    IsHidden = function(self)
+    IsHidden = function()
         return true
     end,
-    IsPurgable = function(self)
+    IsPurgable = function()
         return false
     end,
-    RemoveOnDeath = function(self)
+    RemoveOnDeath = function()
         return false
     end,
-    AllowIllusionDuplicate = function(self)
+    AllowIllusionDuplicate = function()
         return false
     end,
     GetAttributes = function(self)
@@ -1475,7 +1483,7 @@ modifier_npc_dota_hero_silencer_talent_51 = modifier_npc_dota_hero_silencer_tale
 
 function modifier_npc_dota_hero_silencer_talent_51:OnTakeDamage(damageTable)
     if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_silencer_talent_51") and damageTable.ability) then
-        damageTable.damage = damageTable.damage + (Units:GetHeroIntellect(damageTable.attacker) * 0.5)
+        damageTable.damage = damageTable.damage + (Units:GetHeroIntellect(damageTable.attacker) * (0.45 + (0.05 * TalentTree:GetHeroTalentLevel(damageTable.attacker, 51))))
         return damageTable
     end
 end
