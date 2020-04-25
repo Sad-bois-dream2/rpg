@@ -1448,7 +1448,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves:OnC
     end
     self.caster = self:GetCaster()
     self.target = self:GetParent()
-    self.damage = (1 * TalentTree:GetHeroTalentLevel(self.caster, 42)) / self:GetDuration()
+    self.damage = (1 * TalentTree:GetHeroTalentLevel(self.caster, 42)) / math.floor(self:GetDuration())
     self:StartIntervalThink(1.0)
 end
 

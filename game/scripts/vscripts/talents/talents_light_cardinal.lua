@@ -219,7 +219,7 @@ function modifier_npc_dota_hero_silencer_talent_34_embrace:OnCreated(keys)
     self.caster = self:GetCaster()
     self.target = self:GetParent()
     self.ability = self:GetAbility()
-    self.hps = (keys.absorbed_damage * 0.5) / math.floor(self:GetDuration())
+    self.hps = (keys.absorbed_damage * (0.4 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 34)))) / math.floor(self:GetDuration())
     self:StartIntervalThink(1)
 end
 
@@ -269,7 +269,7 @@ end
 function modifier_npc_dota_hero_silencer_talent_35:GetHealthPercentBonus()
     local ability = self.caster:FindModifierByName("modifier_light_cardinal_harmony")
     if (ability) then
-        return 0.5
+        return 0.4 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 35))
     end
     return 0
 end
@@ -277,7 +277,7 @@ end
 function modifier_npc_dota_hero_silencer_talent_35:GetManaPercentBonus()
     local ability = self.caster:FindModifierByName("modifier_light_cardinal_harmony")
     if (ability) then
-        return 0.5
+        return 0.4 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 35))
     end
     return 0
 end
@@ -339,7 +339,7 @@ function modifier_npc_dota_hero_silencer_talent_40:OnIntervalThink()
     if (self.timer > 5) then
         self.timer = 0
         local cloak = self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_silencer_talent_40_divine_cloak", { duration = -1 })
-        cloak:SetStackCount(3)
+        cloak:SetStackCount(math.min(2 + TalentTree:GetHeroTalentLevel(self.caster, 40), 7))
     end
 end
 
@@ -429,7 +429,7 @@ LinkedModifiers["modifier_npc_dota_hero_silencer_talent_41"] = LUA_MODIFIER_MOTI
 ---@param healTable HEAL_TABLE
 function modifier_npc_dota_hero_silencer_talent_41:OnPreHeal(healTable)
     if (healTable.heal > 0 and healTable.caster:HasModifier("modifier_npc_dota_hero_silencer_talent_41")) then
-        healTable.heal = healTable.heal + (healTable.target:GetMaxHealth() * 0.01)
+        healTable.heal = healTable.heal + (healTable.target:GetMaxHealth() * 0.01 * TalentTree:GetHeroTalentLevel(self.caster, 41))
         return healTable
     end
 end
@@ -481,8 +481,11 @@ function modifier_npc_dota_hero_silencer_talent_46:OnAbilityFullyCast()
             FIND_ANY_ORDER,
             false)
     for _, enemy in pairs(enemies) do
-        local enemyAggro = Aggro:Get(self.caster, enemy)
-        Aggro:Add(self.caster, enemy, enemyAggro * -0.05)
+        local enemyAggro = Aggro:Get(self.caster, enemy) * math.max(-0.05 * TalentTree:GetHeroTalentLevel(self.caster, 46), -0.25)
+        if (enemyAggro > 0) then
+            enemyAggro = enemyAggro * -1
+        end
+        Aggro:Add(self.caster, enemy, enemyAggro)
     end
 end
 
@@ -535,7 +538,7 @@ function modifier_npc_dota_hero_silencer_talent_47:OnAbilityFullyCast()
             FIND_ANY_ORDER,
             false)
     for _, enemy in pairs(enemies) do
-        local aggro = math.abs(Aggro:Get(self.caster, enemy) * 0.05)
+        local aggro = math.abs(Aggro:Get(self.caster, enemy) * 0.05 * TalentTree:GetHeroTalentLevel(self.caster, 47))
         if (aggro < 1) then
             aggro = 1
         end
@@ -639,8 +642,15 @@ modifier_npc_dota_hero_silencer_talent_36_sacrilege = modifier_npc_dota_hero_sil
     end
 })
 
+function modifier_npc_dota_hero_silencer_talent_36_sacrilege:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_silencer_talent_36_sacrilege:GetSpellDamageBonus()
-    return 0.2
+    return 0.1 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 36))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_36_sacrilege"] = LUA_MODIFIER_MOTION_NONE
@@ -783,32 +793,39 @@ modifier_npc_dota_hero_silencer_talent_37_anointed_grounds = modifier_npc_dota_h
     end
 })
 
+function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetFireProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetFrostProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetEarthProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetVoidProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetHolyProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetNatureProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 function modifier_npc_dota_hero_silencer_talent_37_anointed_grounds:GetInfernoProtectionBonus()
-    return -0.1
+    return math.max(-0.1 * TalentTree:GetHeroTalentLevel(self.caster, 37), -0.3)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_37_anointed_grounds"] = LUA_MODIFIER_MOTION_NONE
@@ -884,7 +901,7 @@ function modifier_npc_dota_hero_silencer_talent_42:OnAbilityFullyCast()
     if (not IsServer()) then
         return
     end
-    if (RollPercentage(30)) then
+    if (RollPercentage(25 + (5 * TalentTree:GetHeroTalentLevel(self.caster, 42)))) then
         local healTable = {}
         healTable.caster = self.caster
         healTable.target = self.caster
@@ -918,8 +935,15 @@ modifier_npc_dota_hero_silencer_talent_43 = modifier_npc_dota_hero_silencer_tale
     end
 })
 
+function modifier_npc_dota_hero_silencer_talent_43:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_silencer_talent_43:GetManaPercentBonus()
-    return 0.4
+    return 0.3 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 43))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_43"] = LUA_MODIFIER_MOTION_NONE
@@ -945,6 +969,17 @@ modifier_npc_dota_hero_silencer_talent_48 = modifier_npc_dota_hero_silencer_tale
         return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
+
+function modifier_npc_dota_hero_silencer_talent_48:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
+function modifier_npc_dota_hero_silencer_talent_48:GetDamageReductionBonus()
+    return 0.01 + (0.02 * TalentTree:GetHeroTalentLevel(self.caster, 48))
+end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_48"] = LUA_MODIFIER_MOTION_NONE
 
@@ -1014,7 +1049,7 @@ function modifier_npc_dota_hero_silencer_talent_49:OnAbilityFullyCast(keys)
         local ability = self.caster:GetAbilityByIndex(i)
         if (ability) then
             local cooldownTable = {}
-            cooldownTable.reduction = 2
+            cooldownTable.reduction = math.min(1 * TalentTree:GetHeroTalentLevel(self.caster, 49), 5)
             cooldownTable.ability = ability:GetAbilityName()
             cooldownTable.isflat = true
             cooldownTable.target = self.caster
