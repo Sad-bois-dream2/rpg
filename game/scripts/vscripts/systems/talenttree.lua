@@ -317,7 +317,7 @@ function TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch
     branch = tonumber(branch)
     if (hero ~= nil and line ~= nil and branch ~= nil) then
         if (line == 1) then
-            return 0
+            return TalentTree:GetPointsSpendedInLineForBranch(hero, line, branch)
         else
             local result = 0
             for i = 1, (line - 1) do
@@ -478,57 +478,11 @@ end
 function TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, line, branch)
     line = tonumber(line)
     branch = tonumber(branch)
-    if (hero and line and branch) then
-        local pointsInLine = {
-            TalentTree:GetPointsSpendedInLineForBranch(hero, 1, branch),
-            TalentTree:GetPointsSpendedInLineForBranch(hero, 2, branch),
-            TalentTree:GetPointsSpendedInLine(hero, 3),
-            TalentTree:GetPointsSpendedInLineForBranch(hero, 4, branch),
-            TalentTree:GetPointsSpendedInLineForBranch(hero, 5, branch),
-            TalentTree:GetPointsSpendedInLineForBranch(hero, 6, branch)
-            --TalentTree:GetPointsSpendedInLineForBranch(hero, 7, branch)
-        }
-        local lineConditions = {}
-        lineConditions[1] = true
-        lineConditions[2] = (pointsInLine[1] >= 3)
-        lineConditions[3] = lineConditions[2] and pointsInLine[2] >= 3
-        lineConditions[4] = lineConditions[3] and pointsInLine[3] >= 2
-        lineConditions[5] = lineConditions[4] and pointsInLine[4] >= 3
-        lineConditions[6] = lineConditions[5] and pointsInLine[5] >= 3
-        lineConditions[7] = lineConditions[6] and pointsInLine[6] >= 3
-        if (line >= 1 and line <= 7) then
-            return lineConditions[line]
-        end
-    end
-    return false
-end
-
----@param hero CDOTA_BaseNPC_Hero
----@param talentId number
----@return number
-function TalentTree:IsRequiredPointsForLineConditionMeet(hero, line)
-    line = tonumber(line)
-    branch = tonumber(branch)
-    if (hero ~= nil and line ~= nil) then
-        local pointsInLine = {
-            TalentTree:GetPointsSpendedInLine(hero, 1),
-            TalentTree:GetPointsSpendedInLine(hero, 2),
-            TalentTree:GetPointsSpendedInLine(hero, 3),
-            TalentTree:GetPointsSpendedInLine(hero, 4),
-            TalentTree:GetPointsSpendedInLine(hero, 5),
-            TalentTree:GetPointsSpendedInLine(hero, 6)
-            --TalentTree:GetPointsSpendedInLine(hero, 7)
-        }
-        local lineCondtions = {}
-        lineCondtions[1] = true
-        lineCondtions[2] = (pointsInLine[1] >= 9)
-        lineCondtions[3] = ((pointsInLine[1] + pointsInLine[2]) >= 15)
-        lineCondtions[4] = (pointsInLine[3] >= 1)
-        lineCondtions[5] = (lineCondtions[3] and (pointsInLine[4] >= 9))
-        lineCondtions[6] = (pointsInLine[5] >= 1)
-        lineCondtions[7] = (pointsInLine[6] >= 1)
-        if (line >= 1 and line <= 7) then
-            return lineCondtions[line]
+    if (hero and line and line >= 1 and line <= 7 and branch) then
+        if (line >= 4) then
+            return TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) >= (((line - 1) * 3) - 1)
+        else
+            return TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) >= ((line - 1) * 3)
         end
     end
     return false
