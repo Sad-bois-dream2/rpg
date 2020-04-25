@@ -296,7 +296,7 @@ function Inventory:OnInventoryItemPickedFromGround(event)
             local hero = player:GetAssignedHero()
             if (hero ~= nil) then
                 if (Inventory:IsHeroHaveInventory(hero)) then
-                    if (event.itemEntity:GetOwner() == hero and Inventory:AddItem(hero, event.item) ~= Inventory.slot.invalid) then
+                    if (event.itemEntity:GetPurchaser() == hero and Inventory:AddItem(hero, event.item) ~= Inventory.slot.invalid) then
                         event.itemEntity:Destroy()
                     else
                         hero:DropItemAtPositionImmediate(event.itemEntity, hero:GetAbsOrigin())
@@ -340,6 +340,7 @@ function Inventory:OnInventoryDropItemRequest(event, args)
         item:Destroy()
         return
     end
+    item:SetPurchaser(hero)
     Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
 end
 
