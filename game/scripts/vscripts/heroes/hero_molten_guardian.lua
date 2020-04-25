@@ -574,7 +574,7 @@ modifier_molten_guardian_molten_fortress_helper = modifier_molten_guardian_molte
 })
 
 function modifier_molten_guardian_molten_fortress_helper:OnAbilityFullyCast(keys)
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     local cursor_position = keys.ability:GetCursorPosition()
@@ -592,11 +592,6 @@ function modifier_molten_guardian_molten_fortress_helper:OnAbilityFullyCast(keys
                 keys.unit:GetTeamNumber(),
                 false
         )
-        --[[local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/molten_fortress/lava_thing.vpcf", PATTACH_ABSORIGIN_FOLLOW, handle)
-        Timers:CreateTimer(duration, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end) --]]
     end
 end
 
@@ -648,10 +643,16 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated(keys)
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        self.enemies = enemies
+        local caster = self.ability:GetCaster()
+        local duration = self:GetDuration()
         for _, enemy in pairs(enemies) do
-            enemy.molten_guardian_molten_fortress_temp_aggro = enemy:GetMaxHealth() * 100
-            Aggro:Add(self.caster, enemy, enemy.molten_guardian_molten_fortress_temp_aggro)
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_aggro"
+            modifierTable.duration = duration
+            GameMode:ApplyDebuff(modifierTable)
         end
     else
         self:Destroy()
@@ -659,13 +660,6 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated(keys)
 end
 function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
     if IsServer() then
-        if self.ability then
-            for _, enemy in pairs(self.enemies) do
-                if(enemy ~= nil and not enemy:IsNull()) then
-                    Aggro:Add(self.caster, enemy, -enemy.molten_guardian_molten_fortress_temp_aggro)
-                end
-            end
-        end
         UTIL_Remove(self:GetParent())
     end
 end
@@ -719,6 +713,37 @@ function modifier_molten_guardian_molten_fortress_thinker_buff:GetSpellHasteBonu
 end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_aggro = modifier_molten_guardian_molten_fortress_aggro or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_molten_fortress_aggro:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetCaster()
+end
+
+function modifier_molten_guardian_molten_fortress_aggro:GetIgnoreAggroTarget()
+    return self.caster
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_aggro"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_molten_fortress
 if (IsServer()) then
