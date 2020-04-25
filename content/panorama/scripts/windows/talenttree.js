@@ -1,5 +1,4 @@
 var talents = [];
-var talentBranches = [];
 var tooltip = [];
 var hero = -1;
 var totalPointsLabel;
@@ -20,16 +19,6 @@ function IsUniversalTalent(id) {
 
 function IsAbilityTalent(id) {
     return (id >= 19 && id <= 24);
-}
-
-function IsBranchUnlocked(branch) {
-	if((branch == 0 || branch == 1 || branch == 2) && !talents[18][TALENT_PANEL].BHasClass("disabled")) {
-		return true;
-	}
-	if((branch == 3 || branch == 4 || branch == 5) && !talents[49][TALENT_PANEL].BHasClass("disabled")) {
-		return true;
-	}
-	return false;
 }
 
 function OnTalentClick(id) {
@@ -87,13 +76,12 @@ function CreateTalentTooltip(icon, name, description, x, y) {
 
 function BuildTalentTree() {
 	var root = $("#TalentTree");
-	var totalLines = 9;
+	var totalLines = 7;
 	var totalColumns = 3;
 	var talentId = 1;
 	for(var i = 0; i < totalLines; i++) {
-		var IsTreeBranchRow = (i == 2 || i == 7);
-		var IsUniversalRow = (i == 0 || i == 1 || i == 4);
-		var IsSkillRow = (i == 3);
+		var IsUniversalRow = (i == 0 || i == 1 || i == 3);
+		var IsSkillRow = (i == 2);
 		var talentsRow = $.CreatePanel("Panel", root, "");
 		talentsRow.SetHasClass("TalentsRow", true);
 		for(var j = 0; j < totalColumns; j++) {
@@ -104,35 +92,26 @@ function BuildTalentTree() {
 			if(!IsUniversalRow) {
 				talentsPerColumn = 2;
 			}
-			if(IsTreeBranchRow) {
-				var treeBranch = $.CreatePanel("Panel", talentsColumn, "");
-				treeBranch.SetHasClass("disabled", true);
-				treeBranch.BLoadLayout("file://{resources}/layout/custom_game/windows/talenttree/talenttree_branch.xml", false, false);
-				var treeBranchImage = treeBranch.GetChild(0).GetChild(0);
-				var treeBranchName = treeBranch.GetChild(1);
-				talentBranches.push([treeBranch, treeBranchImage, treeBranchName]);
-			} else {
-				for(k = 0; k < talentsPerColumn; k++) {
-					var talent = $.CreatePanel("Panel", talentsColumn, "HeroTalent"+talentId);
-					talent.SetHasClass("disabled", true);
-					talent.SetHasClass("is_skill", IsSkillRow)
-					talent.BLoadLayout("file://{resources}/layout/custom_game/windows/talenttree/talenttree_talent.xml", false, false);
-					talent.Data().ShowTalentTooltip = ShowTalentTooltip;
-					talent.Data().HideTalentTooltip = HideTalentTooltip;
-					talent.Data().OnTalentClick = OnTalentClick;
-					if(IsUniversalTalent(talentId)) {
-						talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/talent_"+talentId+".png";
-					} else {
-						talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talent_"+talentId+".png";
-					}
-					var talentImageAndLevel = talent.GetChild(0);
-					var talentImage = talentImageAndLevel.GetChild(0);
-					var talentLevel = talentImageAndLevel.GetChild(2);
-					var talentAbility = talentImageAndLevel.GetChild(1);
-					talentImage.SetImage(talent.Data().talentImage);
-					talents.push([talent, talentImage, talentLevel, talentId, talentAbility]);
-					talentId++;
+			for(k = 0; k < talentsPerColumn; k++) {
+				var talent = $.CreatePanel("Panel", talentsColumn, "HeroTalent"+talentId);
+				talent.SetHasClass("disabled", true);
+				talent.SetHasClass("is_skill", IsSkillRow)
+				talent.BLoadLayout("file://{resources}/layout/custom_game/windows/talenttree/talenttree_talent.xml", false, false);
+				talent.Data().ShowTalentTooltip = ShowTalentTooltip;
+				talent.Data().HideTalentTooltip = HideTalentTooltip;
+				talent.Data().OnTalentClick = OnTalentClick;
+				if(IsUniversalTalent(talentId)) {
+					talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/talent_"+talentId+".png";
+				} else {
+					talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talent_"+talentId+".png";
 				}
+				var talentImageAndLevel = talent.GetChild(0);
+				var talentImage = talentImageAndLevel.GetChild(0);
+				var talentLevel = talentImageAndLevel.GetChild(2);
+				var talentAbility = talentImageAndLevel.GetChild(1);
+				talentImage.SetImage(talent.Data().talentImage);
+				talents.push([talent, talentImage, talentLevel, talentId, talentAbility]);
+				talentId++;
 			}
 		}
 	}
@@ -153,16 +132,14 @@ function OnTalentTreeStateUpdateRequest(event) {
 		    talents[index][TALENT_ABILITY].abilityname = parsedData[i].abilityname;
 		}
 	}
-	for(var i = 0; i < 6; i++) {
-		talentBranches[i][TALENT_BRANCH_PANEL].SetHasClass("disabled", !IsBranchUnlocked(i));
-	}
 }
 
 function UpdateTreeBranchesNameAndIcon() {
-	for(var i = 0; i < talentBranches.length; i++) {
-		talentBranches[i][TALENT_BRANCH_NAME].text = $.Localize("#DOTA_TalentTree_"+Entities.GetUnitName(hero)+"_TalentBranch_"+(i+1));
-		talentBranches[i][TALENT_BRANCH_IMAGE].SetImage("file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talentbranch_"+(i+1)+".png");
-	}
+    return;
+    for(var i = 1; i < 4; i++) {
+    $("#TreeBranchLabel" + i).text = $.Localize("#DOTA_TalentTree_"+Entities.GetUnitName(hero)+"_TalentBranch_"+i);
+    $("#TreeBranchImage" + i).SetImage("file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talentbranch_"+i+".png");
+    }
 }
 
 var TalentsDataRequired = false;
@@ -173,8 +150,8 @@ function UpdateValues() {
 	} else {
 		if(!TalentsDataRequired) {
 	        BuildTalentTree();
+	        UpdateTreeBranchesNameAndIcon();
 			GameEvents.SendCustomGameEventToServer("rpg_talenttree_require_player_talents_state", {"player_id" : Players.GetLocalPlayer()});
-			UpdateTreeBranchesNameAndIcon();
 			TalentsDataRequired = true;
 		}
 	}
