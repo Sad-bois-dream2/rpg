@@ -147,7 +147,17 @@
 	vertical-align: bottom;
 	font-size: 20px;
 	color: white;
-	margin-bottom: 10px;
+	margin-bottom: 40px;
 	text-transform: uppercase;
+	font-family: platformfont;
+}
+
+.TalentTreeHelp
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	font-size: 16px;
+	color: white;
+	margin-bottom: 10px;
 	font-family: platformfont;
 }
