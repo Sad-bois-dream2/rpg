@@ -29,6 +29,7 @@
 .HeroPortraitPanel.Small .HeroOwnerName {
 	margin-left: 60px;
 	font-size: 14px;
+	margin-top: 3px;
 }
 
 .HeroPortraitPanel.Small .HeroPortrait {
@@ -84,7 +85,7 @@
 .HeroPortraitPanel.Small .HeroHpBarPanel {
 	height: 20px;
 	margin-left: 55px;
-	margin-top: 13px;
+	margin-top: 18px;
 }
 
 .HeroHpBar
@@ -108,7 +109,7 @@
 .HeroPortraitPanel.Small .HeroMpBarPanel {
 	height: 20px;
 	margin-left: 55px;
-	margin-top: 30px;
+	margin-top: 35px;
 }
 
 .HeroLivesPanel {

@@ -16,17 +16,14 @@ var HP_BAR = 0,
 	PLAYER_ID = 12,
 	PLAYER_PORTRAIT_FIXED = 13,
 	DEATH_TIMER = 14,
-	HERO_OWNER_NAME = 15,
-	HERO_LIVES_PANEL = 16;
+	HERO_OWNER_NAME = 15;
 
 var MAX_PLAYERS = 5;
-var MAX_LIVES = 5;
 
 function OnPortraitClick(id) {
 	var IsAltDown = GameUI.IsAltDown();
     var hero = Heroes[id][HERO_ENTITY];
-	GameUI.SetCameraTargetPosition(Entities.GetAbsOrigin(hero), -1.0);
-	GameUI.SelectUnit(hero, false);
+    Players.PlayerPortraitClicked(Heroes[id][PLAYER_ID], false, false );
 	if(IsAltDown) {
 		var player = Players.GetLocalPlayer();
 		var message;
@@ -160,35 +157,8 @@ function UpdateValues() {
 			}
 			Heroes[i][HERO_OWNER_NAME].text = Players.GetPlayerName(Heroes[i][PLAYER_ID]);
 			Heroes[i][HERO_OWNER_NAME].style.color = GetHEXPlayerColor(Heroes[i][PLAYER_ID]);
-			if(Heroes[i][HERO_LIVES_PANEL].GetChildCount() > 0) {
-				var livesCount = -1;
-				for(var j = 0; j < Entities.GetNumBuffs(hero); j++) {
-					var buff = Entities.GetBuff(hero, j);
-					if(Buffs.GetName(hero, buff) == "modifier_hero_lives") {
-						livesCount = Buffs.GetStackCount(hero, buff);
-					}
-				}
-				var IsThereAnyLivesLeft = (livesCount > 0);
-				for(var j = 0; j < MAX_LIVES; j++) {
-					Heroes[i][HERO_LIVES_PANEL].GetChild(j).SetHasClass("consumed", IsThereAnyLivesLeft ? false : true);
-				}
-				if(livesCount > 0) {
-					for(var j = 0; j < MAX_LIVES; j++) {
-						if(j > (livesCount-1)) {
-							Heroes[i][HERO_LIVES_PANEL].GetChild(j).SetHasClass("consumed", true);
-						}
-					}
-				}
-			}
 			if(!Heroes[i][PLAYER_PORTRAIT_FIXED]) {
 				Heroes[i][HERO_PORTRAIT].SetUnit(Entities.GetUnitName(hero), "1", true);
-				for(var j = 0; j < MAX_LIVES; j++) {
-					var heroLifePanel = $.CreatePanel("DOTAHeroImage", Heroes[i][HERO_LIVES_PANEL], "HeroLife" + j);
-					heroLifePanel.SetHasClass("HeroLife", true);
-					heroLifePanel.SetHasClass("consumed", true);
-					heroLifePanel.heroname = Entities.GetUnitName(hero);
-					heroLifePanel.heroimagestyle = "icon";
-				}
 				Heroes[i][PLAYER_PORTRAIT_FIXED] = true;
 			}
         } else {
@@ -253,13 +223,12 @@ function Init() {
             var expBarPanel = hero.GetChild(3);
             var expBar = expBarPanel.GetChild(0);
             var expBarCurrentValue = expBarPanel.GetChild(1);
-			var heroLivesPanel = hero.GetChild(4);
-            var heroPortrait = hero.GetChild(5);
-            var levelBarPanel = hero.GetChild(6);
+            var heroPortrait = hero.GetChild(4);
+            var levelBarPanel = hero.GetChild(5);
             var levelBarValue = levelBarPanel.GetChild(0);
 			var playerPortraitFixed = false;
 			var deathTimer = hero.GetChild(7).GetChild(0);
-            Heroes.push([hpBar, hpBarCurrentValue, hpBarRegValue, mpBar, mpBarCurrentValue, mpBarRegValue, expBar, expBarCurrentValue, levelBarValue, heroEntityIndex, heroPortrait, hero, i, playerPortraitFixed, deathTimer, heroOwnerName, heroLivesPanel]);
+            Heroes.push([hpBar, hpBarCurrentValue, hpBarRegValue, mpBar, mpBarCurrentValue, mpBarRegValue, expBar, expBarCurrentValue, levelBarValue, heroEntityIndex, heroPortrait, hero, i, playerPortraitFixed, deathTimer, heroOwnerName]);
         }
     }
     AutoUpdateValues();
