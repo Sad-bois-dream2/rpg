@@ -103,7 +103,8 @@ function terror_lord_flame_of_menace:OnSpellStart(unit, special_cast)
             caster:GetTeamNumber(),
             false
     )
-    if (TalentTree:GetHeroTalentLevel(caster, 34) > 0) then
+    local talentLevel = TalentTree:GetHeroTalentLevel(caster, 34)
+    if (talentLevel > 0) then
         local meteorDistance = 100
         local distance = meteorDistance
         while (distance < length) do
@@ -123,12 +124,13 @@ function terror_lord_flame_of_menace:OnSpellStart(unit, special_cast)
                     DOTA_UNIT_TARGET_FLAG_NONE,
                     FIND_ANY_ORDER,
                     false)
+            local damage = Units:GetAttackDamage(caster) * (0.6 + 0.2 * talentLevel)
             for _, enemy in pairs(enemies) do
                 local damageTable = {}
                 damageTable.caster = caster
                 damageTable.target = enemy
                 damageTable.ability = self
-                damageTable.damage = Units:GetAttackDamage(caster)
+                damageTable.damage = damage
                 damageTable.infernodmg = true
                 GameMode:DamageUnit(damageTable)
             end
@@ -223,7 +225,8 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
             caster.terror_lord_immolation.modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_immolation", { Duration = -1 })
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
-            if (TalentTree:GetHeroTalentLevel(caster, 35) > 0) then
+            local talentLevel = TalentTree:GetHeroTalentLevel(caster, 35)
+            if (talentLevel > 0) then
                 local enemies = FindUnitsInRadius(caster:GetTeam(),
                         caster:GetAbsOrigin(),
                         nil,
@@ -233,7 +236,7 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
                         DOTA_UNIT_TARGET_FLAG_NONE,
                         FIND_ANY_ORDER,
                         false)
-                local damage = Units:GetAttackDamage(caster) * 0.5
+                local damage = Units:GetAttackDamage(caster) * (0.3 + 0.2 * talentLevel)
                 for i, enemy in pairs(enemies) do
                     local damageTable = {}
                     damageTable.caster = caster
@@ -646,7 +649,8 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
     end)
-    if (TalentTree:GetHeroTalentLevel(caster, 38) > 0) then
+    local talentLevel = TalentTree:GetHeroTalentLevel(caster, 38)
+    if (talentLevel > 0) then
         local enemies = FindUnitsInRadius(caster:GetTeam(),
                 targetPos,
                 nil,
@@ -656,7 +660,7 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = Units:GetAttackDamage(caster) * 0.8
+        local damage = Units:GetAttackDamage(caster) * (0.4 + (0.2 * talentLevel))
         for _, enemy in pairs(enemies) do
             local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, enemy)
             ParticleManager:SetParticleControl(pidx3, 0, enemy:GetAbsOrigin())
@@ -803,21 +807,19 @@ function modifier_terror_lord_aura_of_seals_ally_aura_buff:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.aadamage = 0.15
-    self.armor = 0.10
-    self.spelldmg = 0.15
+    self.caster = self:GetAuraOwner()
 end
 
 function modifier_terror_lord_aura_of_seals_ally_aura_buff:GetAttackDamagePercentBonus()
-    return self.aadamage or 0
+    return 0.10 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 39))
 end
 
 function modifier_terror_lord_aura_of_seals_ally_aura_buff:GetArmorPercentBonus()
-    return self.armor or 0
+    return 0.10 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 39))
 end
 
 function modifier_terror_lord_aura_of_seals_ally_aura_buff:GetSpellDamageBonus()
-    return self.spelldmg or 0
+    return 0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 39))
 end
 
 LinkedModifiers["modifier_terror_lord_aura_of_seals_ally_aura_buff"] = LUA_MODIFIER_MOTION_NONE
@@ -997,8 +999,9 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
             FIND_ANY_ORDER,
             false)
     local stackCount = #enemies
-    if (TalentTree:GetHeroTalentLevel(self.caster, 37) > 0) then
-        stackCount = math.max(stackCount, 1)
+    local talentLevel = TalentTree:GetHeroTalentLevel(self.caster, 37)
+    if (talentLevel > 0) then
+        stackCount = math.max(stackCount, math.min(talentLevel, 5))
     end
     self.reg_modifier:SetStackCount(stackCount)
 end
@@ -1136,8 +1139,14 @@ modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation = modifie
     end
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
 function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:GetMoveSpeedPercentBonus()
-    return 0.1
+    return math.min(0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 35)), 0.3)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation"] = LUA_MODIFIER_MOTION_NONE
@@ -1206,12 +1215,19 @@ modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = modifier_n
     end,
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:GetAttackSpeedBonus()
-    return 50
+    return 25 * TalentTree:GetHeroTalentLevel(self.caster, 36)
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:GetPrimaryAttributePercentBonus()
-    return 0.2
+    return 0.15 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 36))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker"] = LUA_MODIFIER_MOTION_NONE
@@ -1297,16 +1313,23 @@ modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity = modifier_npc
     end
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:GetInfernoDamageBonus()
-    return self:GetStackCount() * 0.02
+    return self:GetStackCount() * (0.01 + (0.01 * TalentTree:GetHeroTalentLevel(self.caster, 40)))
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:GetFireDamageBonus()
-    return self:GetStackCount() * 0.02
+    return self:GetStackCount() * (0.01 + (0.01 * TalentTree:GetHeroTalentLevel(self.caster, 40)))
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:OnTooltip()
-    return self:GetStackCount() * 2
+    return self:GetStackCount() * (TalentTree:GetHeroTalentLevel(self.caster, 40) + 1)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity"] = LUA_MODIFIER_MOTION_NONE
@@ -1334,7 +1357,14 @@ modifier_npc_dota_hero_abyssal_underlord_talent_41 = modifier_npc_dota_hero_abys
 })
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_41:GetFireDamageBonus()
-    return 0.2
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
+function modifier_npc_dota_hero_abyssal_underlord_talent_41:GetFireDamageBonus()
+    return 0.1 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 41))
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_41:OnTakeDamage(damageTable)
@@ -1418,7 +1448,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves:OnC
     end
     self.caster = self:GetCaster()
     self.target = self:GetParent()
-    self.damage = 1 / keys.Duration
+    self.damage = (1 * TalentTree:GetHeroTalentLevel(self.caster, 42)) / math.floor(self:GetDuration())
     self:StartIntervalThink(1.0)
 end
 
@@ -1491,7 +1521,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_43:OnPostTakeDamage(dam
                 ParticleManager:DestroyParticle(pidx, false)
                 ParticleManager:ReleaseParticleIndex(pidx)
             end)
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_43_cd", { Duration = 60 })
+            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_43_cd", { Duration = math.max(30, 65 - (5 * TalentTree:GetHeroTalentLevel(damageTable.victim, 43))) })
             local enemies = FindUnitsInRadius(damageTable.victim:GetTeam(),
                     damageTable.victim:GetAbsOrigin(),
                     nil,
@@ -1507,7 +1537,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_43:OnPostTakeDamage(dam
                 modifierTable.target = enemy
                 modifierTable.caster = damageTable.victim
                 modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff"
-                modifierTable.duration = 2
+                modifierTable.duration = math.min(1 + (1 * TalentTree:GetHeroTalentLevel(damageTable.victim, 43)), 5)
                 GameMode:ApplyDebuff(modifierTable)
             end
         end
@@ -1676,7 +1706,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_44_thinker:OnIntervalTh
         modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky"
         modifierTable.stacks = 1
         modifierTable.max_stacks = 99999
-        modifierTable.duration = 10
+        modifierTable.duration = 5
         GameMode:ApplyStackingDebuff(modifierTable)
     end
 end
@@ -1711,16 +1741,23 @@ modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky = modifier_npc_dota_he
     end,
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetCaster()
+end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky")
     if (damageTable.damage > 0 and damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_44") and modifier) then
-        damageTable.damage = damageTable.damage * (1 + (modifier:GetStackCount() * 0.01))
+        damageTable.damage = damageTable.damage * (1 + (modifier:GetStackCount() * (0.01 * TalentTree:GetHeroTalentLevel(damageTable.attacker, 44))))
         return damageTable
     end
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky:GetMoveSpeedPercentBonus()
-    return self:GetStackCount() * 0.01
+    return self:GetStackCount() * math.min(0.005 + (0.005 * TalentTree:GetHeroTalentLevel(self.caster, 44)), 0.05)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky"] = LUA_MODIFIER_MOTION_NONE
@@ -1795,7 +1832,8 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.elementarmor_reduction = 0.1
+    self.caster = self:GetAuraOwner()
+    self.elementarmor_reduction = 0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 45))
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff:GetFireProtectionBonus()
@@ -1858,7 +1896,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_46:OnCreated()
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_46:GetFireDamageBonus()
-    return Units:GetInfernoDamage(self.caster) * 0.2
+    return Units:GetInfernoDamage(self.caster) * (0.1 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 46)))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_46"] = LUA_MODIFIER_MOTION_NONE
@@ -1911,7 +1949,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_47:OnTakeDamage(damageT
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = Units:GetAttackDamage(damageTable.victim) * 3
+        local damage = Units:GetAttackDamage(damageTable.victim) * (3 * TalentTree:GetHeroTalentLevel(damageTable.victim, 47))
         for _, enemy in pairs(enemies) do
             local damageTable = {}
             damageTable.caster = damageTable.victim
@@ -1977,7 +2015,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_48:OnTakeDamage(damageT
         local casterCurrentHealth = damageTable.victim:GetHealth()
         local casterHealth = (casterCurrentHealth - damageTable.damage) / damageTable.victim:GetMaxHealth()
         if (casterHealth < 0.1 and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48_cd")) then
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_48_buff", { Duration = 7 })
+            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_48_buff", { Duration = 6 + (1 * TalentTree:GetHeroTalentLevel(damageTable.victim, 48)) })
             damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_48_cd", { Duration = 150 })
         end
         if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_48_buff")) then
@@ -2029,13 +2067,19 @@ modifier_npc_dota_hero_abyssal_underlord_talent_48_buff = modifier_npc_dota_hero
         return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_48.png"
     end
 })
+function modifier_npc_dota_hero_abyssal_underlord_talent_48_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_48_buff:GetMoveSpeedPercentBonus()
-    return 0.3
+    return 0.2 + (0.1 * TalentTree:GetHeroTalentLevel(self.caster, 48))
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_48_buff:GetAttackSpeedPercentBonus()
-    return 1.0
+    return 0.5 + (0.5 * TalentTree:GetHeroTalentLevel(self.caster, 48))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48_buff"] = LUA_MODIFIER_MOTION_NONE
@@ -2088,14 +2132,21 @@ modifier_npc_dota_hero_abyssal_underlord_talent_49 = modifier_npc_dota_hero_abys
     end
 })
 
+function modifier_npc_dota_hero_abyssal_underlord_talent_49:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_49:OnPostTakeDamage(damageTable)
     if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_49")) then
-        Aggro:Add(damageTable.attacker, damageTable.victim, Aggro:Get(damageTable.attacker, damageTable.victim) * 0.05)
+        Aggro:Add(damageTable.attacker, damageTable.victim, Aggro:Get(damageTable.attacker, damageTable.victim) * math.min(0.05 * TalentTree:GetHeroTalentLevel(damageTable.attacker, 49), 0.3))
     end
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_49:GetPrimaryAttributePercentBonus()
-    return 0.4
+    return 0.2 + (0.2 * TalentTree:GetHeroTalentLevel(self.caster, 49))
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_49"] = LUA_MODIFIER_MOTION_NONE
@@ -2168,7 +2219,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_50:OnAbilityFullyCast(k
             damageTable.caster = self.caster
             damageTable.target = randomEnemy
             damageTable.ability = nil
-            damageTable.damage = Units:GetAttackDamage(self.caster) * 0.8
+            damageTable.damage = Units:GetAttackDamage(self.caster) * 0.8 * TalentTree:GetHeroTalentLevel(self.caster, 50)
             damageTable.infernodmg = true
             GameMode:DamageUnit(damageTable)
         end
@@ -2201,7 +2252,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_51 = modifier_npc_dota_hero_abys
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_51:OnTakeDamage(damageTable)
     if (damageTable.damage > 0 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_51")) then
-        if (RollPercentage(35)) then
+        if (RollPercentage(30 + (5 * TalentTree:GetHeroTalentLevel(damageTable.victim, 51)))) then
             damageTable.damage = 0
             return damageTable
         end

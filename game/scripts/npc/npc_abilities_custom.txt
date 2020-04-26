@@ -295,6 +295,8 @@
   }
   "antimage_blink"
 	{
+	"AbilityCooldown"				"0"
+	"AbilityManaCost"				"0"
 		"AbilitySpecial"
 		{
 			"01"

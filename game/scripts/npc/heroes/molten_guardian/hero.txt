@@ -9,7 +9,7 @@
         "Ability3"	"molten_guardian_lava_skin"
         "Ability4"	"mars_arena_of_blood"
         "Ability5"	"empty5"
-        "Ability6"	"empty6"
+        "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""
