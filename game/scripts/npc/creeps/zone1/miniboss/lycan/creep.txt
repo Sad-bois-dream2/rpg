@@ -16,12 +16,11 @@
           "Ability1"          "lycan_call"     // Ability 1.
           "Ability2"          "lycan_companion"     // Ability 2.
           "Ability3"          "lycan_wound"      // Ability 3.
-          "Ability4"          "lycan_shapeshift"      // Ability 4.
-          "Ability5"          "lycan_slam"     // Ability 5.
-          "Ability6"          "lycan_hunt"      // Ability 6 - Extra.
-          "Ability7"          ""      // Ability 7 - Extra.
-          "Ability8"          ""      // Ability 8 - Extra.
-          "Ability9"          ""      // Ability 8 - Extra.
+          "Ability4"          "lycan_wolf_form"      // Ability 4.
+          "Ability5"          "lycan_howl_aura"     // Ability 5.
+          "Ability6"          "lycan_agility"      // Ability 7 - Extra.
+          "Ability7"          "lycan_double_strike"      // Ability 8 - Extra.
+          "Ability8"          "lycan_bleeding"      // Ability 9 - Extra.
 
         // Armor
         //----------------------------------------------------------------
@@ -102,6 +101,7 @@
                         "3" { "ItemDef" "8987" }
                         "4" { "ItemDef" "8988" }
                         "5" { "ItemDef" "8989" }
+                        "6" { "ItemDef" "13542" }
                     }
 
         }

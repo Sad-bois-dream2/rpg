@@ -26,7 +26,7 @@ modifier_ursa_rend = modifier_ursa_rend or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function(sefl)
+    DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
 })
@@ -42,7 +42,7 @@ end
 LinkLuaModifier("modifier_ursa_rend", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 function modifier_ursa_rend:OnAttackLanded(keys)
-    --remove rend buff from ursa
+    --start cd
     if not IsServer() then
         return
     end
@@ -106,7 +106,7 @@ function modifier_ursa_rend_armor:OnCreated()
         return
     end
     self.armor_reduction_percentage = 0
-    local modifier = self:GetParent():FindModifierByName("modifier_ursa_rend")
+    local modifier = self:GetCaster():FindModifierByName("modifier_ursa_rend")
     if (modifier) then
         self.armor_reduction_percentage = modifier.ability:GetSpecialValueFor("armor_reduction_percentage") * -0.01
     end
@@ -422,6 +422,9 @@ function ursa_swift:Blink()
     local caster = self:GetCaster()
     local target = self:FindTargetForBlink(caster)
     local sound_cast = "Hero_Antimage.Blink_out"
+    if (target==nil) then
+        return
+    end
     caster:EmitSound(sound_cast)
 
     -- Blink
@@ -431,13 +434,14 @@ function ursa_swift:Blink()
     local direction = vector:Normalized()
     local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
     caster:SetAbsOrigin(blink_point)
-    Timers:CreateTimer(FrameTime(), function()
+    Timers:CreateTimer(1.0, function()
         FindClearSpaceForUnit(caster, blink_point, true)
     end)
     sound_cast = "Hero_Antimage.Blink_in"
     caster:EmitSound(sound_cast)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
+    caster:MoveToTargetToAttack(target)
     caster:PerformAttack(target, true, true, true, true, false, false, false)
     caster:SetForwardVector(direction)
 
@@ -704,7 +708,6 @@ function ursa_hunt:FindTauntTarget(caster)
             return nil
         end
     end
-
 end
 
 function ursa_hunt:OnSpellStart()

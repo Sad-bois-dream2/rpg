@@ -7,6 +7,7 @@
 #base heroes/terror_lord/abilities.txt
 #base heroes/blazing_berserker/abilities.txt
 #base creeps/zone1/miniboss/ursa/abilities.txt
+#base creeps/zone1/miniboss/lycan/abilities.txt
 
 "DOTAAbilities"
 {

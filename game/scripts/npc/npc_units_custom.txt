@@ -8,6 +8,8 @@
 #base heroes/blazing_berserker/units.txt
 #base creeps/zone1/miniboss/ursa/creep.txt
 #base creeps/zone1/miniboss/ursa/units.txt
+#base creeps/zone1/miniboss/lycan/creep.txt
+#base creeps/zone1/miniboss/lycan/units.txt
 
 "DOTAUnits"
 {
