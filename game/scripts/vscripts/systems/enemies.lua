@@ -30,6 +30,23 @@ function Enemies:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_update_enemy_stats", Dynamic_Wrap(Enemies, 'OnUpdateEnemyStatsRequest'))
 end
 
+function Enemies:IsElite(unit)
+    if(not unit or unit:IsNull()) then
+        return false
+    end
+    return false
+end
+
+function Enemies:IsBoss(unit)
+    if(not unit or unit:IsNull()) then
+        return false
+    end
+    if (string.find(unit:GetUnitName(), "boss")) then
+        return true
+    end
+    return false
+end
+
 if not Enemies.initialized then
     Enemies:Init()
     Enemies.initialized = true

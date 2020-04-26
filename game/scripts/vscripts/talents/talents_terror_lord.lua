@@ -998,7 +998,16 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    local stackCount = #enemies
+    local stackCount = 0
+    for i, enemy in pairs(enemies) do
+        if (Enemies:IsBoss(enemy)) then
+            stackCount = stackCount + 10
+        elseif (Enemies:IsElite(enemy)) then
+            stackCount = stackCount + 5
+        else
+            stackCount = stackCount + 1
+        end
+    end
     local talentLevel = TalentTree:GetHeroTalentLevel(self.caster, 37)
     if (talentLevel > 0) then
         stackCount = math.max(stackCount, math.min(talentLevel, 5))
