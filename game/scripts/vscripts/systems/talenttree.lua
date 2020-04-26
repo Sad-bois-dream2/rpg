@@ -480,7 +480,13 @@ function TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, line, br
     branch = tonumber(branch)
     if (hero and line and line >= 1 and line <= 7 and branch) then
         if (line >= 4) then
-            return TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) >= (((line - 1) * 3) - 1)
+            local pointsInAbilityLine = TalentTree:GetPointsSpendedInLineForBranch(hero, 3, branch)
+            local totalPointsSpended = TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) - pointsInAbilityLine
+            if (pointsInAbilityLine == 0) then
+                pointsInAbilityLine = TalentTree:GetPointsSpendedInLine(hero, 3)
+                totalPointsSpended = totalPointsSpended + pointsInAbilityLine
+            end
+            return totalPointsSpended >= (((line - 1) * 3) - 1)
         else
             return TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) >= ((line - 1) * 3)
         end
@@ -507,6 +513,9 @@ function TalentTree:GetMaxLevelForTalent(talentId)
     talentId = tonumber(talentId)
     if (talentId ~= nil) then
         if (talentId > 18 and talentId <= 24) then
+            return 1
+        end
+        if (talentId > 45 and talentId <= 51) then
             return 1
         end
         return 3
