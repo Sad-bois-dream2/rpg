@@ -675,14 +675,3 @@ function ursa_hunt:OnSpellStart()
     EmitSoundOn("hero_bloodseeker.bloodRage", caster)
     caster:EmitSound("ursa_ursa_overpower_03")
 end
-
-if (IsServer()) then
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_rend", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_fury", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_roar", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_swift", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_slam", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_hunt", Enemies.ABILITY_TYPE_INNATE)
-end
-
-

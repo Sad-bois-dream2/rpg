@@ -2,22 +2,41 @@ if Enemies == nil then
     _G.Enemies = class({})
 end
 
+function Enemies:InitAbilites()
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_rend", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_fury", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_roar", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_swift", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_slam", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_hunt", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_call", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_companion", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_wound", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_shapeshift", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_slam", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_hunt", Enemies.ABILITY_TYPE_INNATE)
+end
+
+-- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
         return
     end
     Enemies.ABILITY_TYPE_INNATE = 1
     Enemies.ABILITY_TYPE_RANDOM = 2
+    Enemies.ABILITY_TYPE_LAST = 2
     Enemies.eliteAbilities = {}
     Enemies.enemyAbilities = {}
     Enemies.STATS_CALCULATE_INTERVAL = 1
     Enemies.MAX_ABILITIES = 10
+    Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
+    Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
 end
 
 function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
     abilityType = tonumber(abilityType)
-    if (enemyName and abilityName and abilityType and abilityType > 0 and abilityType < 3) then
+    if (enemyName and abilityName and abilityType and abilityType > 0 and abilityType < Enemies.ABILITY_TYPE_LAST) then
         table.insert(Enemies.enemyAbilities, { owner = enemyName, name = abilityName, type = abilityType })
     end
 end
@@ -37,7 +56,11 @@ function Enemies:GetAbilityListsForEnemy(unit)
         result[2] = Enemies.eliteAbilities
     end
     local unitName = unit:GetUnitName()
+    print(unitName)
+    PrintTable(Enemies.enemyAbilities)
+    print("Ab count " .. #Enemies.enemyAbilities)
     for _, ability in pairs(Enemies.enemyAbilities) do
+        print(ability.name .. ": " .. ability.owner)
         if (ability.owner == unitName) then
             if (ability.type == Enemies.ABILITY_TYPE_INNATE) then
                 table.insert(result[1], ability.name)
@@ -46,6 +69,7 @@ function Enemies:GetAbilityListsForEnemy(unit)
             end
         end
     end
+    PrintTable(result)
     return result
 end
 
@@ -148,6 +172,8 @@ function modifier_creep_scaling:OnCreated()
     self.difficulty = 1
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
+    print("Result")
+    PrintTable(abilities)
     local abilitiesAdded = 0
     for i, ability in pairs(abilities[1]) do
         if (not self.creep:HasAbility(ability)) then
@@ -168,10 +194,7 @@ function modifier_creep_scaling:OnCreated()
     self.damage = self.damage * math.pow(self.difficulty, 3)
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
-    self.baseHealth = Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus
-    self.baseMana = Enemies.data[self.name]["StatusMana"]
-    self.creep:SetMaxHealth(1)
-    self.creep:SetMaxMana(1)
+    self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
     Timers:CreateTimer(0, function()
         local stats = self.creep:FindModifierByName("modifier_stats_system")
         if (stats) then
@@ -226,10 +249,6 @@ end
 
 function modifier_creep_scaling:GetHealthBonus()
     return self.baseHealth
-end
-
-function modifier_creep_scaling:GetManaBonus()
-    return self.baseMana
 end
 
 LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
@@ -288,5 +307,4 @@ Enemies.initialized = false
 if not Enemies.initialized then
     Enemies:Init()
     Enemies.initialized = true
-    Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
 end
