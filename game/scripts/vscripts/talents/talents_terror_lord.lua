@@ -654,7 +654,7 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
         local enemies = FindUnitsInRadius(caster:GetTeam(),
                 targetPos,
                 nil,
-                200,
+                radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
                 DOTA_UNIT_TARGET_ALL,
                 DOTA_UNIT_TARGET_FLAG_NONE,
