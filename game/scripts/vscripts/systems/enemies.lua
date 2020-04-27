@@ -67,7 +67,6 @@ function Enemies:GetAbilityListsForEnemy(unit)
             end
         end
     end
-    PrintTable(result)
     return result
 end
 
@@ -170,8 +169,6 @@ function modifier_creep_scaling:OnCreated()
     self.difficulty = 1
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
-    print("Result")
-    PrintTable(abilities)
     local abilitiesAdded = 0
     for i, ability in pairs(abilities[1]) do
         if (not self.creep:HasAbility(ability)) then
