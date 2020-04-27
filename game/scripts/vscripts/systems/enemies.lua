@@ -34,7 +34,7 @@ function Enemies:IsElite(unit)
     if (not unit or unit:IsNull()) then
         return false
     end
-    return false
+    return unit:HasModifier("modifier_creep_elite")
 end
 
 function Enemies:IsBoss(unit)
@@ -81,22 +81,39 @@ function modifier_creep_scaling:OnCreated()
     self.damage = Enemies.data[self.name]["AttackDamageMax"]
     self.armor = 2
     self.elementalArmor = 0.11
-    if (Enemies:IsElite(self.creep)) then
-        self.armor = 5
-        self.elementalArmor = 0.23
-    end
+    self.healthBonus = 1
     if (Enemies:IsBoss(self.creep)) then
         self.armor = 15
         self.elementalArmor = 0.47
+    else
+        local eliteChance = 5
+        if (RollPercentage(eliteChance)) then
+            self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
+            self.armor = 5
+            self.elementalArmor = 0.23
+            self.damage = self.damage * 1.5
+            self.healthBonus = 10
+        end
     end
     self.difficulty = 1
     self.damage = self.damage * math.pow(self.difficulty, 3)
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
-    self.baseHealth = Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount()
+    self.baseHealth = Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus
     self.baseMana = Enemies.data[self.name]["StatusMana"]
     self.creep:SetMaxHealth(1)
     self.creep:SetMaxMana(1)
+    Timers:CreateTimer(0, function()
+        local stats = self.creep:FindModifierByName("modifier_stats_system")
+        if (stats) then
+            stats:OnIntervalThink()
+            self.creep:SetHealth(self.creep:GetMaxHealth())
+            self.creep:SetMana(self.creep:GetMaxMana())
+            print("Updated health")
+        else
+            return 0.25
+        end
+    end, self)
 end
 
 function modifier_creep_scaling:GetAttackDamageBonus()
@@ -148,6 +165,61 @@ function modifier_creep_scaling:GetManaBonus()
 end
 
 LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_creep_elite = modifier_creep_elite or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MODEL_SCALE }
+    end,
+    GetModifierModelScale = function(self)
+        return 1.5
+    end,
+    GetTexture = function()
+        return "centaur_khan_endurance_aura"
+    end,
+    GetEffectName = function(self)
+        return "particles/units/elite/elite_overhead.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end
+})
+
+function modifier_creep_elite:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.particle)
+end
+
+function modifier_creep_elite:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.parent = self:GetParent()
+    self.particle = ParticleManager:CreateParticle("particles/leader/leader_overhead.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(self.particle, PATTACH_OVERHEAD_FOLLOW, self.parent, PATTACH_OVERHEAD_FOLLOW, "follow_overhead", self.parent:GetAbsOrigin(), true)
+end
+
+LinkLuaModifier("modifier_creep_elite", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
 ListenToGameEvent("npc_spawned", function(keys)
     if (not IsServer()) then

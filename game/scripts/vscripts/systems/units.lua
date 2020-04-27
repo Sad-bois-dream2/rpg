@@ -330,7 +330,7 @@ function Units:CalculateStats(unit, statsTable)
         local manaPerInt = 12
         local baseManaBonus = (manaPerInt * statsTable.int)
         statsTable.bonusMana = math.floor((baseManaBonus + unitBonusMana) * unitBonusPercentMana)
-        if(not unit:IsRealHero()) then
+        if (not unit:IsRealHero()) then
             unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxhp", { Duration = -1 })
             unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxmp", { Duration = -1 })
         end
