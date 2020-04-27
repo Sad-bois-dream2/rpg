@@ -91,8 +91,8 @@ function modifier_creep_scaling:OnCreated()
     end
     self.difficulty = 1
     self.damage = self.damage * math.pow(self.difficulty, 3)
-    self.armor = math.min(self.armor + ((50 - self.armor) * self.difficulty), 150)
-    self.elementalArmor = math.min(self.elementalArmor + ((0.75 - self.elementalArmor) * self.difficulty), 0.9)
+    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
+    self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
 end
 
 function modifier_creep_scaling:GetAttackDamageBonus()
@@ -142,8 +142,8 @@ ListenToGameEvent("npc_spawned", function(keys)
         return
     end
     local unit = EntIndexToHScript(keys.entindex)
-    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and not isUnitThinker and unit:GetTeam() == DOTA_TEAM_NEUTRALS) then
+    local IsLegitUnit = unit:IsCreature() and not (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() == DOTA_TEAM_NEUTRALS) then
         unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
     end
 end, nil)
