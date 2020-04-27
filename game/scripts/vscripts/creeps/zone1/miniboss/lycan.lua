@@ -38,3 +38,12 @@ self.parent:EmitSound("lycan_lycan_ally_04")
 ---------------------
 --lycan bleeding
 ---------------------
+
+if (IsServer()) then
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_call", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_companion", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_wound", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_shapeshift", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_slam", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_hunt", Enemies.ABILITY_TYPE_INNATE)
+end

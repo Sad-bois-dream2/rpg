@@ -6,8 +6,58 @@ function Enemies:Init()
     if (not IsServer()) then
         return
     end
+    Enemies.ABILITY_TYPE_INNATE = 1
+    Enemies.ABILITY_TYPE_RANDOM = 2
+    Enemies.eliteAbilities = {}
+    Enemies.enemyAbilities = {}
     Enemies.STATS_CALCULATE_INTERVAL = 1
+    Enemies.MAX_ABILITIES = 10
     Enemies:InitPanaromaEvents()
+end
+
+function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
+    abilityType = tonumber(abilityType)
+    if (enemyName and abilityName and abilityType and abilityType > 0 and abilityType < 3) then
+        table.insert(Enemies.enemyAbilities, { owner = enemyName, name = abilityName, type = abilityType })
+    end
+end
+
+function Enemies:RegisterEliteAbility(abilityName)
+    if (abilityName) then
+        table.insert(Enemies.eliteAbilities, abilityName)
+    end
+end
+
+function Enemies:GetAbilityListsForEnemy(unit)
+    local result = { {}, {} }
+    if (not unit or unit:IsNull()) then
+        return result
+    end
+    if (Enemies:IsElite(unit)) then
+        result[2] = Enemies.eliteAbilities
+    end
+    local unitName = unit:GetUnitName()
+    for _, ability in pairs(Enemies.enemyAbilities) do
+        if (ability.owner == unitName) then
+            if (ability.type == Enemies.ABILITY_TYPE_INNATE) then
+                table.insert(result[1], ability.name)
+            elseif (ability.type == Enemies.ABILITY_TYPE_RANDOM) then
+                table.insert(result[2], ability.name)
+            end
+        end
+    end
+    return result
+end
+
+function Enemies:GetAbilitiesLevel(difficulty)
+    local result = 1
+    if (difficulty > 4) then
+        result = 2
+    end
+    if (difficulty > 7) then
+        result = 3
+    end
+    return 1
 end
 
 function Enemies:OnUpdateEnemyStatsRequest(event, args)
@@ -96,6 +146,25 @@ function modifier_creep_scaling:OnCreated()
         end
     end
     self.difficulty = 1
+    local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
+    local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
+    local abilitiesAdded = 0
+    for i, ability in pairs(abilities[1]) do
+        if (not self.creep:HasAbility(ability)) then
+            local addedAbility = self.creep:AddAbility(ability)
+            addedAbility:SetLevel(abilitiesLevel)
+            abilitiesAdded = abilitiesAdded + 1
+        end
+    end
+    if (abilitiesAdded < 10) then
+        for i, ability in pairs(abilities[2]) do
+            if (not self.creep:HasAbility(ability)) then
+                local addedAbility = self.creep:AddAbility(ability)
+                addedAbility:SetLevel(abilitiesLevel)
+                abilitiesAdded = abilitiesAdded + 1
+            end
+        end
+    end
     self.damage = self.damage * math.pow(self.difficulty, 3)
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
