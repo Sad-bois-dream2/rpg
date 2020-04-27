@@ -109,7 +109,6 @@ function modifier_creep_scaling:OnCreated()
             stats:OnIntervalThink()
             self.creep:SetHealth(self.creep:GetMaxHealth())
             self.creep:SetMana(self.creep:GetMaxMana())
-            print("Updated health")
         else
             return 0.25
         end
@@ -189,7 +188,7 @@ modifier_creep_elite = modifier_creep_elite or class({
         return { MODIFIER_PROPERTY_MODEL_SCALE }
     end,
     GetModifierModelScale = function(self)
-        return 1.5
+        return 25
     end,
     GetTexture = function()
         return "centaur_khan_endurance_aura"
@@ -201,23 +200,6 @@ modifier_creep_elite = modifier_creep_elite or class({
         return PATTACH_OVERHEAD_FOLLOW
     end
 })
-
-function modifier_creep_elite:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    ParticleManager:DestroyParticle(self.particle, false)
-    ParticleManager:ReleaseParticleIndex(self.particle)
-end
-
-function modifier_creep_elite:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.parent = self:GetParent()
-    self.particle = ParticleManager:CreateParticle("particles/leader/leader_overhead.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
-    ParticleManager:SetParticleControlEnt(self.particle, PATTACH_OVERHEAD_FOLLOW, self.parent, PATTACH_OVERHEAD_FOLLOW, "follow_overhead", self.parent:GetAbsOrigin(), true)
-end
 
 LinkLuaModifier("modifier_creep_elite", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
