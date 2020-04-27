@@ -93,6 +93,10 @@ function modifier_creep_scaling:OnCreated()
     self.damage = self.damage * math.pow(self.difficulty, 3)
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
+    self.baseHealth = Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount()
+    self.baseMana = Enemies.data[self.name]["StatusMana"]
+    self.creep:SetMaxHealth(1)
+    self.creep:SetMaxMana(1)
 end
 
 function modifier_creep_scaling:GetAttackDamageBonus()
@@ -133,6 +137,14 @@ end
 
 function modifier_creep_scaling:GetBaseAttackTime()
     return 2
+end
+
+function modifier_creep_scaling:GetHealthBonus()
+    return self.baseHealth
+end
+
+function modifier_creep_scaling:GetManaBonus()
+    return self.baseMana
 end
 
 LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)

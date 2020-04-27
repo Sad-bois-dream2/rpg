@@ -325,7 +325,7 @@ function Units:CalculateStats(unit, statsTable)
         local healthPerStr = 20
         local baseHealthBonus = (statsTable.str * healthPerStr)
         statsTable.bonusHealth = math.floor((baseHealthBonus + unitBonusHealth) * unitBonusPercentHealth)
-        statsTable.bonusHealth = statsTable.bonusHealth + 9999
+        statsTable.bonusHealth = statsTable.bonusHealth
         -- max mp
         local manaPerInt = 12
         local baseManaBonus = (manaPerInt * statsTable.int)
