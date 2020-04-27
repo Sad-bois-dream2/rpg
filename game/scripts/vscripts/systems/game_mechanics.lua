@@ -668,3 +668,149 @@ ListenToGameEvent("npc_spawned", function(keys)
         unit:AddNewModifier(unit, nil, "modifier_cooldown_reduction_custom", { Duration = -1 })
     end
 end, nil)
+
+modifier_out_of_combat = modifier_out_of_combat or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_out_of_combat:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.delay = 5
+    self.timer = 0
+    self:StartIntervalThink(1.0)
+end
+
+function modifier_out_of_combat:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.timer = self.timer + 1
+    if (self.timer > self.delay) then
+        self.timer = self.delay
+        if (not self.modifier) then
+            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+        end
+    else
+        if (self.modifier) then
+            self.modifier:Destroy()
+            self.modifier = nil
+        end
+    end
+end
+
+function modifier_out_of_combat:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
+        modifier.timer = 0
+    end
+    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
+        modifier.timer = 0
+    end
+end
+
+function modifier_out_of_combat:OnPostHeal(healTable)
+    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
+    if (modifier and not healTable.target:HasModifier("modifier_out_of_combat")) then
+        modifier.timer = 0
+    end
+end
+
+LinkLuaModifier("modifier_out_of_combat", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+
+modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "chen_divine_favor"
+    end
+})
+
+function modifier_out_of_combat_buff:GetMoveSpeedBonus()
+    return 100
+end
+function modifier_out_of_combat_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self:StartIntervalThink(1.0)
+end
+
+function modifier_out_of_combat_buff:OnIntervalThink()
+    if(not IsServer()) then
+        return
+    end
+    local healTable = {}
+    healTable.caster = self.caster
+    healTable.target = self.caster
+    healTable.ability = nil
+    healTable.heal = self.caster:GetMaxHealth() * 0.10
+    GameMode:HealUnit(healTable)
+    healTable.heal = self.caster:GetMaxMana() * 0.10
+    GameMode:HealUnitMana(healTable)
+end
+
+function modifier_out_of_combat_buff:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    local modifier = self:GetParent():FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
+        modifier.timer = 0
+    end
+end
+
+LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit:HasModifier("modifier_out_of_combat") and not Summons:IsSummmon(unit) and not isUnitThinker and unit.IsRealHero and unit:IsRealHero()) then
+        unit:AddNewModifier(unit, nil, "modifier_out_of_combat", { Duration = -1 })
+    end
+end, nil)
+
+if (IsServer()) then
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
+    GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
+end

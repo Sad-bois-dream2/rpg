@@ -100,7 +100,6 @@ modifier_ursa_rend_armor = modifier_ursa_rend_armor or class({
     end
 })
 
-
 function modifier_ursa_rend_armor:OnCreated()
     if not IsServer() then
         return
@@ -116,8 +115,6 @@ end
 function modifier_ursa_rend_armor:GetArmorPercentBonus()
     return self.armor_reduction_percentage
 end
-
-
 
 LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -160,7 +157,7 @@ function modifier_ursa_fury:OnCreated()
     self.ability = self:GetAbility()
     self.duration = self.ability:GetSpecialValueFor("duration")
     self.attackspeed_bonus = self.ability:GetSpecialValueFor("attackspeed_bonus")
-    self.movespeed_bonus = self.ability:GetSpecialValueFor("movespeed_bonus")*0.01
+    self.movespeed_bonus = self.ability:GetSpecialValueFor("movespeed_bonus") * 0.01
     self.ursa_overpower_buff_particle = "particles/units/heroes/hero_ursa/ursa_overpower_buff.vpcf"
 
     local ursa_overpower_buff_particle_fx = ParticleManager:CreateParticle(self.ursa_overpower_buff_particle, PATTACH_CUSTOMORIGIN, self.caster)
@@ -243,7 +240,7 @@ function ursa_roar:OnSpellStart()
 
         -- Play cast sound
         caster:EmitSound("Hero_Ursa.Enrage")
-       -- Find all nearby enemies
+        -- Find all nearby enemies
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
                 nil,
@@ -299,7 +296,6 @@ function modifier_ursa_swift:OnCreated()
     self.chance = self.ability:GetSpecialValueFor("chance")
 end
 
-
 LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
@@ -311,7 +307,6 @@ ursa_swift = class({
         return "modifier_ursa_swift"
     end,
 })
-
 
 modifier_ursa_swift_phase = modifier_ursa_swift_phase or class({
     IsDebuff = function(self)
@@ -364,8 +359,6 @@ function modifier_ursa_swift_phase:CheckState()
     }
 end
 
-
-
 function ursa_swift:ApplyFury(attacker, parent)
     -- "Fury proc instead of swift blink in hunt mode."
     local duration = self:GetSpecialValueFor("duration")
@@ -378,9 +371,6 @@ function ursa_swift:ApplyFury(attacker, parent)
     GameMode:ApplyBuff(modifierTable)
 
 end
-
-
-
 
 function ursa_swift:FindTargetForBlink(caster)
     local heroes = HeroList:GetAllHeroes()-- counting totalheroes to check distance n runs from 1-5 totalheroes 1-5
@@ -411,7 +401,7 @@ function ursa_swift:Blink()
     local vector = (targetPosition - caster:GetAbsOrigin())
     --local distance = vector:Length2D()
     local direction = vector:Normalized()
-    local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
+    local blink_point = targetPosition - (target:GetForwardVector() * 100)--+ direction * (distance -10 )
     caster:SetAbsOrigin(blink_point)
     Timers:CreateTimer(FrameTime(), function()
         FindClearSpaceForUnit(caster, blink_point, true)
@@ -483,7 +473,7 @@ function ursa_slam:OnSpellStart()
         -- Add appropriate particles
         local earthshock_particle_fx = ParticleManager:CreateParticle(earthshock_particle, PATTACH_ABSORIGIN, self.caster)
         ParticleManager:SetParticleControl(earthshock_particle_fx, 0, self.caster:GetAbsOrigin())
-        ParticleManager:SetParticleControl(earthshock_particle_fx, 1, Vector(1,1,1))
+        ParticleManager:SetParticleControl(earthshock_particle_fx, 1, Vector(1, 1, 1))
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
@@ -662,7 +652,6 @@ function modifier_ursa_hunt_buff_stats:GetStatusEffectName()
     return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
 end
 
-
 function ursa_hunt:OnSpellStart()
     local caster = self:GetCaster() --bloodrage caster
     local duration = self:GetSpecialValueFor("duration")
@@ -686,6 +675,3 @@ function ursa_hunt:OnSpellStart()
     EmitSoundOn("hero_bloodseeker.bloodRage", caster)
     caster:EmitSound("ursa_ursa_overpower_03")
 end
-
-
-

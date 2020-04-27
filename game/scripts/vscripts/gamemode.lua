@@ -53,8 +53,8 @@ require('systems/summons')
 require('systems/castbar')
 require('systems/aggro')
 require('systems/heroes')
-require('systems/enemies')
 require('systems/units')
+require('systems/enemies')
 
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.

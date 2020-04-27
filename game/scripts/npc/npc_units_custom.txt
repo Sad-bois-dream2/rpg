@@ -176,10 +176,10 @@
 
     // Status
     //----------------------------------------------------------------
-    "StatusHealth"        "99999999"     // Base health.
-    "StatusHealthRegen"     "99999999"     // Health regeneration rate.
-    "StatusMana"        "99999999"     // Base mana.
-    "StatusManaRegen"     "99999999"     // Mana regeneration rate.
+    "StatusHealth"        "100000"     // Base health.
+    "StatusHealthRegen"     "0"     // Health regeneration rate.
+    "StatusMana"        "100000"     // Base mana.
+    "StatusManaRegen"     "0"     // Mana regeneration rate.
 
     // Team
     //----------------------------------------------------------------
