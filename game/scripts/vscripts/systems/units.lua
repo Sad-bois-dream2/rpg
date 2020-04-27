@@ -325,10 +325,15 @@ function Units:CalculateStats(unit, statsTable)
         local healthPerStr = 20
         local baseHealthBonus = (statsTable.str * healthPerStr)
         statsTable.bonusHealth = math.floor((baseHealthBonus + unitBonusHealth) * unitBonusPercentHealth)
+        statsTable.bonusHealth = statsTable.bonusHealth
         -- max mp
         local manaPerInt = 12
         local baseManaBonus = (manaPerInt * statsTable.int)
         statsTable.bonusMana = math.floor((baseManaBonus + unitBonusMana) * unitBonusPercentMana)
+        if (not unit:IsRealHero()) then
+            unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxhp", { Duration = -1 })
+            unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxmp", { Duration = -1 })
+        end
         -- damage reduction
         statsTable.damageReduction = unitDamageReduction
         -- both blocks
@@ -492,8 +497,10 @@ function modifier_stats_system:OnCreated(event)
         self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_aarange", { Duration = -1 })
         self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_castrange", { Duration = -1 })
         self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_movespeed", { Duration = -1 })
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
+        if (self.unit:IsRealHero()) then
+            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
+            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
+        end
         self:StartIntervalThink(Units.STATS_CALCULATE_INTERVAL)
     end
 end
@@ -625,7 +632,7 @@ modifier_stats_system_movespeed = modifier_stats_system_movespeed or class({
     end
 })
 
-modifier_stats_system_maxhp = modifier_stats_system_maxhp or class({
+modifier_stats_system_maxhp = class({
     IsDebuff = function(self)
         return false
     end,
@@ -647,9 +654,14 @@ modifier_stats_system_maxhp = modifier_stats_system_maxhp or class({
     DeclareFunctions = function(self)
         return { MODIFIER_PROPERTY_HEALTH_BONUS }
     end,
+    OnCreated = function(self)
+        if (not IsServer()) then
+            return
+        end
+        self.unit = self:GetParent()
+    end,
     GetModifierHealthBonus = function(self)
-        local unit = self:GetParent()
-        return unit.stats.bonusHealth or 0
+        return self.unit.stats.bonusHealth
     end
 })
 
@@ -675,9 +687,80 @@ modifier_stats_system_maxmp = class({
     DeclareFunctions = function(self)
         return { MODIFIER_PROPERTY_MANA_BONUS }
     end,
+    OnCreated = function(self)
+        if (not IsServer()) then
+            return
+        end
+        self.unit = self:GetParent()
+    end,
     GetModifierManaBonus = function(self)
-        local unit = self:GetParent()
-        return unit.stats.bonusMana or 0
+        return self.unit.stats.bonusMana
+    end
+})
+
+modifier_stats_system_enemies_maxhp = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_EXTRA_HEALTH_BONUS }
+    end,
+    OnCreated = function(self)
+        if (not IsServer()) then
+            return
+        end
+        self.unit = self:GetParent()
+    end,
+    GetModifierExtraHealthBonus = function(self)
+        return self.unit.stats.bonusHealth
+    end
+})
+
+modifier_stats_system_enemies_maxmp = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_EXTRA_MANA_BONUS }
+    end,
+    OnCreated = function(self)
+        if (not IsServer()) then
+            return
+        end
+        self.unit = self:GetParent()
+    end,
+    GetModifierExtraManaBonus = function(self)
+        return self.unit.stats.bonusMana
     end
 })
 
@@ -987,6 +1070,8 @@ LinkLuaModifier("modifier_stats_system_castrange", "systems/units", LUA_MODIFIER
 LinkLuaModifier("modifier_stats_system_movespeed", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_maxhp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_stats_system_enemies_maxhp", "systems/units", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_stats_system_enemies_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 
 if not Units.initialized then
     Units:Init()
