@@ -330,6 +330,10 @@ function Units:CalculateStats(unit, statsTable)
         local manaPerInt = 12
         local baseManaBonus = (manaPerInt * statsTable.int)
         statsTable.bonusMana = math.floor((baseManaBonus + unitBonusMana) * unitBonusPercentMana)
+        if(not unit:IsRealHero()) then
+            unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxhp", { Duration = -1 })
+            unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxmp", { Duration = -1 })
+        end
         -- damage reduction
         statsTable.damageReduction = unitDamageReduction
         -- both blocks
@@ -496,9 +500,6 @@ function modifier_stats_system:OnCreated(event)
         if (self.unit:IsRealHero()) then
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
-        else
-            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxhp", { Duration = -1 })
-            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxmp", { Duration = -1 })
         end
         self:StartIntervalThink(Units.STATS_CALCULATE_INTERVAL)
     end
