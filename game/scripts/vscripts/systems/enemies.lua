@@ -3,12 +3,14 @@ if Enemies == nil then
 end
 
 function Enemies:InitAbilites()
+    -- ursa
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_rend", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_fury", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_roar", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_swift", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_slam", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_hunt", Enemies.ABILITY_TYPE_INNATE)
+    -- lycan
     Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_call", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_companion", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_wound", Enemies.ABILITY_TYPE_INNATE)
@@ -56,11 +58,7 @@ function Enemies:GetAbilityListsForEnemy(unit)
         result[2] = Enemies.eliteAbilities
     end
     local unitName = unit:GetUnitName()
-    print(unitName)
-    PrintTable(Enemies.enemyAbilities)
-    print("Ab count " .. #Enemies.enemyAbilities)
     for _, ability in pairs(Enemies.enemyAbilities) do
-        print(ability.name .. ": " .. ability.owner)
         if (ability.owner == unitName) then
             if (ability.type == Enemies.ABILITY_TYPE_INNATE) then
                 table.insert(result[1], ability.name)
