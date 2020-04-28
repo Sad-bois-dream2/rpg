@@ -17,17 +17,17 @@
                         </Panel>
                     </Panel>
                     <Panel class="RightSide">
-                        <Label html="true" class="RightSideLabel" text="DAMAGE PER SECOND"/>
+                        <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_DPS_Label"/>
                         <Label html="true" class="RightSideLabel" id="DPS" text="?"/>
-                        <Label html="true" class="RightSideLabel" text="DUMMY STATS"/>
+                        <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_Stats_Label"/>
                     </Panel>
                 </Panel>
                 <Panel class="BottomContent">
-                    <Panel class="WindowButton" style="margin-left: 80px;" onactivate="OnStartTestButtonPressed()">
-                        <Label text="START 10S TIMER"/>
+                    <Panel class="WindowButton" style="horizontal-align: left; margin-left: 40px;" onactivate="OnStartTestButtonPressed()">
+                        <Label text="#DOTA_Dummy_Button_Start_Test"/>
                     </Panel>
-                    <Panel class="WindowButton" style="margin-left: 400px;" onactivate="OnClearLogButtonPressed()">
-                        <Label text="CLEAR LOG"/>
+                    <Panel class="WindowButton" style="horizontal-align: right; margin-right: 40px;" onactivate="OnClearLogButtonPressed()">
+                        <Label text="#DOTA_Dummy_Button_Clear_Log"/>
                     </Panel>
                 </Panel>
             </Panel>

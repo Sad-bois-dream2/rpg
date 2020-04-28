@@ -190,6 +190,7 @@
 			}
 			m_nColorBlendType = "PARTICLE_COLOR_BLEND_REPLACE"
 			m_flOverbrightFactor = 0.4
+			m_bDisableZBuffering = true
 		},
 		{
 			_class = "C_OP_RenderSprites"
@@ -349,6 +350,7 @@
 				}
 			}
 			m_nColorBlendType = "PARTICLE_COLOR_BLEND_REPLACE"
+			m_bDisableZBuffering = true
 		},
 	]
 	m_Operators = 
@@ -373,10 +375,6 @@
 			m_flEndTime = 0.25
 		},
 		{
-			_class = "C_OP_AlphaDecay"
-			m_nOpEndCapState = 1
-		},
-		{
 			_class = "C_OP_RampScalarLinearSimple"
 			m_nOpEndCapState = 1
 			m_nField = "16"
@@ -394,7 +392,10 @@
 		},
 		{
 			_class = "C_OP_SetToCP"
-			m_vecOffset = [ 0.0, 0.0, 25.0 ]
+			m_vecOffset = [ 0.0, 0.0, 45.0 ]
+		},
+		{
+			_class = "C_OP_EndCapDecay"
 		},
 	]
 	m_Initializers = 
