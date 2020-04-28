@@ -153,12 +153,32 @@ end
 -- panaroma global stuff
 function GameMode:InitPanaromaEvents()
 	CustomGameEventManager:RegisterListener("rpg_say_chat_message", Dynamic_Wrap(GameMode, 'OnSayChatMessageRequest'))
+    CustomGameEventManager:RegisterListener("rpg_close_all_windows", Dynamic_Wrap(GameMode, 'OnCloseAllWindowsRequest'))
+end
+
+function GameMode:OnCloseAllWindowsRequest(event, args)
+    if(not event) then
+        return
+    end
+    event.player_id = tonumber(event.player_id)
+    if(event.player_id) then
+        local player = PlayerResource:GetPlayer( event.player_id )
+        if(player) then
+            TalentTree:OnTalentTreeWindowCloseRequest(event, args)
+            Inventory:OnInventoryWindowCloseRequest(event, args)
+            Dummy:OnDummyCloseWindowRequest(event, args)
+        end
+    end
 end
 
 function GameMode:OnSayChatMessageRequest(event, args)
-	if(event.player_id ~= nil and event.msg ~= nil) then
+    if(not event) then
+        return
+    end
+    event.player_id = tonumber(event.player_id)
+	if(event.player_id and event.msg) then
 		local player = PlayerResource:GetPlayer( event.player_id )
-		if(player ~= nil) then
+		if(player) then
 			Say(player, event.msg, true)
 		end
 	end

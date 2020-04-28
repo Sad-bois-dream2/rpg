@@ -23,10 +23,10 @@
                     </Panel>
                 </Panel>
                 <Panel class="BottomContent">
-                    <Panel class="WindowButton" style="margin-left: 80px;" onactivate="()">
+                    <Panel class="WindowButton" style="margin-left: 80px;" onactivate="OnStartTestButtonPressed()">
                         <Label text="START 10S TIMER"/>
                     </Panel>
-                    <Panel class="WindowButton" style="margin-left: 400px;" onactivate="()">
+                    <Panel class="WindowButton" style="margin-left: 400px;" onactivate="OnClearLogButtonPressed()">
                         <Label text="CLEAR LOG"/>
                     </Panel>
                 </Panel>

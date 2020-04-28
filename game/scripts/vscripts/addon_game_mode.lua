@@ -23,6 +23,8 @@ function Precache(context)
     PrecacheResource("particle_folder", "particles/units/terror_lord/talents/ashes_of_terror", context)
     PrecacheResource("particle", "particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf", context)
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
+    -- dummy thing
+    PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_ogre_magi.vsndevts", context)
 end
 
 -- Create the game mode when we activate

@@ -203,7 +203,7 @@
     //
     "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
     "Model"           "models/heroes/ogre_magi/ogre_magi.vmdl"  // Model.
-    "SoundSet"          "Creep_Good_Range"          // Name of sound set.
+    "SoundSet"          "Hero_OgreMagi"          // Name of sound set.
     "Level"           "0"
     "UnitLabel"         "healing_ward"
 
