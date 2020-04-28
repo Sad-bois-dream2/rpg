@@ -251,3 +251,36 @@ SlottedSlider.HorizontalSlider .SliderNotch
 .WindowButton:hover {
 	opacity: 0.5;
 }
+.WindowTextBox
+{
+    flow-children: right;
+    width: fit-children;
+}
+
+.WindowTextBox Label
+{
+	width: fill-parent-flow(1.0);
+	height: fit-children;
+	vertical-align: center;
+    color: white;
+	font-size: 14px;
+	margin-left: 5px;
+	text-align: center;
+}
+
+.WindowTextBox TextEntry
+{
+	width: fill-parent-flow(1.0);
+	height: fit-children;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	border-radius: 5px;
+	border: 1px solid grey;
+	vertical-align: center;
+	margin-right: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+    color: white;
+	font-size: 14px;
+}

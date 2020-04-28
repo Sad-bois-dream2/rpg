@@ -50,7 +50,7 @@ function OnWindowCloseRequest(event) {
 function BuildDamageTypesString(event) {
     var result = "";
     if(event.physdmg) {
-        result += $.Localize("#DOTA_Dummy_Damage_Physical") +", ";
+        result += $.Localize("#DOTA_Dummy_Damage_Physical") + ", ";
     }
     if(event.puredmg) {
         result += $.Localize("#DOTA_Dummy_Damage_Pure") +", ";
@@ -90,7 +90,7 @@ function BuildDamageSourceString(event) {
     if(!event.ability && event.physdmg) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
     } else {
-        return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", event.abilityName);
+        return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", $.Localize("#" + event.abilityName));
     }
 }
 
@@ -107,16 +107,13 @@ function OnDamageRegisterRequest(event) {
 }
 
 function OnResultRegisterRequest(event) {
+    event.dps = Math.floor(event.dps);
 	dpsLabel.text = Math.floor(event.dps).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 }
 
 function ClearWindow() {
     dpsLabel.text = "?";
     OnClearLogButtonPressed();
-}
-
-function OnLoadDamageRequest(event) {
-
 }
 
 (function() {
@@ -136,5 +133,4 @@ function OnLoadDamageRequest(event) {
     GameEvents.Subscribe("rpg_dummy_close_window_from_server", OnWindowCloseRequest);
     GameEvents.Subscribe("rpg_dummy_damage", OnDamageRegisterRequest);
     GameEvents.Subscribe("rpg_dummy_result_dps", OnResultRegisterRequest);
-    GameEvents.Subscribe("rpg_load_damage_from_server", OnLoadDamageRequest);
 })();

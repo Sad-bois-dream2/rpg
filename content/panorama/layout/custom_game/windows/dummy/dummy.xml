@@ -12,24 +12,71 @@
             <Panel class="WindowContent">
                 <Panel class="TopContent">
                     <Panel class="LeftSide">
-                        <Panel id="DamageLog" class="DamageLog" />
+                        <Panel id="DamageLog" class="DamageLog"/>
                     </Panel>
                     <Panel class="RightSide">
                         <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_DPS_Label"/>
                         <Label html="true" class="RightSideLabel" id="DPS" text="?"/>
                         <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_Stats_Label"/>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowTextBox">
+                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                            <TextEntry maxchars="100"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowButton"
+                               onactivate="OnClearLogButtonPressed()">
+                            <Label text="BOSS STATS"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowButton"
+                               onactivate="OnClearLogButtonPressed()">
+                            <Label text="ELTIE STATS"/>
+                        </Panel>
+                        <Panel class="RightSideElement WindowButton"
+                               onactivate="OnClearLogButtonPressed()">
+                            <Label text="UPDATE DUMMY"/>
+                        </Panel>
                     </Panel>
                 </Panel>
                 <Panel class="BottomContent">
-                    <Panel class="WindowButton" style="horizontal-align: left; margin-left: 40px;" onactivate="OnStartTestButtonPressed()">
+                    <Panel class="WindowButton" style="horizontal-align: left; margin-left: 40px;"
+                           onactivate="OnStartTestButtonPressed()">
                         <Label text="#DOTA_Dummy_Button_Start_Test"/>
                     </Panel>
-                    <Panel class="WindowButton" style="horizontal-align: right; margin-right: 40px;" onactivate="OnClearLogButtonPressed()">
+                    <Panel class="WindowButton" style="horizontal-align: right; margin-right: 40px;"
+                           onactivate="OnClearLogButtonPressed()">
                         <Label text="#DOTA_Dummy_Button_Clear_Log"/>
                     </Panel>
                 </Panel>
             </Panel>
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
+                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
         </Panel>
     </Panel>
 </root>

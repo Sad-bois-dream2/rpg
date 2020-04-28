@@ -142,7 +142,6 @@ function Dummy:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_dummy_start", Dynamic_Wrap(Dummy, 'OnDummyStartRequest'))
     CustomGameEventManager:RegisterListener("rpg_dummy_open_window", Dynamic_Wrap(Dummy, 'OnDummyOpenWindowRequest'))
     CustomGameEventManager:RegisterListener("rpg_dummy_close_window", Dynamic_Wrap(Dummy, 'OnDummyCloseWindowRequest'))
-    CustomGameEventManager:RegisterListener("rpg_load_damage", Dynamic_Wrap(Dummy, 'OnLoadDamageRequest'))
 end
 
 function Dummy:CalculateDPS(dummy)
@@ -163,27 +162,6 @@ function Dummy:CalculateDPS(dummy)
     dummy.isbusy = nil
     dummy.isready = nil
     dummy.owner = nil
-end
-
-function Dummy:OnLoadDamageRequest(event)
-    if (not event) then
-        return
-    end
-    event.player_id = tonumber(event.player_id)
-    if (not event.player_id) then
-        return
-    end
-    event.dummy = tonumber(event.dummy)
-    if (not event.dummy) then
-        return
-    end
-    event.dummy = EntIndexToHScript(event.dummy)
-    local player = PlayerResource:GetPlayer(event.player_id)
-    local event = {
-        player_id = event.player_id,
-        damageTable = json.encode(event.dummy.damageInstances)
-    }
-    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_load_damage_from_server", event)
 end
 
 function Dummy:OnDummyCloseWindowRequest(event)

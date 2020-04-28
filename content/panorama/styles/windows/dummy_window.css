@@ -85,10 +85,32 @@
 	vertical-align: center;
 	font-size: 16px;
 	margin-bottom: 5px;
+	text-overflow: shrink;
 }
 
 .BottomContent
 {
     width: 100%;
     vertical-align: center;
+}
+
+.WindowTextBox Image
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 32px;
+    height: 32px;
+}
+
+.WindowTextBox TextEntry
+{
+    width: 136px;
+    height: 28px;
+}
+
+.RightSideElement
+{
+	horizontal-align: center;
+	vertical-align: center;
+	margin-bottom: 8px;
 }

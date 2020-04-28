@@ -619,6 +619,9 @@
         "DOTA_Dummy_Damage_Source_Ability"		"%ABILITY%"
         "DOTA_Dummy_Damage_Source_Autoattack"		"auto attack"
         "DOTA_Dummy_Damage_Source_Summon"		"summon"
+        "DOTA_Dummy_Boss_Stats_Button"		"BOSS STATS"
+        "DOTA_Dummy_Elite_Stats_Button"		"ELITE STATS"
+        "DOTA_Dummy_Update_Stats_Button"		"UPDATE DUMMY"
         "DOTA_Tooltip_modifier_creep_elite"		"Elite"
         "DOTA_Tooltip_modifier_creep_elite_Description"		"This is an Elite enemy. Elite enemies are more powerful than regular ones and have random abilities, but may give better rewards."
 		// Countless items
