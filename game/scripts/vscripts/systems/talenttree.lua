@@ -16,6 +16,17 @@ function TalentTree:SetupForHero(hero)
     end
 end
 
+-- for test only, remove later pls
+if (IsServer()) then
+    ListenToGameEvent("player_chat", function(event)
+        if (event.text == "-reset") then
+            local player = PlayerResource:GetPlayer(event.playerid)
+            local hero = player:GetAssignedHero()
+            TalentTree:Reset(hero)
+        end
+    end, nil)
+end
+
 ---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:ChangeHeroAbilities(hero)
     if (hero ~= nil and hero.talents ~= nil) then
@@ -31,21 +42,52 @@ function TalentTree:ChangeHeroAbilities(hero)
             DebugPrintTable(talentAbilties)
             return
         end
-        local heroAbilties = { hero:GetAbilityByIndex(4), hero:GetAbilityByIndex(5) }
-        for i = 1, 2 do
-            local abilityName = heroAbilties[i]:GetAbilityName()
-            if ((abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) and talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
-                hero:RemoveAbility(abilityName)
-                local ability = hero:AddAbility(talentAbilties[i])
-                ability:SetAbilityIndex(6 - i)
+        local freeIndex = -1
+        for i = 1, 5 do
+            local ability = hero:GetAbilityByIndex(i)
+            local abilityName = ability:GetAbilityName()
+            if (abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) then
+                freeIndex = i
+                break
+            end
+        end
+        if (freeIndex < 0) then
+            return
+        end
+        for i = 1, #talentAbilties do
+            if (talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
+                local tempAbilityName = hero:GetAbilityByIndex(freeIndex)
+                if (tempAbilityName) then
+                    tempAbilityName = tempAbilityName:GetAbilityName()
+                    hero:RemoveAbility(tempAbilityName)
+                    local ability = hero:AddAbility(talentAbilties[i])
+                    ability:SetAbilityIndex(freeIndex)
+                    freeIndex = freeIndex + 1
+                end
             end
         end
     end
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
+function TalentTree:Reset(hero)
+    if (hero and hero.talents) then
+        TalentTree:RemoveAllTalentAbilities(hero)
+        for talentId = 1, TalentTree.latest_talent_id do
+            TalentTree:SetHeroTalentLevel(hero, talentId, 0)
+        end
+        local new_event = {
+            player_id = hero:GetPlayerID()
+        }
+        TalentTree:OnTalentTreeStateRequest(new_event, nil)
+    end
+end
+
+---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:RemoveAllTalentAbilities(hero)
     if (hero ~= nil and hero.talents ~= nil) then
+        hero:RemoveAbility(TalentTree.tempAbilities[1])
+        hero:RemoveAbility(TalentTree.tempAbilities[2])
         for i = 19, 24 do
             local name = TalentTree:GetTalentAbilityName(hero, i)
             local ability = hero:FindAbilityByName(name)
@@ -56,6 +98,8 @@ function TalentTree:RemoveAllTalentAbilities(hero)
         end
         hero:AddAbility(TalentTree.tempAbilities[1])
         hero:AddAbility(TalentTree.tempAbilities[2])
+        -- for test only, remove later pls
+        hero:FindAbilityByName("antimage_blink"):SetLevel(4)
     end
 end
 
