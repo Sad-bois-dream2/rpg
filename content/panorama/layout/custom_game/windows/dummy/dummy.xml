@@ -13,7 +13,7 @@
                 <Panel class="TopContent">
                     <Panel class="LeftSide">
                         <Panel class="DamageLog">
-                            <Label html="true" id="DamageText" text=""/>
+                            <Label html="true" id="DamageText"/>
                         </Panel>
                     </Panel>
                     <Panel class="RightSide">
@@ -31,8 +31,7 @@
                     </Panel>
                 </Panel>
             </Panel>
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
-                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
         </Panel>
     </Panel>
 </root>

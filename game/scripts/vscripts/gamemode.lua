@@ -55,6 +55,7 @@ require('systems/aggro')
 require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
+require('systems/dummy')
 
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.
