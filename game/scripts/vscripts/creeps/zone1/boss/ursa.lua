@@ -573,7 +573,7 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") / 100
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow") / 100
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow")
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") / 100
 end
 

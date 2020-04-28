@@ -54,7 +54,7 @@ function modifier_lycan_call_timer:OnDestroyed() -- kill summon wolves  > Doesnt
     end
 end
 
-LinkLuaModifier("modifier_lycan_call_timer", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_call_timer", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function lycan_call:SummonWolf(enemy)
     local caster = self:GetCaster()
@@ -145,7 +145,7 @@ function modifier_lycan_companion:OnCreated()
     self.ability = self:GetAbility()
 end
 
-LinkLuaModifier("modifier_lycan_companion", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_companion", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function modifier_lycan_companion:OnAttackLanded(keys)
     -- start cd
@@ -283,7 +283,7 @@ end
 
 
 
-LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 ---------------------
 --lycan wolf form
 ---------------------
@@ -326,7 +326,7 @@ function modifier_lycan_wolf_form:OnCreated()
 
 end
 
-LinkLuaModifier("modifier_lycan_wolf_form", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_wolf_form", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 modifier_lycan_transform= modifier_lycan_transform or class({
@@ -391,7 +391,7 @@ end
 
 
 
-LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function lycan_wolf_form:Transform()
     local particle_cast = "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
@@ -489,7 +489,7 @@ function modifier_lycan_howl_aura:OnCreated() -- giving lycan primary buff this 
 
 end
 
-LinkLuaModifier("modifier_lycan_howl_aura", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_howl_aura", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_howl_aura_buff = modifier_lycan_howl_aura_buff or class({
     IsDebuff = function(self)
@@ -535,7 +535,7 @@ function modifier_lycan_howl_aura_buff:GetMoveSpeedPercentBonus()
     return self.ms_aura
 end
 
-LinkLuaModifier("modifier_lycan_howl_aura_buff", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_howl_aura_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_howl_debuff = modifier_lycan_howl_debuff or class({
     IsDebuff = function(self)
@@ -589,7 +589,7 @@ function modifier_lycan_howl_debuff:GetSpellDamageBonus()
     return self.spelldmg_reduction or 0
 end
 
-LinkLuaModifier("modifier_lycan_howl_debuff", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_howl_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 
@@ -667,7 +667,7 @@ modifier_lycan_agility_already_hit = modifier_lycan_agility_already_hit or class
     end,
 })
 
-LinkLuaModifier("modifier_lycan_agility_already_hit", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_agility_already_hit", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 function lycan_agility:FindTargetForBlink(caster, radius)
@@ -728,7 +728,6 @@ function lycan_agility:Blink(target)
 end
 
 function lycan_agility:OnSpellStart()
-    local ability = self
     local caster = self:GetCaster()
     local radius = 1000
     local target = caster
@@ -793,7 +792,7 @@ function modifier_lycan_double_strike:OnCreated()
     self.chance = self.chance or self.ability:GetSpecialValueFor("chance")
 end
 
-LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_quick_hit= modifier_lycan_quick_hit or class({
     IsDebuff = function(self)
@@ -832,7 +831,7 @@ function modifier_lycan_quick_hit:GetAttackSpeedBonus()
     return self.as_bonus
 end
 
-LinkLuaModifier("modifier_lycan_quick_hit", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_quick_hit", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function modifier_lycan_double_strike:OnAttackLanded(keys)
     -- start cd
@@ -907,7 +906,7 @@ function modifier_lycan_bleeding:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
 end
-LinkLuaModifier("modifier_lycan_bleeding", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_bleeding", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_bleeding_dot = modifier_lycan_bleeding_dot or class({
     IsDebuff = function(self)
@@ -953,7 +952,7 @@ end
 
 
 
-LinkLuaModifier("modifier_lycan_bleeding_dot", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_bleeding_dot", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_bleeding_heal_reduced = modifier_lycan_bleeding_heal_reduced or class({
     IsDebuff = function(self)
@@ -988,7 +987,7 @@ function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus(
 end
 
 
-LinkLuaModifier("modifier_lycan_heal_reduced", "creeps/zone1/miniboss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 
