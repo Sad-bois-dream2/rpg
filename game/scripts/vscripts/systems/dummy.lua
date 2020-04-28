@@ -87,6 +87,12 @@ modifier_dps_dummy_counter = modifier_dps_dummy_counter or class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MIN_HEALTH }
+    end,
+    GetMinHealth = function(self)
+        return 1
     end
 })
 
@@ -142,6 +148,66 @@ function Dummy:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_dummy_start", Dynamic_Wrap(Dummy, 'OnDummyStartRequest'))
     CustomGameEventManager:RegisterListener("rpg_dummy_open_window", Dynamic_Wrap(Dummy, 'OnDummyOpenWindowRequest'))
     CustomGameEventManager:RegisterListener("rpg_dummy_close_window", Dynamic_Wrap(Dummy, 'OnDummyCloseWindowRequest'))
+    CustomGameEventManager:RegisterListener("rpg_dummy_update_stats", Dynamic_Wrap(Dummy, 'OnDummyUpdateStatsRequest'))
+end
+
+function Dummy:OnDummyUpdateStatsRequest(event)
+    if (not event or not event.dummy) then
+        return
+    end
+    event.physdmg = tonumber(string.gsub(tostring(event.physdmg), ",", "."))
+    event.firedmg = tonumber(string.gsub(tostring(event.firedmg), ",", "."))
+    event.frostdmg = tonumber(string.gsub(tostring(event.frostdmg), ",", "."))
+    event.earthdmg = tonumber(string.gsub(tostring(event.earthdmg), ",", "."))
+    event.naturedmg = tonumber(string.gsub(tostring(event.naturedmg), ",", "."))
+    event.voiddmg = tonumber(string.gsub(tostring(event.voiddmg), ",", "."))
+    event.infernodmg = tonumber(string.gsub(tostring(event.infernodmg), ",", "."))
+    event.holydmg = tonumber(string.gsub(tostring(event.holydmg), ",", "."))
+    event.dummy = EntIndexToHScript(event.dummy)
+    if (not event.dummy) then
+        return
+    end
+    if (not event.physdmg or event.physdmg < 0) then
+        return
+    end
+    if (not event.firedmg or event.firedmg < 0) then
+        return
+    end
+    if (not event.frostdmg or event.frostdmg < 0) then
+        return
+    end
+    if (not event.earthdmg or event.earthdmg < 0) then
+        return
+    end
+    if (not event.naturedmg or event.naturedmg < 0) then
+        return
+    end
+    if (not event.voiddmg or event.voiddmg < 0) then
+        return
+    end
+    if (not event.infernodmg or event.infernodmg < 0) then
+        return
+    end
+    if (not event.holydmg or event.holydmg < 0) then
+        return
+    end
+    event.physdmg = event.physdmg / 100
+    event.firedmg = event.firedmg / 100
+    event.frostdmg = event.frostdmg / 100
+    event.earthdmg = event.earthdmg / 100
+    event.naturedmg = event.naturedmg / 100
+    event.voiddmg = event.voiddmg / 100
+    event.infernodmg = event.infernodmg / 100
+    event.holydmg = event.holydmg / 100
+    event.dummy.bonusStats = event.dummy.bonusStats or {}
+    event.dummy.bonusStats.physdmg = event.physdmg
+    event.dummy.bonusStats.firedmg = event.firedmg
+    event.dummy.bonusStats.frostdmg = event.frostdmg
+    event.dummy.bonusStats.earthdmg = event.earthdmg
+    event.dummy.bonusStats.naturedmg = event.naturedmg
+    event.dummy.bonusStats.voiddmg = event.voiddmg
+    event.dummy.bonusStats.infernodmg = event.infernodmg
+    event.dummy.bonusStats.holydmg = event.holydmg
 end
 
 function Dummy:CalculateDPS(dummy)

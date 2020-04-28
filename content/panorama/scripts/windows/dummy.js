@@ -130,9 +130,18 @@ function OnEliteStatsButtonPressed() {
 }
 
 function OnUpdateStatsButtonPressed() {
-    for (var i = 0; i < armors.length; i++) {
-	    armors[i].text = "23";
-	}
+    var event = {
+        "dummy" : latestSelectedDummy,
+        "physdmg" : armors[0].text,
+        "firedmg" : armors[1].text,
+        "frostdmg" : armors[2].text,
+        "earthdmg" : armors[3].text,
+        "naturedmg" : armors[4].text,
+        "voiddmg" : armors[5].text,
+        "infernodmg" : armors[6].text,
+        "holydmg" : armors[7].text,
+    }
+    GameEvents.SendCustomGameEventToServer("rpg_dummy_update_stats", event);
 }
 
 (function() {
