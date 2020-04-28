@@ -176,7 +176,7 @@ function modifier_creep_scaling:OnCreated()
             local addedAbility = self.creep:AddAbility(ability)
             addedAbility:SetLevel(abilitiesLevel)
             abilitiesAdded = abilitiesAdded + 1
-            if (addedAbility.IsRequireCastbar and castbarRequired) then
+            if (addedAbility.IsRequireCastbar and not castbarRequired) then
                 castbarRequired = addedAbility:IsRequireCastbar()
             end
         end
