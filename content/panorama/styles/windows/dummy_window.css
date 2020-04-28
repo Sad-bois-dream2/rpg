@@ -1,0 +1,84 @@
+.DummyWindow
+{
+    width: 600px;
+    height: 600px;
+    horizontal-align: left;
+    margin-left: 20px;
+}
+
+.DamageLog
+{
+    width: 370px;
+    height: fit-children;
+    background-color: black;
+    border-radius: 5px;
+    overflow: squish scroll;
+    max-height: 500px;
+    min-height: 500px;
+}
+
+.DamageLog #DamageText
+{
+	color: white;
+	horizontal-align: left;
+	vertical-align: top;
+	font-size: 14px;
+	width: 100%;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	white-space: normal;
+}
+
+.DamageNumber {
+	font-size: 14px;
+}
+
+.DamageOwner {
+	font-size: 14px;
+	font-style: italic;
+}
+
+.DamageSource {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.WindowContent
+{
+	margin-top: 0px;
+	flow-children: down;
+}
+
+.TopContent
+{
+    margin-top: 50px;
+    width: 100%;
+    flow-children: right;
+}
+
+.TopContent .LeftSide
+{
+    margin-left: 30px;
+}
+
+.TopContent .RightSide
+{
+    width: 100%;
+    flow-children: down;
+}
+
+.RightSideLabel
+{
+	color: white;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+
+.BottomContent
+{
+    width: 100%;
+    vertical-align: center;
+}

@@ -1,0 +1,38 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/dummy_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/dummy.js"/>
+        <include src="file://{resources}/scripts/windows/basic_window.js"/>
+    </scripts>
+    <Panel class="Root" hittest="false">
+        <Panel id="MainWindow" class="Window DummyWindow" style="visibility: visible;">
+            <Panel class="WindowContent">
+                <Panel class="TopContent">
+                    <Panel class="LeftSide">
+                        <Panel class="DamageLog">
+                            <Label html="true" id="DamageText" text=""/>
+                        </Panel>
+                    </Panel>
+                    <Panel class="RightSide">
+                        <Label html="true" class="RightSideLabel" text="DAMAGE PER SECOND"/>
+                        <Label html="true" class="RightSideLabel" id="DPS" text="?"/>
+                        <Label html="true" class="RightSideLabel" text="DUMMY STATS"/>
+                    </Panel>
+                </Panel>
+                <Panel class="BottomContent">
+                    <Panel class="WindowButton" style="margin-left: 80px;" onactivate="()">
+                        <Label text="START 10S TIMER"/>
+                    </Panel>
+                    <Panel class="WindowButton" style="margin-left: 400px;" onactivate="()">
+                        <Label text="CLEAR LOG"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
+                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+        </Panel>
+    </Panel>
+</root>
