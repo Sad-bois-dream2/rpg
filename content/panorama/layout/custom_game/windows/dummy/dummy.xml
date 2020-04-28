@@ -12,9 +12,7 @@
             <Panel class="WindowContent">
                 <Panel class="TopContent">
                     <Panel class="LeftSide">
-                        <Panel class="DamageLog">
-                            <Label html="true" id="DamageText"/>
-                        </Panel>
+                        <Panel id="DamageLog" class="DamageLog" />
                     </Panel>
                     <Panel class="RightSide">
                         <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_DPS_Label"/>

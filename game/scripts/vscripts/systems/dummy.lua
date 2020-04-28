@@ -25,14 +25,17 @@ function modifier_dps_dummy:OnPostTakeDamage(damageTable)
     local playerId = damageTable.attacker:GetPlayerID()
     if (modifier and damageTable.victim.isready and playerId == damageTable.victim.owner) then
         local abilityDamage = false
+        local abilityName = ""
         if (damageTable.ability) then
             abilityDamage = true
+            abilityName = damageTable.ability:GetAbilityName()
         end
         local event = {
             player_id = playerId,
             damage = damageTable.damage,
             source = damageTable.attacker:GetUnitName(),
             ability = abilityDamage,
+            abilityName = abilityName,
             physdmg = damageTable.physdmg,
             puredmg = damageTable.puredmg,
             firedmg = damageTable.firedmg,

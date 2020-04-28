@@ -1,10 +1,16 @@
 //text = text + "<br><span class='DamageOwner'>Crystal Sorceress</span> dealed <span class='DamageNumber'>" + damage.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " </span> <font color='#8f8f8f'>Physical</font>, <font color='#2084f6'>Frost</font> damage from <span class='DamageSource'>" + damageType + "</span>.";
 var mainWindow, damageLabel, dpsLabel;
-
+var MAX_CAPACITY = 50;
+var DAMAGE_ENTRY_CONTAINER = 0, DAMAGE_ENTRY_LABEL = 1;
+var currentEntryIndex = 0;
+var damageEntries = [];
 var latestSelectedDummy;
 
 function OnClearLogButtonPressed() {
-	damageLabel.text = "";
+    for (var i = 0; i < MAX_CAPACITY; i++) {
+	    damageEntries[i][DAMAGE_ENTRY_CONTAINER].style.visibility = "collapse";
+	}
+    currentEntryIndex = 0;
 }
 
 function OnStartTestButtonPressed() {
@@ -41,8 +47,63 @@ function OnWindowCloseRequest(event) {
 	mainWindow.style.visibility = "collapse";
 }
 
+function BuildDamageTypesString(event) {
+    var result = "";
+    if(event.physdmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Physical") +", ";
+    }
+    if(event.puredmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Pure") +", ";
+    }
+    if(event.firedmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Fire") +", ";
+    }
+    if(event.frostdmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Frost") +", ";
+    }
+    if(event.earthdmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Earth") +", ";
+    }
+    if(event.naturedmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Nature") +", ";
+    }
+    if(event.voiddmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Void") +", ";
+    }
+    if(event.infernodmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Inferno") +", ";
+    }
+    if(event.holydmg) {
+        result += $.Localize("#DOTA_Dummy_Damage_Holy") +", ";
+    }
+    result = result.trim();
+    if(result.length > 1) {
+        result = result.slice(0, -1);
+    }
+    return result;
+}
+
+function BuildDamageSourceString(event) {
+    if(event.fromsummon) {
+        return $.Localize("#DOTA_Dummy_Damage_Source_Summon");
+    }
+    if(!event.ability && event.physdmg) {
+        return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
+    } else {
+        return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", event.abilityName);
+    }
+}
+
 function OnDamageRegisterRequest(event) {
-	damageLabel.text += "LONG TEXT REEEEEEEEEEALLLA ASDDASDASDASDAS DSDASDASDASDAS " + event.damage + "<br><br>";
+    if(currentEntryIndex < MAX_CAPACITY) {
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = $.Localize("#DOTA_Dummy_Damage_Instance");
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%SOURCE%", $.Localize("#" + event.source));
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE%", event.damage);
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE_TYPES%", BuildDamageTypesString(event));
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE_SOURCE%", BuildDamageSourceString(event));
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_CONTAINER].style.visibility = "visible";
+	    currentEntryIndex++;
+	}
 }
 
 function OnResultRegisterRequest(event) {
@@ -60,7 +121,14 @@ function OnLoadDamageRequest(event) {
 
 (function() {
     mainWindow = $("#MainWindow");
-    damageLabel = $("#DamageText");
+    damageContainer = $("#DamageLog");
+    for (var i =0; i < MAX_CAPACITY; i++) {
+        var damageEntry = $.CreatePanel("Panel", damageContainer, "");
+        damageEntry.SetHasClass("DamageEntry", true)
+        damageEntry.BLoadLayout("file://{resources}/layout/custom_game/windows/dummy/dummy_damage_entry.xml", false, false);
+        damageEntry.style.visibility = "collapse";
+        damageEntries.push([damageEntry, damageEntry.GetChild(0)]);
+    }
     dpsLabel = $("#DPS")
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelection);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelection);
