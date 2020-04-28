@@ -170,11 +170,15 @@ function modifier_creep_scaling:OnCreated()
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
+    local castbarRequired = false
     for i, ability in pairs(abilities[1]) do
         if (not self.creep:HasAbility(ability)) then
             local addedAbility = self.creep:AddAbility(ability)
             addedAbility:SetLevel(abilitiesLevel)
             abilitiesAdded = abilitiesAdded + 1
+            if (addedAbility.IsRequireCastbar and castbarRequired) then
+                castbarRequired = addedAbility:IsRequireCastbar()
+            end
         end
     end
     if (abilitiesAdded < 10) then
@@ -183,8 +187,14 @@ function modifier_creep_scaling:OnCreated()
                 local addedAbility = self.creep:AddAbility(ability)
                 addedAbility:SetLevel(abilitiesLevel)
                 abilitiesAdded = abilitiesAdded + 1
+                if (addedAbility.IsRequireCastbar and not castbarRequired) then
+                    castbarRequired = addedAbility:IsRequireCastbar()
+                end
             end
         end
+    end
+    if (castbarRequired == true) then
+        Castbar:AddToUnit(self.creep)
     end
     self.damage = self.damage * math.pow(self.difficulty, 3)
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
