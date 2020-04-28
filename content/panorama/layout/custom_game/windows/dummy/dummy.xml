@@ -19,48 +19,56 @@
                         <Label html="true" class="RightSideLabel" id="DPS" text="?"/>
                         <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_Stats_Label"/>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Physical_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="PhysArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/fire_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Fire_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="FireArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/frost_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Frost_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="FrostArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/earth_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Earth_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="EarthArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/nature_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Nature_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="NatureArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/void_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Void_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="VoidArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Inferno_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="InfernoArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
-                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
-                            <TextEntry maxchars="100"/>
+                            <Image src="file://{images}/custom_game/hud/holy_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Holy_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
+                            <TextEntry id="HolyArmor" maxchars="6"/>
+                            <Label text="%" />
                         </Panel>
                         <Panel class="RightSideElement WindowButton"
-                               onactivate="OnClearLogButtonPressed()">
-                            <Label text="BOSS STATS"/>
+                               onactivate="OnBossStatsButtonPressed()">
+                            <Label text="#DOTA_Dummy_Boss_Stats_Button"/>
                         </Panel>
                         <Panel class="RightSideElement WindowButton"
-                               onactivate="OnClearLogButtonPressed()">
-                            <Label text="ELTIE STATS"/>
+                               onactivate="OnEliteStatsButtonPressed()">
+                            <Label text="#DOTA_Dummy_Elite_Stats_Button"/>
                         </Panel>
                         <Panel class="RightSideElement WindowButton"
-                               onactivate="OnClearLogButtonPressed()">
-                            <Label text="UPDATE DUMMY"/>
+                               onactivate="OnUpdateStatsButtonPressed()">
+                            <Label text="#DOTA_Dummy_Update_Stats_Button"/>
                         </Panel>
                     </Panel>
                 </Panel>

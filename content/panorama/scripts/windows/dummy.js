@@ -5,6 +5,7 @@ var DAMAGE_ENTRY_CONTAINER = 0, DAMAGE_ENTRY_LABEL = 1;
 var currentEntryIndex = 0;
 var damageEntries = [];
 var latestSelectedDummy;
+var armors = [];
 
 function OnClearLogButtonPressed() {
     for (var i = 0; i < MAX_CAPACITY; i++) {
@@ -116,6 +117,24 @@ function ClearWindow() {
     OnClearLogButtonPressed();
 }
 
+function OnBossStatsButtonPressed() {
+    for (var i = 0; i < armors.length; i++) {
+	    armors[i].text = "47";
+	}
+}
+
+function OnEliteStatsButtonPressed() {
+    for (var i = 0; i < armors.length; i++) {
+	    armors[i].text = "23";
+	}
+}
+
+function OnUpdateStatsButtonPressed() {
+    for (var i = 0; i < armors.length; i++) {
+	    armors[i].text = "23";
+	}
+}
+
 (function() {
     mainWindow = $("#MainWindow");
     damageContainer = $("#DamageLog");
@@ -126,7 +145,18 @@ function ClearWindow() {
         damageEntry.style.visibility = "collapse";
         damageEntries.push([damageEntry, damageEntry.GetChild(0)]);
     }
-    dpsLabel = $("#DPS")
+    armors.push($("#PhysArmor"));
+    armors.push($("#FireArmor"));
+    armors.push($("#FrostArmor"));
+    armors.push($("#EarthArmor"));
+    armors.push($("#NatureArmor"));
+    armors.push($("#VoidArmor"));
+    armors.push($("#InfernoArmor"));
+    armors.push($("#HolyArmor"));
+    for (var i = 0; i < armors.length; i++) {
+	    armors[i].text = "0";
+	}
+    dpsLabel = $("#DPS");
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelection);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelection);
     GameEvents.Subscribe("rpg_dummy_open_window_from_server", OnWindowOpenRequest);

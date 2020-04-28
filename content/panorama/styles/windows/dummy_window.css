@@ -86,6 +86,7 @@
 	font-size: 16px;
 	margin-bottom: 5px;
 	text-overflow: shrink;
+	font-family: platformfont;
 }
 
 .BottomContent
@@ -104,8 +105,22 @@
 
 .WindowTextBox TextEntry
 {
-    width: 136px;
+    width: 120px;
     height: 28px;
+    margin-right: 0px;
+}
+
+.WindowTextBox Label
+{
+	width: fill-parent-flow(1.0);
+	height: fit-children;
+    text-align: center;
+	color: white;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 16px;
+	padding-right: 10px;
+    font-family: platformfont;
 }
 
 .RightSideElement
