@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-	"npc_creep_lycan_call_wolf"
+	"npc_boss_lycan_call_wolf"
 	{
 	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
@@ -56,7 +56,7 @@
 		"VisionDaytimeRange"		"800"		// Range of vision during day light.
 		"VisionNighttimeRange"		"800"		// Range of vision at night time.
 	}
-	"npc_creep_lycan_companion_wolf"
+	"npc_boss_lycan_companion_wolf"
 	{
 	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General

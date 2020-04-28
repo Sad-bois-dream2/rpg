@@ -1,11 +1,11 @@
 "DOTAUnits"
 {
-    "npc_creep_lycan"
+    "npc_boss_luna"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/heroes/lycan/lycan.vmdl"  // Model.
+        "Model"           "models/heroes/luna/luna.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "30"
         "UnitLabel"         "healing_ward"
@@ -13,14 +13,15 @@
         // Abilities
         //----------------------------------------------------------------
 
-          "Ability1"          "lycan_call"     // Ability 1.
-          "Ability2"          "lycan_companion"     // Ability 2.
-          "Ability3"          "lycan_wound"      // Ability 3.
-          "Ability4"          "lycan_wolf_form"      // Ability 4.
-          "Ability5"          "lycan_howl_aura"     // Ability 5.
-          "Ability6"          "lycan_agility"      // Ability 7 - Extra.
-          "Ability7"          "lycan_double_strike"      // Ability 8 - Extra.
-          "Ability8"          "lycan_bleeding"      // Ability 9 - Extra.
+          "Ability1"          "luna_void_glaive"     // Ability 1.
+          "Ability2"          "luna_curse"     // Ability 2.
+          "Ability3"          "luna_bound"      // Ability 3.
+          "Ability4"          "luna_wave"      // Ability 4.
+          "Ability5"          "luna_cruel"     // Ability 5.
+          "Ability6"          ""      // Ability 6 - Extra.
+          "Ability7"          ""      // Ability 7 - Extra.
+          "Ability8"          ""      // Ability 8 - Extra.
+
 
         // Armor
         //----------------------------------------------------------------
@@ -29,14 +30,14 @@
 
         // Attack
         //----------------------------------------------------------------
-        "AttackCapabilities"    "DOTA_UNIT_CAP_MELEE_ATTACK"     // Type of attack - melee, ranged, etc.
+        "AttackCapabilities"    "DOTA_UNIT_CAP_RANGE_ATTACK"     // Type of attack - melee, ranged, etc.
         "AttackDamageMin"     "10"     // Damage range min.
         "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1"     // Speed of attack.
-        "AttackAnimationPoint"    "0.5"   // Normalized time in animation cycle to attack.
+        "AttackAnimationPoint"    "0.2"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
-        "AttackRange"       "150"   // Range within a target can be attacked.
+        "AttackRange"       "450"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
 
@@ -96,12 +97,13 @@
         {
         "AttachWearables"
                     {
-                        "1" { "ItemDef" "8997" }
-                        "2" { "ItemDef" "8995   " }
-                        "3" { "ItemDef" "8987" }
-                        "4" { "ItemDef" "8988" }
-                        "5" { "ItemDef" "8989" }
-                        "6" { "ItemDef" "13542" }
+                        "1" { "ItemDef" "13000" } //immortal glaive
+                        "2" { "ItemDef" "8301" } //immortal shield
+                        "3" { "ItemDef" "7702" } //bareboob shoulder
+                        "4" { "ItemDef" "5947" } //lucentyr
+                        "5" { "ItemDef" "7701" } //Hair
+
+
                     }
 
         }

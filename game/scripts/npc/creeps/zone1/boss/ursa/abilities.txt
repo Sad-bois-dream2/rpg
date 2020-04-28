@@ -1,0 +1,332 @@
+"DOTAAbilities"
+{
+    //=================================================================================================================
+	// Ursa : Rend
+	//=================================================================================================================
+	"ursa_rend"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_rend"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20 15 10 "
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stun"				        "1 2 4"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"armor_reduction_pct"		"20 50 100"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"15 15 15"
+			}
+		}
+				"precache"
+        		{
+        			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+        			"soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
+        			"particle" "particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf"
+        		}
+	}
+    //=================================================================================================================
+    // Ursa : Fury
+    //=================================================================================================================
+    "ursa_fury"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_fury"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AbilityCastPoint"				"0.1"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "3 5 8"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"attackspeed_bonus"	    	"100 300 500"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"movespeed_bonus"			"50 100 300"
+   			}
+   		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ursa.vsndevts"
+		}
+	}
+    //=================================================================================================================
+    // Ursa : Roar
+    //=================================================================================================================
+    "ursa_roar"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_roar"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"MaxLevel"						"3"
+
+   		// Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AnimationPlaybackRate"         "0.4"
+        "AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2.0"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   		    "01"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"radius"				    "500 800 1300"
+             }
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"				    "1 2 4"
+   			}
+   		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ursa.vsndevts"
+		}
+	}
+    //=================================================================================================================
+    // Ursa : Swift
+    //=================================================================================================================
+    "ursa_swift"
+    {
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_swift"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10 6 2"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+                "chance"               "20 40 80"
+            }
+            "02"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"duration"				    "3 5 8"
+            }
+            "03"
+        	{
+               				"var_type"					"FIELD_FLOAT"
+               				"attackspeed_bonus"	    	"100 300 500"
+            }
+            "04"
+            {
+               				"var_type"					"FIELD_FLOAT"
+               				"movespeed_bonus"			"50 100 300"
+            }
+            "05"
+            {
+               				"var_type"					"FIELD_FLOAT"
+               				"radius"			            "2000 2000 2000"
+            }
+
+
+		}
+				"precache"
+        		{
+        			"soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+
+        		}
+    }
+
+    //=================================================================================================================
+    // Ursa : Slam
+    //=================================================================================================================
+    "ursa_slam"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_slam"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AnimationPlaybackRate"         "0.4"
+        "AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2.0"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "500 800 1300"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"	    	    "0"
+   			}
+
+   			"03"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"ms_slow"	    	        "-80 -80 -80"
+   			}
+   			"04"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"as_slow"	    	        "-80 -80 -80"
+   			}
+   			"05"
+   			{
+	            "var_type"				    "FIELD_FLOAT"
+   				"sph_slow"	    	        "-80 -80 -80"
+   			}
+   			"06"
+   			 {
+            	"var_type"				    "FIELD_FLOAT"
+               	"duration"	    	            "2 4 6"
+             }
+   		}
+   				"precache"
+                		{
+                			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ursa.vsndevts"
+                			"particle" "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf"
+                			"particle" "particles/units/heroes/hero_slardar/slardar_crush_entity.vpcf"
+                			"particle" "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+                		}
+    }
+
+    //=================================================================================================================
+    // Ursa : Hunting Prey
+    //=================================================================================================================
+    "ursa_hunt"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/ursa"
+        "AbilityTextureName"			"ursa_hunt"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"100"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.2"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "7 10 15"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage_increase_outgoing_pct"			"100 200 300"
+   			}
+            "03"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"damage_increase_incoming_pct"			"25 20 15"
+    		}
+            "04"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"health_heal_pct"			"10 13 16"
+    		}
+            "05"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"radius"			            "2000 2000 2000"
+    		}
+   		}
+   		"precache"
+        		{
+        		    "soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
+        			"soundfile"	"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        			"particle"	"particles/status_fx/status_effect_bloodrage.vpcf"
+        			"particle"	"particles/generic_gameplay/generic_lifesteal.vpcf"
+        			"particle"  ""particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf""
+        		    "particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
+        		}
+
+	}
+}

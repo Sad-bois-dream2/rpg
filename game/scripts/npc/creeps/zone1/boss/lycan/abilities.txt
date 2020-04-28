@@ -8,7 +8,7 @@
        		// General
        		//-------------------------------------------------------------------------------------------------------------
        		"BaseClass"						"ability_lua"
-            "ScriptFile"					"creeps/zone1/miniboss/lycan"
+            "ScriptFile"					"creeps/zone1/boss/lycan"
             "AbilityTextureName"			"lycan_call"
             "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
        		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
@@ -55,7 +55,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_companion"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
@@ -99,7 +99,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"creeps/zone1/miniboss/lycan"
+		"ScriptFile"					"creeps/zone1/boss/lycan"
 		"AbilityTextureName"			"lycan_wound"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "3"
@@ -156,7 +156,7 @@
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_shapeshift"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
@@ -208,7 +208,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_howl_aura"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
@@ -279,7 +279,7 @@
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_agility"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
@@ -323,7 +323,7 @@
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_double_strike"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
@@ -361,7 +361,7 @@
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/miniboss/lycan"
+        "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_bleeding"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
         "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
@@ -408,7 +408,7 @@
 		//// General
 		////-------------------------------------------------------------------------------------------------------------
 		//"BaseClass"						"ability_lua"
-		//"ScriptFile"					"creeps/zone1/miniboss/lycan"
+		//"ScriptFile"					"creeps/zone1/boss/lycan"
 		//"AbilityTextureName"			"lycan_curse"
         //"AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
         //"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"

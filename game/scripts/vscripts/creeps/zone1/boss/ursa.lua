@@ -39,7 +39,7 @@ function modifier_ursa_rend:OnCreated()
     self.ability = self:GetAbility()
 end
 
-LinkLuaModifier("modifier_ursa_rend", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_rend", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 function modifier_ursa_rend:OnAttackLanded(keys)
     --start cd
@@ -119,7 +119,7 @@ end
 
 
 
-LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
 -- ursa fury modifier
@@ -193,7 +193,7 @@ function modifier_ursa_fury:GetModifierMoveSpeed_Limit()
     return 1
 end
 
-LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_fury = class({
@@ -300,7 +300,7 @@ function modifier_ursa_swift:OnCreated()
 end
 
 
-LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_swift = class({
@@ -342,7 +342,7 @@ function modifier_ursa_swift_phase:OnCreated()
     self.ability = self:GetAbility()
 end
 
-LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 function ursa_swift:ApplyPhase(parent)
     -- "phase and flying after blink."
@@ -555,7 +555,7 @@ end
 -- Slow modifier
 modifier_ursa_slam_slow = class({})
 
-function modifier_ursa_slam_slow:GetAttackSpeedBonus()
+function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
     return self.as_slow
 end
 
@@ -573,15 +573,15 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") / 100
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow")
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow")
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow") / 100
+    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") / 100
 end
 
 function modifier_ursa_slam_slow:GetStatusEffectName()
     return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
 end
 
-LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
 -- ursa hunting prey
@@ -643,7 +643,7 @@ function modifier_ursa_hunt_buff_stats:OnDeath(params)
     end
 end
 
-LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_ursa_hunt_random_taunt = modifier_ursa_hunt_random_taunt or class({
     IsDebuff = function(self)
@@ -667,7 +667,7 @@ function modifier_ursa_hunt_random_taunt:IsTaunt()
     return true
 end
 
-LinkLuaModifier("modifier_ursa_hunt_random_taunt", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_hunt_random_taunt", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_hunt = class({
@@ -728,7 +728,7 @@ function ursa_hunt:OnSpellStart()
     modifierTable.modifier_name = "modifier_ursa_hunt_buff_stats"
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable) -- apply bloodrage
-    EmitSoundOn("hero_bloodseeker.bloodRage", caster)
+    tauntTarget:EmitSound("hero_bloodseeker.bloodRage")
     caster:EmitSound("ursa_ursa_overpower_03")
 end
 
