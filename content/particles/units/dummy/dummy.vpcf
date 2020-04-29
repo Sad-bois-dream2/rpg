@@ -8,9 +8,6 @@
 		{
 			m_ChildRef = resource:"particles/units/dummy/dummy_face.vpcf"
 		},
-		{
-			m_ChildRef = resource:"particles/units/dummy/dummy_number.vpcf"
-		},
 	]
 	m_flCullRadius = -1.0
 	m_controlPointConfigurations = 
