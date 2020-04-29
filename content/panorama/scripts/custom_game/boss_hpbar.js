@@ -47,7 +47,7 @@ function OnMPBarClick() {
 
 function RenderBossModel(bossName) {
     bossImage.RemoveAndDeleteChildren()
-    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "' onactivate='DOTAGlobalSceneFireEntityInput(BossPortraitScenePanel, " + bossName + ", SetAnimation, portrait)'/>");
+    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "'/>");
 }
 
 function UpdateSelection() {
