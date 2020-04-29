@@ -415,7 +415,8 @@ function modifier_stats_system:DeclareFunctions()
         MODIFIER_PROPERTY_STATS_AGILITY_BONUS,
         MODIFIER_PROPERTY_STATS_INTELLECT_BONUS,
         MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT,
-        MODIFIER_PROPERTY_MANA_REGEN_CONSTANT
+        MODIFIER_PROPERTY_MANA_REGEN_CONSTANT,
+        MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT
     }
     return funcs
 end
@@ -438,6 +439,18 @@ end
 
 function modifier_stats_system:GetModifierBonusStats_Intellect()
     return -Units:GetHeroIntellect(self.unit) or 0
+end
+
+function modifier_stats_system:GetModifierBonusStats_Intellect()
+    return -Units:GetHeroIntellect(self.unit) or 0
+end
+
+function modifier_stats_system:GetModifierAttackSpeedBonus_Constant()
+    return -100
+end
+
+function modifier_stats_system:GetAttackSpeedBonus()
+    return 100
 end
 
 function modifier_stats_system:OnAttackLanded(event)
