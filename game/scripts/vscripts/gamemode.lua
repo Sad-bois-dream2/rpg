@@ -55,6 +55,7 @@ require('systems/aggro')
 require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
+require('systems/dummy')
 
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.
@@ -128,6 +129,9 @@ function GameMode:OnGameInProgress()
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
     end
+    CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
+        dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
+    end)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game
@@ -151,14 +155,34 @@ end
 
 -- panaroma global stuff
 function GameMode:InitPanaromaEvents()
-	CustomGameEventManager:RegisterListener("rpg_say_chat_message", Dynamic_Wrap(GameMode, 'OnSayChatMessageRequest'))
+    CustomGameEventManager:RegisterListener("rpg_say_chat_message", Dynamic_Wrap(GameMode, 'OnSayChatMessageRequest'))
+    CustomGameEventManager:RegisterListener("rpg_close_all_windows", Dynamic_Wrap(GameMode, 'OnCloseAllWindowsRequest'))
+end
+
+function GameMode:OnCloseAllWindowsRequest(event, args)
+    if (not event) then
+        return
+    end
+    event.player_id = tonumber(event.player_id)
+    if (event.player_id) then
+        local player = PlayerResource:GetPlayer(event.player_id)
+        if (player) then
+            TalentTree:OnTalentTreeWindowCloseRequest(event, args)
+            Inventory:OnInventoryWindowCloseRequest(event, args)
+            Dummy:OnDummyCloseWindowRequest(event, args)
+        end
+    end
 end
 
 function GameMode:OnSayChatMessageRequest(event, args)
-	if(event.player_id ~= nil and event.msg ~= nil) then
-		local player = PlayerResource:GetPlayer( event.player_id )
-		if(player ~= nil) then
-			Say(player, event.msg, true)
-		end
-	end
+    if (not event) then
+        return
+    end
+    event.player_id = tonumber(event.player_id)
+    if (event.player_id and event.msg) then
+        local player = PlayerResource:GetPlayer(event.player_id)
+        if (player) then
+            Say(player, event.msg, true)
+        end
+    end
 end

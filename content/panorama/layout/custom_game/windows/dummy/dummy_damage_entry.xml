@@ -1,0 +1,9 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/dummy_window.css"/>
+    </styles>
+    <Panel hittest="false">
+        <Label html="true" text=""/>
+    </Panel>
+</root>
