@@ -26,7 +26,6 @@ function modifier_chosen_invoker_purification_brilliance_buff:OnCreated(keys)
     if (not IsServer()) then
         return
     end
-    PrintTable(keys)
     if (not keys or not keys.mana) then
         self:Destroy()
     end
