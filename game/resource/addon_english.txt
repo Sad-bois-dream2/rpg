@@ -602,8 +602,8 @@
 		"DOTA_Tooltip_ElementsProtection_Description"		"Reduces all spell damage taken of the respective element. The elements are fire, frost, earth, nature, void, inferno and holy."
 		"DOTA_Tooltip_ElementsDamage"		"Elemental Damage"
 		"DOTA_Tooltip_ElementsDamage_Description"		"Increases all spell damage dealt of the respective element. The elements are fire, frost, earth, nature, void, inferno and holy."
-		"DOTA_Tooltip_modifier_hero_lives"		"Great Maker's favor"
-		"DOTA_Tooltip_modifier_hero_lives_Description"		"The Great Maker will resurrect you several times. Use wisely!"
+		"DOTA_Tooltip_modifier_out_of_combat_buff"		"Out of combat"
+		"DOTA_Tooltip_modifier_out_of_combat_buff_Description"		"Healing over time, move speed increased. You will receive out of combat status, if you don't take damage or deal damage in last 5 seconds. Healing caused remove out of combat status from source, if target don't have it."
 		// Countless items
 	    // Creeps
 	    // Miniboss
