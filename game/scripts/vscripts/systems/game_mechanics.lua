@@ -731,7 +731,7 @@ end
 
 function modifier_out_of_combat:OnPostHeal(healTable)
     local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
-    if (modifier and not healTable.target:HasModifier("modifier_out_of_combat")) then
+    if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
         modifier.timer = 0
     end
 end
