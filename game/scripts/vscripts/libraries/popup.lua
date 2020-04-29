@@ -20,11 +20,11 @@ POPUP_SYMBOL_POST_POINTFIVE = 8
 
 -- e.g. when healed by an ability
 function PopupHealing(target, amount)
-    PopupNumbers(target, "poison", Vector(0, 255, 0), 1.0, amount, POPUP_SYMBOL_PRE_PLUS, nil)
+    PopupNumbers(target, "heal_big", Vector(0, 255, 0), 1.0, amount, POPUP_SYMBOL_PRE_PLUS, nil)
 end
 
 function PopupManaHealing(target, amount)
-    PopupNumbers(target, "poison", Vector(64, 189, 247), 1.0, amount, POPUP_SYMBOL_PRE_PLUS, nil)
+    PopupNumbers(target, "heal_big", Vector(64, 189, 247), 1.0, amount, POPUP_SYMBOL_PRE_PLUS, nil)
 end
 
 -- e.g. the popup you get when you suddenly take a large portion of your health pool in damage at once
@@ -73,7 +73,6 @@ function PopupNumbers(target, pfx, color, lifetime, number, presymbol, postsymbo
     if postsymbol ~= nil then
         digits = digits + 1
     end
-
     ParticleManager:SetParticleControl(pidx, 1, Vector(tonumber(presymbol), tonumber(number), tonumber(postsymbol)))
     ParticleManager:SetParticleControl(pidx, 2, Vector(lifetime, digits, 0))
     ParticleManager:SetParticleControl(pidx, 3, color)

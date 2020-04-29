@@ -2,12 +2,83 @@ if Enemies == nil then
     _G.Enemies = class({})
 end
 
+function Enemies:InitAbilites()
+    -- ursa
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_rend", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_fury", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_roar", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_swift", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_slam", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_ursa", "ursa_hunt", Enemies.ABILITY_TYPE_INNATE)
+    -- lycan
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_call", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_companion", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_wound", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_shapeshift", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_slam", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_hunt", Enemies.ABILITY_TYPE_INNATE)
+end
+
+-- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
         return
     end
+    Enemies.ABILITY_TYPE_INNATE = 1
+    Enemies.ABILITY_TYPE_RANDOM = 2
+    Enemies.ABILITY_TYPE_LAST = 2
+    Enemies.eliteAbilities = {}
+    Enemies.enemyAbilities = {}
     Enemies.STATS_CALCULATE_INTERVAL = 1
+    Enemies.MAX_ABILITIES = 10
+    Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
+    Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
+end
+
+function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
+    abilityType = tonumber(abilityType)
+    if (enemyName and abilityName and abilityType and abilityType > 0 and abilityType < Enemies.ABILITY_TYPE_LAST) then
+        table.insert(Enemies.enemyAbilities, { owner = enemyName, name = abilityName, type = abilityType })
+    end
+end
+
+function Enemies:RegisterEliteAbility(abilityName)
+    if (abilityName) then
+        table.insert(Enemies.eliteAbilities, abilityName)
+    end
+end
+
+function Enemies:GetAbilityListsForEnemy(unit)
+    local result = { {}, {} }
+    if (not unit or unit:IsNull()) then
+        return result
+    end
+    if (Enemies:IsElite(unit)) then
+        result[2] = Enemies.eliteAbilities
+    end
+    local unitName = unit:GetUnitName()
+    for _, ability in pairs(Enemies.enemyAbilities) do
+        if (ability.owner == unitName) then
+            if (ability.type == Enemies.ABILITY_TYPE_INNATE) then
+                table.insert(result[1], ability.name)
+            elseif (ability.type == Enemies.ABILITY_TYPE_RANDOM) then
+                table.insert(result[2], ability.name)
+            end
+        end
+    end
+    return result
+end
+
+function Enemies:GetAbilitiesLevel(difficulty)
+    local result = 1
+    if (difficulty > 4) then
+        result = 2
+    end
+    if (difficulty > 7) then
+        result = 3
+    end
+    return 1
 end
 
 function Enemies:OnUpdateEnemyStatsRequest(event, args)
@@ -29,6 +100,214 @@ end
 function Enemies:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_update_enemy_stats", Dynamic_Wrap(Enemies, 'OnUpdateEnemyStatsRequest'))
 end
+
+function Enemies:IsElite(unit)
+    if (not unit or unit:IsNull()) then
+        return false
+    end
+    return unit:HasModifier("modifier_creep_elite")
+end
+
+function Enemies:IsBoss(unit)
+    if (not unit or unit:IsNull()) then
+        return false
+    end
+    if (string.find(unit:GetUnitName(), "boss")) then
+        return true
+    end
+    return false
+end
+
+modifier_creep_scaling = modifier_creep_scaling or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_creep_scaling:GetValue(minValue, maxValue, scaling)
+    return minValue + ((maxValue - minValue) * scaling)
+end
+
+function modifier_creep_scaling:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.creep = self:GetParent()
+    self.name = self.creep:GetUnitName()
+    self.damage = Enemies.data[self.name]["AttackDamageMax"]
+    self.armor = 2
+    self.elementalArmor = 0.11
+    self.healthBonus = 1
+    if (Enemies:IsBoss(self.creep)) then
+        self.armor = 15
+        self.elementalArmor = 0.47
+    else
+        local eliteChance = 5
+        if (RollPercentage(eliteChance)) then
+            self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
+            self.armor = 5
+            self.elementalArmor = 0.23
+            self.damage = self.damage * 1.5
+            self.healthBonus = 10
+        end
+    end
+    self.difficulty = 1
+    local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
+    local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
+    local abilitiesAdded = 0
+    local castbarRequired = false
+    for i, ability in pairs(abilities[1]) do
+        if (not self.creep:HasAbility(ability)) then
+            local addedAbility = self.creep:AddAbility(ability)
+            addedAbility:SetLevel(abilitiesLevel)
+            abilitiesAdded = abilitiesAdded + 1
+            if (addedAbility.IsRequireCastbar and not castbarRequired) then
+                castbarRequired = addedAbility:IsRequireCastbar()
+            end
+        end
+    end
+    if (abilitiesAdded < 10) then
+        for i, ability in pairs(abilities[2]) do
+            if (not self.creep:HasAbility(ability)) then
+                local addedAbility = self.creep:AddAbility(ability)
+                addedAbility:SetLevel(abilitiesLevel)
+                abilitiesAdded = abilitiesAdded + 1
+                if (addedAbility.IsRequireCastbar and not castbarRequired) then
+                    castbarRequired = addedAbility:IsRequireCastbar()
+                end
+            end
+        end
+    end
+    if (castbarRequired == true) then
+        Castbar:AddToUnit(self.creep)
+    end
+    self.damage = self.damage * math.pow(self.difficulty, 3)
+    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
+    self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
+    self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
+    Timers:CreateTimer(0, function()
+        local stats = self.creep:FindModifierByName("modifier_stats_system")
+        if (stats) then
+            stats:OnIntervalThink()
+            self.creep:SetHealth(self.creep:GetMaxHealth())
+            self.creep:SetMana(self.creep:GetMaxMana())
+        else
+            return 0.25
+        end
+    end, self)
+end
+
+function modifier_creep_scaling:GetAttackDamageBonus()
+    return self.damage
+end
+
+function modifier_creep_scaling:GetArmorBonus()
+    return self.armor
+end
+
+function modifier_creep_scaling:GetFireProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetFrostProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetEarthProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetVoidProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetHolyProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetNatureProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetInfernoProtectionBonus()
+    return self.elementalArmor
+end
+
+function modifier_creep_scaling:GetBaseAttackTime()
+    return 2
+end
+
+function modifier_creep_scaling:GetHealthBonus()
+    return self.baseHealth
+end
+
+LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_creep_elite = modifier_creep_elite or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MODEL_SCALE }
+    end,
+    GetModifierModelScale = function(self)
+        return 25
+    end,
+    GetTexture = function()
+        return "centaur_khan_endurance_aura"
+    end,
+    GetEffectName = function(self)
+        return "particles/units/elite/elite_overhead.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end
+})
+
+LinkLuaModifier("modifier_creep_elite", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local IsLegitUnit = unit:IsCreature() and not (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() == DOTA_TEAM_NEUTRALS) then
+        unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
+    end
+end, nil)
+
+Enemies.initialized = false
 
 if not Enemies.initialized then
     Enemies:Init()

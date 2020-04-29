@@ -87,11 +87,6 @@
     visibility: visible;
 }
 
-.TalentPanel.disabled .TalentImageAndLevel .TalentLevel
-{
-	visibility: collapse;
-}
-
 .TalentsRow 
 {
 	flow-children: right;
@@ -112,13 +107,8 @@
 	height: 64px;
 	border: 1px solid grey;
 	border-radius: 5px;
-	/*
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	background-size: 100% 100%; */
-	margin-left: -45px;
 	flow-children: right;
+	margin-right: 135px;
 }
 
 .TreeBranchImagePanel
@@ -136,23 +126,19 @@
 	margin-right: 10px;
 	color: white;
 	font-size: 16px;
-	text-transform: uppercase;
 	font-family: platformfont;
 	text-overflow: shrink;
 	vertical-align: center;
 	horizontal-align: center;
 }
 
-.TreeBranchPanel.disabled .TreeBranchImagePanel Image
+.TreeHeaderRow
 {
-	brightness: 1;
-	saturation: 0;
-	wash-color: grey;
-}
-
-.TreeBranchPanel.disabled .TreeBranchLabel
-{
-	color: gray;
+    width: 100%;
+    height: fit-children;
+    padding-left: 120px;
+    padding-top: 20px;
+    flow-children: right;
 }
 
 .TotalTalentPointsLabel
@@ -161,7 +147,17 @@
 	vertical-align: bottom;
 	font-size: 20px;
 	color: white;
-	margin-bottom: 10px;
+	margin-bottom: 40px;
 	text-transform: uppercase;
+	font-family: platformfont;
+}
+
+.TalentTreeHelp
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	font-size: 16px;
+	color: white;
+	margin-bottom: 10px;
 	font-family: platformfont;
 }

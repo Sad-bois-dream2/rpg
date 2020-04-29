@@ -62,7 +62,6 @@
 					</Panel>
 					<Label id="HeroExpBarValue" class="HeroHpMpBarValue" text="78.4%" />
 				</Panel>
-				<Panel id="HeroLivesPanel" class="HeroLivesPanel" />
 				<DOTAScenePanel id="HeroPortrait" onactivate="OnPortraitClick()" class="OverviewHeroRender HeroPortrait" renderdeferred="false" unit="" drawbackground="0" allowrotation="false" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>
 				<Panel class="LevelBar" onactivate="OnLvlBarClick()">
 					<Label id="LevelBarValue" class="LevelBarValue" text= "43" /> 

@@ -16,6 +16,17 @@ function TalentTree:SetupForHero(hero)
     end
 end
 
+-- for test only, remove later pls
+if (IsServer()) then
+    ListenToGameEvent("player_chat", function(event)
+        if (event.text == "-reset") then
+            local player = PlayerResource:GetPlayer(event.playerid)
+            local hero = player:GetAssignedHero()
+            TalentTree:Reset(hero)
+        end
+    end, nil)
+end
+
 ---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:ChangeHeroAbilities(hero)
     if (hero ~= nil and hero.talents ~= nil) then
@@ -31,21 +42,52 @@ function TalentTree:ChangeHeroAbilities(hero)
             DebugPrintTable(talentAbilties)
             return
         end
-        local heroAbilties = { hero:GetAbilityByIndex(4), hero:GetAbilityByIndex(5) }
-        for i = 1, 2 do
-            local abilityName = heroAbilties[i]:GetAbilityName()
-            if ((abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) and talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
-                hero:RemoveAbility(abilityName)
-                local ability = hero:AddAbility(talentAbilties[i])
-                ability:SetAbilityIndex(6 - i)
+        local freeIndex = -1
+        for i = 1, 5 do
+            local ability = hero:GetAbilityByIndex(i)
+            local abilityName = ability:GetAbilityName()
+            if (abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) then
+                freeIndex = i
+                break
+            end
+        end
+        if (freeIndex < 0) then
+            return
+        end
+        for i = 1, #talentAbilties do
+            if (talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
+                local tempAbilityName = hero:GetAbilityByIndex(freeIndex)
+                if (tempAbilityName) then
+                    tempAbilityName = tempAbilityName:GetAbilityName()
+                    hero:RemoveAbility(tempAbilityName)
+                    local ability = hero:AddAbility(talentAbilties[i])
+                    ability:SetAbilityIndex(freeIndex)
+                    freeIndex = freeIndex + 1
+                end
             end
         end
     end
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
+function TalentTree:Reset(hero)
+    if (hero and hero.talents) then
+        TalentTree:RemoveAllTalentAbilities(hero)
+        for talentId = 1, TalentTree.latest_talent_id do
+            TalentTree:SetHeroTalentLevel(hero, talentId, 0)
+        end
+        local new_event = {
+            player_id = hero:GetPlayerID()
+        }
+        TalentTree:OnTalentTreeStateRequest(new_event, nil)
+    end
+end
+
+---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:RemoveAllTalentAbilities(hero)
     if (hero ~= nil and hero.talents ~= nil) then
+        hero:RemoveAbility(TalentTree.tempAbilities[1])
+        hero:RemoveAbility(TalentTree.tempAbilities[2])
         for i = 19, 24 do
             local name = TalentTree:GetTalentAbilityName(hero, i)
             local ability = hero:FindAbilityByName(name)
@@ -56,13 +98,15 @@ function TalentTree:RemoveAllTalentAbilities(hero)
         end
         hero:AddAbility(TalentTree.tempAbilities[1])
         hero:AddAbility(TalentTree.tempAbilities[2])
+        -- for test only, remove later pls
+        hero:FindAbilityByName("antimage_blink"):SetLevel(4)
     end
 end
 
 function TalentTree:Init()
     -- Changing that require modifying all Get() functions  and IsRequiredPointsForLineConditionMeet() below...
     self.latest_talent_id = 51
-    self.max_talent_points = 31
+    self.max_talent_points = 32
     self.tempAbilities = { "empty5", "antimage_blink" }
     self.talent_abilities = {
         ["npc_dota_hero_drow_ranger"] = {
@@ -228,12 +272,7 @@ function TalentTree:OnTalentTreeLevelUpRequest(event, args)
     end
     local IsPointsRequirmentPassed = true
     if (desiredTalentLine > 1) then
-        --local GetPointsSpendedInAllLinesBeforeForBranch = TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, desiredTalentLine, desiredTalentBranch)
-        --local requiredPointsLine = TalentTree:IsRequiredPointsForLineConditionMeet(hero, desiredTalentLine)
-        --if(requiredPointsLine >= pointsSpendedInLineAndBranch) then
-        --	IsPointsRequirmentPassed = true
-        --end
-        IsPointsRequirmentPassed = TalentTree:IsRequiredPointsForLineConditionMeet(hero, desiredTalentLine)
+        IsPointsRequirmentPassed = TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, desiredTalentLine, desiredTalentBranch)
     end
     if (not IsPointsRequirmentPassed) then
         return
@@ -242,8 +281,10 @@ function TalentTree:OnTalentTreeLevelUpRequest(event, args)
     local heroLevelOfTalent = TalentTree:GetHeroTalentLevel(hero, event.talent_id)
     local IsHeroHaveEnoughTalentPoints = (TalentTree:GetHeroCurrentTalentPoints(hero) >= 1)
     local totalPointsSpendedInLine = TalentTree:GetPointsSpendedInLine(hero, desiredTalentLine)
-    local IsMaximumPointsSpendedForLine = (totalPointsSpendedInLine > TalentTree:GetMaxPointsForLine(desiredTalentLine))
-    local IsHeroCanLevelUpTalent = (heroLevelOfTalent < maxLevelOfTalent) and IsHeroHaveEnoughTalentPoints and not IsMaximumPointsSpendedForLine
+    local IsMaximumPointsSpendedForLine = (totalPointsSpendedInLine >= TalentTree:GetMaxPointsForLine(desiredTalentLine))
+    local totalPointsSpendedInLineForBranch = TalentTree:GetPointsSpendedInLineForBranch(hero, desiredTalentLine, desiredTalentBranch)
+    local IsMaximumPointsSpendedForLineInBranch = (totalPointsSpendedInLineForBranch >= TalentTree:GetMaxPointsForLineInBranch(desiredTalentLine, desiredTalentBranch))
+    local IsHeroCanLevelUpTalent = (heroLevelOfTalent < maxLevelOfTalent) and IsHeroHaveEnoughTalentPoints and not IsMaximumPointsSpendedForLine and not IsMaximumPointsSpendedForLineInBranch
     if (IsHeroCanLevelUpTalent) then
         TalentTree:SetHeroTalentLevel(hero, event.talent_id, heroLevelOfTalent + 1)
         local new_event = {
@@ -312,19 +353,15 @@ end
 ---@param line number
 ---@param branch number
 ---@return number
-function TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch)
+function TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch)
     line = tonumber(line)
     branch = tonumber(branch)
     if (hero ~= nil and line ~= nil and branch ~= nil) then
-        if (line == 1) then
-            return 0
-        else
-            local result = 0
-            for i = 1, (line - 1) do
-                result = result + TalentTree:GetPointsSpendedInLineForBranch(hero, i, branch)
-            end
-            return result
+        local result = 0
+        for i = 1, line do
+            result = result + TalentTree:GetPointsSpendedInLineForBranch(hero, i, branch)
         end
+        return result
     end
     return 0
 end
@@ -473,30 +510,19 @@ end
 
 ---@param hero CDOTA_BaseNPC_Hero
 ---@param talentId number
+---@param branch number
 ---@return number
-function TalentTree:IsRequiredPointsForLineConditionMeet(hero, line)
+function TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, line, branch)
     line = tonumber(line)
     branch = tonumber(branch)
-    if (hero ~= nil and line ~= nil) then
-        local pointsInLine = {
-            TalentTree:GetPointsSpendedInLine(hero, 1),
-            TalentTree:GetPointsSpendedInLine(hero, 2),
-            TalentTree:GetPointsSpendedInLine(hero, 3),
-            TalentTree:GetPointsSpendedInLine(hero, 4),
-            TalentTree:GetPointsSpendedInLine(hero, 5),
-            TalentTree:GetPointsSpendedInLine(hero, 6)
-            --TalentTree:GetPointsSpendedInLine(hero, 7)
-        }
-        local lineCondtions = {}
-        lineCondtions[1] = true
-        lineCondtions[2] = (pointsInLine[1] >= 9)
-        lineCondtions[3] = ((pointsInLine[1] + pointsInLine[2]) >= 15)
-        lineCondtions[4] = (pointsInLine[3] >= 1)
-        lineCondtions[5] = (lineCondtions[3] and (pointsInLine[4] >= 9))
-        lineCondtions[6] = (pointsInLine[5] >= 1)
-        lineCondtions[7] = (pointsInLine[6] >= 1)
-        if (line >= 1 and line <= 7) then
-            return lineCondtions[line]
+    if (hero and line and line >= 1 and line <= 7 and branch) then
+        if (line >= 4) then
+            local pointsInAbilityLine = TalentTree:GetPointsSpendedInLineForBranch(hero, 3, branch)
+            local totalPointsSpended = TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) - pointsInAbilityLine
+            totalPointsSpended = totalPointsSpended + TalentTree:GetPointsSpendedInLine(hero, 3)
+            return totalPointsSpended >= (((line - 1) * 3) - 1)
+        else
+            return TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) >= ((line - 1) * 3)
         end
     end
     return false
@@ -504,30 +530,27 @@ end
 
 ---@param talentId number
 ---@return number
-function TalentTree:GetMaxPointsForLine(line)
+function TalentTree:GetMaxPointsForLineInBranch(line, branch)
     line = tonumber(line)
-    if (line ~= nil) then
-        if (line == 1) then
-            return 12
-        end
-        if (line == 2) then
-            return 6
-        end
-        if (line == 3) then
-            return 2
-        end
-        if (line == 4) then
-            return 9
-        end
-        if (line == 5) then
-            return 2
-        end
-        if (line == 6) then
-            return 2
-        end
+    branch = tonumber(branch)
+    if (line and branch) then
         if (line == 7) then
             return 1
         end
+        return 99999
+    end
+    return 0
+end
+
+---@param talentId number
+---@return number
+function TalentTree:GetMaxPointsForLine(line)
+    line = tonumber(line)
+    if (line) then
+        if (line == 3) then
+            return 2
+        end
+        return 99999
     end
     return 0
 end
@@ -537,18 +560,13 @@ end
 function TalentTree:GetMaxLevelForTalent(talentId)
     talentId = tonumber(talentId)
     if (talentId ~= nil) then
-        if (talentId >= 1 and talentId <= 18) then
-            return 3
-        end
         if (talentId > 18 and talentId <= 24) then
             return 1
         end
-        if (talentId > 24 and talentId <= 33) then
-            return 3
-        end
-        if (talentId > 33 and talentId <= 51) then
+        if (talentId > 45 and talentId <= 51) then
             return 1
         end
+        return 3
     end
     return 0
 end
@@ -617,14 +635,22 @@ function TalentTree:OnTalentTreeStateRequest(event, args)
                     local talentLvl = TalentTree:GetHeroTalentLevel(hero, i)
                     local talentMaxLvl = TalentTree:GetMaxLevelForTalent(i)
                     local talentLine = TalentTree:GetTalentLine(i)
-                    --local talentBranch = TalentTree:GetTalentBranch(i)
-                    local IsRequiredPointsForLineConditionMeet = TalentTree:IsRequiredPointsForLineConditionMeet(hero, talentLine)
-                    --local pointsSpendedBeforeThisTalent = TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, talentLine, talentBranch)
-                    --local IsTalentRequirmentsMeet = (pointsSpendedBeforeThisTalent >= talentRequiredPoints)
+                    local talentBranch = TalentTree:GetTalentBranch(i)
+                    local IsRequiredPointsForLineAndBranchConditionMeet = TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, talentLine, talentBranch)
                     local totalPointsSpendedInLine = TalentTree:GetPointsSpendedInLine(hero, talentLine)
                     local IsMaximumPointsSpendedForLine = (totalPointsSpendedInLine >= TalentTree:GetMaxPointsForLine(talentLine))
-                    local IsTalentMissLevels = (talentLvl < talentMaxLvl) and IsRequiredPointsForLineConditionMeet and not IsMaximumPointsSpendedForLine
-                    table.insert(resultTable, { talent_id = i, disabled = (not IsRequiredPointsForLineConditionMeet), lvlup = IsTalentMissLevels, level = talentLvl, maxlevel = talentMaxLvl, abilityname = TalentTree:GetTalentAbilityName(hero, i) })
+                    local totalPointsSpendedInLineForBranch = TalentTree:GetPointsSpendedInLineForBranch(hero, talentLine, talentBranch)
+                    local IsMaximumPointsSpendedForLineInBranch = (totalPointsSpendedInLineForBranch >= TalentTree:GetMaxPointsForLineInBranch(talentLine, talentBranch))
+                    local IsTalentMissLevels = (talentLvl < talentMaxLvl) and IsRequiredPointsForLineAndBranchConditionMeet and not IsMaximumPointsSpendedForLine and not IsMaximumPointsSpendedForLineInBranch
+                    table.insert(resultTable, { talent_id = i, disabled = (not IsRequiredPointsForLineAndBranchConditionMeet), lvlup = IsTalentMissLevels, level = talentLvl, maxlevel = talentMaxLvl, abilityname = TalentTree:GetTalentAbilityName(hero, i) })
+                end
+                if (TalentTree:GetHeroCurrentTalentPoints(hero) == 0) then
+                    for _, talent in pairs(resultTable) do
+                        if (TalentTree:GetHeroTalentLevel(hero, talent.talent_id) == 0) then
+                            talent.disabled = true
+                            talent.lvlup = false
+                        end
+                    end
                 end
                 CustomGameEventManager:Send_ServerToPlayer(player, "rpg_talenttree_require_player_talents_state_from_server", { player_id = event.player_id, data = json.encode(resultTable) })
                 TalentTree:SendTotalTalentPointsToPlayer(player)

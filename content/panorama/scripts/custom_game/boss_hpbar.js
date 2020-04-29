@@ -47,7 +47,7 @@ function OnMPBarClick() {
 
 function RenderBossModel(bossName) {
     bossImage.RemoveAndDeleteChildren()
-    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "' onactivate='DOTAGlobalSceneFireEntityInput(BossPortraitScenePanel, " + bossName + ", SetAnimation, portrait)'/>");
+    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "'/>");
 }
 
 function UpdateSelection() {
@@ -127,7 +127,7 @@ function UpdateValues() {
     if(latestStats) {
         bossAttackDamage.text = Entities.GetDamageMax(latestSelectedCreep);
         var armorReduction = (latestStats.armor * 0.06) / (1 + latestStats.armor * 0.06);
-        bossArmor.text = (Math.round(armorReduction * 100) / 100) + "%";
+        bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
         var elementalArmorValue = 0;
         var arr = Object.values(latestStats.elementsProtection);
         var length = arr.length;

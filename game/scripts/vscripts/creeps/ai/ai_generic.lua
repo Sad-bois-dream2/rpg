@@ -7,7 +7,6 @@ function Spawn(keys)
     if thisEntity == nil then
         return
     end
-    Castbar:AddToUnit(thisEntity)
     thisEntity.ai = {}
     thisEntity:SetContextThink("Think", Think, GENERIC_AI_THINK_INTERVAL)
 end
