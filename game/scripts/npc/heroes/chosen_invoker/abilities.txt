@@ -21,7 +21,7 @@
 		//-------------------------------------------------------------------------------------------------------------
         "AbilityCastRange"  "700"
 		"AbilityCastPoint"				"0"
-		"AbilityChannelTime"			"5.1"
+		"AbilityChannelTime"			"5.3"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"3"
@@ -46,17 +46,17 @@
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"mana"				"0.5 1 1.5 2"
+				"tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"mana_duration"				"3"
+				"mana"				"0.5 1 1.5 2"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"tick"				"1"
+				"mana_duration"				"3"
 			}
 		}
 		"precache"
