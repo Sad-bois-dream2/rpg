@@ -2,136 +2,139 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 15
-	m_flConstantRadius = 15.0
-	m_ConstantColor = [ 255, 211, 99, 255 ]
+	m_nMaxParticles = 99
+	m_ConstantColor = [ 0, 0, 0, 255 ]
 	m_Renderers = 
 	[
 		{
-			_class = "C_OP_RenderRopes"
+			_class = "C_OP_RenderSprites"
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
-			m_bDisableZBuffering = true
-			m_flOverbrightFactor = 5.0
+			m_flStartFadeSize = 0.575
+			m_flEndFadeSize = 0.65
+			m_flMaxSize = 0.75
+			m_flOverbrightFactor = 3.0
+			m_flAddSelfAmount = 1.5
 			m_bSaturateColorPreAlphaBlend = false
-			m_hTexture = resource:"materials/particle/mirana/beam_mirana_curvaceous.vtex"
-			m_flRadiusScale = 0.5
-			m_flFinalTextureScaleU = -1.0
-			m_flFinalTextureOffsetU = 1.0
-			m_flTextureVWorldSize = 100.0
-			m_nMaxTesselation = 2
-			m_nMinTesselation = 2
+			m_hTexture = resource:"materials/particle/fire_particle_8/fire_particle_8_low.vtex"
+			m_flAnimationRate = 0.9
+			m_bDisableOperator = true
 		},
 	]
 	m_Operators = 
 	[
 		{
 			_class = "C_OP_BasicMovement"
+			m_Gravity = [ 0.0, 0.0, 200.0 ]
 		},
 		{
 			_class = "C_OP_Decay"
 		},
 		{
+			_class = "C_OP_FadeOutSimple"
+			m_flFadeOutTime = 0.35
+		},
+		{
 			_class = "C_OP_InterpolateRadius"
-			m_flStartScale = 5.0
-			m_flEndScale = 0.0
-			m_flBias = 0.6
+			m_flStartScale = 0.3
+			m_flBias = 0.65
 		},
 		{
-			_class = "C_OP_PositionLock"
-			m_nControlPointNumber = 1
-		},
-		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 255, 211, 99, 255 ]
+			_class = "C_OP_PercentageBetweenCPs"
+			m_flOutputMin = 0.75
+			m_flOutputMax = 2.0
+			m_nSetMethod = "PARTICLE_SET_SCALE_CURRENT_VALUE"
 		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.85
-			m_fLifetimeMax = 0.85
+			m_fLifetimeMax = 1.3
+			m_fLifetimeMin = 0.6
+		},
+		{
+			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 10.0
-			m_flRadiusMax = 10.0
+			m_flRadiusMax = 72.0
+			m_flRadiusMin = 56.0
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMax = 150
+			m_nAlphaMin = 120
 		},
 		{
 			_class = "C_INIT_CreateSequentialPathV2"
-			m_flNumToAssign = 15.0
+			m_bSaveOffset = true
 			m_PathParams = 
 			{
-				m_nEndControlPointNumber = 5
-				m_nStartControlPointNumber = 4
+				m_nEndControlPointNumber = 1
+				m_flMidPoint = 0.75
 			}
 		},
 		{
-			_class = "C_INIT_RemapScalar"
-			m_flInputMin = 0.09
-			m_flInputMax = 0.1
-			m_nFieldOutput = "7"
-			m_flOutputMin = 1.0
-			m_flOutputMax = 0.0
+			_class = "C_INIT_RandomSequence"
+			m_nSequenceMax = 2
 		},
 		{
-			_class = "C_INIT_RemapScalar"
-			m_flOutputMax = 0.0
-			m_flOutputMin = 1.0
-			m_flInputMax = 0.075
-			m_flInputMin = 0.065
-			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
+			_class = "C_INIT_RandomYawFlip"
 		},
 		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMax = [ 2.0, 2.0, 2.0 ]
-			m_OffsetMin = [ -2.0, -2.0, -2.0 ]
-		},
-		{
-			_class = "C_INIT_RemapParticleCountToScalar"
-			m_nInputMax = 5
-			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
-		},
-		{
-			_class = "C_INIT_RemapParticleCountToScalar"
-			m_nInputMin = 10
-			m_nInputMax = 15
-			m_flOutputMin = 1.0
-			m_flOutputMax = 0.0
-			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
+			_class = "C_INIT_CreateInEpitrochoid"
+			m_bOffsetExistingPos = true
+			m_bUseCount = true
+			m_flParticleDensity = 0.2
+			m_flOffset = 7.0
+			m_flRadius2 = -14.0
+			m_flRadius1 = 10.0
+			m_bDisableOperator = true
 		},
 	]
-	m_Emitters = 
+	m_ForceGenerators = 
 	[
 		{
-			_class = "C_OP_ContinuousEmitter"
-			m_flEmissionDuration = 
-			{
-				m_nType = "PF_TYPE_LITERAL"
-				m_flLiteralValue = 0.075
-			}
-			m_flEmitRate = 
-			{
-				m_nType = "PF_TYPE_LITERAL"
-				m_flLiteralValue = 805.0
-			}
+			_class = "C_OP_RandomForce"
+			m_MinForce = [ -100.0, -100.0, -200.0 ]
+			m_MaxForce = [ 100.0, 100.0, 100.0 ]
 		},
 	]
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/econ/items/centaur/centaur_ti9/centaur_double_edge_ti9_tgt_dark.vpcf"
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_endpoint.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_rope_glow.vpcf"
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_endpoint_b.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/centaur/centaur_ti9/centaur_double_edge_ti9_tgt_rope_hot.vpcf"
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_rope_light.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_trail.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_trail_core.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/chosen_invoker/purification_brilliance/purification_brilliance_trail_streak.vpcf"
+		},
+	]
+	m_PreEmissionOperators = 
+	[
+		{
+			_class = "C_OP_SetSingleControlPointPosition"
+			m_nCP1 = 3
+			m_vecCP1Pos = [ 0.0, 0.0, 0.0 ]
+		},
+		{
+			_class = "C_OP_SetCPOrientationToPointAtCP"
+			m_nOutputCP = 3
 		},
 	]
 	m_nBehaviorVersion = 10
-	m_nFirstMultipleOverride_BackwardCompat = 3
+	m_nFirstMultipleOverride_BackwardCompat = 6
 	m_controlPointConfigurations = 
 	[
 		{
@@ -139,41 +142,19 @@
 			m_drivers = 
 			[
 				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
+					m_entityName = "self"
+				},
+				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ null, null, null ]
 					m_entityName = "self"
 				},
-				{
-					m_iControlPoint = 4
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 5
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
-					m_entityName = "self"
-				},
 			]
-		},
-	]
-	m_PreEmissionOperators = 
-	[
-		{
-			_class = "C_OP_SetControlPointPositions"
-			m_nCP1 = 4
-			m_nCP2 = 5
-			m_nCP3 = 9
-			m_nCP4 = 9
-			m_vecCP1Pos = [ 0.0, 0.0, -75.0 ]
-			m_vecCP2Pos = [ -0.0, 0.0, 200.0 ]
-			m_nHeadLocation = 1
-			m_bDisableOperator = true
 		},
 	]
 }
