@@ -44,6 +44,11 @@ function modifier_blazing_berserker_molten_strike:OnAttackLanded(kv)
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
+        local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/molten_strike/molten_strike_impact.vpcf", PATTACH_ABSORIGIN, target)
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
         local damage = self.damage * Units:GetAttackDamage(self.owner)
         for _, enemy in pairs(enemies) do
             local damageTable = {}
