@@ -12,6 +12,8 @@ function OnClearLogButtonPressed() {
 	    damageEntries[i][DAMAGE_ENTRY_CONTAINER].style.visibility = "collapse";
 	}
     currentEntryIndex = 0;
+    // I Have no idea why it disappearing sometimes, this prob will fix
+    $("#DamageLog").style.visibility = "visible";
 }
 
 function OnStartTestButtonPressed() {
