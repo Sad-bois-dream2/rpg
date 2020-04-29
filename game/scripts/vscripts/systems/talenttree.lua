@@ -272,11 +272,6 @@ function TalentTree:OnTalentTreeLevelUpRequest(event, args)
     end
     local IsPointsRequirmentPassed = true
     if (desiredTalentLine > 1) then
-        --local GetPointsSpendedInAllLinesBeforeForBranch = TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, desiredTalentLine, desiredTalentBranch)
-        --local requiredPointsLine = TalentTree:IsRequiredPointsForLineConditionMeet(hero, desiredTalentLine)
-        --if(requiredPointsLine >= pointsSpendedInLineAndBranch) then
-        --	IsPointsRequirmentPassed = true
-        --end
         IsPointsRequirmentPassed = TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, desiredTalentLine, desiredTalentBranch)
     end
     if (not IsPointsRequirmentPassed) then
@@ -358,19 +353,15 @@ end
 ---@param line number
 ---@param branch number
 ---@return number
-function TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch)
+function TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch)
     line = tonumber(line)
     branch = tonumber(branch)
     if (hero ~= nil and line ~= nil and branch ~= nil) then
-        if (line == 1) then
-            return TalentTree:GetPointsSpendedInLineForBranch(hero, line, branch)
-        else
-            local result = 0
-            for i = 1, (line - 1) do
-                result = result + TalentTree:GetPointsSpendedInLineForBranch(hero, i, branch)
-            end
-            return result
+        local result = 0
+        for i = 1, line do
+            result = result + TalentTree:GetPointsSpendedInLineForBranch(hero, i, branch)
         end
+        return result
     end
     return 0
 end
@@ -527,14 +518,11 @@ function TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, line, br
     if (hero and line and line >= 1 and line <= 7 and branch) then
         if (line >= 4) then
             local pointsInAbilityLine = TalentTree:GetPointsSpendedInLineForBranch(hero, 3, branch)
-            local totalPointsSpended = TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) - pointsInAbilityLine
-            if (pointsInAbilityLine == 0) then
-                pointsInAbilityLine = TalentTree:GetPointsSpendedInLine(hero, 3)
-                totalPointsSpended = totalPointsSpended + pointsInAbilityLine
-            end
+            local totalPointsSpended = TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) - pointsInAbilityLine
+            totalPointsSpended = totalPointsSpended + TalentTree:GetPointsSpendedInLine(hero, 3)
             return totalPointsSpended >= (((line - 1) * 3) - 1)
         else
-            return TalentTree:GetPointsSpendedInAllLinesBeforeForBranch(hero, line, branch) >= ((line - 1) * 3)
+            return TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) >= ((line - 1) * 3)
         end
     end
     return false
