@@ -95,12 +95,12 @@
         //------------------------------------------------------------------
         "Creature"
         {
-        "AttachWearables" // Warlord of Hell
+        "AttachWearables"
                     {
-                        "1" { "ItemDef" "9688" } // Warlord of Hell Bracers
-                        "2" { "ItemDef" "9689" } // Warlord of Hell Tail
-                        "3" { "ItemDef" "9690" } // Warlord of Hell Guard
-                        "4" { "ItemDef" "7654" } // Warlord of Hell Belt
+                        "1" { "ItemDef" "9688" }
+                        "2" { "ItemDef" "9689" }
+                        "3" { "ItemDef" "9690" }
+                        "4" { "ItemDef" "7654" }
                         "5" { "ItemDef" "6893" }
                     }
 

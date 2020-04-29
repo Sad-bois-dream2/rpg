@@ -8,101 +8,88 @@ lycan_call = class({
 
 })
 
-modifier_lycan_call_timer = modifier_lycan_call_timer or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
 
-function modifier_lycan_call_timer:OnCreated()
-    if not IsServer() then
-        return
+--set wolf parameter
+function lycan_call:SummonWolf(args)
+    if (args == nil) then
+        return nil
     end
-    self.parent = self:GetParent()
-    self.ability = self:GetAbility()
-    Timers:CreateTimer(20.0, function()
-        self.parent:RemoveModifierByName("modifier_lycan_call_timer")
-    end) --20 s lifetime
-end
-
-
-function modifier_lycan_call_timer:OnDestroyed() -- kill summon wolves  > Doesnt work wolves are still chilling
-    local units = FindUnitsInRadius(self:GetParent():GetTeamNumber(),
-            self:GetParent():GetAbsOrigin(),
-            nil,
-            FIND_UNITS_EVERYWHERE,
-            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-            DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER, false)
-    for _, unit in pairs(units) do
-        if unit:GetUnitName() == "npc_lycan_call_wolf" then
-            unit:ForceKill(false)
-        end
+    local caster = args.caster
+    local summon = args.unit
+    local position = args.position
+    local ability = args.ability
+    if (caster == nil or summon == nil or position == nil or ability == nil) then
+        return nil
     end
-end
-
-LinkLuaModifier("modifier_lycan_call_timer", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-function lycan_call:SummonWolf(enemy)
-    local caster = self:GetCaster()
-    local wolf_name = "npc_creep_lycan_call_wolf"
-    -- Reset variables
-    local summon_origin = enemy:GetAbsOrigin() + 100 * enemy:GetForwardVector() --distance = 100
-    local summon_point = nil
-    local angleLeft = nil
-    local angleRight = nil
-    local numbers = self:GetSpecialValueFor("numbers")
-
-    -- -- Define spawn locations
-    for i = 0,numbers-1,1 do
-        angleLeft = QAngle(0, 30 + 45*(math.floor(i/2)), 0)
-        angleRight = QAngle(0, -30 + (-45*(math.floor(i/2))), 0)
-
-        if (i+1) % 2 == 0 then --to the right
-            summon_point = RotatePosition(enemy:GetAbsOrigin(),angleLeft,summon_origin)
-        else --to the left
-            summon_point = RotatePosition(enemy:GetAbsOrigin(),angleRight,summon_origin)
-        end
-
-    end
-    local puppy = CreateUnitByName(wolf_name, summon_point, false, caster, caster, caster:GetTeamNumber())
-    caster:AddNewModifier(caster, nil, "modifier_lycan_call_timer", { Duration = -1 })
-    puppy:FindAbilityByName("lycan_double_strike"):SetLevel(3)
-    puppy:FindAbilityByName("lycan_bleeding"):SetLevel(3)
-
+    summon = CreateUnitByName(summon, position, true, caster, caster, caster:GetTeamNumber())
+    summon:AddNewModifier(caster, self, "modifier_lycan_call_wolf", {})
+    summon:AddNewModifier(caster, self, "modifier_kill", {duration = self.duration})
 end
 
 function lycan_call:OnSpellStart()
-    self.parent = self:GetCaster()
-    self.parent:EmitSound("lycan_lycan_ability_summon_03")
     local caster = self:GetCaster()
-    local range = self:GetSpecialValueFor("range")
+    caster:EmitSound("lycan_lycan_ability_summon_03")
+    --Find enemies in range
     local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
             caster:GetAbsOrigin(),
             nil,
-            range,
+            self.range,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_HERO,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    --summon wolf on each enemy position
     for _, enemy in pairs(enemies) do
-        self:SummonWolf(enemy)
+        local summon_point = enemy:GetAbsOrigin() + 100 * enemy:GetForwardVector()
+        for i = 0,self.number-1,1 do
+        summon_point = enemy:GetAbsOrigin() + 50 * enemy:GetForwardVector() * i
+        local summon_damage = Units:GetAttackDamage(caster)*0.1
+        self:SummonWolf({caster = caster, unit = "npc_boss_lycan_call_wolf", position = summon_point, damage = summon_damage, ability = self })
+        end
     end
 end
+
+function lycan_call:OnUpgrade()
+    if IsServer() then
+        local ability_level = self:GetLevel() - 1
+        self.range = self:GetLevelSpecialValueFor("range", ability_level)
+        self.number = self:GetLevelSpecialValueFor("number", ability_level)
+        self.duration = self:GetLevelSpecialValueFor("duration", ability_level)
+    end
+end
+
+--modifier for lycan call wolf
+modifier_lycan_call_wolf = modifier_lycan_call_wolf or class({})
+
+
+
+-- Modifier properties
+function modifier_lycan_call_wolf:IsDebuff() return false end
+function modifier_lycan_call_wolf:IsHidden() return true end
+function modifier_lycan_call_wolf:IsPurgable() return false end
+
+function modifier_lycan_call_wolf:OnCreated()
+    if IsServer() then
+        local parent			=	self:GetParent()
+        local ability			=	self:GetAbility()
+        local bleeding	=	parent:FindAbilityByName("lycan_bleeding")
+        local double    =   parent:FindAbilityByName("lycan_double_strike")
+        -- Level the wolf ability
+        bleeding:SetLevel(ability:GetLevel() )
+        double:SetLevel(ability:GetLevel() )
+    end
+end
+
+
+-- Kill wolf when it's duration is over
+function modifier_lycan_call_wolf:OnDestroy()
+    if IsServer() then
+        self:GetParent():ForceKill(false)
+    end
+end
+
+LinkLuaModifier("modifier_lycan_call_wolf", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
 --lycan companion
@@ -129,9 +116,6 @@ modifier_lycan_companion = modifier_lycan_companion or class({
     RemoveOnDeath = function(self)
         return false
     end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
@@ -152,50 +136,72 @@ function modifier_lycan_companion:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    local max = self.ability:GetSpecialValueFor("max")
-    local wolfcount = self.ability:WolfCount(self.parent)
     local caster = self:GetParent()
     self.chance = self.ability:GetSpecialValueFor("chance")
-    self:WolfCount(caster)
-    if (wolfcount <= max) then --exceed max wolf count ?
-        if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
+    if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
             if RollPercentage(self.chance) then
                 self.parent:EmitSound("lycan_lycan_ally_03")
-                self.ability:SummonWolf(caster)
+                local summon_point = caster:GetAbsOrigin() + 100 * caster:GetForwardVector()
+                local summon_damage = Units:GetAttackDamage(caster)*0.1
+                self:SummonWolf({caster = caster, unit = "npc_boss_lycan_companion_wolf", position = summon_point, damage = summon_damage, ability = self })
                 local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
                 self.ability:StartCooldown(abilityCooldown)
             end
-        end
+
     end
 
 end
 
 
-function lycan_companion:SummonWolf(caster)
-    local wolf_name = "npc_creep_lycan_companion_wolf"
-    -- Reset variables
-    local summon_origin = caster:GetAbsOrigin() + 100 * caster:GetForwardVector() --distance = 100
-    local puppy = CreateUnitByName(wolf_name, summon_origin, false, caster, caster, caster:GetTeamNumber())
-    puppy:FindAbilityByName("lycan_double_strike"):SetLevel(3)
-    puppy:FindAbilityByName("lycan_bleeding"):SetLevel(3)
+function lycan_companion:SummonWolf(args)
+    if (args == nil) then
+        return nil
+    end
+    local caster = args.caster
+    local summon = args.unit
+    local position = args.position
+    local ability = args.ability
+    if (caster == nil or summon == nil or position == nil or ability == nil) then
+        return nil
+    end
+    summon = CreateUnitByName(summon, position, true, caster, caster, caster:GetTeamNumber())
+    summon:AddNewModifier(caster, self, "modifier_lycan_companion_wolf", {})
+    summon:AddNewModifier(caster, self, "modifier_kill", {duration = self.duration})
 end
 
-function lycan_companion:WolfCount(caster)
-    local creatures = FindUnitsInRadius(caster:GetTeamNumber(),
-            caster:GetAbsOrigin(),
-            nil,
-            FIND_UNITS_EVERYWHERE,
-            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-            DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    local keys = {}
-    for k in pairs(creatures) do
-        table.insert(keys, k)
+
+--modifier for lycan companion wolf
+modifier_lycan_companion_wolf = modifier_lycan_companion_wolf or class({})
+
+
+
+-- Modifier properties
+function modifier_lycan_companion_wolf:IsDebuff() return false end
+function modifier_lycan_companion_wolf:IsHidden() return true end
+function modifier_lycan_companion_wolf:IsPurgable() return false end
+
+function modifier_lycan_companion_wolf:OnCreated()
+    if IsServer() then
+        local parent			=	self:GetParent()
+        local ability			=	self:GetAbility()
+        local bleeding	=	parent:FindAbilityByName("lycan_bleeding")
+        local double    =   parent:FindAbilityByName("lycan_double_strike")
+        -- Level the wolf ability
+        bleeding:SetLevel(ability:GetLevel() )
+        double:SetLevel(ability:GetLevel() )
     end
-    return #keys
 end
+
+
+-- Kill wolf when it's duration is over
+function modifier_lycan_companion_wolf:OnDestroy()
+    if IsServer() then
+        self:GetParent():ForceKill(false)
+    end
+end
+
+LinkLuaModifier("modifier_lycan_companion_wolf", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
 
 ---------------------
 --lycan wound
@@ -209,13 +215,26 @@ lycan_wound = class({
 
 function lycan_wound:OnSpellStart()
     local caster = self:GetCaster()
-    --apply a buff dealing initial damage then dot and heal negation
+
     local target = self:GetCursorTarget()
     local duration = self:GetSpecialValueFor("duration")
+    local initial = self:GetSpecialValueFor("initial_damage")
+    local Max_health 	    = target:GetMaxHealth();
+    local damage 			= Max_health * initial * -0.01;
+    --apply a buff dealing initial damage then dot and heal negation
+    --initial damage
+    local damageTable 			= {}
+    damageTable.attacker = self.caster
+    damageTable.target = target
+    damageTable.ability = nil -- can be nil
+    damageTable.damage = damage
+    damageTable.puredmg = true
+    GameMode:DamageUnit(damageTable)
+    --dot
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = target
-    modifierTable.caster = self.caster
+    modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_lycan_wound_debuff"
     modifierTable.duration = duration
     GameMode:ApplyDebuff(modifierTable)
@@ -235,41 +254,27 @@ modifier_lycan_wound_debuff = modifier_lycan_wound_debuff or class({
     RemoveOnDeath = function(self)
         return false
     end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end
 })
 
 function modifier_lycan_wound_debuff:OnCreated()
-    if not IsServer() then
+    if IsServer() then
         return
     end
     -- call and calculate values
-    self.ability = self:GetAbility()
-    self.ability = self.ability:GetSpecialValueFor("initial_damage")
-    local parent 			= self:GetParent(); -- i want this to call victim that have this debuff
-    local Max_health 	    = parent:GetMaxHealth();
-    local damage 			= Max_health * self.dot;
-    --initial damage
-    local damageTable 			= {};
-    damageTable.attacker = nil -- wound dot cant be reflect
-    damageTable.target = parent
-    damageTable.ability = nil -- can be nil
-    damageTable.damage = damage
-    damageTable.puredmg = true
-    GameMode:DamageUnit(damageTable)
+    self.ability = self:GetAbility() --trace back to lycan ability that create this modifier
+    self.parent = self:GetParent()
     --dot
     self.dot = self.ability:GetSpecialValueFor("dot")
     self:StartIntervalThink(1.0);
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink() --dot
-    local parent 			= self:GetParent(); -- i want this to call victim that have this debuff
-    local Max_health 	= parent:GetMaxHealth();
-    local damage 			= Max_health * self.dot;
+    print(self.parent)
+    local Max_health 	    = self.parent:GetMaxHealth();
+    local damage 			= Max_health * self.dot * -0.01;
     local damageTable 			= {};
-    damageTable.attacker = nil -- wound dot cant be reflect
-    damageTable.target = parent
+    damageTable.attacker = self.caster -- wound dot cant be reflect
+    damageTable.target = self.parent
     damageTable.ability = nil -- can be nil
     damageTable.damage = damage
     damageTable.puredmg = true
@@ -278,9 +283,8 @@ end
 
 
 function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus() --heal negate
-    return -1000 --that boi can never regain hp again
+    return -1 --that boi can never regain hp again
 end
-
 
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -352,7 +356,8 @@ function modifier_lycan_transform:OnCreated()
     if not IsServer() then
         return
     end
-    local modifier = self:GetParent():FindModifierByName("modifier_lycan_wolf_form")
+    self.parent = self:GetParent()
+    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_wolf_form")
     if (modifier) then
         self.bat = modifier.ability:GetSpecialValueFor("bat")
         self.crit_factor = modifier.ability:GetSpecialValueFor("crit_factor")
@@ -361,9 +366,19 @@ function modifier_lycan_transform:OnCreated()
 end
 
 function modifier_lycan_transform:DeclareFunctions()
-    local decFuncs = {MODIFIER_PROPERTY_MODEL_CHANGE}
-
+    local decFuncs = {MODIFIER_PROPERTY_MODEL_CHANGE,
+                      MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE,
+                      MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN,
+                      MODIFIER_PROPERTY_MOVESPEED_LIMIT}
     return decFuncs
+end
+
+function modifier_lycan_transform:GetModifierMoveSpeed_AbsoluteMin()
+        return self.absolute_speed
+end
+
+function modifier_lycan_transform:GetModifierMoveSpeed_Limit()
+    return 1000
 end
 
 
@@ -374,28 +389,23 @@ end
 
 function modifier_lycan_transform:GetBaseAttackTime()
     return self.bat
-end -- seems make him cant AA im not sure
-
-function modifier_lycan_transform:OnTakeDamage(damageTable) -- Critical on autoattack
-    local modifier = damageTable.attacker:FindModifierByName("modifier_lycan_transform")
-    if (modifier ~= nil and damageTable.physdmg and not damageTable.ablity) then
-        if (damageTable.damage > 0) then
-            if RollPercentage(self.crit_chance) then
-                self.parent:EmitSound("Hero_PhantomAssassin.CoupDeGrace")
-                damageTable.crit = damageTable.damage*self.crit_factor*0.01
-            end
-            return damageTable
-        end
-    end
 end
 
-
+function modifier_lycan_transform:GetModifierPreAttack_CriticalStrike()
+    if IsServer() then
+        if RollPercentage(self.crit_chance) then
+            self.parent:EmitSound("Hero_PhantomAssassin.CoupDeGrace")
+            return self.crit_factor
+        end
+        return nil
+    end
+end
 
 LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function lycan_wolf_form:Transform()
     local particle_cast = "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
-    local particle_cast_fx = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, caster)
+    local particle_cast_fx = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, self.caster)
     local transform_buff = "modifier_lycan_transform"
     local modifierTable = {}
     self.caster = self:GetCaster()
@@ -417,7 +427,7 @@ function lycan_wolf_form:Transform()
 end
 
 
-function modifier_lycan_wolf_form:OnTakeDamage() --this doesnt work lycan just transform immediately sadkek
+function modifier_lycan_wolf_form:OnTakeDamage()
     self.parent = self:GetParent()
     self.hp_threshold = self.ability:GetSpecialValueFor("hp_threshold")*0.01
     self.hp_pct = self.parent:GetHealth()/self.parent:GetMaxHealth()
@@ -473,9 +483,7 @@ modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
     GetModifierAura = function(self)
         return "modifier_lycan_howl_aura_buff" --	The name of the secondary modifier that will be applied by this modifier (if it is an aura).
     end,
-    GetAbilityTextureName = function(self)
-        return "howl_aura"
-    end,
+
 })
 
 
@@ -507,9 +515,7 @@ modifier_lycan_howl_aura_buff = modifier_lycan_howl_aura_buff or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetAbilityTextureName = function(self)
-        return "howl_aura"
-    end,
+
 })
 
 function modifier_lycan_howl_aura_buff:OnCreated()
@@ -518,7 +524,7 @@ function modifier_lycan_howl_aura_buff:OnCreated()
     self.parent = self:GetParent()
         self.radius = self.ability:GetSpecialValueFor("radius")
         self.as_aura = self.ability:GetSpecialValueFor("as_aura")
-        self.ms_aura = self.ability:GetSpecialValueFor("ms_aura")
+        self.ms_aura = self.ability:GetSpecialValueFor("ms_aura")/100
         self.damage_reduce_incoming_pct_aura =  self.ability:GetSpecialValueFor("damage_reduce_incoming_pct_aura")*0.01
 
 end
@@ -527,7 +533,7 @@ function modifier_lycan_howl_aura_buff:GetDamageReductionBonus()
     return self.damage_reduce_incoming_pct_aura or 0
 end
 
-function modifier_lycan_howl_aura_buff:GetAttackSpeedBonus()
+function modifier_lycan_howl_aura_buff:GetAttackSpeedPercentBonus()
     return self.as_aura
 end
 
@@ -556,9 +562,7 @@ modifier_lycan_howl_debuff = modifier_lycan_howl_debuff or class({
     GetEffectName = function(self)
         return "particles/units/heroes/hero_lycan/lycan_howl_buff.vpcf"
     end,
-    GetAbilityTextureName = function(self)
-        return "howl_aura"
-    end,
+
 })
 
 function lycan_howl_aura:OnUpgrade()
@@ -574,7 +578,7 @@ function modifier_lycan_howl_debuff:OnCreated()
     end
     self.aa_reduction = 0
     self.spelldmg_reduction = 0
-    local ability = self:GetParent():FindAbilityByName("howl_aura")
+    local ability = self:GetCaster():FindAbilityByName("howl_aura")
     if (ability) then
         self.aa_reduction = ability:GetSpecialValueFor("dmg_done_reduced") * -0.01
         self.spelldmg_reduction = ability:GetSpecialValueFor("dmg_done_reduced") * -0.01
@@ -639,127 +643,19 @@ end
 ---------------------
 --lycan agility
 ---------------------
-lycan_agility = class({
-    GetAbilityTextureName = function(self)
-        return "lycan_agility"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_lycan_agility"
-    end,
-})
 
-
-modifier_lycan_agility_already_hit = modifier_lycan_agility_already_hit or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkLuaModifier("modifier_lycan_agility_already_hit", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-
-function lycan_agility:FindTargetForBlink(caster, radius)
-
-    -- Find all nearby enemies
-    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-    caster:GetAbsOrigin(),
-    nil,
-    radius,
-    DOTA_UNIT_TARGET_TEAM_ENEMY,
-    DOTA_UNIT_TARGET_HERO,
-    DOTA_UNIT_TARGET_FLAG_NONE,
-    FIND_ANY_ORDER,
-    false)
-    local keys = {}
-    for k,enemy in pairs(enemies) do
-        if (enemy:HasModifier("modifier_lycan_agility_already_hit")==nil) then -- only give numbers to enemies with no already hit buff
-            table.insert(keys, k)
-        end
-    end
-        if (#enemies > 0) then --#keys?
-            local target = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
-            target:AddNewModifier(caster, nil, "modifier_lycan_agility_already_hit", {duration=25.0}) -- add already hit buff to target
-            return target
-        else
-            return nil
-        end
-end
-
-function lycan_agility:Blink(target)
-    -- Teleport
-    local caster = self:GetCaster()
-        --local sound_cast = "Hero_Antimage.Blink_out"
-    if (target==nil) then
-        return
-    end
-        --caster:EmitSound(sound_cast)
-        -- Blink
-    local targetPosition = target:GetAbsOrigin()
-    local vector = (targetPosition - caster:GetAbsOrigin())
-        --local distance = vector:Length2D()
-    local direction = vector:Normalized()
-    local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
-    caster:SetAbsOrigin(blink_point)
-    Timers:CreateTimer(1.0, function()
-        FindClearSpaceForUnit(caster, blink_point, true)
-        end)
-        --sound_cast = "Hero_Antimage.Blink_in"
-        --caster:EmitSound(sound_cast)
-    Aggro:Reset(caster)
-    Aggro:Add(target, caster, 100)
-    caster:MoveToTargetToAttack(target)
-    caster:PerformAttack(target, true, true, true, true, false, false, false)
-    caster:SetForwardVector(direction)
-
-    -- Disjoint projectiles
-    ProjectileManager:ProjectileDodge(caster)
-end
-
-function lycan_agility:OnSpellStart()
-    local caster = self:GetCaster()
-    local radius = 1000
-    local target = caster
-    caster:EmitSound("lycan_lycan_attack_08")
-    -- first hit is unit targetting
-    radius = self:GetSpecialValueFor("range")
-    local firstTarget = self:FindTargetForBlink(caster, radius)
-    target = self:GetCursorTarget(firstTarget)
-    self:Blink(target)
-    --find next target
-    repeat     radius = self:GetSpecialValueFor("jump_range")
-               target = self:FindTargetForBlink(caster, radius)
-               self:Blink(target)
-               Timers:CreateTimer(1.0, function()
-               end) --delay between jump so that he can autoattack
-    until target == nil
-    Aggro:Reset(caster)
-end
 
 ---------------------
 --lycan double strike
 ---------------------
--- get 1 insane AS buff remove on next hit
+
 lycan_double_strike = class({
     GetAbilityTextureName = function(self)
         return "lycan_double_strike"
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_lycan_double_strike"
-    end,
-})
-
+    end,})
 
 modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsDebuff = function(self)
@@ -771,30 +667,49 @@ modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsPurgable = function(self)
         return false
     end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
 })
 
-
 function modifier_lycan_double_strike:OnCreated()
-    if not IsServer() then
-        return
-    end
     self.parent = self:GetParent()
-    self.ability = self:GetAbility()
-    self.chance = self.chance or self.ability:GetSpecialValueFor("chance")
 end
 
-LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_quick_hit= modifier_lycan_quick_hit or class({
+function modifier_lycan_double_strike:OnAttack(keys)
+    local ability = self:GetAbility()
+    local parent = self:GetParent()
+    local ability_level = ability:GetLevel() - 1
+    local chance = ability:GetSpecialValueFor("chance", ability_level)
+    --eat AS buff if there are any
+    if parent:HasModifier("modifier_lycan_double_strike_quick") then
+        local mod = parent:FindModifierByName("modifier_lycan_double_strike_quick")
+        mod:DecrementStackCount()
+        if mod:GetStackCount() < 1 then
+            mod:Destroy()
+        end
+    end
+    --add AS buff
+    if (keys.attacker == parent and self.ability:IsCooldownReady())  then
+        if RollPercentage(chance) then
+            parent:AddNewModifier(parent, ability, "modifier_lycan_double_strike_quick", {})
+            local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
+            self.ability:StartCooldown(abilityCooldown)
+        end
+    end
+
+end
+
+function modifier_lycan_double_strike:OnRemoved()
+    if not IsServer() then return end
+    if (self:GetParent():FindModifierByName("modifier_lycan_double_strike_quick")) then
+        self:GetParent():FindModifierByName("modifier_lycan_double_strike_quick"):Destroy()
+    end
+end
+
+--modifier double strike quick hit
+modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class({
     IsDebuff = function(self)
         return false
     end,
@@ -804,67 +719,26 @@ modifier_lycan_quick_hit= modifier_lycan_quick_hit or class({
     IsPurgable = function(self)
         return false
     end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetAbilityTextureName = function(self)
-        return "lycan_double_strike"
-    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
-function modifier_lycan_quick_hit:OnCreated()
-    if not IsServer() then
-        return
-    end
-    local modifier = self:GetParent():FindModifierByName("modifier_lycan_double_strike")
-    if (modifier) then
-        self.as_bonus = modifier.ability:GetSpecialValueFor("as_bonus")
-    end
-
-end
-
-
-function modifier_lycan_quick_hit:GetAttackSpeedBonus()
-    return self.as_bonus
-end
-
-LinkLuaModifier("modifier_lycan_quick_hit", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-function modifier_lycan_double_strike:OnAttackLanded(keys)
-    -- start cd
-    if not IsServer() then
-        return
-    end
-    if (keys.attacker:HasModifier("modifier_lycan_quick_hit")) then
-        keys.attacker:RemoveModifierByName("modifier_lycan_quick_hit")
-    else
-        if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
-            if RollPercentage(self.chance) then
-                self.ability:ApplyQuickHit(self.parent)
-                local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
-                self.ability:StartCooldown(abilityCooldown)
-            end
-        end
+function modifier_lycan_double_strike_quick:OnCreated()
+    local ability = self:GetAbility()
+    self.parent = self:GetParent()
+    if ability then
+        local max_hits = ability:GetSpecialValueFor("max_hits")
+        self:SetStackCount(max_hits)
     end
 end
 
-function lycan_double_strike:ApplyQuickHit(parent)
-    --insane AS for one hit
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_quick_hit"
-    modifierTable.duration = -1
-    GameMode:ApplyBuff(modifierTable)
+function modifier_lycan_double_strike_quick:GetAttackSpeedPercentBonus()
+    return 1000
 end
 
-
-
-
+LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_double_strike_quick", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 ---------------------
 --lycan bleeding
 ---------------------
@@ -939,10 +813,11 @@ end
 
 function modifier_lycan_bleeding_dot:OnIntervalThink()
     local parent 			= self:GetParent();
-    local Max_health 	= parent:GetMaxHealth();
-    local damage 			= Max_health*self.dot*0.01;
+    local caster            = self:GetCaster();
+    local Max_health 	    = parent:GetMaxHealth();
+    local damage 			= Max_health * self.dot * -0.01;
     local damageTable 			= {};
-    damageTable.attacker = nil
+    damageTable.caster = caster
     damageTable.target = parent
     damageTable.ability = nil -- can be nil
     damageTable.damage = damage
@@ -987,7 +862,7 @@ function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus(
 end
 
 
-LinkLuaModifier("modifier_lycan_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 
@@ -995,7 +870,10 @@ function modifier_lycan_bleeding:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    self.ability:ApplyBleeding(keys.target, self.parent)
+    if (keys.attacker:HasModifier("modifier_lycan_bleeding")) then
+        self.ability:ApplyBleeding(keys.target, self.parent)
+
+    end
 end
 
 function lycan_bleeding:ApplyBleeding(target,parent)

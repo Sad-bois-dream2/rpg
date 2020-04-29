@@ -232,7 +232,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"	    	    "0"
+   				"damage"	    	    "500"
    			}
 
    			"03"
@@ -295,7 +295,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "7 10 15"
+   				"duration"				    "7 11 15"
    			}
    			"02"
    			{

@@ -29,7 +29,7 @@
 
             // Attack
             //----------------------------------------------------------------
-            "AttackCapabilities"    "DOTA_UNIT_CAP_RANGE_ATTACK"     // Type of attack - melee, ranged, etc.
+            "AttackCapabilities"    "DOTA_UNIT_CAP_RANGED_ATTACK"     // Type of attack - melee, ranged, etc.
             "AttackDamageMin"     "10"     // Damage range min.
             "AttackDamageMax"     "10"     // Damage range max.
             "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
@@ -37,7 +37,7 @@
             "AttackAnimationPoint"    "0.2"   // Normalized time in animation cycle to attack.
             "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
             "AttackRange"       "450"   // Range within a target can be attacked.
-            "ProjectileModel"     "" // Particle system model for projectile.
+            "ProjectileModel"     "particles/econ/items/drow/drow_bow_monarch/drow_frost_arrow_monarch.vpcf" // Particle system model for projectile.
             "ProjectileSpeed"     "900"   // Speed of projectile.
 
             // Attributes
@@ -138,7 +138,7 @@
 
             // Attack
             //----------------------------------------------------------------
-            "AttackCapabilities"    "DOTA_UNIT_CAP_RANGE_ATTACK"     // Type of attack - melee, ranged, etc.
+            "AttackCapabilities"    "DOTA_UNIT_CAP_RANGED_ATTACK"     // Type of attack - melee, ranged, etc.
             "AttackDamageMin"     "10"     // Damage range min.
             "AttackDamageMax"     "10"     // Damage range max.
             "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
@@ -146,7 +146,7 @@
             "AttackAnimationPoint"    "0.2"   // Normalized time in animation cycle to attack.
             "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
             "AttackRange"       "450"   // Range within a target can be attacked.
-            "ProjectileModel"     "" // Particle system model for projectile.
+            "ProjectileModel"     "particles/econ/items/luna/luna_ti9_weapon/luna_ti9_base_attack.vpcf" // Particle system model for projectile.
             "ProjectileSpeed"     "900"   // Speed of projectile.
 
             // Attributes

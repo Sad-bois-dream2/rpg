@@ -73,9 +73,10 @@ function ursa_rend:ApplyRend(target, parent)
     modifierTable.modifier_name = "modifier_stunned"
     modifierTable.duration = self.stun
     GameMode:ApplyDebuff(modifierTable)
+    --fury swipe particle
     local ursa_rend_armor_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf", PATTACH_OVERHEAD_FOLLOW, target)
     ParticleManager:SetParticleControlEnt(ursa_rend_armor_fx, 0, target, PATTACH_OVERHEAD_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
-    Timers:CreateTimer(15.0, function()
+    Timers:CreateTimer(self.armor_reduction_duration, function()
         ParticleManager:DestroyParticle(ursa_rend_armor_fx, false)
         ParticleManager:ReleaseParticleIndex(ursa_rend_armor_fx)
     end)
@@ -344,25 +345,25 @@ end
 
 LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
-function ursa_swift:ApplyPhase(parent)
-    -- "phase and flying after blink."
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_ursa_swift_phase"
-    modifierTable.duration = 100
-    GameMode:ApplyBuff(modifierTable)
+--function ursa_swift:ApplyPhase(parent)
+   -- --  flying after blink. no phase
+   -- local modifierTable = {}
+   -- modifierTable.ability = self
+   -- modifierTable.target = parent
+   -- modifierTable.caster = parent
+   -- modifierTable.modifier_name = "modifier_ursa_swift_phase"
+   -- modifierTable.duration = 10
+   -- GameMode:ApplyBuff(modifierTable)
 
-end
+--end
 
-function modifier_ursa_swift_phase:CheckState()
-    --phase and fly
-    return {
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-        [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
-    }
-end
+--function modifier_ursa_swift_phase:CheckState()
+    --fly no phase
+    --return {
+        --[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+        --[MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
+    --}
+--end
 
 
 
@@ -434,7 +435,7 @@ function ursa_swift:Blink()
     local direction = vector:Normalized()
     local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
     caster:SetAbsOrigin(blink_point)
-    Timers:CreateTimer(1.0, function()
+    Timers:CreateTimer(0.3, function()
         FindClearSpaceForUnit(caster, blink_point, true)
     end)
     sound_cast = "Hero_Antimage.Blink_in"
@@ -464,7 +465,7 @@ function modifier_ursa_swift:OnAttackLanded(keys)
             if self.parent:HasModifier("modifier_ursa_hunt_buff_stats") then
                 self.ability:ApplyFury(keys.attacker, self.parent)
             else
-                self.ability:ApplyPhase(self.parent)
+                --self.ability:ApplyPhase(self.parent)
                 self.ability:Blink()
             end
 
