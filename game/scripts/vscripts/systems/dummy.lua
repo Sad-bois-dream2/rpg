@@ -22,7 +22,7 @@ modifier_dps_dummy = modifier_dps_dummy or class({
 ---@param damageTable DAMAGE_TABLE
 function modifier_dps_dummy:OnPostTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_dps_dummy")
-    local playerId = damageTable.attacker:GetPlayerID()
+    local playerId = damageTable.attacker:GetPlayerOwnerID()
     if (modifier and damageTable.victim.isready and playerId == damageTable.victim.owner) then
         local abilityDamage = false
         local abilityName = ""
