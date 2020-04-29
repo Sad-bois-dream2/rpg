@@ -58,13 +58,53 @@ function modifier_dps_dummy:OnCreated()
     end
     self.damageInstances = {}
     self.parent = self:GetParent()
+    self.parent.bonusStats = {}
     Timers:CreateTimer(0, function()
         local scaling = self.parent:FindModifierByName("modifier_creep_scaling")
         if (scaling) then
             scaling:Destroy()
+            Timers:CreateTimer(1, function()
+                local eliteModifier = self.parent:FindModifierByName("modifier_creep_elite")
+                if (eliteModifier) then
+                    eliteModifier:Destroy()
+                end
+            end, self)
+        else
+            return 0.25
         end
-        return 0.25
     end, self)
+end
+
+function modifier_dps_dummy:GetArmorBonus()
+    return self.parent.bonusStats.physdmg or 0
+end
+
+function modifier_dps_dummy:GetFireProtectionBonus()
+    return self.parent.bonusStats.firedmg or 0
+end
+
+function modifier_dps_dummy:GetFrostProtectionBonus()
+    return self.parent.bonusStats.frostdmg or 0
+end
+
+function modifier_dps_dummy:GetEarthProtectionBonus()
+    return self.parent.bonusStats.earthdmg or 0
+end
+
+function modifier_dps_dummy:GetVoidProtectionBonus()
+    return self.parent.bonusStats.voiddmg or 0
+end
+
+function modifier_dps_dummy:GetHolyProtectionBonus()
+    return self.parent.bonusStats.holydmg or 0
+end
+
+function modifier_dps_dummy:GetNatureProtectionBonus()
+    return self.parent.bonusStats.naturedmg or 0
+end
+
+function modifier_dps_dummy:GetInfernoProtectionBonus()
+    return self.parent.bonusStats.infernodmg or 0
 end
 
 LinkLuaModifier("modifier_dps_dummy", "systems/dummy", LUA_MODIFIER_MOTION_NONE)
@@ -93,6 +133,11 @@ modifier_dps_dummy_counter = modifier_dps_dummy_counter or class({
     end,
     GetMinHealth = function(self)
         return 1
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_NO_HEALTH_BAR] = true
+        }
     end
 })
 
@@ -104,7 +149,7 @@ function modifier_dps_dummy_counter:OnCreated(keys)
         self:Destroy()
     end
     self.parent = self:GetParent()
-    self.particle = ParticleManager:CreateParticle("particles/units/dummy/dummy.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
+    self.particle = ParticleManager:CreateParticle("particles/units/dummy/dummy_number.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
     ParticleManager:SetParticleControl(self.particle, 1, Vector(0, keys.delay, 0))
     self:SetStackCount(keys.delay)
     self:StartIntervalThink(1.0)
@@ -133,8 +178,11 @@ function modifier_dps_dummy_counter:OnDestroy()
     ParticleManager:ReleaseParticleIndex(self.particle)
     self.parent.isready = true
     local dummy = self.parent
+    dummy.dummyParticle = ParticleManager:CreateParticle("particles/units/dummy/dummy.vpcf", PATTACH_OVERHEAD_FOLLOW, dummy)
     Timers:CreateTimer(Dummy.DPS_TIME, function()
         Dummy:CalculateDPS(dummy)
+        ParticleManager:DestroyParticle(dummy.dummyParticle, true)
+        ParticleManager:ReleaseParticleIndex(dummy.dummyParticle)
     end, nil)
 end
 
@@ -155,14 +203,22 @@ function Dummy:OnDummyUpdateStatsRequest(event)
     if (not event or not event.dummy) then
         return
     end
-    event.physdmg = tonumber(string.gsub(tostring(event.physdmg), ",", "."))
-    event.firedmg = tonumber(string.gsub(tostring(event.firedmg), ",", "."))
-    event.frostdmg = tonumber(string.gsub(tostring(event.frostdmg), ",", "."))
-    event.earthdmg = tonumber(string.gsub(tostring(event.earthdmg), ",", "."))
-    event.naturedmg = tonumber(string.gsub(tostring(event.naturedmg), ",", "."))
-    event.voiddmg = tonumber(string.gsub(tostring(event.voiddmg), ",", "."))
-    event.infernodmg = tonumber(string.gsub(tostring(event.infernodmg), ",", "."))
-    event.holydmg = tonumber(string.gsub(tostring(event.holydmg), ",", "."))
+    event.physdmg = string.gsub(tostring(event.physdmg), ",", ".")
+    event.physdmg = tonumber(event.physdmg)
+    event.firedmg = string.gsub(tostring(event.firedmg), ",", ".")
+    event.firedmg = tonumber(event.firedmg)
+    event.frostdmg = string.gsub(tostring(event.frostdmg), ",", ".")
+    event.frostdmg = tonumber(event.frostdmg)
+    event.earthdmg = string.gsub(tostring(event.earthdmg), ",", ".")
+    event.earthdmg = tonumber(event.earthdmg)
+    event.naturedmg = string.gsub(tostring(event.naturedmg), ",", ".")
+    event.naturedmg = tonumber(event.naturedmg)
+    event.voiddmg = string.gsub(tostring(event.voiddmg), ",", ".")
+    event.voiddmg = tonumber(event.voiddmg)
+    event.infernodmg = string.gsub(tostring(event.infernodmg), ",", ".")
+    event.infernodmg = tonumber(event.infernodmg)
+    event.holydmg = string.gsub(tostring(event.holydmg), ",", ".")
+    event.holydmg = tonumber(event.holydmg)
     event.dummy = EntIndexToHScript(event.dummy)
     if (not event.dummy) then
         return
@@ -191,7 +247,7 @@ function Dummy:OnDummyUpdateStatsRequest(event)
     if (not event.holydmg or event.holydmg < 0) then
         return
     end
-    event.physdmg = event.physdmg / 100
+    event.physdmg = event.physdmg
     event.firedmg = event.firedmg / 100
     event.frostdmg = event.frostdmg / 100
     event.earthdmg = event.earthdmg / 100
@@ -199,7 +255,6 @@ function Dummy:OnDummyUpdateStatsRequest(event)
     event.voiddmg = event.voiddmg / 100
     event.infernodmg = event.infernodmg / 100
     event.holydmg = event.holydmg / 100
-    event.dummy.bonusStats = event.dummy.bonusStats or {}
     event.dummy.bonusStats.physdmg = event.physdmg
     event.dummy.bonusStats.firedmg = event.firedmg
     event.dummy.bonusStats.frostdmg = event.frostdmg

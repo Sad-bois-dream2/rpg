@@ -99,7 +99,7 @@ function OnDamageRegisterRequest(event) {
     if(currentEntryIndex < MAX_CAPACITY) {
 	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = $.Localize("#DOTA_Dummy_Damage_Instance");
 	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%SOURCE%", $.Localize("#" + event.source));
-	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE%", event.damage);
+	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE%", Math.floor(event.damage));
 	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE_TYPES%", BuildDamageTypesString(event));
 	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text = damageEntries[currentEntryIndex][DAMAGE_ENTRY_LABEL].text.replace("%DAMAGE_SOURCE%", BuildDamageSourceString(event));
 	    damageEntries[currentEntryIndex][DAMAGE_ENTRY_CONTAINER].style.visibility = "visible";
@@ -118,13 +118,15 @@ function ClearWindow() {
 }
 
 function OnBossStatsButtonPressed() {
-    for (var i = 0; i < armors.length; i++) {
+    armors[0].text = "15";
+    for (var i = 1; i < armors.length; i++) {
 	    armors[i].text = "47";
 	}
 }
 
 function OnEliteStatsButtonPressed() {
-    for (var i = 0; i < armors.length; i++) {
+    armors[0].text = "5";
+    for (var i = 1; i < armors.length; i++) {
 	    armors[i].text = "23";
 	}
 }

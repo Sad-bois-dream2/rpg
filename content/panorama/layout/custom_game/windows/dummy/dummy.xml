@@ -8,7 +8,7 @@
         <include src="file://{resources}/scripts/windows/basic_window.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
-        <Panel id="MainWindow" class="Window DummyWindow" style="visibility: visible;">
+        <Panel id="MainWindow" class="Window DummyWindow" style="visibility: collapse;">
             <Panel class="WindowContent">
                 <Panel class="TopContent">
                     <Panel class="LeftSide">
@@ -21,7 +21,7 @@
                         <Panel class="RightSideElement WindowTextBox">
                             <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Physical_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
                             <TextEntry id="PhysArmor" maxchars="6"/>
-                            <Label text="%" />
+                            <Label text=" " />
                         </Panel>
                         <Panel class="RightSideElement WindowTextBox">
                             <Image src="file://{images}/custom_game/hud/fire_element.png" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Damage_Fire_Tooltip')" onmouseout="DOTAHideTextTooltip()"/>
