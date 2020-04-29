@@ -16,6 +16,11 @@ modifier_dps_dummy = modifier_dps_dummy or class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_NO_HEALTH_BAR] = true
+        }
     end
 })
 
@@ -133,11 +138,6 @@ modifier_dps_dummy_counter = modifier_dps_dummy_counter or class({
     end,
     GetMinHealth = function(self)
         return 1
-    end,
-    CheckState = function(self)
-        return {
-            [MODIFIER_STATE_NO_HEALTH_BAR] = true
-        }
     end
 })
 
