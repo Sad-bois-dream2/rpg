@@ -337,6 +337,49 @@ function chosen_invoker_flare_array:OnSpellStart()
 end
 
 -- chosen_invoker_photon_pulse modifiers
+modifier_chosen_invoker_photon_pulse = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_chosen_invoker_photon_pulse:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.caster:StartGesture(ACT_DOTA_TELEPORT)
+    self.pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse.vpcf", PATTACH_ABSORIGIN, self.caster)
+    local orbPosition = self.caster:GetAbsOrigin()
+    local lifespan = 1.3 * Units:GetSpellHaste(self.caster)
+    local scaling = 1 + (1 - Units:GetSpellHaste(self.caster))
+    ParticleManager:SetParticleControl(self.pidx, 0, orbPosition + Vector(0, 0, 300))
+    ParticleManager:SetParticleControl(self.pidx, 1, orbPosition + Vector(0, 0, 250))
+    ParticleManager:SetParticleControl(self.pidx, 3, Vector(500, scaling, lifespan))
+end
+
+function modifier_chosen_invoker_photon_pulse:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    self.caster:RemoveGesture(ACT_DOTA_TELEPORT)
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["modifier_chosen_invoker_photon_pulse"] = LUA_MODIFIER_MOTION_NONE
 
 -- chosen_invoker_photon_pulse
 chosen_invoker_photon_pulse = class({
@@ -352,34 +395,33 @@ function chosen_invoker_photon_pulse:OnSpellStart()
     if (not IsServer()) then
         return
     end
+    self.modifier:Destroy()
+    self.modifier = nil
     local caster = self:GetCaster()
-    print("spell start")
+    local radius = self:GetSpecialValueFor("radius")
+    local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse_explosion.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(radius, 0, 0))
+    Timers:CreateTimer(2, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end, self)
 end
 
 function chosen_invoker_photon_pulse:OnAbilityPhaseInterrupted()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    print("rip")
+    self.modifier:Destroy()
+    self.modifier = nil
 end
 
 function chosen_invoker_photon_pulse:OnAbilityPhaseStart()
     if (not IsServer()) then
-        return
+        return true
     end
     local caster = self:GetCaster()
-    local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse.vpcf", PATTACH_ABSORIGIN, caster)
-    local orbPosition = caster:GetAbsOrigin()
-    ParticleManager:SetParticleControl(pidx, 0, orbPosition + Vector(0, 0, 300))
-    ParticleManager:SetParticleControl(pidx, 1, orbPosition + Vector(0, 0, 250))
-    -- default speed, scaling, lifespan
-    ParticleManager:SetParticleControl(pidx, 3, Vector(500, 1, 1.3))
-    ParticleManager:SetParticleControl(pidx, 5, Vector(60, 0, 0))
-    Timers:CreateTimer(2, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end, self)
+    self.modifier = caster:AddNewModifier(caster, self, "modifier_chosen_invoker_photon_pulse", { duration = -1 })
+    return true
 end
 
 -- Internal stuff

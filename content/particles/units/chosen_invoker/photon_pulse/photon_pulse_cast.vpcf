@@ -7,7 +7,7 @@
 			_class = "C_OP_BasicMovement"
 		},
 		{
-			_class = "C_OP_RadiusDecay"
+			_class = "C_OP_EndCapTimedDecay"
 		},
 	]
 	m_Renderers = 
@@ -355,6 +355,7 @@
 	[
 		{
 			_class = "C_INIT_Orient2DRelToCP"
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -513,6 +514,7 @@
 				}
 			}
 			m_bDestroyImmediately = true
+			m_bPlayEndCap = false
 		},
 	]
 	m_ForceGenerators = 
