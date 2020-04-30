@@ -381,6 +381,43 @@ end
 
 LinkedModifiers["modifier_chosen_invoker_photon_pulse"] = LUA_MODIFIER_MOTION_NONE
 
+modifier_chosen_invoker_photon_pulse_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return chosen_invoker_photon_pulse:GetAbilityTextureName()
+    end
+})
+
+function modifier_chosen_invoker_photon_pulse_slow:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (not keys or not keys.slow) then
+        self:Destroy()
+    end
+    self.slow = keys.slow
+end
+
+function modifier_chosen_invoker_photon_pulse_slow:GetMoveSpeedPercentBonus()
+    return self.slow
+end
+
+LinkedModifiers["modifier_chosen_invoker_photon_pulse_slow"] = LUA_MODIFIER_MOTION_NONE
+
 -- chosen_invoker_photon_pulse
 chosen_invoker_photon_pulse = class({
     GetAbilityTextureName = function(self)
@@ -398,7 +435,45 @@ function chosen_invoker_photon_pulse:OnSpellStart()
     self.modifier:Destroy()
     self.modifier = nil
     local caster = self:GetCaster()
+    local casterTeam = caster:GetTeam()
     local radius = self:GetSpecialValueFor("radius")
+    local slow = self:GetSpecialValueFor("slow") * -0.01
+    local slowDur = self:GetSpecialValueFor("slow_duration")
+    local damage = self:GetSpecialValueFor("base_damage") + (self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01)
+    local silenceDur = self:GetSpecialValueFor("silence_duration")
+    local enemies = FindUnitsInRadius(casterTeam,
+            caster:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_silence"
+        modifierTable.duration = silenceDur
+        GameMode:ApplyDebuff(modifierTable)
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.holydmg = true
+        GameMode:DamageUnit(damageTable)
+        modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_chosen_invoker_photon_pulse_slow"
+        modifierTable.modifier_params = { slow = slow }
+        modifierTable.duration = slowDur
+        GameMode:ApplyDebuff(modifierTable)
+    end
     local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse_explosion.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 1, Vector(radius, 0, 0))
     Timers:CreateTimer(2, function()
