@@ -361,6 +361,7 @@ function modifier_chosen_invoker_photon_pulse:OnCreated()
     end
     self.caster = self:GetParent()
     self.caster:StartGesture(ACT_DOTA_TELEPORT)
+    EmitSoundOn("Hero_KeeperOfTheLight.Illuminate.Charge", self.caster)
     self.pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse.vpcf", PATTACH_ABSORIGIN, self.caster)
     local orbPosition = self.caster:GetAbsOrigin()
     local lifespan = 1.3 * Units:GetSpellHaste(self.caster)
@@ -374,6 +375,7 @@ function modifier_chosen_invoker_photon_pulse:OnDestroy()
     if (not IsServer()) then
         return
     end
+    StopSoundOn("Hero_KeeperOfTheLight.Illuminate.Charge", self.caster)
     self.caster:RemoveGesture(ACT_DOTA_TELEPORT)
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
@@ -450,6 +452,7 @@ function chosen_invoker_photon_pulse:OnSpellStart()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    EmitSoundOn("Hero_KeeperOfTheLight.BlindingLight", caster)
     for _, enemy in pairs(enemies) do
         local modifierTable = {}
         modifierTable.ability = self
