@@ -93,7 +93,7 @@ function BuildDamageSourceString(event) {
     if(!event.ability && event.physdmg) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
     } else {
-        return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", $.Localize("#" + event.abilityName));
+        return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", $.Localize("#DOTA_Tooltip_Ability_" + event.abilityName));
     }
 }
 
