@@ -7,7 +7,7 @@
         "Ability1"	"chosen_invoker_purification_brilliance"
         "Ability2"	"chosen_invoker_flare_array"
         "Ability3"	"chosen_invoker_photon_pulse"
-        "Ability4"	"terror_lord_horror_genesis"
+        "Ability4"	"chosen_invoker_light_shock"
         "Ability5"	"empty5"
         "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"

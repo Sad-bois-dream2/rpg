@@ -502,6 +502,60 @@ function chosen_invoker_photon_pulse:OnAbilityPhaseStart()
     return true
 end
 
+-- chosen_invoker_light_shock
+chosen_invoker_light_shock = class({
+    GetAbilityTextureName = function(self)
+        return "chosen_invoker_light_shock"
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("aoe")
+    end
+})
+
+function chosen_invoker_light_shock:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterTeam = self:GetTeam()
+    local targetPosition = self:GetCursorPosition()
+    local radius = self:GetSpecialValueFor("aoe")
+    local damage = self:GetSpecialValueFor("damage") + (self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01)
+    local stunDuration = self:GetSpecialValueFor("stun")
+    local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/light_shock/light_shock.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx, 0, targetPosition)
+    Timers:CreateTimer(2, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOnLocationWithCaster(targetPosition, "Hero_Invoker.SunStrike.Ignite", caster)
+    local enemies = FindUnitsInRadius(casterTeam,
+            targetPosition,
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.holydmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = stunDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_chosen_invoker", MotionController)
