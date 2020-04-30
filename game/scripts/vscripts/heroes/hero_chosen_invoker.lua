@@ -178,7 +178,6 @@ function modifier_chosen_invoker_flare_array_dot:OnCreated(keys)
     if (not IsServer()) then
         return
     end
-    PrintTable(keys)
     if (not keys or not keys.dot_damage or not keys.bonus_damage) then
         self:Destroy()
     end
@@ -217,7 +216,7 @@ modifier_chosen_invoker_flare_array_buff = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
