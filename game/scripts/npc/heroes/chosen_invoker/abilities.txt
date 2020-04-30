@@ -140,6 +140,7 @@
 		"precache"
 		{
             "particle" "particles/units/chosen_invoker/flare_array/flare_array.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
 		}
 	}
 }

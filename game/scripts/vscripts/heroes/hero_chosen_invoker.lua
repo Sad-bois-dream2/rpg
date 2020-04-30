@@ -88,10 +88,12 @@ function modifier_chosen_invoker_purification_brilliance:OnIntervalThink()
     local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/purification_brilliance/purification_brilliance_rope.vpcf", PATTACH_POINT, self.caster)
     ParticleManager:SetParticleControlEnt(pidx, 0, self.caster, PATTACH_POINT_FOLLOW, attachPoint, self.caster:GetAbsOrigin(), true)
     ParticleManager:SetParticleControlEnt(pidx, 1, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", self.target:GetAbsOrigin(), true)
-    Timers:CreateTimer(1.0, function()
+    EmitSoundOn("Hero_KeeperOfTheLight.BlindingLight", self.target)
+    Timers:CreateTimer(0.97, function()
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+        self.target:StopSound("Hero_KeeperOfTheLight.BlindingLight")
+    end, self)
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target
@@ -267,12 +269,19 @@ function chosen_invoker_flare_array:OnSpellStart()
     local bonusDamage = 1
     local modifier = caster:FindModifierByName("modifier_chosen_invoker_flare_array_buff")
     local enemiesAffected = {}
+    local playSound = true
     if (modifier) then
         bonusDamage = 1 + (damagePerStack * modifier:GetStackCount() / 100)
         modifier:Destroy()
     end
     Timers:CreateTimer(0, function()
         local position = caster:GetAbsOrigin() + (direction * distanceBetweenExplosion * offset)
+        if (playSound) then
+            EmitSoundOnLocationWithCaster(position, "Hero_Invoker.SunStrike.Ignite", caster)
+            playSound = false
+        else
+            playSound = true
+        end
         AddFOWViewer(casterTeam, position, damageRadius, 2, false)
         local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/flare_array/flare_array.vpcf", PATTACH_ABSORIGIN, caster)
         ParticleManager:SetParticleControl(pidx, 0, position)
