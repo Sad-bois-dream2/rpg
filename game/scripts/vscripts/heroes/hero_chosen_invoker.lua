@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- chosen_invoker_purification_brilliance modifiers
-modifier_chosen_invoker_purification_brilliance_buff = modifier_chosen_invoker_purification_brilliance_buff or class({
+modifier_chosen_invoker_purification_brilliance_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -152,6 +152,94 @@ function chosen_invoker_purification_brilliance:OnSpellStart()
     self.modifier = caster:AddNewModifier(caster, self, "modifier_chosen_invoker_purification_brilliance", { duration = self:GetChannelTime() })
 end
 
+-- chosen_invoker_flare_array modifiers
+modifier_chosen_invoker_flare_array_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return chosen_invoker_flare_array:GetAbilityTextureName()
+    end
+})
+
+function modifier_chosen_invoker_flare_array_dot:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    PrintTable(keys)
+    if (not keys or not keys.dot_damage or not keys.bonus_damage) then
+        self:Destroy()
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetCaster()
+    self.target = self:GetParent()
+    self.damage = keys.dot_damage
+    self.bonusDamage = keys.bonus_damage
+    local tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(tick)
+end
+
+function modifier_chosen_invoker_flare_array_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.damage * self.caster:GetMaxMana() * self.bonusDamage
+    damageTable.holydmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+LinkedModifiers["modifier_chosen_invoker_flare_array_dot"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_chosen_invoker_flare_array_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return chosen_invoker_flare_array:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end
+})
+
+function modifier_chosen_invoker_flare_array_buff:OnCreated()
+    self.bonus = self:GetAbility():GetSpecialValueFor("bonus_damage")
+end
+
+function modifier_chosen_invoker_flare_array_buff:OnTooltip()
+    return self:GetStackCount() * self.bonus
+end
+
+LinkedModifiers["modifier_chosen_invoker_flare_array_buff"] = LUA_MODIFIER_MOTION_NONE
+
 -- chosen_invoker_flare_array
 chosen_invoker_flare_array = class({
     GetAbilityTextureName = function(self)
@@ -165,8 +253,28 @@ function chosen_invoker_flare_array:OnSpellStart()
     end
     local offset = 0.5
     local caster = self:GetCaster()
+    local casterTeam = caster:GetTeam()
+    local casterPosition = caster:GetAbsOrigin()
+    local direction = (self:GetCursorPosition() - casterPosition):Normalized()
+    local range = self:GetSpecialValueFor("range")
+    local distanceBetweenExplosion = 200
+    local offsetMax = range * 2 / distanceBetweenExplosion
+    local damageRadius = self:GetSpecialValueFor("damage_radius")
+    local maxStacks = self:GetSpecialValueFor("bonus_max")
+    local baseDamage = self:GetSpecialValueFor("base_damage")
+    local dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    local dotDuration = self:GetSpecialValueFor("dot_duration")
+    local damagePerStack = self:GetSpecialValueFor("bonus_damage")
+    local bonusDamage = 1
+    local modifier = caster:FindModifierByName("modifier_chosen_invoker_flare_array_buff")
+    local enemiesAffected = {}
+    if (modifier) then
+        bonusDamage = 1 + (damagePerStack * modifier:GetStackCount() / 100)
+        modifier:Destroy()
+    end
     Timers:CreateTimer(0, function()
-        local position = caster:GetAbsOrigin() + (caster:GetForwardVector() * 200 * offset)
+        local position = caster:GetAbsOrigin() + (direction * distanceBetweenExplosion * offset)
+        AddFOWViewer(casterTeam, position, damageRadius, 2, false)
         local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/flare_array/flare_array.vpcf", PATTACH_ABSORIGIN, caster)
         ParticleManager:SetParticleControl(pidx, 0, position)
         ParticleManager:SetParticleControl(pidx, 1, position)
@@ -174,11 +282,50 @@ function chosen_invoker_flare_array:OnSpellStart()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
+        local enemies = FindUnitsInRadius(casterTeam,
+                position,
+                nil,
+                damageRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        baseDamage = baseDamage * bonusDamage
+        for _, enemy in pairs(enemies) do
+            if (not TableContains(enemiesAffected, enemy)) then
+                local modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = caster
+                modifierTable.caster = caster
+                modifierTable.modifier_name = "modifier_chosen_invoker_flare_array_buff"
+                modifierTable.duration = -1
+                modifierTable.stacks = 1
+                modifierTable.max_stacks = maxStacks
+                GameMode:ApplyStackingBuff(modifierTable)
+                local damageTable = {}
+                damageTable.caster = caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = baseDamage
+                damageTable.holydmg = true
+                GameMode:DamageUnit(damageTable)
+                modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = enemy
+                modifierTable.caster = caster
+                modifierTable.modifier_name = "modifier_chosen_invoker_flare_array_dot"
+                modifierTable.modifier_params = { dot_damage = dotDamage, bonus_damage = bonusDamage }
+                modifierTable.duration = dotDuration
+                GameMode:ApplyDebuff(modifierTable)
+                table.insert(enemiesAffected, enemy)
+            end
+        end
         offset = offset + 1
-        if (offset < 7) then
+        if (offset < offsetMax) then
             return 0.1
         end
-    end)
+    end, self)
 end
 
 -- Internal stuff
