@@ -336,6 +336,52 @@ function chosen_invoker_flare_array:OnSpellStart()
     end, self)
 end
 
+-- chosen_invoker_photon_pulse modifiers
+
+-- chosen_invoker_photon_pulse
+chosen_invoker_photon_pulse = class({
+    GetAbilityTextureName = function(self)
+        return "chosen_invoker_photon_pulse"
+    end,
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
+function chosen_invoker_photon_pulse:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    print("spell start")
+end
+
+function chosen_invoker_photon_pulse:OnAbilityPhaseInterrupted()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    print("rip")
+end
+
+function chosen_invoker_photon_pulse:OnAbilityPhaseStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/photon_pulse/photon_pulse.vpcf", PATTACH_ABSORIGIN, caster)
+    local orbPosition = caster:GetAbsOrigin()
+    ParticleManager:SetParticleControl(pidx, 0, orbPosition + Vector(0, 0, 300))
+    ParticleManager:SetParticleControl(pidx, 1, orbPosition + Vector(0, 0, 250))
+    -- default speed, scaling, lifespan
+    ParticleManager:SetParticleControl(pidx, 3, Vector(500, 1, 1.3))
+    ParticleManager:SetParticleControl(pidx, 5, Vector(60, 0, 0))
+    Timers:CreateTimer(2, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end, self)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_chosen_invoker", MotionController)
