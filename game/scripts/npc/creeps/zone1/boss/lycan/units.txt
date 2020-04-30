@@ -5,7 +5,7 @@
 	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
 		//----------------------------------------------------------------
-		"Model"						"models/items/lycan/wolves/frostivus2018_lycan_winter_snow_wolf_wolves/frostivus2018_lycan_winter_snow_wolf_wolves.vmdl"	// Model.
+		"Model"						"models/items/lycan/wolves/blood_moon_hunter_wolves/blood_moon_hunter_wolves.vmdl"	// Model.
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"Hero_Lycan.SummonWolves"
 		"Level"						"0"
@@ -61,11 +61,11 @@
 	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
 		//----------------------------------------------------------------
-		"Model"						"models/items/lycan/ultimate/frostivus2018_lycan_winter_snow_wolf_shapeshift/frostivus2018_lycan_winter_snow_wolf_shapeshift.vmdl"	// Model.
+		"Model"						"models/items/lycan/ultimate/blood_moon_hunter_shapeshift_form/blood_moon_hunter_shapeshift_form.vmdl"	// Model.
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"Hero_Lycan.SummonWolves"
 		"Level"						"0"
-		"ModelScale" 					"1"
+		"ModelScale" 					"0.8"
 		"IsNeutralUnitType"			"0"
 		// Abilities
 		//----------------------------------------------------------------

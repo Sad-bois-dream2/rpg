@@ -35,7 +35,7 @@
         "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1"     // Speed of attack.
-        "AttackAnimationPoint"    "0.5"   // Normalized time in animation cycle to attack.
+        "AttackAnimationPoint"    "0.6"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
@@ -97,10 +97,10 @@
         {
         "AttachWearables"
                     {
-                        "1" { "ItemDef" "9452" }
-                        "2" { "ItemDef" "9900" }
-                        "3" { "ItemDef" "9898" }
-                        "4" { "ItemDef" "9899" }
+                        "1" { "ItemDef" "9452"}
+                        "2" { "ItemDef" "9900"}
+                        "3" { "ItemDef" "9898"}
+                        "4" { "ItemDef" "9899"}
 
                     }
 

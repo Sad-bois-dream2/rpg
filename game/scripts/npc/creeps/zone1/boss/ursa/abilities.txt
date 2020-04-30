@@ -130,7 +130,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"stun"				    "1 2 4"
+   				"stun"				        "1 2 4"
    			}
    		}
 		"precache"
