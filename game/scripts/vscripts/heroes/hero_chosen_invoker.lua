@@ -152,6 +152,35 @@ function chosen_invoker_purification_brilliance:OnSpellStart()
     self.modifier = caster:AddNewModifier(caster, self, "modifier_chosen_invoker_purification_brilliance", { duration = self:GetChannelTime() })
 end
 
+-- chosen_invoker_flare_array
+chosen_invoker_flare_array = class({
+    GetAbilityTextureName = function(self)
+        return "chosen_invoker_flare_array"
+    end
+})
+
+function chosen_invoker_flare_array:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local offset = 0.5
+    local caster = self:GetCaster()
+    Timers:CreateTimer(0, function()
+        local position = caster:GetAbsOrigin() + (caster:GetForwardVector() * 200 * offset)
+        local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/flare_array/flare_array.vpcf", PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(pidx, 0, position)
+        ParticleManager:SetParticleControl(pidx, 1, position)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+        offset = offset + 1
+        if (offset < 7) then
+            return 0.1
+        end
+    end)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_chosen_invoker", MotionController)
