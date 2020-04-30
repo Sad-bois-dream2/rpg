@@ -7,17 +7,17 @@
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/ursa/ursa.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "0"
+        "Level"           "30"
         "UnitLabel"         "healing_ward"
 
         // Abilities
         //----------------------------------------------------------------
-          "Ability1"          ""     // Ability 1.
-          "Ability2"          ""     // Ability 2.
-          "Ability3"          ""      // Ability 3.
-          "Ability4"          ""      // Ability 4.
-          "Ability5"          ""      // Ability 5.
-          "Ability6"          ""      // Ability 6 - Extra.
+          "Ability1"          "ursa_rend"     // Ability 1.
+          "Ability2"          "ursa_fury"     // Ability 2.
+          "Ability3"          "ursa_roar"      // Ability 3.
+          "Ability4"          "ursa_swift"      // Ability 4.
+          "Ability5"          "ursa_slam"      // Ability 5.
+          "Ability6"          "ursa_hunt"      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
 
