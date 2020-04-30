@@ -1,0 +1,131 @@
+.DummyWindow
+{
+    width: 600px;
+    height: 600px;
+    horizontal-align: left;
+    margin-left: 20px;
+}
+
+.DamageLog
+{
+    width: 370px;
+    height: fit-children;
+    background-color: black;
+    border-radius: 5px;
+    overflow: squish scroll;
+    max-height: 500px;
+    min-height: 500px;
+    flow-children: down;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+.DamageEntry
+{
+	color: white;
+	horizontal-align: left;
+	vertical-align: top;
+	width: 100%;
+	height: fit-children;
+}
+
+.DamageEntry Label
+{
+	horizontal-align: left;
+	vertical-align: top;
+	width: 100%;
+	font-size: 14px;
+	text-overflow: shrink;
+	white-space: normal;
+}
+
+.DamageNumber {
+	font-size: 14px;
+}
+
+.DamageOwner {
+	font-size: 14px;
+	font-style: italic;
+}
+
+.DamageSource {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.WindowContent
+{
+	margin-top: 0px;
+	flow-children: down;
+}
+
+.TopContent
+{
+    margin-top: 50px;
+    width: 100%;
+    flow-children: right;
+}
+
+.TopContent .LeftSide
+{
+    margin-left: 30px;
+}
+
+.TopContent .RightSide
+{
+    width: 100%;
+    flow-children: down;
+}
+
+.RightSideLabel
+{
+	color: white;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 16px;
+	margin-bottom: 5px;
+	text-overflow: shrink;
+	font-family: platformfont;
+}
+
+.BottomContent
+{
+    width: 100%;
+    vertical-align: center;
+}
+
+.WindowTextBox Image
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 32px;
+    height: 32px;
+}
+
+.WindowTextBox TextEntry
+{
+    width: 120px;
+    height: 28px;
+    margin-right: 0px;
+}
+
+.WindowTextBox Label
+{
+	width: fill-parent-flow(1.0);
+	height: fit-children;
+    text-align: center;
+	color: white;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 16px;
+	padding-right: 10px;
+    font-family: platformfont;
+}
+
+.RightSideElement
+{
+	horizontal-align: center;
+	vertical-align: center;
+	margin-bottom: 8px;
+}

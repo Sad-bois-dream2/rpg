@@ -707,33 +707,32 @@ function modifier_out_of_combat:OnIntervalThink()
     self.timer = self.timer + 1
     if (self.timer > self.delay) then
         self.timer = self.delay
-        local healTable = {}
-        healTable.caster = self.caster
-        healTable.target = self.caster
-        healTable.ability = nil
-        healTable.heal = self.caster:GetMaxHealth() * 0.10
-        GameMode:HealUnit(healTable)
-        healTable.heal = self.caster:GetMaxMana() * 0.10
-        GameMode:HealUnitMana(healTable)
-        self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+        if (not self.modifier) then
+            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+        end
+    else
+        if (self.modifier) then
+            self.modifier:Destroy()
+            self.modifier = nil
+        end
     end
 end
 
 function modifier_out_of_combat:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
+    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier:Destroy()
+        modifier.timer = 0
     end
-    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
+    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier:Destroy()
+        modifier.timer = 0
     end
 end
 
 function modifier_out_of_combat:OnPostHeal(healTable)
-    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
+    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
     if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
-        modifier:Destroy()
+        modifier.timer = 0
     end
 end
 
@@ -766,13 +765,34 @@ modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
 function modifier_out_of_combat_buff:GetMoveSpeedBonus()
     return 100
 end
+function modifier_out_of_combat_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self:StartIntervalThink(1.0)
+end
+
+function modifier_out_of_combat_buff:OnIntervalThink()
+    if(not IsServer()) then
+        return
+    end
+    local healTable = {}
+    healTable.caster = self.caster
+    healTable.target = self.caster
+    healTable.ability = nil
+    healTable.heal = self.caster:GetMaxHealth() * 0.10
+    GameMode:HealUnit(healTable)
+    healTable.heal = self.caster:GetMaxMana() * 0.10
+    GameMode:HealUnitMana(healTable)
+end
 
 function modifier_out_of_combat_buff:OnDestroy()
     if (not IsServer()) then
         return
     end
     local modifier = self:GetParent():FindModifierByName("modifier_out_of_combat")
-    if(modifier) then
+    if (modifier) then
         modifier.timer = 0
     end
 end
