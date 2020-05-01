@@ -28,6 +28,13 @@ function Precache(context)
     PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_ogre_magi.vsndevts", context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
+    -- All enemy abilities
+    for _, ability in pairs(Enemies.enemyAbilities) do
+        PrecacheItemByNameSync(ability, context)
+    end
+    for _, ability in pairs(Enemies.eliteAbilities) do
+        PrecacheItemByNameSync(ability, context)
+    end
     -- All talents abilities
     for _, hero_talents in pairs(TalentTree.talent_abilities) do
         for _, ability in pairs(hero_talents) do
