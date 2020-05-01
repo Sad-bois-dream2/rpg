@@ -136,69 +136,7 @@ lycan_wound = class({
     end,
 })
 
-modifier_lycan_wound_debuff = modifier_lycan_wound_debuff or class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-
-})
-
-function modifier_lycan_wound_debuff:OnCreated()
-    if IsServer() then
-        return
-    end
-    self.ability = self:GetAbility()
-    self.caster = self:GetCaster()
-    -- call and calculate values
-    --local ability = self:GetAbility() --or self:GetCaster():FindAbilityByName("lycan_wound")--trace back to lycan ability that create this modifier
-    --self.parent = self:GetParent()
-    -- --dot
-    -- if (ability) then
-    --   self.dot = ability:GetSpecialValueFor("dot") * 0.01
-    self:StartIntervalThink(1.0)
-    -- end
-end
-
--- function modifier_lycan_wound_debuff:OnIntervalThink()
--- if IsServer() then
---   local parent            = self:GetParent()
---   local caster            = self:GetCaster()
---   local damage            = self.dot * parent:GetMaxHealth()
---   local damageTable       = {}
---  damageTable.caster = caster
---   damageTable.target = parent
---   damageTable.ability = nil
---   damageTable.damage = damage
---   damageTable.puredmg = true
---   GameMode:DamageUnit(damageTable)
---  end
---end
-
-
-function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
-    --heal negate
-    return -1 --that boi can never regain hp again
-end
-
-function modifier_lycan_wound_debuff:GetStatusEffectName()
-    return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-end
-
-LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-function lycan_wound:ApplyDamagethendebuff(target, caster)
-    if (not IsServer()) then
-        return
-    end
+function lycan_wound:ApplyDamageAndDebuff(target, caster)
     local duration = self:GetSpecialValueFor("duration")
     local initial = self:GetSpecialValueFor("initial_damage") * 0.01
     local Max_health = target:GetMaxHealth()
@@ -219,26 +157,10 @@ function lycan_wound:ApplyDamagethendebuff(target, caster)
     modifierTable.target = target
     modifierTable.ability = self
     modifierTable.modifier_name = "modifier_lycan_wound_debuff"
+    modifierTable.modifier_params = { dot = dot }
     modifierTable.duration = duration
     GameMode:ApplyDebuff(modifierTable)
     EmitSoundOn("hero_bloodseeker.rupture", target)
-    --dot damage
-    --somehow dot debuff interval code doesn't work so i will put it here current idea is undispellable anyway
-    damage = Max_health * dot
-    local counter = 0
-    Timers:CreateTimer(0, function()
-        if counter < 5 then
-            damageTable = {}
-            damageTable.caster = caster
-            damageTable.target = target
-            damageTable.ability = nil
-            damageTable.damage = damage
-            damageTable.puredmg = true
-            GameMode:DamageUnit(damageTable)
-            counter = counter + 1
-            return 1.0
-        end
-    end)
 end
 
 function lycan_wound:OnSpellStart()
@@ -247,8 +169,60 @@ function lycan_wound:OnSpellStart()
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
-    self:ApplyDamagethendebuff(target, caster)
+    self:ApplyDamageAndDebuff(target, caster)
 end
+
+modifier_lycan_wound_debuff = modifier_lycan_wound_debuff or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+    end
+})
+
+function modifier_lycan_wound_debuff:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (not keys or not keys.dot) then
+        self:Destroy()
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetCaster()
+    self.target = self:GetParent()
+    self.dot = keys.dot
+end
+
+function modifier_lycan_wound_debuff:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.dot * self.target:GetMaxHealth()
+    damageTable.puredmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
+    --heal negate
+    return -1 --that boi can never regain hp again
+end
+
+LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
 
 ---------------------
 --lycan wolf form
@@ -261,6 +235,39 @@ lycan_wolf_form = class({
         return "modifier_lycan_wolf_form"
     end,
 })
+
+function lycan_wolf_form:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    local modifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
+    modifier.hp_threshold = self:GetSpecialValueFor("hp_threshold") * 0.01
+end
+
+function lycan_wolf_form:Transform()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterPosition = caster:GetAbsOrigin()
+    local particle_cast_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf", PATTACH_ABSORIGIN, caster)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_lycan_transform"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
+    ParticleManager:SetParticleControl(particle_cast_fx, 0, casterPosition)
+    ParticleManager:SetParticleControl(particle_cast_fx, 1, casterPosition)
+    ParticleManager:SetParticleControl(particle_cast_fx, 2, casterPosition)
+    ParticleManager:SetParticleControl(particle_cast_fx, 3, casterPosition)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(particle_cast_fx, false)
+        ParticleManager:ReleaseParticleIndex(particle_cast_fx)
+    end)
+    caster:EmitSound("Hero_Lycan.Shapeshift.Cast")
+end
 
 modifier_lycan_wolf_form = modifier_lycan_wolf_form or class({
     IsDebuff = function(self)
@@ -289,7 +296,22 @@ function modifier_lycan_wolf_form:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
+end
 
+function modifier_lycan_wolf_form:OnTakeDamage()
+    if (not IsServer()) then
+        return
+    end
+    if self.parent:HasModifier("modifier_lycan_transform") then
+        -- already transform ? destroy hp check buff
+        self:Destroy()
+        return
+    end
+    self.hp_pct = self.parent:GetHealth() / self.parent:GetMaxHealth()
+    if self.hp_pct <= self.hp_threshold then
+        -- hp drop below threshold = transform
+        self.ability:Transform()
+    end
 end
 
 LinkLuaModifier("modifier_lycan_wolf_form", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -310,124 +332,56 @@ modifier_lycan_transform = modifier_lycan_transform or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-
+    DeclareFunctions = function()
+        return { MODIFIER_PROPERTY_MODEL_CHANGE }
+    end,
+    GetModifierModelChange = function()
+        return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
+    end
 })
 
 function modifier_lycan_transform:OnCreated()
     if not IsServer() then
         return
     end
-    self.parent = self:GetParent()
-    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_wolf_form")
-    if (modifier) then
-        self.bat = modifier.ability:GetSpecialValueFor("bat")
-        self.crit_factor = modifier.ability:GetSpecialValueFor("crit_factor")
-        self.crit_chance = modifier.ability:GetSpecialValueFor("crit_chance")
-        self.ms_bonus = modifier.ability:GetSpecialValueFor("ms_bonus")
-    end
-end
-
-function modifier_lycan_transform:DeclareFunctions()
-    local decFuncs = { MODIFIER_PROPERTY_MODEL_CHANGE,
-                       MODIFIER_EVENT_ON_ATTACK_LANDED }
-    return decFuncs
+    self.ability = self:GetAbility()
+    self.bat = self.ability:GetSpecialValueFor("bat")
+    self.crit_factor = self.ability:GetSpecialValueFor("crit_factor") / 100
+    self.crit_chance = self.ability:GetSpecialValueFor("crit_chance")
+    self.ms_bonus = self.ability:GetSpecialValueFor("ms_bonus") / 100
 end
 
 function modifier_lycan_transform:GetMoveSpeedPercentBonus()
     return self.ms_bonus
 end
 
-function modifier_lycan_transform:GetModifierModelChange()
-    return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
-end
-
 function modifier_lycan_transform:GetBaseAttackTime()
     return self.bat
 end
 
-function modifier_lycan_transform:GetModifierPreAttack_CriticalStrike(keys)
-    --crit damage
-    if IsServer() then
-        if RollPercentage(self.crit_chance) then
-            self.crit_strike = true
-            return self.crit_factor
-        end
-        self.crit_strike = false
-        return nil
-    end
-end
-
-function modifier_lycan_transform:OnAttackLanded(keys)
-    --crit particle
-    local target = keys.target
-    local attacker = keys.attacker
-    if (keys.attacker == self.parent and RollPercentage(self.crit_chance)) then
-        self.parent:EmitSound("Hero_PhantomAssassin.CoupDeGrace")
+function modifier_lycan_transform:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_lycan_transform")
+    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.crit_chance)) then
+        local victimPosition = damageTable.victim:GetAbsOrigin()
         local crit_particle = "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
-        local coup_pfx = ParticleManager:CreateParticle(crit_particle, PATTACH_ABSORIGIN_FOLLOW, target)
-        ParticleManager:SetParticleControlEnt(coup_pfx, 0, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
-        ParticleManager:SetParticleControl(coup_pfx, 1, target:GetAbsOrigin())
-        ParticleManager:SetParticleControlOrientation(coup_pfx, 1, self:GetParent():GetForwardVector() * (-1), self:GetParent():GetRightVector(), self:GetParent():GetUpVector())
+        local coup_pfx = ParticleManager:CreateParticle(crit_particle, PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPosition, true)
+        ParticleManager:SetParticleControl(coup_pfx, 1, victimPosition)
+        ParticleManager:SetParticleControlOrientation(coup_pfx, 1, damageTable.attacker:GetForwardVector() * (-1), damageTable.attacker:GetRightVector(), damageTable.attacker:GetUpVector())
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(coup_pfx, false)
             ParticleManager:ReleaseParticleIndex(coup_pfx)
         end)
-        local attack_damage = keys.attacker:GetAttackDamage()
-        local damageTable = {}
-        damageTable.damage = attack_damage
-        damageTable.crit = self.crit_factor
-        damageTable.caster = attacker
-        damageTable.target = target
-        damageTable.physdmg = true
-        damageTable.ability = nil
-        GameMode:DamageUnit(damageTable)
+        damageTable.crit = modifier.crit_factor
+        return damageTable
     end
+end
+
+if (IsServer()) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
 end
 
 LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-function lycan_wolf_form:Transform()
-    if (not IsServer()) then
-        return
-    end
-    local particle_cast = "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
-    local particle_cast_fx = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, self.caster)
-    local transform_buff = "modifier_lycan_transform"
-    local modifierTable = {}
-    self.caster = self:GetCaster()
-    modifierTable.ability = self
-    modifierTable.target = self.caster
-    modifierTable.caster = self.caster
-    modifierTable.modifier_name = transform_buff
-    modifierTable.duration = -1
-    GameMode:ApplyBuff(modifierTable)
-    ParticleManager:SetParticleControl(particle_cast_fx, 0, self.caster:GetAbsOrigin())
-    ParticleManager:SetParticleControl(particle_cast_fx, 1, self.caster:GetAbsOrigin())
-    ParticleManager:SetParticleControl(particle_cast_fx, 2, self.caster:GetAbsOrigin())
-    ParticleManager:SetParticleControl(particle_cast_fx, 3, self.caster:GetAbsOrigin())
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(particle_cast_fx, false)
-        ParticleManager:ReleaseParticleIndex(particle_cast_fx)
-    end)
-    self.caster:EmitSound("Hero_Lycan.Shapeshift.Cast")
-end
-
-function modifier_lycan_wolf_form:OnTakeDamage()
-    if (not IsServer()) then
-        return
-    end
-    self.parent = self:GetParent()
-    self.hp_threshold = self.ability:GetSpecialValueFor("hp_threshold") * 0.01
-    self.hp_pct = self.parent:GetHealth() / self.parent:GetMaxHealth()
-    if self.parent:HasModifier("modifier_lycan_transform") then
-        -- already transform ? destroy hp check buff
-        self.parent:RemoveModifierByName("modifier_lycan_wolf_form")
-    end
-    if self.hp_pct <= self.hp_threshold then
-        -- hp drop below threshold = transform
-        self.ability:Transform()
-    end
-end
 
 ---------------------
 --lycan howl aura
@@ -436,10 +390,7 @@ end
 lycan_howl_aura = class({
     GetAbilityTextureName = function(self)
         return "lycan_howl_aura"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_lycan_howl_aura"
-    end,
+    end
 })
 
 modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
@@ -450,7 +401,7 @@ modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
         return false
     end,
     GetAuraRadius = function(self)
-        return self.ability.radius or 0
+        return self.radius or 0
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_INVULNERABLE + DOTA_UNIT_TARGET_FLAG_OUT_OF_WORLD
@@ -472,8 +423,7 @@ modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
     end,
     GetTexture = function(self)
         return lycan_howl_aura:GetAbilityTextureName()
-    end,
-
+    end
 })
 
 function modifier_lycan_howl_aura:OnCreated()
@@ -484,7 +434,6 @@ function modifier_lycan_howl_aura:OnCreated()
     self.ability = self:GetAbility()
     self.hero = self.ability:GetCaster()
     self.radius = self.ability:GetSpecialValueFor("radius")
-
 end
 
 LinkLuaModifier("modifier_lycan_howl_aura", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -507,22 +456,18 @@ modifier_lycan_howl_aura_buff = modifier_lycan_howl_aura_buff or class({
     end,
     GetTexture = function(self)
         return lycan_howl_aura:GetAbilityTextureName()
-    end,
-
+    end
 })
 
 function modifier_lycan_howl_aura_buff:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.parent = self:GetParent()
     self.radius = self.ability:GetSpecialValueFor("radius")
-    self.as_aura = self.ability:GetSpecialValueFor("as_aura")
+    self.as_aura = self.ability:GetSpecialValueFor("as_aura") / 100
     self.ms_aura = self.ability:GetSpecialValueFor("ms_aura") / 100
     self.damage_reduce_incoming_pct_aura = self.ability:GetSpecialValueFor("damage_reduce_incoming_pct_aura") * 0.01
-
 end
 
 function modifier_lycan_howl_aura_buff:GetDamageReductionBonus()
@@ -596,15 +541,16 @@ function lycan_howl_aura:OnSpellStart()
         modifierTable.duration = duration
         GameMode:ApplyBuff(modifierTable)
         --apply debuff
+        local casterPosition = self.caster:GetAbsOrigin()
         local radius = self:GetSpecialValueFor("radius")
         local particle_lycan_howl = "particles/units/heroes/hero_lycan/lycan_howl_cast.vpcf"
         local particle_lycan_howl_fx = ParticleManager:CreateParticle(particle_lycan_howl, PATTACH_ABSORIGIN, self.caster)
-        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 0, self.caster:GetAbsOrigin())
-        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 1, self.caster:GetAbsOrigin())
-        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 2, self.caster:GetAbsOrigin())
+        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 0, casterPosition)
+        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 1, casterPosition)
+        ParticleManager:SetParticleControl(particle_lycan_howl_fx, 2, casterPosition)
         self.caster:EmitSound("Hero_Lycan.Howl")
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
-                self.caster:GetAbsOrigin(),
+                casterPosition,
                 nil,
                 radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -654,11 +600,7 @@ function lycan_agility:FindTargetForBlink(caster)
                 break
             end
         end
-        if (randomEnemy) then
-            return randomEnemy
-        else
-            return nil
-        end
+        return randomEnemy
     end
 end
 
@@ -708,14 +650,18 @@ modifier_lycan_agility_buff = modifier_lycan_agility_buff or class({
     end,
 })
 
-function modifier_lycan_agility_buff:OnCreated()
+function modifier_lycan_agility_buff:OnCreated(keys)
     if not IsServer() then
         return
     end
+    if (not keys or keys.target) then
+        self:Destroy()
+    end
+    self.target = keys.target
 end
 
 function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
-    return self.caster
+    return self.target
 end
 
 LinkLuaModifier("modifier_lycan_agility_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -733,9 +679,9 @@ function lycan_agility:OnSpellStart()
     modifierTable.target = caster
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_lycan_agility_buff"
+    modifierTable.modifier_params = { target = target }
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
-
     --set table for already hit
     self.already_hit = {}
     self:Blink(target, caster) --first target on cursor mostly gonna be tank
@@ -767,7 +713,31 @@ lycan_double_strike = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_lycan_double_strike"
-    end, })
+    end
+})
+
+function lycan_double_strike:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.chance = self:GetSpecialValueFor("chance")
+    self.cooldown = self:GetCooldown(self:GetLevel())
+    self.max_hits = self:GetSpecialValueFor("max_hits")
+end
+
+function lycan_double_strike:ApplyQuick(parent)
+    --apply AS bonus
+    local max_stacks = 5
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = parent
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
+    modifierTable.duration = -1
+    modifierTable.stacks = self.max_hits
+    modifierTable.max_stacks = max_stacks
+    GameMode:ApplyStackingBuff(modifierTable)
+end
 
 modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsDebuff = function(self)
@@ -796,52 +766,29 @@ function modifier_lycan_double_strike:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    self.chance = self.ability:GetSpecialValueFor("chance")
-
 end
 
-LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
 function modifier_lycan_double_strike:OnAttackLanded(keys)
-    if (not IsServer()) then
+    if (not IsServer() or keys.attacker ~= self.parent) then
         return
     end
     --eat AS buff if there are any
-    if (keys.attacker:HasModifier("modifier_lycan_double_strike_quick")) then
-        local mod = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
-        mod:DecrementStackCount()
-        if mod:GetStackCount() < 1 then
-            mod:Destroy()
+    local modifier = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
+    if (modifier) then
+        local stacks = modifier:GetStackCount() - 1
+        if (stacks < 1) then
+            modifier:Destroy()
         end
     else
         --add AS buff
-        if (keys.attacker == self.parent and self.ability:IsCooldownReady()) then
-            if RollPercentage(self.chance) then
-                self.ability:ApplyQuick(self.parent)
-                local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
-                self.ability:StartCooldown(abilityCooldown)
-            end
+        if (self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
+            self.ability:ApplyQuick(self.parent)
+            self.ability:StartCooldown(self.ability.cooldown)
         end
-
     end
-
 end
 
-function lycan_double_strike:ApplyQuick(parent)
-    --apply AS bonus
-    local max_stacks = 5
-    local max_hits = self:GetSpecialValueFor("max_hits")
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
-    modifierTable.duration = -1
-    modifierTable.stacks = max_hits
-    modifierTable.max_stacks = max_stacks
-    GameMode:ApplyStackingBuff(modifierTable)
-end
-
+LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 --modifier double strike quick
 modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class({
@@ -866,11 +813,7 @@ function modifier_lycan_double_strike_quick:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.as_bonus = 0
-    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_double_strike")
-    if (modifier) then
-        self.as_bonus = modifier.ability:GetSpecialValueFor("as_bonus")
-    end
+    self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus")
 end
 
 function modifier_lycan_double_strike_quick:GetAttackSpeedBonus()
@@ -891,6 +834,35 @@ lycan_bleeding = class({
         return "modifier_lycan_bleeding"
     end,
 })
+
+function lycan_double_strike:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.max_stacks = self:GetSpecialValueFor("max_stacks")
+end
+
+function lycan_bleeding:ApplyBleeding(target, parent)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_lycan_bleeding_heal_reduced"
+    modifierTable.duration = self.duration
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = self.max_stacks
+    GameMode:ApplyStackingDebuff(modifierTable)
+    modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_lycan_bleeding_dot"
+    modifierTable.duration = self.duration
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = self.max_stacks
+    GameMode:ApplyStackingDebuff(modifierTable)
+end
 
 modifier_lycan_bleeding = modifier_lycan_bleeding or class({
     IsDebuff = function(self)
@@ -920,6 +892,16 @@ function modifier_lycan_bleeding:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
 end
+
+function modifier_lycan_bleeding:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    if (keys.attacker == self.parent) then
+        self.ability:ApplyBleeding(keys.target, self.parent)
+    end
+end
+
 LinkLuaModifier("modifier_lycan_bleeding", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_lycan_bleeding_dot = modifier_lycan_bleeding_dot or class({
@@ -938,30 +920,28 @@ modifier_lycan_bleeding_dot = modifier_lycan_bleeding_dot or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+    end
 })
 
 function modifier_lycan_bleeding_dot:OnCreated()
     if not IsServer() then
         return
     end
-    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_bleeding")
-    if (modifier) then
-
-        self.dot = modifier.ability:GetSpecialValueFor("dot") * 0.01
-        self:StartIntervalThink(1.0);
-    end
+    self.caster = self:GetCaster()
+    self.target = self:GetParent()
+    self.dot = self:GetAbility():GetSpecialValueFor("dot") * 0.01
+    self:StartIntervalThink(1.0)
 end
 
 function modifier_lycan_bleeding_dot:OnIntervalThink()
-    local parent = self:GetParent()
-    local caster = self:GetCaster()
-    local Max_health = parent:GetMaxHealth()
-    local mod_bleed = self:GetParent():FindModifierByName("modifier_lycan_bleeding_dot")
-    local damage = Max_health * self.dot * mod_bleed:GetStackCount()
+    local maxHealth = self.target:GetMaxHealth()
+    local damage = maxHealth * self.dot * self:GetStackCount()
     local damageTable = {}
-    damageTable.caster = caster
-    damageTable.target = parent
-    damageTable.ability = nil -- can be nil
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = nil
     damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
@@ -991,15 +971,13 @@ function modifier_lycan_bleeding_heal_reduced:OnCreated()
     if not IsServer() then
         return
     end
-    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_bleeding")
-    if (modifier) then
-        local mod_heal = self:GetParent():FindModifierByName("modifier_lycan_bleeding_heal_reduced")
-        self.heal_reduced = modifier.ability:GetSpecialValueFor("heal_reduced") * (mod_heal:GetStackCount() + 1) * -0.01
-        --if no +1 the heal reduced effect seem delay by 1 stack
-    end
+    self.heal_reduced = self:GetAbility():GetSpecialValueFor("heal_reduced") * (self:GetStackCount() + 1) * -0.01
 end
 
 function modifier_lycan_bleeding_heal_reduced:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
     self:OnCreated()
 end
 
@@ -1008,44 +986,4 @@ function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus(
 end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
-function modifier_lycan_bleeding:OnAttackLanded(keys)
-    if not IsServer() then
-        return
-    end
-    if (keys.attacker:HasModifier("modifier_lycan_bleeding")) then
-        self.ability:ApplyBleeding(keys.target, self.parent)
-
-    end
-end
-
-function lycan_bleeding:ApplyBleeding(target, parent)
-
-    local max_stacks = self:GetSpecialValueFor("max_stacks")
-    self.duration = self:GetSpecialValueFor("duration")
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_bleeding_heal_reduced"
-    modifierTable.duration = self.duration
-    modifierTable.stacks = 1
-    modifierTable.max_stacks = max_stacks
-    GameMode:ApplyStackingDebuff(modifierTable)
-    modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_bleeding_dot"
-    modifierTable.duration = self.duration
-    modifierTable.stacks = 1
-    modifierTable.max_stacks = max_stacks
-    GameMode:ApplyStackingDebuff(modifierTable)
-
-end
-
-function modifier_lycan_bleeding_dot:GetStatusEffectName()
-    return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-end
-
 

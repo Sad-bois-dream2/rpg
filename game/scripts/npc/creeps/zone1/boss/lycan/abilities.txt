@@ -136,9 +136,9 @@
 			}
 		}
 		"precache"
-        	{       "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-        			"soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
-
+        	{
+        	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+        	    "soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
         	}
 	}
     //=================================================================================================================
@@ -154,9 +154,6 @@
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
-
-
-
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
@@ -184,16 +181,15 @@
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"crit_factor"				    "1.5 3 5"
+   				"crit_factor"				    "150 300 500"
    			}
-
-
    		}
     		"precache"
     		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
                 "particle"  "particles/hero/phantom_assassin/screen_blood_splatter.vpcf"
                 "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+                "particle"  "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
     		}
 	}
     //=================================================================================================================
@@ -261,9 +257,10 @@
 
 		}
     		"precache"
-    		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
+    		{
+    		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
     		    "particle"  "particles/units/heroes/hero_lycan/lycan_howl_buff.vpcf"
-
+                "particle"  "particles/units/heroes/hero_lycan/lycan_howl_cast.vpcf"
     		}
 	}
 
@@ -397,10 +394,10 @@
     			"max_stacks"			"5"
     		}
    		}
-
-	"precache"
-    		{ "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-    		}
+	    "precache"
+        {
+    	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+    	}
     }
 }
 
