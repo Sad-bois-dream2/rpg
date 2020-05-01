@@ -1,27 +1,26 @@
 "DOTAUnits"
 {
-    "npc_boss_lycan"
+    "npc_boss_ursa"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/heroes/lycan/lycan.vmdl"  // Model.
+        "Model"           "models/heroes/ursa/ursa.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "0"
+        "Level"           "30"
         "UnitLabel"         "healing_ward"
 
         // Abilities
         //----------------------------------------------------------------
-
-          "Ability1"          ""     // Ability 1.
-          "Ability2"          ""     // Ability 2.
-          "Ability3"          ""      // Ability 3.
-          "Ability4"          ""      // Ability 4.
-          "Ability5"          ""     // Ability 5.
-          "Ability6"          ""      // Ability 6 - Extra.
+          "Ability1"          "ursa_rend"     // Ability 1.
+          "Ability2"          "ursa_fury"     // Ability 2.
+          "Ability3"          "ursa_roar"      // Ability 3.
+          "Ability4"          "ursa_swift"      // Ability 4.
+          "Ability5"          "ursa_slam"      // Ability 5.
+          "Ability6"          "ursa_hunt"      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-          "Ability9"          ""      // Ability 8 - Extra.
+
 
         // Armor
         //----------------------------------------------------------------
@@ -34,8 +33,8 @@
         "AttackDamageMin"     "10"     // Damage range min.
         "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
-        "AttackRate"        "1"     // Speed of attack.
-        "AttackAnimationPoint"    "0.5"   // Normalized time in animation cycle to attack.
+        "AttackRate"        "1.7"     // Speed of attack.
+        "AttackAnimationPoint"    "0.3"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
@@ -97,11 +96,11 @@
         {
         "AttachWearables"
                     {
-                        "1" { "ItemDef" "8997" }
-                        "2" { "ItemDef" "8995   " }
-                        "3" { "ItemDef" "8987" }
-                        "4" { "ItemDef" "8988" }
-                        "5" { "ItemDef" "8989" }
+                        "1" { "ItemDef" "9688" }
+                        "2" { "ItemDef" "9689" }
+                        "3" { "ItemDef" "9690" }
+                        "4" { "ItemDef" "7654" }
+                        "5" { "ItemDef" "6893" }
                     }
 
         }

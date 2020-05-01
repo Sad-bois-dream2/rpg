@@ -1,23 +1,24 @@
 "DOTAUnits"
 {
-    "npc_boss_ursa"
+    "npc_boss_treant"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/heroes/ursa/ursa.vmdl"  // Model.
+        "Model"           "models/heroes/treant_protector/treant_protector.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "0"
+        "Level"           "30"
         "UnitLabel"         "healing_ward"
 
         // Abilities
         //----------------------------------------------------------------
-          "Ability1"          ""     // Ability 1.
-          "Ability2"          ""     // Ability 2.
-          "Ability3"          ""      // Ability 3.
-          "Ability4"          ""      // Ability 4.
-          "Ability5"          ""      // Ability 5.
-          "Ability6"          ""      // Ability 6 - Extra.
+
+          "Ability1"          "treant_hook"     // Ability 1.
+          "Ability2"          "treant_seed"     // Ability 2.
+          "Ability3"          "treant_growth"      // Ability 3.
+          "Ability4"          "treant_bash"      // Ability 4.
+          "Ability5"          "treant_ingrain"     // Ability 5.
+          "Ability6"          "treant_fertilize"      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
 
@@ -33,8 +34,8 @@
         "AttackDamageMin"     "10"     // Damage range min.
         "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
-        "AttackRate"        "1"     // Speed of attack.
-        "AttackAnimationPoint"    "0.5"   // Normalized time in animation cycle to attack.
+        "AttackRate"        "1.7"     // Speed of attack.
+        "AttackAnimationPoint"    "0.6"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
@@ -94,13 +95,13 @@
         //------------------------------------------------------------------
         "Creature"
         {
-        "AttachWearables" // Warlord of Hell
+        "AttachWearables"
                     {
-                        "1" { "ItemDef" "9688" } // Warlord of Hell Bracers
-                        "2" { "ItemDef" "9689" } // Warlord of Hell Tail
-                        "3" { "ItemDef" "9690" } // Warlord of Hell Guard
-                        "4" { "ItemDef" "7654" } // Warlord of Hell Belt
-                        "5" { "ItemDef" "6893" }
+                        "1" { "ItemDef" "9452"}
+                        "2" { "ItemDef" "9900"}
+                        "3" { "ItemDef" "9898"}
+                        "4" { "ItemDef" "9899"}
+
                     }
 
         }
