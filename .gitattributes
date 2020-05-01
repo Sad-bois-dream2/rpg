@@ -2,4 +2,4 @@
 .vmap filter=lfs diff=lfs merge=lfs -text
 .tga filter=lfs diff=lfs merge=lfs -text
 .tiff filter=lfs diff=lfs merge=lfs -text
-*.txt text working-tree-encoding=UTF-8 eol=CRLF
+*.txt text working-tree-encoding=UTF-16LE eol=CRLF
