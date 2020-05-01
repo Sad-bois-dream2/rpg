@@ -142,9 +142,11 @@ modifier_npc_dota_hero_drow_ranger_talent_36 = modifier_npc_dota_hero_drow_range
         return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_36.png"
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_MANACOST_PERCENTAGE }
+        return { MODIFIER_EVENT_ON_DEATH }
     end
 })
+
+--------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
     if (not IsServer()) then
@@ -152,8 +154,23 @@ function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
     end
     self.caster = self:GetParent()
 end
-function modifier_npc_dota_hero_drow_ranger_talent_36:GetModifierPercentageManacost()
-    return (100 * TalentTree:GetHeroTalentLevel(self.caster, 36))
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_36:GetManaRestore()
+	return 0.5 + (0.5 * TalentTree:GetHeroTalentLevel(self.caster, 36))
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_36:OnDeath( params )
+	if not IsServer() then return end
+	if params.attacker~=self.caster then return end
+	if self:GetCaster():GetTeamNumber()==params.unit:GetTeamNumber() then return end
+	if params.unit:IsBuilding() then return end
+	print ("died")
+	GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self:GetCaster():GetMaxMana() })
+    
 end
 
 LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_36"] = LUA_MODIFIER_MOTION_NONE
