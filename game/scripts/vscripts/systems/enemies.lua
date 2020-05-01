@@ -22,6 +22,8 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_lycan", "lycan_bleeding", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_lycan_call_wolf", "lycan_double_strike", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_lycan_call_wolf", "lycan_bleeding", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan_companion_wolf", "lycan_double_strike", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_lycan_companion_wolf", "lycan_bleeding", Enemies.ABILITY_TYPE_INNATE)
     -- brood boss
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_toxin", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_come", Enemies.ABILITY_TYPE_INNATE)
