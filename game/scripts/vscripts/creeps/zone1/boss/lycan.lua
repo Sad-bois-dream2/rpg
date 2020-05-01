@@ -121,7 +121,7 @@ function modifier_lycan_companion:OnAttackLanded(keys)
         local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
         local wolf = CreateUnitByName("npc_boss_lycan_companion_wolf", summon_point, true, self.parent, self.parent, self.parentTeam)
         wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 5 })
-        self.ability:StartCooldown(self.cooldown)
+        self.ability:StartCooldown(self.ability.cooldown)
     end
 end
 
@@ -726,20 +726,6 @@ function lycan_double_strike:OnUpgrade()
     self.max_hits = self:GetSpecialValueFor("max_hits")
 end
 
-function lycan_double_strike:ApplyQuick(parent)
-    --apply AS bonus
-    local max_stacks = 5
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
-    modifierTable.duration = -1
-    modifierTable.stacks = self.max_hits
-    modifierTable.max_stacks = max_stacks
-    GameMode:ApplyStackingBuff(modifierTable)
-end
-
 modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsDebuff = function(self)
         return false
@@ -783,7 +769,15 @@ function modifier_lycan_double_strike:OnAttackLanded(keys)
     else
         --add AS buff
         if (self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
-            self.ability:ApplyQuick(self.parent)
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = self.parent
+            modifierTable.caster = self.parent
+            modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
+            modifierTable.duration = -1
+            modifierTable.stacks = self.max_hits
+            modifierTable.max_stacks = self.max_hits
+            GameMode:ApplyStackingBuff(modifierTable)
             self.ability:StartCooldown(self.ability.cooldown)
         end
     end
@@ -836,7 +830,7 @@ lycan_bleeding = class({
     end,
 })
 
-function lycan_double_strike:OnUpgrade()
+function lycan_bleeding:OnUpgrade()
     if (not IsServer()) then
         return
     end

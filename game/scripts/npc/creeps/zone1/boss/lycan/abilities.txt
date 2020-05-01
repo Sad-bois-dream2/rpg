@@ -324,35 +324,28 @@
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
-
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilityCooldown"				"5"
-
-
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
    			"01"
    			{
-   				"var_type"					"FIELD_FLOAT"
-   				"chance"				    "20 35 50"
+                    "var_type"					"FIELD_FLOAT"
+                    "chance"				    "20 35 50"
    			}
    			"02"
    			{
-               				"var_type"					"FIELD_FLOAT"
-               				"as_bonus"				    "1000"
+               	"var_type"					"FIELD_FLOAT"
+               	"as_bonus"				    "1000"
             }
   			"03"
    			{
-               				"var_type"					"FIELD_FLOAT"
-               				"max_hits"				    "2 3 4"
+               	"var_type"					"FIELD_FLOAT"
+               	"max_hits"				    "2 3 4"
             }
  		}
-		"precache"
-		{
-
-		}
 	}
     //=================================================================================================================
     // Lycan : Bleeding hit
