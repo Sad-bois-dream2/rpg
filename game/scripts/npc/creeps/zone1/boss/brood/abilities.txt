@@ -245,13 +245,10 @@
     		}
    		}
    		"precache"
-        		{
-                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
-        		}
-
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
+        }
 	}
-}
-
     //=================================================================================================================
     // Brood : Arachnoid Hunger
     //=================================================================================================================
@@ -286,17 +283,16 @@
    				"var_type"					"FIELD_FLOAT"
    				"lifesteal"				    "50 100 300"
    			}
-
    			"02"
    			{
 	            "var_type"				    "FIELD_FLOAT"
    				"ms_slow"	    	        "-10 -5 0"
    			}
    		}
-   			"precache"
-             {
+   		"precache"
+        {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
-             }
+        }
     }
 
     //=================================================================================================================
@@ -344,7 +340,7 @@
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"ms_slow"			"10 25 40 "
+    			"ms_slow"			"10 25 40"
     		}
             "05"
     		{
@@ -356,13 +352,11 @@
     			"var_type"					"FIELD_FLOAT"
     			"duration"			        "30"
     		}
-
    		}
    		"precache"
-        	{
+        {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
 			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
-        	}
-
+        }
 	}
 }
