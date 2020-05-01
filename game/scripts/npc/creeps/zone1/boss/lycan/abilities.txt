@@ -312,8 +312,6 @@
 		{
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf"
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_end.vpcf"
-			"
-
 		}
 	}
     //=================================================================================================================
