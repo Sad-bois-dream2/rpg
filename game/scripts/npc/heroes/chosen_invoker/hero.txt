@@ -1,0 +1,42 @@
+"DOTAHeroes"
+{
+    "rpg_dota_hero_chosen_invoker"
+    {
+        "AbilityLayout"     "6"
+        "override_hero"     "npc_dota_hero_invoker"
+        "Ability1"	"chosen_invoker_purification_brilliance"
+        "Ability2"	"chosen_invoker_flare_array"
+        "Ability3"	"chosen_invoker_photon_pulse"
+        "Ability4"	"chosen_invoker_light_shock"
+        "Ability5"	"empty5"
+        "Ability6"	"antimage_blink"
+		"AbilityTalentStart"		"7"
+        "Ability7"	""
+        "Ability8"	""
+        "Ability9"	""
+        "Ability10"	""
+        "Ability11"	""
+        "Ability12"	""
+        "Ability13"	""
+        "Ability14"	""
+        "Ability15"	""
+        "Ability16"	""
+        "Ability17"	""
+		"ArmorPhysical"                "0"
+		"MagicalResistance"            "0"
+		"AttackDamageMin"            "34"       // Damage range min.
+		"AttackDamageMax"            "34"       // Damage range max.
+		"BountyXP"                    "0"            // Experience earn.
+		"BountyGoldMin"                "0"           // Gold earned min.
+		"BountyGoldMax"                "0"           // Gold earned max.
+		"StatusHealthRegen"           "0"         // Health regeneration rate.
+		"StatusManaRegen"             "0"         // Mana regeneration rate.
+		"AttributePrimary"             "DOTA_ATTRIBUTE_INTELLECT"
+		"AttributeBaseStrength"        "18"            // Base strength
+		"AttributeStrengthGain"        "2.4"            // Strength bonus per level.
+		"AttributeBaseAgility"         "14"            // Base agility
+		"AttributeAgilityGain"         "1.9"            // Agility bonus per level.
+		"AttributeBaseIntelligence"    "15"            // Base intelligence
+		"AttributeIntelligenceGain"    "4.6"            // Intelligence bonus per level.
+    }
+}
