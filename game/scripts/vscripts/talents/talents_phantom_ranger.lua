@@ -32,9 +32,12 @@ end
 --------------------------------------------------------------------------------
 
 function phantom_ranger_void_arrows:OnOrbFire( params )
-	-- play effects
-	--local sound_cast = "Hero_ObsidianDestroyer.ArcaneOrb"
-	--EmitSoundOn( sound_cast, self:GetCaster() )
+	local caster = self:GetCaster()
+	local manaCost = self:GetManaCost(self:GetLevel() - 1)
+	local powerAddictionCostIncrease = TalentTree:GetHeroTalentLevel(caster, 36)
+	if costIncrease ~= 0 then 
+		caster:SpendMana(manaCost * powerAddictionCostIncrease, self)
+	end	
 end
 
 --------------------------------------------------------------------------------
@@ -42,8 +45,10 @@ end
 function phantom_ranger_void_arrows:OnOrbImpact( params )
 	local caster = self:GetCaster()
 	local damage = self:GetSpecialValueFor("void_damage")
+	local powerAddictionDamageModifier = 1 + (TalentTree:GetHeroTalentLevel(caster, 36) / 3)
+	print (powerAddictionDamageModifier)
 	if params.target ~= nil then 
-		GameMode:DamageUnit({ caster = caster, target = params.target, damage = damage, voiddmg = true, ability = self })
+		GameMode:DamageUnit({ caster = caster, target = params.target, damage = damage * powerAddictionDamageModifier, voiddmg = true, ability = self })
 	end
 	--local sound_cast = "Hero_ObsidianDestroyer.ArcaneOrb.Impact"
 	--EmitSoundOn( sound_cast, params.target )
@@ -158,7 +163,7 @@ end
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:GetManaRestore()
-	return 0.5 + (0.5 * TalentTree:GetHeroTalentLevel(self.caster, 36))
+	return 0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 36))
 end
 
 --------------------------------------------------------------------------------
@@ -168,7 +173,6 @@ function modifier_npc_dota_hero_drow_ranger_talent_36:OnDeath( params )
 	if params.attacker~=self.caster then return end
 	if self:GetCaster():GetTeamNumber()==params.unit:GetTeamNumber() then return end
 	if params.unit:IsBuilding() then return end
-	print ("died")
 	GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self:GetCaster():GetMaxMana() })
     
 end

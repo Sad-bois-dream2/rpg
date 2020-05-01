@@ -387,7 +387,7 @@
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"dark_seer_surge"
-        "AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"

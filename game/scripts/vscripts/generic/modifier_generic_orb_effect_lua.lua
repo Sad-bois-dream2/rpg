@@ -1,3 +1,8 @@
+-- Generic Orb Effect Library created by Elfansoer (with modifications by AltiV)
+-- See the reference at https://github.com/Elfansoer/dota-2-lua-abilities/blob/c3bfb93a32e8257f861a5e32e4d25231185a6ba4/scripts/vscripts/lua_abilities/generic/modifier_generic_orb_effect_lua.lua
+
+-- There's some weird bug that lets you bypass target flags if you level up the ability mid-attack -_-
+
 modifier_generic_orb_effect_lua = class({})
 
 --------------------------------------------------------------------------------
@@ -14,8 +19,8 @@ function modifier_generic_orb_effect_lua:IsPurgable()
 	return false
 end
 
-function modifier_generic_orb_effect_lua:GetAttributes()
-	return MODIFIER_ATTRIBUTE_PERMANENT
+function modifier_generic_orb_effect_lua:RemoveOnDeath()
+	return false
 end
 
 --------------------------------------------------------------------------------
@@ -25,6 +30,9 @@ function modifier_generic_orb_effect_lua:OnCreated( kv )
 	self.ability = self:GetAbility()
 	self.cast = false
 	self.records = {}
+	
+	-- Test variable for proper projectile effect display
+	self.target = nil
 end
 
 function modifier_generic_orb_effect_lua:OnRefresh( kv )
@@ -37,28 +45,72 @@ end
 --------------------------------------------------------------------------------
 -- Modifier Effects
 function modifier_generic_orb_effect_lua:DeclareFunctions()
-	local funcs = {
+	return {
+		MODIFIER_EVENT_ON_ATTACK_RECORD,
 		MODIFIER_EVENT_ON_ATTACK,
 		MODIFIER_EVENT_ON_ATTACK_FAIL,
 		MODIFIER_PROPERTY_PROCATTACK_FEEDBACK,
 		MODIFIER_EVENT_ON_ATTACK_RECORD_DESTROY,
-
+		MODIFIER_PROPERTY_ATTACK_RANGE_BONUS,
+		
 		MODIFIER_EVENT_ON_ORDER,
 
 		MODIFIER_PROPERTY_PROJECTILE_NAME,
 	}
-
-	return funcs
 end
 
-function modifier_generic_orb_effect_lua:OnAttack( params )
-	-- if not IsServer() then return end
+function modifier_generic_orb_effect_lua:OnAttackRecord( params )
 	if params.attacker~=self:GetParent() then return end
 
+	-- check autocast
+	if (self.ability:GetAutoCastState() and self.ability:IsFullyCastable() and not self:GetParent():IsSilenced()) or self.cast then
+		-- filter whether target is valid 
+		if UnitFilter(
+			params.target,
+			self.ability:GetAbilityTargetTeam(),
+			self.ability:GetAbilityTargetType(),
+			self.ability:GetAbilityTargetFlags(),
+			self:GetCaster():GetTeamNumber()
+		) == UF_SUCCESS then
+			self.bPrimed = true
+			self.cast = true
+		else
+			self.bPrimed = false
+			self.cast = false
+		end
+	else
+		self.bPrimed = false
+	end
+
 	-- register attack if being cast and fully castable
-	if self:ShouldLaunch( params.target ) then
+	if self.cast and self.ability:IsFullyCastable() and not self:GetParent():IsSilenced() then
+		-- run OrbRecord script if available
+		if self.ability.OnOrbRecord then self.ability:OnOrbRecord( params ) end
+	end
+end
+
+
+function modifier_generic_orb_effect_lua:OnAttack( params )
+	if params.attacker~=self:GetParent() then return end
+
+	-- -- check autocast
+	-- if self.ability:GetAutoCastState() then
+		-- -- filter whether target is valid 
+		-- if UnitFilter(
+			-- params.target,
+			-- self.ability:GetAbilityTargetTeam(),
+			-- self.ability:GetAbilityTargetType(),
+			-- self.ability:GetAbilityTargetFlags(),
+			-- self:GetCaster():GetTeamNumber()
+		-- ) == UF_SUCCESS then
+			-- self.cast = true
+		-- end
+	-- end
+
+	-- register attack if being cast and fully castable
+	if (self.cast and self.ability:IsFullyCastable() and not self:GetParent():IsSilenced() and UnitFilter(params.target, self.ability:GetAbilityTargetTeam(), self.ability:GetAbilityTargetType(), self.ability:GetAbilityTargetFlags(), self:GetCaster():GetTeamNumber()) == UF_SUCCESS) or self.bPrimed then	
 		-- use mana and cd
-		--self.ability:UseResources( true, false, true )
+		self.ability:UseResources( true, false, true )
 
 		-- record the attack
 		self.records[params.record] = true
@@ -84,6 +136,17 @@ end
 function modifier_generic_orb_effect_lua:OnAttackRecordDestroy( params )
 	-- destroy attack record
 	self.records[params.record] = nil
+	
+	-- run OrbRecordDestroy script if available
+	if self.ability.OnOrbRecordDestroy then self.ability:OnOrbRecordDestroy( params ) end
+end
+
+function modifier_generic_orb_effect_lua:GetModifierAttackRangeBonus()
+	if not IsServer() then return end
+
+	if self:GetAbility():GetAutoCastState() and self:GetParent():GetAggroTarget() and UnitFilter(self:GetParent():GetAggroTarget(), self.ability:GetAbilityTargetTeam(), self.ability:GetAbilityTargetType(), self.ability:GetAbilityTargetFlags(), self:GetCaster():GetTeamNumber()) == UF_SUCCESS and self:GetAbility().GetTalentSpecialValueFor then
+		return self:GetAbility():GetTalentSpecialValueFor("attack_range_bonus")
+	end
 end
 
 function modifier_generic_orb_effect_lua:OnOrder( params )
@@ -91,7 +154,8 @@ function modifier_generic_orb_effect_lua:OnOrder( params )
 
 	if params.ability then
 		-- if this ability, cast
-		if params.ability==self:GetAbility() then
+		-- if params.ability==self:GetAbility() and not self:FlagExist( params.order_type, DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO ) then
+		if params.ability==self:GetAbility() and ((not self:FlagExist( params.order_type, DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO ) and params.target and UnitFilter(params.target, self.ability:GetAbilityTargetTeam(), self.ability:GetAbilityTargetType(), self.ability:GetAbilityTargetFlags(), self:GetCaster():GetTeamNumber()) == UF_SUCCESS) or (self:FlagExist( params.order_type, DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO ) and not self:GetAbility():GetAutoCastState())) then -- Remember that logic is reversed such that not being detected here usually mean it's on
 			self.cast = true
 			return
 		end
@@ -125,43 +189,17 @@ function modifier_generic_orb_effect_lua:OnOrder( params )
 	end
 end
 
-function modifier_generic_orb_effect_lua:GetModifierProjectileName()
-	if not self.ability.GetProjectileName then return end
+-- This isn't perfect because it will still show the orb if you autocast it against a magic immune target, even if the orb cannot be cast on them
+function modifier_generic_orb_effect_lua:GetModifierProjectileName( params )
+	if self.ability.GetProjectileName then
+		if self.cast or (self.ability:GetAutoCastState() and self.ability:IsFullyCastable() and not self:GetParent():IsSilenced()) then
+			 self.target = self:GetParent():GetAttackTarget()
 
-	if self:ShouldLaunch( self:GetCaster():GetAggroTarget() ) then
-		return self.ability:GetProjectileName()
-	end
-end
-
---------------------------------------------------------------------------------
--- Helper
-function modifier_generic_orb_effect_lua:ShouldLaunch( target )
-	-- check autocast
-	if self.ability:GetAutoCastState() then
-		-- filter whether target is valid
-		if self.ability.CastFilterResultTarget then
-			if self.ability:CastFilterResultTarget( target )==UF_SUCCESS then
-				self.cast = true
-			end
-		else
-			local nResult = UnitFilter(
-				target,
-				self.ability:GetAbilityTargetTeam(),
-				self.ability:GetAbilityTargetType(),
-				self.ability:GetAbilityTargetFlags(),
-				self:GetCaster():GetTeamNumber()
-			)
-			if nResult == UF_SUCCESS then
-				self.cast = true
-			end
+			 if self.target and UnitFilter(self.target, self.ability:GetAbilityTargetTeam(), self.ability:GetAbilityTargetType(), self.ability:GetAbilityTargetFlags(), self:GetCaster():GetTeamNumber()) == UF_SUCCESS then
+				return self.ability:GetProjectileName()
+			 end
 		end
 	end
-
-	if self.cast and self.ability:IsFullyCastable() and (not self:GetParent():IsSilenced()) then
-		return true
-	end
-
-	return false
 end
 
 --------------------------------------------------------------------------------
