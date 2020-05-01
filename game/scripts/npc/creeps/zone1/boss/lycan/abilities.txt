@@ -300,19 +300,19 @@
    		    "01"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"range"				    "800"
+               	"range"				        "800"
              }
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"jump_range"				    "800 1000 1200"
+   				"jump_range"				"800 1000 1200"
    			}
    		}
 		"precache"
 		{
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf"
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_end.vpcf"
-			"
+
 
 		}
 	}

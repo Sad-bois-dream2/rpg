@@ -9,7 +9,7 @@
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"0"
 		"Level"						"0"
-		"ModelScale" 				"1"
+		"ModelScale" 				"0.2"
 		"IsNeutralUnitType"			"0"
 		// Abilities
 		//----------------------------------------------------------------
@@ -55,6 +55,8 @@
 		//----------------------------------------------------------------
 		"VisionDaytimeRange"		"800"		// Range of vision during day light.
 		"VisionNighttimeRange"		"800"		// Range of vision at night time.
+
+
 	}
 
 }
