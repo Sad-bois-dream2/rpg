@@ -69,7 +69,7 @@
 		"DOTA_Tooltip_Ability_phantom_ranger_huntress"		"HUNTRESS"
 		"DOTA_Tooltip_Ability_phantom_ranger_huntress_Description"		"Phantom Ranger doubles her attack range, but can't move. This is a toggle ability."
 		"DOTA_Tooltip_Ability_phantom_ranger_intimidation"		"INTIMIDATION"
-		"DOTA_Tooltip_Ability_phantom_ranger_intimidation_Description"		"???"
+		"DOTA_Tooltip_Ability_phantom_ranger_intimidation_Description"		"Test"
 		// Molten Guardian (mars)
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash"		"Scorching Clash"
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Description"		"Molten Guardian dashes forward furiously with his battle shield, damaging all enemies along the way. Enemies hit are set aflame and take damage over time based on his maximum health for 3 seconds. At level 4, he also stuns all nearby enemies in 300 radius around the target location for 0.5s."
