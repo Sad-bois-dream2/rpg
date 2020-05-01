@@ -122,7 +122,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"initial_damage"	    "25 50 75"
+				"initial_damage"	    "10 20 30"
 			}
 			"03"
 			{
@@ -379,7 +379,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				    "0.5 1 2"
+   				"dot"				    "0.25 0.50 0.75"
    			}
    			"02"
    			{
