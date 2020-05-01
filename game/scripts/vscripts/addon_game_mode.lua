@@ -30,7 +30,7 @@ function Precache(context)
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
     -- All enemy abilities
     for _, ability in pairs(Enemies.enemyAbilities) do
-        PrecacheItemByNameSync(ability, context)
+        PrecacheItemByNameSync(ability.name, context)
     end
     for _, ability in pairs(Enemies.eliteAbilities) do
         PrecacheItemByNameSync(ability, context)
