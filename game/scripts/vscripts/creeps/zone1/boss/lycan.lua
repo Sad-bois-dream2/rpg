@@ -117,7 +117,7 @@ function modifier_lycan_companion:OnAttackLanded(keys)
         return
     end
     --local summon_damage = Units:GetAttackDamage(self.parent) * 0.1 ??? how to give damage
-    if (keys.attacker == self.parent and self.ability:IsCooldownReady() and RollPercentage(self.chance)) then
+    if (keys.attacker == self.parent and self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
         local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
         local wolf = CreateUnitByName("npc_boss_lycan_companion_wolf", summon_point, true, self.parent, self.parent, self.parentTeam)
         wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 5 })
@@ -359,9 +359,10 @@ function modifier_lycan_transform:GetBaseAttackTime()
     return self.bat
 end
 
+---@param damageTable DAMAGE_TABLE
 function modifier_lycan_transform:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_lycan_transform")
-    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.crit_chance)) then
+    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.crit_chance) and not damageTable.ability and damageTable.physdmg) then
         local victimPosition = damageTable.victim:GetAbsOrigin()
         local crit_particle = "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
         local coup_pfx = ParticleManager:CreateParticle(crit_particle, PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)

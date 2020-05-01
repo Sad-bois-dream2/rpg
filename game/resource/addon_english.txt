@@ -753,7 +753,7 @@
         "DOTA_Tooltip_Ability_lycan_wolf_form_bat"             "BASE ATTACK TIME: "
         "DOTA_Tooltip_Ability_lycan_wolf_form_ms_bonus"        "%MOVE SPEED BONUS: "
         "DOTA_Tooltip_Ability_lycan_wolf_form_crit_chance"     "%CRITICAL CHANCE: "
-        "DOTA_Tooltip_Ability_lycan_wolf_form_crit_factor"     "CRITICAL FACTOR: "
+        "DOTA_Tooltip_Ability_lycan_wolf_form_crit_factor"     "%CRITICAL FACTOR: "
         "DOTA_Tooltip_Ability_lycan_wolf_form_lore"        "It takes some effort to be a Nightsilver wolves pack leader."
         "DOTA_Tooltip_Ability_lycan_howl_aura"		"Howl Aura"
         "DOTA_Tooltip_Ability_lycan_howl_aura_Description"		"Reduce all damage done by enemies nearby. While Lycan grants damage reduction aura and speed aura."
