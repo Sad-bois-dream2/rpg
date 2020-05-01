@@ -122,7 +122,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"initial_damage"	    "25 50 75"
+				"initial_damage"	    "10 20 30"
 			}
 			"03"
 			{
@@ -136,9 +136,9 @@
 			}
 		}
 		"precache"
-        	{       "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-        			"soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
-
+        	{
+        	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+        	    "soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
         	}
 	}
     //=================================================================================================================
@@ -154,9 +154,6 @@
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
-
-
-
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
@@ -184,16 +181,15 @@
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"crit_factor"				    "1.5 3 5"
+   				"crit_factor"				    "150 300 500"
    			}
-
-
    		}
     		"precache"
     		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
                 "particle"  "particles/hero/phantom_assassin/screen_blood_splatter.vpcf"
                 "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+                "particle"  "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
     		}
 	}
     //=================================================================================================================
@@ -261,9 +257,10 @@
 
 		}
     		"precache"
-    		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
+    		{
+    		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
     		    "particle"  "particles/units/heroes/hero_lycan/lycan_howl_buff.vpcf"
-
+                "particle"  "particles/units/heroes/hero_lycan/lycan_howl_cast.vpcf"
     		}
 	}
 
@@ -300,20 +297,18 @@
    		    "01"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"range"				        "800"
+               	"range"				    "800"
              }
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"jump_range"				"800 1000 1200"
+   				"jump_range"				    "800 1000 1200"
    			}
    		}
 		"precache"
 		{
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf"
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_end.vpcf"
-
-
 		}
 	}
     //=================================================================================================================
@@ -329,35 +324,28 @@
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
-
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilityCooldown"				"5"
-
-
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
    			"01"
    			{
-   				"var_type"					"FIELD_FLOAT"
-   				"chance"				    "20 35 50"
+                    "var_type"					"FIELD_FLOAT"
+                    "chance"				    "20 35 50"
    			}
    			"02"
    			{
-               				"var_type"					"FIELD_FLOAT"
-               				"as_bonus"				    "1000"
+               	"var_type"					"FIELD_FLOAT"
+               	"as_bonus"				    "1000"
             }
   			"03"
    			{
-               				"var_type"					"FIELD_FLOAT"
-               				"max_hits"				    "2 3 4"
+               	"var_type"					"FIELD_FLOAT"
+               	"max_hits"				    "2 3 4"
             }
  		}
-		"precache"
-		{
-
-		}
 	}
     //=================================================================================================================
     // Lycan : Bleeding hit
@@ -381,7 +369,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				    "0.5 1 2"
+   				"dot"				    "0.25 0.50 0.75"
    			}
    			"02"
    			{
@@ -399,10 +387,10 @@
     			"max_stacks"			"5"
     		}
    		}
-
-	"precache"
-    		{ "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-    		}
+	    "precache"
+        {
+    	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+    	}
     }
 }
 
