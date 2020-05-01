@@ -64,7 +64,6 @@ function modifier_chosen_invoker_purification_brilliance:OnCreated()
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
     self.target = self.ability:GetCursorTarget()
-    self.baseDamage = self.ability:GetSpecialValueFor("base_damage")
     self.damage = self.ability:GetSpecialValueFor("damage") / 100
     local tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(tick)
@@ -98,7 +97,7 @@ function modifier_chosen_invoker_purification_brilliance:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
-    damageTable.damage = self.baseDamage + (self.damage * Units:GetHeroIntellect(self.caster))
+    damageTable.damage = self.damage * self.caster:GetMaxMana()
     damageTable.holydmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -262,7 +261,7 @@ function chosen_invoker_flare_array:OnSpellStart()
     local offsetMax = range * 2 / distanceBetweenExplosion
     local damageRadius = self:GetSpecialValueFor("damage_radius")
     local maxStacks = self:GetSpecialValueFor("bonus_max")
-    local baseDamage = self:GetSpecialValueFor("base_damage")
+    local baseDamage = self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01
     local dotDamage = self:GetSpecialValueFor("dot_damage") / 100
     local dotDuration = self:GetSpecialValueFor("dot_duration")
     local damagePerStack = self:GetSpecialValueFor("bonus_damage")
@@ -441,7 +440,7 @@ function chosen_invoker_photon_pulse:OnSpellStart()
     local radius = self:GetSpecialValueFor("radius")
     local slow = self:GetSpecialValueFor("slow") * -0.01
     local slowDur = self:GetSpecialValueFor("slow_duration")
-    local damage = self:GetSpecialValueFor("base_damage") + (self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01)
+    local damage = self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01
     local silenceDur = self:GetSpecialValueFor("silence_duration")
     local enemies = FindUnitsInRadius(casterTeam,
             caster:GetAbsOrigin(),
@@ -520,7 +519,7 @@ function chosen_invoker_light_shock:OnSpellStart()
     local casterTeam = self:GetTeam()
     local targetPosition = self:GetCursorPosition()
     local radius = self:GetSpecialValueFor("aoe")
-    local damage = self:GetSpecialValueFor("damage") + (self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01)
+    local damage = self:GetSpecialValueFor("mana_damage") * caster:GetMaxMana() * 0.01
     local stunDuration = self:GetSpecialValueFor("stun")
     local pidx = ParticleManager:CreateParticle("particles/units/chosen_invoker/light_shock/light_shock.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 0, targetPosition)
