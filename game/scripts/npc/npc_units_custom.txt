@@ -6,8 +6,21 @@
 #base heroes/light_cardinal/units.txt
 #base heroes/terror_lord/units.txt
 #base heroes/blazing_berserker/units.txt
-#base creeps/zone1/miniboss/ursa/creep.txt
-#base creeps/zone1/miniboss/ursa/units.txt
+#base heroes/chosen_invoker/units.txt
+#base creeps/zone1/boss/ursa/boss.txt
+#base creeps/zone1/boss/ursa/units.txt
+#base creeps/zone1/boss/lycan/boss.txt
+#base creeps/zone1/boss/lycan/units.txt
+#base creeps/zone1/boss/brood/boss.txt
+#base creeps/zone1/boss/brood/units.txt
+#base creeps/zone1/boss/treant/boss.txt
+#base creeps/zone1/boss/treant/units.txt
+#base creeps/zone1/boss/mirana/boss.txt
+#base creeps/zone1/boss/mirana/units.txt
+#base creeps/zone1/boss/luna/boss.txt
+#base creeps/zone1/boss/luna/units.txt
+#base creeps/zone1/boss/venge/boss.txt
+#base creeps/zone1/boss/venge/units.txt
 
 "DOTAUnits"
 {

@@ -1,0 +1,84 @@
+"DOTAUnits"
+{
+	"npc_boss_lycan"
+	{
+	    "vscripts"					"creeps/ai/ai_generic085.lua"
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/heroes/lycan/lycan.vmdl"	// Model.
+		"BaseClass"					"npc_dota_creature"
+		"SoundSet"					"Hero_Lycan"
+		"Level"						"30"
+		"ModelScale" 				"1"
+		"IsNeutralUnitType"			"0"
+		// Abilities
+		//----------------------------------------------------------------
+	          "Ability1"          "lycan_call"     // Ability 1.
+              "Ability2"          "lycan_companion"     // Ability 2.
+              "Ability3"          "lycan_wound"      // Ability 3.
+              "Ability4"          "lycan_wolf_form"      // Ability 4.
+              "Ability5"          "lycan_howl_aura"     // Ability 5.
+              "Ability6"          "lycan_agility"      // Ability 7 - Extra.
+              "Ability7"          "lycan_double_strike"      // Ability 8 - Extra.
+              "Ability8"          "lycan_bleeding"      // Ability 9 - Extra.
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"			// Physical protection.
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"1"		// Damage range min.
+		"AttackDamageMax"			"1"		// Damage range max.
+		"AttackRate"				"1.7"		// Speed of attack.
+		"AttackAnimationPoint"		"0.55"		// Normalized time in animation cycle to attack.
+		"AttackAcquisitionRange"	"800"		// Range within a target can be acquired.
+		"AttackRange"				"150"		// Range within a target can be attacked.
+		"ProjectileModel"			"" // Particle system model for projectile.
+		"ProjectileSpeed"			"0"		// Speed of projectile.
+		// Bounds
+		//----------------------------------------------------------------
+        "BoundsHullName"      "DOTA_HULL_SIZE_SMALL"      // Hull type used for navigation/locomotion.
+		// Bounty
+		//----------------------------------------------------------------
+		"BountyXP"					"0"		// Experience earn.
+		"BountyGoldMin"				"0"		// Gold earned min.
+		"BountyGoldMax"				"0"		// Gold earned max.
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"150"		// Speed.
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"1000"		// Base health.
+		"StatusHealthRegen"			"0"		// Health regeneration rate.
+		"StatusMana"				"99999"		// Base mana.
+		"StatusManaRegen"			"0"		// Mana regeneration rate.
+
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"		// Range of vision during day light.
+		"VisionNighttimeRange"		"800"		// Range of vision at night time.
+        // Bots
+        //----------------------------------------------------------------
+        "AttackDesire"        "1.5"   // How much bots want to attack them vs other non-hero things
+
+		//Cosmetic
+        //------------------------------------------------------------------
+                "Creature"
+                {
+                "AttachWearables"
+                            {
+                                "1" { "ItemDef" "8997" }
+                                "2" { "ItemDef" "8995" }
+                                "3" { "ItemDef" "7045" }
+                                "4" { "ItemDef" "8988" }
+                                "5" { "ItemDef" "8989" }
+                                "6" { "ItemDef" "207" }
+                            }
+
+                }
+
+	}
+
+
+}

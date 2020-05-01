@@ -6,7 +6,14 @@
 #base heroes/light_cardinal/abilities.txt
 #base heroes/terror_lord/abilities.txt
 #base heroes/blazing_berserker/abilities.txt
-#base creeps/zone1/miniboss/ursa/abilities.txt
+#base heroes/chosen_invoker/abilities.txt
+#base creeps/zone1/boss/ursa/abilities.txt
+#base creeps/zone1/boss/lycan/abilities.txt
+#base creeps/zone1/boss/brood/abilities.txt
+#base creeps/zone1/boss/treant/abilities.txt
+#base creeps/zone1/boss/mirana/abilities.txt
+#base creeps/zone1/boss/luna/abilities.txt
+#base creeps/zone1/boss/venge/abilities.txt
 
 "DOTAAbilities"
 {
