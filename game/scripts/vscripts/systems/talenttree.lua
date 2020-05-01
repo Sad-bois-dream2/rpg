@@ -112,8 +112,8 @@ function TalentTree:Init()
         ["npc_dota_hero_drow_ranger"] = {
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_void_arrows",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -121,7 +121,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -129,7 +129,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -145,7 +145,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -153,7 +153,7 @@ function TalentTree:Init()
             "blazing_berserker_rage_eruption",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -161,7 +161,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -169,7 +169,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -185,7 +185,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -193,7 +193,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         },
@@ -201,7 +201,7 @@ function TalentTree:Init()
             "phantom_ranger_phantom_arrow",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
+            "phantom_ranger_hunters_focus",
             "phantom_ranger_huntress",
             "phantom_ranger_intimidation"
         }
