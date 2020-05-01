@@ -695,8 +695,7 @@ function modifier_out_of_combat:OnCreated(keys)
         return
     end
     self.caster = self:GetParent()
-    self.delay = 5
-    self.timer = 0
+    self.delay = 4
     self:StartIntervalThink(1.0)
 end
 
@@ -704,30 +703,43 @@ function modifier_out_of_combat:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    self.timer = self.timer + 1
-    if (self.timer > self.delay) then
-        self.timer = self.delay
-        if (not self.modifier) then
-            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { modifierParent = self, duration = -1 })
+    local stacks = self:GetStackCount() + 1
+    if (stacks > self.delay) then
+        stacks = self.delay
+        if (not self.buff) then
+            self.buff = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+        end
+    end
+    self:SetStackCount(stacks)
+end
+
+function modifier_out_of_combat:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
+        modifier:SetStackCount(0)
+        modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
+        end
+    end
+    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
+        modifier:SetStackCount(0)
+        modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
         end
     end
 end
 
-function modifier_out_of_combat:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
-    if (modifier) then
-        modifier:Destroy()
-    end
-    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
-    if (modifier) then
-        modifier:Destroy()
-    end
-end
-
 function modifier_out_of_combat:OnPostHeal(healTable)
-    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
+    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
     if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
-        modifier:Destroy()
+        modifier:SetStackCount(0)
+        modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
+        end
     end
 end
 
@@ -760,20 +772,18 @@ modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
 function modifier_out_of_combat_buff:GetMoveSpeedBonus()
     return 100
 end
+
 function modifier_out_of_combat_buff:OnCreated(keys)
     if (not IsServer()) then
         return
     end
-    if(not keys or not keys.modifierParent) then
-        self:Destroy()
-    end
-    self.parent = keys.modifierParent
     self.caster = self:GetParent()
     self:StartIntervalThink(1.0)
+    self:OnIntervalThink()
 end
 
 function modifier_out_of_combat_buff:OnIntervalThink()
-    if(not IsServer()) then
+    if (not IsServer() or not self.caster:IsAlive()) then
         return
     end
     local healTable = {}
@@ -790,7 +800,9 @@ function modifier_out_of_combat_buff:OnDestroy()
     if (not IsServer()) then
         return
     end
-    self.parent.timer = 0
+    local modifier = self.caster:FindModifierByName("modifier_out_of_combat")
+    modifier:SetStackCount(0)
+    modifier.buff = nil
 end
 
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
@@ -807,6 +819,8 @@ ListenToGameEvent("npc_spawned", function(keys)
 end, nil)
 
 if (IsServer()) then
+    GameMode.PostDamageEventHandlersTable = {}
+    GameMode.PostHealEventHandlersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
 end
