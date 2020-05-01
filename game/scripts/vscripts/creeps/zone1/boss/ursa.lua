@@ -26,7 +26,7 @@ modifier_ursa_rend = modifier_ursa_rend or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function(sefl)
+    DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
 })
@@ -39,10 +39,10 @@ function modifier_ursa_rend:OnCreated()
     self.ability = self:GetAbility()
 end
 
-LinkLuaModifier("modifier_ursa_rend", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_rend", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 function modifier_ursa_rend:OnAttackLanded(keys)
-    --remove rend buff from ursa
+    --start cd
     if not IsServer() then
         return
     end
@@ -73,9 +73,10 @@ function ursa_rend:ApplyRend(target, parent)
     modifierTable.modifier_name = "modifier_stunned"
     modifierTable.duration = self.stun
     GameMode:ApplyDebuff(modifierTable)
+    --fury swipe particle
     local ursa_rend_armor_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf", PATTACH_OVERHEAD_FOLLOW, target)
     ParticleManager:SetParticleControlEnt(ursa_rend_armor_fx, 0, target, PATTACH_OVERHEAD_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
-    Timers:CreateTimer(15.0, function()
+    Timers:CreateTimer(self.armor_reduction_duration, function()
         ParticleManager:DestroyParticle(ursa_rend_armor_fx, false)
         ParticleManager:ReleaseParticleIndex(ursa_rend_armor_fx)
     end)
@@ -100,12 +101,13 @@ modifier_ursa_rend_armor = modifier_ursa_rend_armor or class({
     end
 })
 
+
 function modifier_ursa_rend_armor:OnCreated()
     if not IsServer() then
         return
     end
     self.armor_reduction_percentage = 0
-    local modifier = self:GetParent():FindModifierByName("modifier_ursa_rend")
+    local modifier = self:GetCaster():FindModifierByName("modifier_ursa_rend")
     if (modifier) then
         self.armor_reduction_percentage = modifier.ability:GetSpecialValueFor("armor_reduction_percentage") * -0.01
     end
@@ -116,7 +118,9 @@ function modifier_ursa_rend_armor:GetArmorPercentBonus()
     return self.armor_reduction_percentage
 end
 
-LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
 -- ursa fury modifier
@@ -157,7 +161,7 @@ function modifier_ursa_fury:OnCreated()
     self.ability = self:GetAbility()
     self.duration = self.ability:GetSpecialValueFor("duration")
     self.attackspeed_bonus = self.ability:GetSpecialValueFor("attackspeed_bonus")
-    self.movespeed_bonus = self.ability:GetSpecialValueFor("movespeed_bonus") * 0.01
+    self.movespeed_bonus = self.ability:GetSpecialValueFor("movespeed_bonus")*0.01
     self.ursa_overpower_buff_particle = "particles/units/heroes/hero_ursa/ursa_overpower_buff.vpcf"
 
     local ursa_overpower_buff_particle_fx = ParticleManager:CreateParticle(self.ursa_overpower_buff_particle, PATTACH_CUSTOMORIGIN, self.caster)
@@ -178,7 +182,7 @@ function modifier_ursa_fury:CheckState()
     }
 end
 
-function modifier_ursa_fury:GetAttackSpeedBonus()
+function modifier_ursa_fury:GetAttackSpeedPercentBonus()
     return self.attackspeed_bonus
 end
 
@@ -190,7 +194,7 @@ function modifier_ursa_fury:GetModifierMoveSpeed_Limit()
     return 1
 end
 
-LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_fury = class({
@@ -240,7 +244,7 @@ function ursa_roar:OnSpellStart()
 
         -- Play cast sound
         caster:EmitSound("Hero_Ursa.Enrage")
-        -- Find all nearby enemies
+       -- Find all nearby enemies
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
                 nil,
@@ -266,6 +270,17 @@ end
 ---------------------
 -- ursa swift
 ---------------------
+-- ability class
+ursa_swift = class({
+    GetAbilityTextureName = function(self)
+        return "ursa_swift"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_ursa_swift"
+    end,
+})
+
+
 -- modifiers
 modifier_ursa_swift = modifier_ursa_swift or class({
     IsDebuff = function(self)
@@ -296,68 +311,59 @@ function modifier_ursa_swift:OnCreated()
     self.chance = self.ability:GetSpecialValueFor("chance")
 end
 
-LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
--- ability class
-ursa_swift = class({
-    GetAbilityTextureName = function(self)
-        return "ursa_swift"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_ursa_swift"
-    end,
-})
+LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_ursa_swift_phase = modifier_ursa_swift_phase or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
-    end
-})
+--modifier_ursa_swift_phase = modifier_ursa_swift_phase or class({
+   -- IsDebuff = function(self)
+   --     return false
+   -- end,
+   -- IsHidden = function(self)
+   --     return true
+   -- end,
+   -- IsPurgable = function(self)
+   --     return false
+   -- end,
+   -- RemoveOnDeath = function(self)
+   --     return true
+   -- end,
+   -- AllowIllusionDuplicate = function(self)
+   --     return false
+   -- end,
+   -- DeclareFunctions = function(self)
+   --     return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+   -- end
+--})
 
-function modifier_ursa_swift_phase:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.parent = self:GetParent()
-    self.ability = self:GetAbility()
-end
+--function modifier_ursa_swift_phase:OnCreated()
+    --if (not IsServer()) then
+        --return
+    --end
+    --self.parent = self:GetParent()
+    --self.ability = self:GetAbility()
+--end
 
-LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+--LinkLuaModifier("modifier_ursa_swift_phase", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
-function ursa_swift:ApplyPhase(parent)
-    -- "phase and flying after blink."
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_ursa_swift_phase"
-    modifierTable.duration = 100
-    GameMode:ApplyBuff(modifierTable)
+--function ursa_swift:ApplyPhase(parent)
+   -- --  flying after blink. no phase
+   -- local modifierTable = {}
+   -- modifierTable.ability = self
+   -- modifierTable.target = parent
+   -- modifierTable.caster = parent
+   -- modifierTable.modifier_name = "modifier_ursa_swift_phase"
+   -- modifierTable.duration = 10
+   -- GameMode:ApplyBuff(modifierTable)
 
-end
+--end
 
-function modifier_ursa_swift_phase:CheckState()
-    --phase and fly
-    return {
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-        [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
-    }
-end
+--function modifier_ursa_swift_phase:CheckState()
+    --fly no phase
+    --return {
+        --[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+        --[MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
+    --}
+--end
 
 function ursa_swift:ApplyFury(attacker, parent)
     -- "Fury proc instead of swift blink in hunt mode."
@@ -369,31 +375,50 @@ function ursa_swift:ApplyFury(attacker, parent)
     modifierTable.modifier_name = "modifier_ursa_fury"
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable)
-
 end
 
 function ursa_swift:FindTargetForBlink(caster)
-    local heroes = HeroList:GetAllHeroes()-- counting totalheroes to check distance n runs from 1-5 totalheroes 1-5
+    if IsServer() then
+    local radius = self:GetSpecialValueFor("radius")
+    -- Find all nearby enemies
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
     local distanceToBoss = 0
     local latestDistance = 0
-    local jumpTarget = HeroList:GetHero(0)
+    local jumpTarget = caster--?????
     local casterPos = caster:GetAbsOrigin()
-    for i, hero in pairs(heroes) do
-        distanceToBoss = (casterPos - hero:GetAbsOrigin()):Length()
+    for _, enemy in pairs(enemies) do
+        -- find the farthest hero from the heroes in range
+        distanceToBoss = (casterPos - enemy:GetAbsOrigin()):Length()
         if distanceToBoss >= latestDistance then
             -- if new distance to boss higher than the max one replace the farthest hero
-            jumpTarget = hero
+            jumpTarget = enemy
             latestDistance = distanceToBoss
         end
     end
-    return jumpTarget
+        if(#enemies > 0) then
+            return jumpTarget
+        else
+            return nil
+        end
+    end
 end
 
 function ursa_swift:Blink()
     -- Teleport
     local caster = self:GetCaster()
-    local target = ursa_swift:FindTargetForBlink(caster)
+    local target = self:FindTargetForBlink(caster)
     local sound_cast = "Hero_Antimage.Blink_out"
+    if (target==nil) then
+        return
+    end
     caster:EmitSound(sound_cast)
 
     -- Blink
@@ -401,15 +426,13 @@ function ursa_swift:Blink()
     local vector = (targetPosition - caster:GetAbsOrigin())
     --local distance = vector:Length2D()
     local direction = vector:Normalized()
-    local blink_point = targetPosition - (target:GetForwardVector() * 100)--+ direction * (distance -10 )
-    caster:SetAbsOrigin(blink_point)
-    Timers:CreateTimer(FrameTime(), function()
-        FindClearSpaceForUnit(caster, blink_point, true)
-    end)
+    local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
+    FindClearSpaceForUnit(caster, blink_point, true)
     sound_cast = "Hero_Antimage.Blink_in"
     caster:EmitSound(sound_cast)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
+    caster:MoveToTargetToAttack(target)
     caster:PerformAttack(target, true, true, true, true, false, false, false)
     caster:SetForwardVector(direction)
 
@@ -432,7 +455,7 @@ function modifier_ursa_swift:OnAttackLanded(keys)
             if self.parent:HasModifier("modifier_ursa_hunt_buff_stats") then
                 self.ability:ApplyFury(keys.attacker, self.parent)
             else
-                self.ability:ApplyPhase(self.parent)
+                --self.ability:ApplyPhase(self.parent)
                 self.ability:Blink()
             end
 
@@ -473,8 +496,8 @@ function ursa_slam:OnSpellStart()
         -- Add appropriate particles
         local earthshock_particle_fx = ParticleManager:CreateParticle(earthshock_particle, PATTACH_ABSORIGIN, self.caster)
         ParticleManager:SetParticleControl(earthshock_particle_fx, 0, self.caster:GetAbsOrigin())
-        ParticleManager:SetParticleControl(earthshock_particle_fx, 1, Vector(1, 1, 1))
-        Timers:CreateTimer(1.0, function()
+        ParticleManager:SetParticleControl(earthshock_particle_fx, 1, Vector(1,1,1))
+        Timers:CreateTimer(6.0, function()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
@@ -523,7 +546,7 @@ end
 -- Slow modifier
 modifier_ursa_slam_slow = class({})
 
-function modifier_ursa_slam_slow:GetAttackSpeedBonus()
+function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
     return self.as_slow
 end
 
@@ -541,15 +564,15 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") / 100
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow")
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow")
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow") /100
+    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") / 100
 end
 
 function modifier_ursa_slam_slow:GetStatusEffectName()
     return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
 end
 
-LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
 -- ursa hunting prey
@@ -611,7 +634,7 @@ function modifier_ursa_hunt_buff_stats:OnDeath(params)
     end
 end
 
-LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_ursa_hunt_random_taunt = modifier_ursa_hunt_random_taunt or class({
     IsDebuff = function(self)
@@ -635,7 +658,7 @@ function modifier_ursa_hunt_random_taunt:IsTaunt()
     return true
 end
 
-LinkLuaModifier("modifier_ursa_hunt_random_taunt", "creeps/zone1/miniboss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ursa_hunt_random_taunt", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 -- ability class
 ursa_hunt = class({
@@ -652,19 +675,43 @@ function modifier_ursa_hunt_buff_stats:GetStatusEffectName()
     return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
 end
 
+function ursa_hunt:FindTauntTarget(caster)
+    local radius = self:GetSpecialValueFor("radius")
+    -- Find all nearby enemies
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local keys = {}
+    for k in pairs(enemies) do
+        table.insert(keys, k)
+    end
+    if (#enemies > 0) then
+        local tauntTarget = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
+        if(#enemies > 0) then
+            return tauntTarget
+        else
+            return nil
+        end
+    end
+end
+
 function ursa_hunt:OnSpellStart()
     local caster = self:GetCaster() --bloodrage caster
     local duration = self:GetSpecialValueFor("duration")
-    local totalheroes = HeroList:GetHeroCount() - 1 -- counting totalheroes n runs from 1-5 totalheroes 1-5
-    n = RandomInt(0, totalheroes) -- random one hero
-    local taunttarget = HeroList:GetHero(n) -- set as taunt target
+    local tauntTarget = self:FindTauntTarget(caster)
     local modifierTable = {}
     modifierTable.ability = self
-    modifierTable.target = taunttarget
+    modifierTable.target = tauntTarget
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_ursa_hunt_random_taunt"
     modifierTable.duration = duration
-    GameMode:ApplyBuff(modifierTable) --apply taunt buff
+    GameMode:ApplyDebuff(modifierTable) --apply taunt buff
     modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = caster
@@ -672,6 +719,8 @@ function ursa_hunt:OnSpellStart()
     modifierTable.modifier_name = "modifier_ursa_hunt_buff_stats"
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable) -- apply bloodrage
-    EmitSoundOn("hero_bloodseeker.bloodRage", caster)
+    tauntTarget:EmitSound("hero_bloodseeker.bloodRage")
     caster:EmitSound("ursa_ursa_overpower_03")
 end
+
+
