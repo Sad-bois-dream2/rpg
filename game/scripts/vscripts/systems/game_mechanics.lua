@@ -708,31 +708,26 @@ function modifier_out_of_combat:OnIntervalThink()
     if (self.timer > self.delay) then
         self.timer = self.delay
         if (not self.modifier) then
-            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
-        end
-    else
-        if (self.modifier) then
-            self.modifier:Destroy()
-            self.modifier = nil
+            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { modifierParent = self, duration = -1 })
         end
     end
 end
 
 function modifier_out_of_combat:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
+    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
     if (modifier) then
-        modifier.timer = 0
+        modifier:Destroy()
     end
-    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
+    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
     if (modifier) then
-        modifier.timer = 0
+        modifier:Destroy()
     end
 end
 
 function modifier_out_of_combat:OnPostHeal(healTable)
-    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
+    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
     if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
-        modifier.timer = 0
+        modifier:Destroy()
     end
 end
 
@@ -765,10 +760,14 @@ modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
 function modifier_out_of_combat_buff:GetMoveSpeedBonus()
     return 100
 end
-function modifier_out_of_combat_buff:OnCreated()
+function modifier_out_of_combat_buff:OnCreated(keys)
     if (not IsServer()) then
         return
     end
+    if(not keys or not keys.modifierParent) then
+        self:Destroy()
+    end
+    self.parent = keys.modifierParent
     self.caster = self:GetParent()
     self:StartIntervalThink(1.0)
 end
@@ -791,10 +790,7 @@ function modifier_out_of_combat_buff:OnDestroy()
     if (not IsServer()) then
         return
     end
-    local modifier = self:GetParent():FindModifierByName("modifier_out_of_combat")
-    if (modifier) then
-        modifier.timer = 0
-    end
+    self.parent.timer = 0
 end
 
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
