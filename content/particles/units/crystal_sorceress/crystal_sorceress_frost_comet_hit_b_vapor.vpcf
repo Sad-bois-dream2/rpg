@@ -84,6 +84,7 @@
 			m_OffsetMax = [ -100.0, 0.0, 0.25 ]
 			m_OffsetMin = [ -100.0, 0.0, 0.25 ]
 			m_bLocalCoords = true
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_VelocityRandom"

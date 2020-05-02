@@ -82,6 +82,7 @@
 			m_bLocalCoords = true
 			m_OffsetMax = [ -100.0, 0.0, 5.0 ]
 			m_OffsetMin = [ -100.0, 0.0, 5.0 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_InitialVelocityNoise"
