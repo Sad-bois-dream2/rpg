@@ -36,6 +36,16 @@ function Units:Init()
     Units.STATS_CALCULATE_INTERVAL = 1
 end
 
+function Units:ForceStatsCalculation(unit)
+    if (not unit) then
+        return
+    end
+    local stats = unit:FindModifierByName("modifier_stats_system")
+    if (stats) then
+        stats:OnIntervalThink()
+    end
+end
+
 ---@param unit CDOTA_BaseNPC
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
