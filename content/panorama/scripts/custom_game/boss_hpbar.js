@@ -110,8 +110,17 @@ function UpdateValues() {
 	} else {
 		bossHpBarValue.text = (Math.round(hpPercent * 100) / 100) + "%";
 	}
+    var preSymbol = "+";
+    if(mpReg < 0) {
+        preSymbol = "";
+    }
+    if(hpReg == 0) {
+        bossHpBarRegValue.style.visibility = "collapse";
+    } else {
+        bossHpBarRegValue.style.visibility = "visible";
+    }
     bossHpBar.style.width = hpPercent + "%";
-    bossHpBarRegValue.text = "+" + (Math.round(hpReg * 100) / 100);
+    bossHpBarRegValue.text = preSymbol + (Math.round(hpReg * 100) / 100);
     bossMpBar.style.width = mpPercent + "%";
     if (maxMp == 0) {
         bossMpBarValue.text = "";
@@ -122,7 +131,16 @@ function UpdateValues() {
         } else {
             bossMpBarValue.text = (Math.round(mpPercent * 100) / 100) + "%";
         }
-        bossMpBarRegValue.text = "+" + (Math.round(mpReg * 100) / 100);
+        preSymbol = "+";
+        if(mpReg < 0) {
+            preSymbol = "";
+        }
+        if(mpReg == 0) {
+            bossMpBarRegValue.style.visibility = "collapse";
+        } else {
+            bossMpBarRegValue.style.visibility = "visible";
+        }
+        bossMpBarRegValue.text = preSymbol + (Math.round(mpReg * 100) / 100);
     }
     if(latestStats) {
         bossAttackDamage.text = Entities.GetDamageMax(latestSelectedCreep);
@@ -327,6 +345,11 @@ function OnUpdateStatsRequest(event) {
     if(event.enemy == latestSelectedCreep) {
 	    latestStats = JSON.parse(event.stats);
     }
+}
+
+function ClosePanel() {
+    latestSelectedCreep = null
+    bossPanel.style.visibility = "collapse";
 }
 
 (function() {

@@ -676,7 +676,6 @@ function lycan_agility:OnSpellStart()
         if target ~= nil then
             self:Blink(target, caster)
             target = self:FindTargetForBlink(caster)
-            caster:RemoveModifierByName("modifier_lycan_agility_buff")
             return 1.5
         end
     end)
@@ -697,7 +696,17 @@ lycan_double_strike = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_lycan_double_strike"
-    end,})
+    end
+})
+
+function lycan_double_strike:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.chance = self:GetSpecialValueFor("chance")
+    self.cooldown = self:GetCooldown(self:GetLevel())
+    self.max_hits = self:GetSpecialValueFor("max_hits")
+end
 
 modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsDebuff = function(self)
@@ -726,49 +735,38 @@ function modifier_lycan_double_strike:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    self.chance = self.ability:GetSpecialValueFor("chance")
 end
 
-LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
 function modifier_lycan_double_strike:OnAttackLanded(keys)
-    if (not IsServer()) then
+    if (not IsServer() or keys.attacker ~= self.parent) then
         return
     end
     --eat AS buff if there are any
-    if (keys.attacker:HasModifier("modifier_lycan_double_strike_quick")) then
-        local mod = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
-        mod:DecrementStackCount()
-        if mod:GetStackCount() < 1 then
-            mod:Destroy()
+    local modifier = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
+    if (modifier) then
+        local stacks = modifier:GetStackCount() - 1
+        modifier:SetStackCount(stacks)
+        if (stacks < 1) then
+            modifier:Destroy()
         end
     else
         --add AS buff
-        if (keys.attacker == self.parent and self.ability:IsCooldownReady())  then
-            if RollPercentage(self.chance) then
-                self.ability:ApplyQuick(self.parent)
-                local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
-                self.ability:StartCooldown(abilityCooldown)
-            end
+        if (self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.target = self.parent
+            modifierTable.caster = self.parent
+            modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
+            modifierTable.duration = -1
+            modifierTable.stacks = self.ability.max_hits
+            modifierTable.max_stacks = self.ability.max_hits
+            GameMode:ApplyStackingBuff(modifierTable)
+            self.ability:StartCooldown(self.ability.cooldown)
         end
     end
 end
 
-function lycan_double_strike:ApplyQuick(parent)
-    --apply AS bonus
-    local max_stacks = 5
-    local max_hits = self:GetSpecialValueFor("max_hits")
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = parent
-    modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
-    modifierTable.duration = -1
-    modifierTable.stacks = max_hits
-    modifierTable.max_stacks = max_stacks
-    GameMode:ApplyStackingBuff(modifierTable)
-end
-
+LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 --modifier double strike quick
 modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class({
@@ -789,23 +787,25 @@ modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class
     end,
 })
 
-
-
 function modifier_lycan_double_strike_quick:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.as_bonus = 0
-    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_double_strike")
-    if (modifier) then
-        self.as_bonus = modifier.ability:GetSpecialValueFor("as_bonus")
+    self.parent = self:GetParent()
+    self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus")
+end
+
+function modifier_lycan_double_strike_quick:OnDestroy()
+    if (not IsServer()) then
+        return
     end
+    -- Don't try at home. To be sure that he will do exactly max_hits attacks with max as.
+    Units:ForceStatsCalculation(self.parent)
 end
 
 function modifier_lycan_double_strike_quick:GetAttackSpeedBonus()
     return self.as_bonus
 end
-
 
 LinkLuaModifier("modifier_lycan_double_strike_quick", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -918,7 +918,8 @@ function modifier_lycan_bleeding_dot:OnCreated()
     end
     self.caster = self:GetCaster()
     self.target = self:GetParent()
-    self.dot = self:GetAbility():GetSpecialValueFor("dot") * 0.01
+    self.ability = self:GetAbility()
+    self.dot = self.ability:GetSpecialValueFor("dot") * 0.01
     self:StartIntervalThink(1.0)
 end
 
@@ -928,7 +929,7 @@ function modifier_lycan_bleeding_dot:OnIntervalThink()
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target
-    damageTable.ability = nil
+    damageTable.ability = self.ability
     damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)

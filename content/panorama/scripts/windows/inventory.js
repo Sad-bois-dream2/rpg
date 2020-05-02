@@ -303,7 +303,11 @@ function OnHeroStatsUpdateRequest(event) {
 		var block = parsedData.statsTable.block;
 		var magicBlock = parsedData.statsTable.magicBlock;
 		var damageReduction = parsedData.statsTable.damageReduction;
+		var cooldownReduction = parsedData.statsTable.cdr;
 		var attackSpeed = parsedData.statsTable.attackSpeed;
+		var buffAmplification = parsedData.statsTable.buffAmplification;
+		var debuffAmplification = parsedData.statsTable.debuffAmplification;
+		var debuffResistance = parsedData.statsTable.debuffResistance;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -342,6 +346,14 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
+		cooldownReduction = 1 - cooldownReduction;
+		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
+		debuffAmplification = 1 - debuffAmplification;
+		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
+		debuffResistance = 1 - debuffResistance;
+		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
+		buffAmplification = 1 - buffAmplification;
+		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
     }
 }
 
@@ -382,6 +394,7 @@ function UpdateValues() {
 		$("#MoveSpeedLabel").text = Math.round(Entities.GetMoveSpeedModifier(currentHero, Entities.GetBaseMoveSpeed(currentHero)));
 		$("#ManaRegenLabel").text = Math.round(Entities.GetManaThinkRegen(currentHero) * 100) / 100;
 		$("#HealthRegenLabel").text = Math.round(Entities.GetHealthThinkRegen(currentHero) * 100) / 100;
+		$("#BaseAttackTimeLabel").text = Math.round(Entities.GetBaseAttackTime(currentHero) * 100) / 100;
 	} else {
 		var localPlayer = Players.GetLocalPlayer();
 		currentHero = Players.GetPlayerHeroEntityIndex(localPlayer);

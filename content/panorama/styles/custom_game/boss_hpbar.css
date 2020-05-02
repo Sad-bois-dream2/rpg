@@ -256,3 +256,15 @@
 	height: 16px;
 	text-align: right;
 }
+
+.CloseButton
+{
+	width: 18px;
+	height: 18px;
+	border-radius: 100%;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	horizontal-align: right;
+	vertical-align: top;
+}
