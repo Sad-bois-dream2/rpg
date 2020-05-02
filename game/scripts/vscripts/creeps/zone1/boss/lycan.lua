@@ -927,7 +927,8 @@ function modifier_lycan_bleeding_dot:OnCreated()
     end
     self.caster = self:GetCaster()
     self.target = self:GetParent()
-    self.dot = self:GetAbility():GetSpecialValueFor("dot") * 0.01
+    self.ability = self:GetAbility()
+    self.dot = self.ability:GetSpecialValueFor("dot") * 0.01
     self:StartIntervalThink(1.0)
 end
 
@@ -937,7 +938,7 @@ function modifier_lycan_bleeding_dot:OnIntervalThink()
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target
-    damageTable.ability = nil
+    damageTable.ability = self.ability
     damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
