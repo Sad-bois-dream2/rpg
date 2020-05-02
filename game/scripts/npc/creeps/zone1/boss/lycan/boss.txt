@@ -2,7 +2,7 @@
 {
 	"npc_boss_lycan"
 	{
-	    "vscripts"					"creeps/ai/ai_generic085.lua"
+	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
 		//----------------------------------------------------------------
 		"Model"						"models/heroes/lycan/lycan.vmdl"	// Model.

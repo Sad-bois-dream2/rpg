@@ -1088,12 +1088,20 @@ function modifier_terror_lord_ruthless_predator:OnCreated()
         return
     end
     self.caster = self:GetParent()
+    self:StartIntervalThink(1.0)
 end
 
-function modifier_terror_lord_ruthless_predator:GetHealthRegenerationBonus()
+function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     if (not IsServer()) then
         return
     end
+    local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
+    if (not ability) then
+        self:Destroy()
+    end
+end
+
+function modifier_terror_lord_ruthless_predator:GetHealthRegenerationBonus()
     return math.min(self:GetStackCount() * self.regeration_bonus, self.regeneration_cap) * self.caster:GetMaxHealth()
 end
 
@@ -1377,7 +1385,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_41:GetFireDamageBonus()
 end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_41:OnTakeDamage(damageTable)
-    if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_41")) then
+    if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_41") and damageTable.infernodmg) then
         damageTable.firedmg = true
         return damageTable
     end

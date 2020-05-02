@@ -53,6 +53,8 @@
                 <Panel id="BossBuffPanel" class="buff_list"/>
                 <Panel id="BossDebuffPanel" class="debuff_list"/>
             </Panel>
+            <Image class="CloseButton" src="file://{images}/custom_game/hud/close_button.png"
+                   scaling="stretch-to-fit-preserve-aspect" onactivate="ClosePanel()"/>
         </Panel>
     </Panel>
 </root>

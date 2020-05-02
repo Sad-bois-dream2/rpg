@@ -53,7 +53,9 @@ function Think()
         if (thisEntity.ai.castedAbility) then
             return GENERIC_AI_THINK_INTERVAL
         end
-        thisEntity:MoveToTargetToAttack(aggroTarget)
+        if (aggroTarget ~= thisEntity:GetAggroTarget()) then
+            thisEntity:MoveToTargetToAttack(aggroTarget)
+        end
     end
     return GENERIC_AI_THINK_INTERVAL
 end

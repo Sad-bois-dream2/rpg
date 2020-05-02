@@ -763,6 +763,7 @@ function modifier_lycan_double_strike:OnAttackLanded(keys)
     local modifier = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
     if (modifier) then
         local stacks = modifier:GetStackCount() - 1
+        modifier:SetStackCount(stacks)
         if (stacks < 1) then
             modifier:Destroy()
         end
@@ -770,13 +771,13 @@ function modifier_lycan_double_strike:OnAttackLanded(keys)
         --add AS buff
         if (self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
             local modifierTable = {}
-            modifierTable.ability = self
+            modifierTable.ability = self.ability
             modifierTable.target = self.parent
             modifierTable.caster = self.parent
             modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
             modifierTable.duration = -1
-            modifierTable.stacks = self.max_hits
-            modifierTable.max_stacks = self.max_hits
+            modifierTable.stacks = self.ability.max_hits
+            modifierTable.max_stacks = self.ability.max_hits
             GameMode:ApplyStackingBuff(modifierTable)
             self.ability:StartCooldown(self.ability.cooldown)
         end
@@ -808,7 +809,16 @@ function modifier_lycan_double_strike_quick:OnCreated()
     if (not IsServer()) then
         return
     end
+    self.parent = self:GetParent()
     self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus")
+end
+
+function modifier_lycan_double_strike_quick:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    -- Don't try at home. To be sure that he will do exactly max_hits attacks with max as.
+    Units:ForceStatsCalculation(self.parent)
 end
 
 function modifier_lycan_double_strike_quick:GetAttackSpeedBonus()
@@ -926,7 +936,8 @@ function modifier_lycan_bleeding_dot:OnCreated()
     end
     self.caster = self:GetCaster()
     self.target = self:GetParent()
-    self.dot = self:GetAbility():GetSpecialValueFor("dot") * 0.01
+    self.ability = self:GetAbility()
+    self.dot = self.ability:GetSpecialValueFor("dot") * 0.01
     self:StartIntervalThink(1.0)
 end
 
@@ -936,7 +947,7 @@ function modifier_lycan_bleeding_dot:OnIntervalThink()
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target
-    damageTable.ability = nil
+    damageTable.ability = self.ability
     damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
