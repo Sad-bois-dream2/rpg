@@ -237,6 +237,9 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
+                if(args.duration > 0) then
+                    args.duration = args.duration * Units:GetBuffAmplification(args.caster)
+                end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (modifier ~= nil and fireEvent and fireEvent == true) then
@@ -279,6 +282,9 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
+                if(args.duration > 0) then
+                    args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
+                end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (modifier ~= nil and fireEvent and fireEvent == true) then
