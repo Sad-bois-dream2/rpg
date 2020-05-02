@@ -107,6 +107,85 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     ProjectileManager:CreateTrackingProjectile(projectile)
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Cast", self.caster)
 end
+-- crystal_sorceress_sheer_cold modifiers
+modifier_crystal_sorceress_sheer_cold_aura = modifier_crystal_sorceress_sheer_cold_aura or class({
+    IsHidden = function(self)
+        return false
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.radius or 0
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_crystal_sorceress_sheer_cold_aura_debuff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end
+})
+
+function modifier_crystal_sorceress_sheer_cold_aura:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+
+end
+
+LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_sheer_cold_aura_debuff or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
 
 -- crystal_sorceress_sheer_cold
 crystal_sorceress_sheer_cold = class({
@@ -114,6 +193,24 @@ crystal_sorceress_sheer_cold = class({
         return "crystal_sorceress_sheer_cold"
     end
 })
+
+function crystal_sorceress_sheer_cold:OnToggle()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    caster.crystal_sorceress_sheer_cold = caster.crystal_sorceress_sheer_cold or {}
+    if (self:GetToggleState()) then
+        caster.crystal_sorceress_sheer_cold.modifier = caster:AddNewModifier(caster, self, "modifier_crystal_sorceress_sheer_cold_aura", { Duration = -1 })
+        self:EndCooldown()
+        self:StartCooldown(self:GetCooldown(1))
+        EmitSoundOn("Hero_Ancient_Apparition.IceVortexCast", caster)
+    else
+        if (caster.crystal_sorceress_sheer_cold.modifier ~= nil) then
+            caster.crystal_sorceress_sheer_cold.modifier:Destroy()
+        end
+    end
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
