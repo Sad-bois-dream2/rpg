@@ -105,6 +105,9 @@ function Units:CalculateStats(unit, statsTable)
         local unitHealingReceivedPercent = 1
         local unitHealingCaused = 0
         local unitHealingCausedPercent = 1
+        local unitBuffAmplification = 1
+        local unitDebuffAmplification = 1
+        local unitDebuffResistance = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         for i = 1, #unitModifiers do
@@ -278,6 +281,15 @@ function Units:CalculateStats(unit, statsTable)
             if (unitModifiers[i].GetHealingCausedPercentBonus) then
                 unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
             end
+            if (unitModifiers[i].GetDebuffAmplificationBonus) then
+                unitDebuffAmplification = unitDebuffAmplification + (tonumber(unitModifiers[i].GetDebuffAmplificationBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetDebuffResistanceBonus) then
+                unitDebuffResistance = unitDebuffResistance + (tonumber(unitModifiers[i].GetDebuffResistanceBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetBuffAmplificationBonus) then
+                unitBuffAmplification = unitBuffAmplification + (tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -377,6 +389,10 @@ function Units:CalculateStats(unit, statsTable)
         statsTable.healingReceivedPercent = unitHealingReceivedPercent
         statsTable.healingCaused = unitHealingCaused
         statsTable.healingCausedPercent = unitHealingCausedPercent
+        -- modifier related bonuses
+        statsTable.buffAmplification = unitBuffAmplification
+        statsTable.debuffAmplification = unitDebuffAmplification
+        statsTable.debuffResistance = unitDebuffResistance
         -- all elements protections
         statsTable.elementsProtection = statsTable.elementsProtection or {}
         statsTable.elementsProtection.fire = unitFireProtection
@@ -1139,6 +1155,33 @@ end
 function Units:GetHealingCausedPercent(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.healingCausedPercent or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetBuffAmplification(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.buffAmplification or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDebuffAmplification(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.debuffAmplification or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDebuffResistance(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.debuffResistance or 1
     end
     return 1
 end

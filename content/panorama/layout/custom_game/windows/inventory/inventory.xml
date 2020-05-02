@@ -181,6 +181,16 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_ManaRegen" />
 							<Label id="ManaRegenLabel" class="WindowText InventoryAttributeValue" text="0" />
 						</Panel>
+						<Panel id="DebuffAmplification" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_DebuffAmplification', '#DOTA_Tooltip_DebuffAmplification_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/manaregen.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DebuffAmplification" />
+							<Label id="DebuffAmplificationLabel" class="WindowText InventoryAttributeValue" text="100%" />
+						</Panel>
+						<Panel id="DebuffResistance" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_DebuffResistance', '#DOTA_Tooltip_DebuffResistance_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/manaregen.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DebuffResistance" />
+							<Label id="DebuffResistanceLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
 						<Panel id="OffensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsDamage', '#DOTA_Tooltip_ElementsDamage_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
 						</Panel>
 						<Panel id="Page2" class="HeroStatsPage">
@@ -209,6 +219,11 @@
 							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DamageReduction" />
 							<Label id="DamageReductionLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
+						<Panel id="BuffAmplification" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_BuffAmplification', '#DOTA_Tooltip_BuffAmplification_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_BuffAmplification" />
+							<Label id="BuffAmplificationLabel" class="WindowText InventoryAttributeValue" text="100%" />
 						</Panel>
 						<Panel id="DefensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsProtection', '#DOTA_Tooltip_ElementsProtection_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
 						</Panel>
