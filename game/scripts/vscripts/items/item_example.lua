@@ -245,5 +245,21 @@ function modifier_inventory_item_example:GetBaseAttackTime()
     return 1.7
 end
 
+function modifier_inventory_item_example:GetHealingReceivedBonus()
+    return 0 -- finalHeal = heal + this
+end
+
+function modifier_inventory_item_example:GetHealingReceivedPercentBonus()
+    return 0 -- finalHeal = heal * this
+end
+
+function modifier_inventory_item_example:GetHealingCausedBonus()
+    return 0 -- finalHeal = heal + this
+end
+
+function modifier_inventory_item_example:GetHealingCausedPercentBonus()
+    return 0 -- finalHeal = heal * this
+end
+
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)

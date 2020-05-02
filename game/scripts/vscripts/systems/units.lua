@@ -101,6 +101,10 @@ function Units:CalculateStats(unit, statsTable)
         local unitArmor = 0
         local unitArmorPercent = 1
         local unitCooldownReduction = 1
+        local unitHealingReceived = 0
+        local unitHealingReceivedPercent = 1
+        local unitHealingCaused = 0
+        local unitHealingCausedPercent = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         for i = 1, #unitModifiers do
@@ -262,6 +266,18 @@ function Units:CalculateStats(unit, statsTable)
                     unitBaseAttackTime = newBaseAttackTime
                 end
             end
+            if (unitModifiers[i].GetHealingReceivedBonus) then
+                unitHealingReceived = unitHealingReceived + (tonumber(unitModifiers[i].GetHealingReceivedBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingReceivedPercentBonus) then
+                unitHealingReceivedPercent = unitHealingReceivedPercent + (tonumber(unitModifiers[i].GetHealingReceivedPercentBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingCausedBonus) then
+                unitHealingCaused = unitHealingCaused + (tonumber(unitModifiers[i].GetHealingCausedBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingCausedPercentBonus) then
+                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -356,6 +372,11 @@ function Units:CalculateStats(unit, statsTable)
         -- bat
         statsTable.bat = unitBaseAttackTime
         unit:SetBaseAttackTime(unitBaseAttackTime)
+        -- healing related bonuses
+        statsTable.healingReceived = unitHealingReceived
+        statsTable.healingReceivedPercent = unitHealingReceivedPercent
+        statsTable.healingCaused = unitHealingCaused
+        statsTable.healingCausedPercent = unitHealingCausedPercent
         -- all elements protections
         statsTable.elementsProtection = statsTable.elementsProtection or {}
         statsTable.elementsProtection.fire = unitFireProtection
@@ -1082,6 +1103,42 @@ end
 function Units:GetCooldownReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.cdr or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingReceived(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingReceived or 0
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingReceivedPercent(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingReceivedPercent or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingCaused(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingCaused or 0
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingCausedPercent(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingCausedPercent or 1
     end
     return 1
 end
