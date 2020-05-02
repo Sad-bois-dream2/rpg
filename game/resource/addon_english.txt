@@ -10,7 +10,6 @@
 		// Hero names
 		"npc_dota_hero_drow_ranger"	"Phantom Ranger" // Ranged agi phys dd #2
 		"npc_dota_hero_juggernaut"	"Luminous Samurai" // Melee agi phys dd №2
-		"npc_dota_hero_juggernaut"	"Luminous Samurai" // Melee agi phys dd №2
 		"npc_dota_hero_phantom_assassin"	"Abyssal Stalker" // Melee agi phys dd №1
 		"npc_dota_hero_abyssal_underlord"	"Terror Lord" // Tank №1
 		"npc_dota_hero_mars"	"Molten Guardian" // Tank №2
