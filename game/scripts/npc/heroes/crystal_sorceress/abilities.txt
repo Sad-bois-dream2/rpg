@@ -50,12 +50,15 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_aoe"				"600"
+				"proc_aoe"				"300"
 			}
 		}
 		"precache"
 		{
-
+            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet.vpcf"
+            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast.vpcf"
+            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}
 }
