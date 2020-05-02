@@ -84,7 +84,7 @@
 		"AbilityCastRange"  "800"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0"
+		"AbilityCooldown"				"5"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -97,19 +97,44 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"base_slow"				"10 10 20 20"
+				"slow_per_stack"				"2 3 4 5"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_chance"				"25"
+				"max_slow"				"15 20 25 30"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"2"
+				"damage_per_stack"				"2 3 4 5"
 			}
 			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_damage"				"30 40 50 60"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_chance"				"25"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"2"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_cd"				"30"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mana"				"2 3 4 5"
+			}
+			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"radius"				"800"

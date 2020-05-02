@@ -142,6 +142,8 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnCreated()
     if(not IsServer()) then
         return
     end
+    self.ability = self:GetAbility()
+    self.radius = self.ability:GetSpecialValueFor("radius")
 
 end
 
