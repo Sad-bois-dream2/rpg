@@ -1,0 +1,61 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Crystal Sorceress: Frost Comet
+	//=================================================================================================================
+	"crystal_sorceress_frost_comet"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"crystal_sorceress_frost_comet"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"  "900"
+		"AbilityCastPoint"				"2"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"50 60 70 80"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_chance"				"1 5 10 15"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_damage"				"20 40 60 80"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_aoe"				"600"
+			}
+		}
+		"precache"
+		{
+
+		}
+	}
+}
