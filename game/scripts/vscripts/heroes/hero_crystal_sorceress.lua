@@ -49,7 +49,7 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
     end
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Target", self.target)
     local procChance = self:GetSpecialValueFor("proc_chance")
-    if (true or RollPercentage(procChance)) then
+    if (RollPercentage(procChance)) then
         local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b.vpcf", PATTACH_ABSORIGIN, self.target)
         Timers:CreateTimer(2.0, function()
             ParticleManager:DestroyParticle(pidx, false)
