@@ -40,12 +40,12 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_chance"				"1 5 10 15"
+				"proc_damage"				"20 40 60 80"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_damage"				"20 40 60 80"
+				"proc_chance"				"5 10 15 20"
 			}
 			"04"
 			{

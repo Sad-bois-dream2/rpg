@@ -374,6 +374,13 @@
         "DOTA_Tooltip_Ability_chosen_invoker_light_shock_mana_damage"		"%MAXIMUM MANA TO DAMAGE: "
         "DOTA_Tooltip_Ability_chosen_invoker_light_shock_stun"		"STUN DURATION: "
         "DOTA_Tooltip_Ability_chosen_invoker_light_shock_aoe"		"RADIUS: "
+        // Crystal Sorceress (Maiden)
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet"		"Frost Comet"
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet_Description"		"Crystal Sorcerer summons the frost comet to strike upon a target, damages it based on her intelligence. The Frost Comet has chance to explode on impact, then scatter into dazzling frost dust that damage enemies around the primary target.<br>Cast time: 2 seconds"
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet_damage"		"%INTELLECT TO DAMAGE: "
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet_proc_chance"		"%EXPLOSION CHANCE: "
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet_proc_damage"		"%INTELLECT TO EXPLOSION DAMAGE: "
+		"DOTA_Tooltip_Ability_crystal_sorceress_frost_comet_proc_aoe"		"EXPLOSION RADIUS: "
 		// Inventory
 		"DOTA_Inventory_Title"		"Inventory"
 		"DOTA_Inventory_Description"		"Your way of changing equipment to find the most powerful build that fits your needs. <br>Here you can equip the items acquired from your countless battles."
