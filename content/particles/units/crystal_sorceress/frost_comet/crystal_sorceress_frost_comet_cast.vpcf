@@ -6,13 +6,13 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast_glow.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast_glow.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast_sparkles.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast_sparkles.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast_smoke.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast_smoke.vpcf"
 			m_bEndCap = true
 		},
 	]

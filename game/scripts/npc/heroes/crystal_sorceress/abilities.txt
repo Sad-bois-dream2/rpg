@@ -55,9 +55,68 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet.vpcf"
-            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast.vpcf"
-            "particle"  "particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b.vpcf"
+            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet.vpcf"
+            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast.vpcf"
+            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Crystal Sorceress: Sheer Cold
+	//=================================================================================================================
+	"crystal_sorceress_sheer_cold"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"crystal_sorceress_frost_comet"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_TOGGLE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"  "800"
+		"AbilityCastPoint"				"0"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"base_slow"				"10 10 20 20"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_slow"				"5 5 10 10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_chance"				"25"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"2"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/crystal_sorceress/sheer_cold/sheer_cold.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}

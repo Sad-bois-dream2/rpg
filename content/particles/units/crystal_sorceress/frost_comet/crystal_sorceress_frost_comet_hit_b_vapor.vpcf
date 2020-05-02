@@ -106,7 +106,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b_vapor_snow.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b_vapor_snow.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 10

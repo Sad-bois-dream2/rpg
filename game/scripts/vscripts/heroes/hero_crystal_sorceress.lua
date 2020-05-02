@@ -21,7 +21,7 @@ function crystal_sorceress_frost_comet:OnAbilityPhaseStart()
     local direction = (targetPosition - casterPosition):Normalized()
     self.orbPosition = casterPosition + (direction * 100) + Vector(0, 0, 200)
     local lifeDuration = 2 * Units:GetSpellHaste(self.caster)
-    self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/crystal_sorceress_frost_comet_cast.vpcf", PATTACH_POINT, self.caster)
+    self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast.vpcf", PATTACH_POINT, self.caster)
     ParticleManager:SetParticleControl(self.pidx, 0, self.orbPosition)
     ParticleManager:SetParticleControl(self.pidx, 1, Vector(0, lifeDuration, 0))
     EmitSoundOnLocationWithCaster(self.orbPosition, "Hero_Ancient_Apparition.ColdFeetCast", self.caster)
@@ -50,7 +50,7 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Target", self.target)
     local procChance = self:GetSpecialValueFor("proc_chance")
     if (RollPercentage(procChance)) then
-        local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b.vpcf", PATTACH_ABSORIGIN, self.target)
+        local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b.vpcf", PATTACH_ABSORIGIN, self.target)
         Timers:CreateTimer(2.0, function()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
@@ -73,7 +73,7 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
             damageTable.damage = damage
             damageTable.frostdmg = true
             GameMode:DamageUnit(damageTable)
-            local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_smoke.vpcf", PATTACH_POINT, enemy)
+            local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_smoke.vpcf", PATTACH_POINT, enemy)
             ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
             Timers:CreateTimer(1.0, function()
                 ParticleManager:DestroyParticle(pidx, false)
@@ -99,7 +99,7 @@ function crystal_sorceress_frost_comet:OnSpellStart()
         Target = self.target,
         Ability = self,
         vSourceLoc = self.orbPosition,
-        EffectName = "particles/units/crystal_sorceress/crystal_sorceress_frost_comet.vpcf",
+        EffectName = "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet.vpcf",
         bDodgable = false,
         bProvidesVision = false,
         iMoveSpeed = 800
@@ -107,6 +107,13 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     ProjectileManager:CreateTrackingProjectile(projectile)
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Cast", self.caster)
 end
+
+-- crystal_sorceress_sheer_cold
+crystal_sorceress_sheer_cold = class({
+    GetAbilityTextureName = function(self)
+        return "crystal_sorceress_sheer_cold"
+    end
+})
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do

@@ -167,7 +167,7 @@
 			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_smoke.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_smoke.vpcf"
 		},
 	]
 }

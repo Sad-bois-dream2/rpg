@@ -125,10 +125,10 @@
 			m_ChildRef = resource:"particles/units/heroes/hero_ancient_apparition/ancient_apparition_chilling_touch_projectile_launch.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_trail.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_trail.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit.vpcf"
 			m_bEndCap = true
 		},
 	]

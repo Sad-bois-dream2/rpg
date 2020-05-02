@@ -22,10 +22,10 @@
 			m_ChildRef = resource:"particles/units/heroes/hero_ancient_apparition/ancient_apparition_chilling_touch_projectile_trail_rope.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_trail_debris.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_trail_debris.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_trail_snow.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_trail_snow.vpcf"
 		},
 	]
 	m_controlPointConfigurations = 

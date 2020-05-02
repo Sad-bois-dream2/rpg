@@ -9,10 +9,10 @@
 			m_ChildRef = resource:"particles/units/heroes/hero_crystalmaiden/maiden_loadout_vapor.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b_vapor.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b_vapor.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/crystal_sorceress/crystal_sorceress_frost_comet_hit_b_snow.vpcf"
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b_snow.vpcf"
 		},
 	]
 	m_PreEmissionOperators = 
