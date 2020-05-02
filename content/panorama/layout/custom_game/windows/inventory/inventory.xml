@@ -123,6 +123,11 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Mana" />
 							<Label id="ManaLabel" class="WindowText InventoryAttributeValue" text="0" />
 						</Panel>
+						<Panel id="CooldownReduction" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/mana.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_CooldownReduction" />
+							<Label id="CooldownReductionLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
 						<Panel id="Level" class="InventoryAttributeWithValue">
 							<Panel id="IntelligenceIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HeroLevel" />
@@ -155,6 +160,11 @@
 							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_attack_speed2_psd.vtex" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_AttackSpeed" />
 							<Label id="AttackSpeedLabel" class="WindowText InventoryAttributeValue" text="0" />
+						</Panel>
+						<Panel id="BaseAttackTime" class="InventoryAttributeWithValue">
+							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_attack_speed2_psd.vtex" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_BaseAttackTime" />
+							<Label id="BaseAttackTimeLabel" class="WindowText InventoryAttributeValue" text="0" />
 						</Panel>
 						<Panel id="Attack Damage" class="InventoryAttributeWithValue">
 							<Image class="StatIcon" src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" />
@@ -194,12 +204,12 @@
 							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_MagicBlock" />
 							<Label id="MagicBlockLabel" class="WindowText InventoryAttributeValue" text="0" />
-						</Panel>	
+						</Panel>
 						<Panel id="DamageReduction" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_DamageReduction', '#DOTA_Tooltip_DamageReduction_Description')" onmouseout="DOTAHideTitleTextTooltip()">
 							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DamageReduction" />
 							<Label id="DamageReductionLabel" class="WindowText InventoryAttributeValue" text="0%" />
-						</Panel>	
+						</Panel>
 						<Panel id="DefensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsProtection', '#DOTA_Tooltip_ElementsProtection_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
 						</Panel>
 					</Panel>

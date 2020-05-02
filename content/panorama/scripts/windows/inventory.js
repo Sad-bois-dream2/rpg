@@ -303,6 +303,7 @@ function OnHeroStatsUpdateRequest(event) {
 		var block = parsedData.statsTable.block;
 		var magicBlock = parsedData.statsTable.magicBlock;
 		var damageReduction = parsedData.statsTable.damageReduction;
+		var cooldownReduction = parsedData.statsTable.cdr;
 		var attackSpeed = parsedData.statsTable.attackSpeed;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
@@ -342,6 +343,8 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
+		cooldownReduction = 1 - cooldownReduction;
+		$("#CooldownReductionLabel").text = Math.round(cooldownReduction * 100) + "%";
     }
 }
 
@@ -382,6 +385,7 @@ function UpdateValues() {
 		$("#MoveSpeedLabel").text = Math.round(Entities.GetMoveSpeedModifier(currentHero, Entities.GetBaseMoveSpeed(currentHero)));
 		$("#ManaRegenLabel").text = Math.round(Entities.GetManaThinkRegen(currentHero) * 100) / 100;
 		$("#HealthRegenLabel").text = Math.round(Entities.GetHealthThinkRegen(currentHero) * 100) / 100;
+		$("#BaseAttackTimeLabel").text = Math.round(Entities.GetBaseAttackTime(currentHero) * 100) / 100;
 	} else {
 		var localPlayer = Players.GetLocalPlayer();
 		currentHero = Players.GetPlayerHeroEntityIndex(localPlayer);
