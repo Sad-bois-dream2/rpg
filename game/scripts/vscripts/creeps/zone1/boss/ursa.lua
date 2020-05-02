@@ -74,12 +74,12 @@ function ursa_rend:ApplyRend(target, parent)
     modifierTable.duration = self.stun
     GameMode:ApplyDebuff(modifierTable)
     --fury swipe particle
-    local ursa_rend_armor_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf", PATTACH_OVERHEAD_FOLLOW, target)
-    ParticleManager:SetParticleControlEnt(ursa_rend_armor_fx, 0, target, PATTACH_OVERHEAD_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
-    Timers:CreateTimer(self.armor_reduction_duration, function()
-        ParticleManager:DestroyParticle(ursa_rend_armor_fx, false)
-        ParticleManager:ReleaseParticleIndex(ursa_rend_armor_fx)
-    end)
+    --local ursa_rend_armor_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf", PATTACH_OVERHEAD_FOLLOW, target)
+    --ParticleManager:SetParticleControlEnt(ursa_rend_armor_fx, 0, target, PATTACH_OVERHEAD_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+    --Timers:CreateTimer(self.armor_reduction_duration, function()
+        --ParticleManager:DestroyParticle(ursa_rend_armor_fx, false)
+        --ParticleManager:ReleaseParticleIndex(ursa_rend_armor_fx)
+    --end)
 
 end
 
@@ -91,14 +91,21 @@ modifier_ursa_rend_armor = modifier_ursa_rend_armor or class({
         return false
     end,
     IsPurgable = function(self)
-        return false
+        return true
     end,
     RemoveOnDeath = function(self)
         return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
     end
+
 })
 
 
@@ -547,7 +554,26 @@ end
 
 
 -- Slow modifier
-modifier_ursa_slam_slow = class({})
+modifier_ursa_slam_slow = modifier_ursa_slam_slow or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTextureName = function(self)
+        return "ursa_slam"
+    end,
+})
 
 function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
     return self.as_slow
@@ -566,9 +592,9 @@ function modifier_ursa_slam_slow:OnCreated(keys)
         return
     end
     self.ability = self:GetAbility()
-    self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") / 100
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow") /100
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") / 100
+    self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") *-0.01
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow") *-0.01
+    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") *-0.01
 end
 
 function modifier_ursa_slam_slow:GetStatusEffectName()

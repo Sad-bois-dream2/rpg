@@ -2,26 +2,25 @@
 {
     "npc_boss_brood"
     {
-        "vscripts"					"creeps/ai/ai_generic085.lua"
+        "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/broodmother/broodmother.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "0"
+        "Level"           "30"
         "UnitLabel"         "healing_ward"
-
+        "ModelScale" 				"1"
         // Abilities
         //----------------------------------------------------------------
 
-          "Ability1"          ""     // Ability 1.
-          "Ability2"          ""     // Ability 2.
-          "Ability3"          ""      // Ability 3.
-          "Ability4"          ""      // Ability 4.
-          "Ability5"          ""     // Ability 5.
-          "Ability6"          ""      // Ability 6 - Extra.
-          "Ability7"          ""      // Ability 7 - Extra.
+          "Ability1"          "brood_toxin"     // Ability 1.
+          "Ability2"          "brood_comes"     // Ability 2.
+          "Ability3"          "brood_cocoons"      // Ability 3.
+          "Ability4"          "brood_kiss"      // Ability 4.
+          "Ability5"          "brood_spit"     // Ability 5.
+          "Ability6"          "brood_hunger"      // Ability 6 - Extra.
+          "Ability7"          "brood_web"      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-
 
         // Armor
         //----------------------------------------------------------------

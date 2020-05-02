@@ -9,7 +9,7 @@
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"0"
 		"Level"						"0"
-		"ModelScale" 				"0.2"
+		"ModelScale" 				"0.5"
 		"IsNeutralUnitType"			"0"
 		// Abilities
 		//----------------------------------------------------------------

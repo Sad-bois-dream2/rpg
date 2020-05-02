@@ -22,42 +22,46 @@
 			"01"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"stun"				        "1 3 5"
+				"stun"				        "2 3.5 5"
 			}
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"slow"		                "15"
+				"base_slow"		            "40 50 60"
 			}
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"duration"					"3"
+				"stack_slow"		         "15 20 25"
 			}
-			"03"
+			"04"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"immunity"					"3"
+				"duration"					"4"
 			}
-
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"max_stacks"				"5 4 3"
+			}
 
 		}
 				"precache"
         		{
         			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
-
+                    "particle"  "particles/status_fx/status_effect_poison_venomancer.vpcf"
         		}
 	}
     //=================================================================================================================
-    // Brood : Mother Come!
+    // Brood : Mother Comes!
     //=================================================================================================================
-    "brood_come"
+    "brood_comes"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
         "ScriptFile"					"creeps/zone1/boss/brood"
-        "AbilityTextureName"			"brood_come"
+        "AbilityTextureName"			"brood_comes"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
    		"MaxLevel"						"3"
@@ -207,7 +211,7 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"15"
+   		"AbilityCooldown"				"100"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -221,7 +225,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"min_range"				    "450"
+   				"min_range"				    "550"
    			}
    			"02"
    			{
@@ -298,7 +302,7 @@
                     "particle"  "particles/units/npc_boss_brood/brood_spit_ground.vpcf"
                     "particle"  "particles/base_attacks/generic_projectile_explosion.vpcf"
                     "particle"  "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"
-
+                    "particle"  "particles/status_fx/status_effect_poison_viper.vpcf"
         		}
 
 	}

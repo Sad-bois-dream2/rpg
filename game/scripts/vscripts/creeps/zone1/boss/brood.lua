@@ -11,17 +11,252 @@ brood_toxin = class({
     end,
 })
 
---target:EmitSound("Hero_Slardar.Bash")
+function brood_toxin:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.max_stacks = self:GetSpecialValueFor("max_stacks")
+end
+
+function brood_toxin:ApplyToxin(target, parent)
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_brood_toxin_slow"
+    modifierTable.duration = self.duration
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = self.max_stacks
+    GameMode:ApplyStackingDebuff(modifierTable)
+end
+
+modifier_brood_toxin = modifier_brood_toxin or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+function modifier_brood_toxin:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+function modifier_brood_toxin:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    --local immune = keys.target:FindModifierByName("modifier_brood_toxin_immunity")
+    local stun = keys.target:FindModifierByName("modifier_brood_toxin_stunned")
+    if (keys.attacker:HasModifier("modifier_brood_comes_mother") and keys.attacker == self.parent and stun ~= nil ) then
+        keys.target:ForceKill(false)
+    elseif (keys.attacker == self.parent and stun==nil) then --and immune == nil
+        self.ability:ApplyToxin(keys.target, self.parent)
+    end
+end
+
+LinkLuaModifier("modifier_brood_toxin", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_brood_toxin_slow = modifier_brood_toxin_slow or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_poison_venomancer.vpcf"
+    end
+})
+
+function modifier_brood_toxin_slow:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.caster = self:GetCaster()
+    self.target = self:GetParent()
+    self.ability = self:GetAbility()
+    self.base_slow = self:GetAbility():GetSpecialValueFor("base_slow")
+    self.slow = self:GetAbility():GetSpecialValueFor("slow") * -0.01 * (self:GetStackCount()+1) + self.base_slow
+    self.stun = self:GetAbility():GetSpecialValueFor("stun")
+    self.max_stacks = self:GetAbility():GetSpecialValueFor("max_stacks")
+end
+
+function modifier_brood_toxin_slow:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
+    if self:GetStackCount() == self.max_stacks then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.target
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_brood_toxin_stunned"
+        modifierTable.duration = self.stun
+        GameMode:ApplyDebuff(modifierTable)
+        self.target:EmitSound("Hero_Slardar.Bash")
+        self:Destroy()
+    else
+        self:OnCreated()
+    end
+end
+
+function modifier_brood_toxin_slow:GetMoveSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_brood_toxin_slow:GetAttackSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_brood_toxin_slow:GetSpellHasteBonus()
+    return self.slow
+end
+
+LinkLuaModifier("modifier_brood_toxin_slow", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+--special stun for one hit kill check
+modifier_brood_toxin_stunned = modifier_brood_toxin_stunned or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    GetEffectName = function(self)
+        return "particles/generic_gameplay/generic_stunned.vpcf"
+    end,
+    GetTexture = function(self)
+        return brood_toxin:GetAbilityTextureName()
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end
+})
+
+function modifier_brood_toxin_stunned:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.caster = self:GetCaster()
+    self.target = self:GetParent()
+    self.ability = self:GetAbility()
+    --self.immunity = self:GetAbility():GetSpecialValueFor("immunity")
+end
 
 
+function modifier_brood_toxin_stunned:CheckState()
+    return {[MODIFIER_STATE_STUNNED]= true}
+end
+
+
+--function modifier_brood_toxin_stunned:OnDestroy()
+    --if not IsServer() then
+        --return
+    --end
+    --local modifierTable = {}
+    --modifierTable.ability = self.ability
+    --modifierTable.target = self.target
+    --modifierTable.caster = self.caster
+    --modifierTable.modifier_name = "modifier_brood_toxin_immunity"
+    --modifierTable.duration = self.immunity
+    --GameMode:ApplyDebuff(modifierTable)
+--end
+
+LinkLuaModifier("modifier_brood_toxin_stunned", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+--modifier_brood_toxin_immunity = modifier_brood_toxin_immunity or class({
+    --IsDebuff = function(self)
+        --return true
+    --end,
+    --IsHidden = function(self)
+        --return false
+    --end,
+    --IsPurgable = function(self)
+        --return false
+    --end,
+    --GetTexture = function(self)
+        --return brood_toxin:GetAbilityTextureName()
+    --end
+--})
+
+--function modifier_brood_toxin_immunity:OnCreated()
+    --if not IsServer() then
+        --return
+    --end
+    --self.caster = self:GetParent()
+    --self.target = self:GetParent()
+--end
+
+--LinkLuaModifier("modifier_brood_toxin_immunity", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 ---------------------
 -- brood comes
 ---------------------
+
+modifier_brood_comes_mother = modifier_brood_comes_mother or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    GetTextureName = function(self)
+        return "brood_comes"
+    end,
+})
+
+function modifier_brood_comes_mother:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.parent = self:GetParent()
+end
+
+LinkLuaModifier("modifier_brood_comes_mother", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
 brood_comes = class({
     GetAbilityTextureName = function(self)
         return "brood_comes"
     end,
-
 })
 
 function brood_comes:OnSpellStart()
@@ -29,9 +264,15 @@ function brood_comes:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-
+    print(caster)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_brood_comes_mother"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
     caster:EmitSound("broodmother_broo_move_09")
-
 end
 
 
@@ -545,7 +786,6 @@ function brood_web:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    caster:EmitSound("broodmother_broo_move_09")
     caster:EmitSound("Hero_Broodmother.SpinWebCast")
     caster:EmitSound("broodmother_broo_ability_spin_01")
     --on spawn

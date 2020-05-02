@@ -8,23 +8,6 @@ lycan_call = class({
 
 })
 
---set wolf parameter
-function lycan_call:SummonWolf(args)
-    if (args == nil) then
-        return nil
-    end
-    local caster = args.caster
-    local summon = args.unit
-    local position = args.position
-    local ability = args.ability
-    if (args.casterTeam == nil or caster == nil or summon == nil or position == nil or ability == nil) then
-        return nil
-    end
-    summon = CreateUnitByName(summon, position, true, caster, caster, args.casterTeam)
-    summon:AddNewModifier(caster, self, "modifier_kill", { duration = self.duration })
-    return summon
-end
-
 function lycan_call:OnUpgrade()
     if (not IsServer()) then
     end
@@ -52,8 +35,8 @@ function lycan_call:OnSpellStart()
         local summon_point = enemy:GetAbsOrigin() + 100 * enemy:GetForwardVector()
         for i = 0, self.number - 1, 1 do
             summon_point = enemy:GetAbsOrigin() + 50 * enemy:GetForwardVector() * i
-            local summon_damage = Units:GetAttackDamage(caster) * 0.1
-            self:SummonWolf({ caster = caster, casterTeam = casterTeam, unit = "npc_boss_lycan_call_wolf", position = summon_point, damage = summon_damage, ability = self })
+            local wolf = CreateUnitByName("npc_boss_lycan_call_wolf", summon_point, true, caster, caster, casterTeam)
+            wolf:AddNewModifier(caster, self.ability, "modifier_kill", { duration = 5 })
         end
     end
 end
@@ -612,16 +595,15 @@ function lycan_agility:Blink(target, caster)
     if (target == nil) then
         return
     end
-    --self:GetCaster():EmitSound("Hero_Spirit_Breaker.NetherStrike.End")
+
     local start_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf", PATTACH_ABSORIGIN, caster)
 
     local targetPosition = target:GetAbsOrigin()
     local vector = (targetPosition - caster:GetAbsOrigin())
     local direction = vector:Normalized()
-    -- "Nether Strike instantly moves Spirit Breaker on the opposite side of the target, 54 range away from it."
+    -- move to 54 range on the back of target
     FindClearSpaceForUnit(self:GetCaster(), target:GetAbsOrigin() + ((target:GetAbsOrigin() - caster:GetAbsOrigin()):Normalized() * (54)), false)
 
-    -- IMBAfication: Warp Beast
     ProjectileManager:ProjectileDodge(caster)
     ParticleManager:SetParticleControl(start_particle, 2, caster:GetAbsOrigin())
     ParticleManager:ReleaseParticleIndex(start_particle)
@@ -694,6 +676,7 @@ function lycan_agility:OnSpellStart()
         if target ~= nil then
             self:Blink(target, caster)
             target = self:FindTargetForBlink(caster)
+            caster:RemoveModifierByName("modifier_lycan_agility_buff")
             return 1.5
         end
     end)
@@ -714,17 +697,7 @@ lycan_double_strike = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_lycan_double_strike"
-    end
-})
-
-function lycan_double_strike:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
-    self.chance = self:GetSpecialValueFor("chance")
-    self.cooldown = self:GetCooldown(self:GetLevel())
-    self.max_hits = self:GetSpecialValueFor("max_hits")
-end
+    end,})
 
 modifier_lycan_double_strike = modifier_lycan_double_strike or class({
     IsDebuff = function(self)
@@ -753,37 +726,49 @@ function modifier_lycan_double_strike:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-end
-
-function modifier_lycan_double_strike:OnAttackLanded(keys)
-    if (not IsServer() or keys.attacker ~= self.parent) then
-        return
-    end
-    --eat AS buff if there are any
-    local modifier = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
-    if (modifier) then
-        local stacks = modifier:GetStackCount() - 1
-        if (stacks < 1) then
-            modifier:Destroy()
-        end
-    else
-        --add AS buff
-        if (self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = self.parent
-            modifierTable.caster = self.parent
-            modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
-            modifierTable.duration = -1
-            modifierTable.stacks = self.max_hits
-            modifierTable.max_stacks = self.max_hits
-            GameMode:ApplyStackingBuff(modifierTable)
-            self.ability:StartCooldown(self.ability.cooldown)
-        end
-    end
+    self.chance = self.ability:GetSpecialValueFor("chance")
 end
 
 LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
+function modifier_lycan_double_strike:OnAttackLanded(keys)
+    if (not IsServer()) then
+        return
+    end
+    --eat AS buff if there are any
+    if (keys.attacker:HasModifier("modifier_lycan_double_strike_quick")) then
+        local mod = keys.attacker:FindModifierByName("modifier_lycan_double_strike_quick")
+        mod:DecrementStackCount()
+        if mod:GetStackCount() < 1 then
+            mod:Destroy()
+        end
+    else
+        --add AS buff
+        if (keys.attacker == self.parent and self.ability:IsCooldownReady())  then
+            if RollPercentage(self.chance) then
+                self.ability:ApplyQuick(self.parent)
+                local abilityCooldown = self.ability:GetCooldown(self.ability:GetLevel())
+                self.ability:StartCooldown(abilityCooldown)
+            end
+        end
+    end
+end
+
+function lycan_double_strike:ApplyQuick(parent)
+    --apply AS bonus
+    local max_stacks = 5
+    local max_hits = self:GetSpecialValueFor("max_hits")
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = parent
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_lycan_double_strike_quick"
+    modifierTable.duration = -1
+    modifierTable.stacks = max_hits
+    modifierTable.max_stacks = max_stacks
+    GameMode:ApplyStackingBuff(modifierTable)
+end
+
 
 --modifier double strike quick
 modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class({
@@ -804,16 +789,23 @@ modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class
     end,
 })
 
+
+
 function modifier_lycan_double_strike_quick:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus")
+    self.as_bonus = 0
+    local modifier = self:GetCaster():FindModifierByName("modifier_lycan_double_strike")
+    if (modifier) then
+        self.as_bonus = modifier.ability:GetSpecialValueFor("as_bonus")
+    end
 end
 
 function modifier_lycan_double_strike_quick:GetAttackSpeedBonus()
     return self.as_bonus
 end
+
 
 LinkLuaModifier("modifier_lycan_double_strike_quick", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
