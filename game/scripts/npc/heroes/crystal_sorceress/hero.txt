@@ -6,7 +6,7 @@
         "override_hero"     "npc_dota_hero_crystal_maiden"
         "Ability1"	"crystal_sorceress_frost_comet"
         "Ability2"	"crystal_sorceress_sheer_cold"
-        "Ability3"	"chosen_invoker_photon_pulse"
+        "Ability3"	"crystal_sorceress_glacier_rush"
         "Ability4"	"chosen_invoker_light_shock"
         "Ability5"	"empty5"
         "Ability6"	"antimage_blink"

@@ -399,7 +399,116 @@ function crystal_sorceress_sheer_cold:OnToggle()
         end
     end
 end
+-- crystal_sorceress_glacier_rush modifiers
+modifier_crystal_sorceress_glacier_rush = modifier_crystal_sorceress_glacier_rush or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_glacier_rush:GetAbilityTextureName()
+    end
+})
 
+function modifier_crystal_sorceress_glacier_rush:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
+    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit")
+end
+
+function modifier_crystal_sorceress_glacier_rush:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
+    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit")
+end
+
+LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_glacier_rush_stun = modifier_crystal_sorceress_glacier_rush_stun or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    IsStunDebuff = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_glacier_rush:GetAbilityTextureName()
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_FROZEN] = true
+        }
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_glacier_rush_stun"] = LUA_MODIFIER_MOTION_NONE
+
+-- crystal_sorceress_glacier_rush
+crystal_sorceress_glacier_rush = class({
+    GetAbilityTextureName = function(self)
+        return "crystal_sorceress_glacier_rush"
+    end
+})
+
+function crystal_sorceress_glacier_rush:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterPosition = caster:GetAbsOrigin()
+    local targetPosition = self:GetCursorPosition()
+    local direction = (targetPosition - casterPosition):Normalized()
+    local range = 1200 --self:GetSpecialValueFor("range")
+    local lifeDuration = 2
+    targetPosition = casterPosition + (direction * range)
+    EmitSoundOn("Hero_Jakiro.IcePath", caster)
+    local pidx = ParticleManager:CreateParticle("particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx, 1, targetPosition)
+    ParticleManager:SetParticleControl(pidx, 2, Vector(lifeDuration, 0, 0))
+    local pidx2 = ParticleManager:CreateParticle("particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx2, 1, targetPosition)
+    ParticleManager:SetParticleControl(pidx2, 2, Vector(lifeDuration, 0, 0))
+    Timers:CreateTimer(lifeDuration, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+        ParticleManager:DestroyParticle(pidx2, false)
+        ParticleManager:ReleaseParticleIndex(pidx2)
+        StopSoundOn("Hero_Jakiro.IcePath", caster)
+    end)
+end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)

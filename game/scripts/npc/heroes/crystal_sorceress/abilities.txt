@@ -157,4 +157,75 @@
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}
+	//=================================================================================================================
+	// Crystal Sorceress: Glacier Rush
+	//=================================================================================================================
+	"crystal_sorceress_glacier_rush"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"crystal_sorceress_glacier_rush"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"35"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"100 110 120 130"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stack_crit"				"20 25 30 35"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"				"5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"				"15"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"0.5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"range"				"1200"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf"
+            "particle"  "particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_jakiro.vsndevts"
+		}
+	}
 }
