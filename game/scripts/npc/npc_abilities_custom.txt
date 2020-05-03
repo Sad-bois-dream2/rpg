@@ -7,6 +7,7 @@
 #base heroes/terror_lord/abilities.txt
 #base heroes/blazing_berserker/abilities.txt
 #base heroes/chosen_invoker/abilities.txt
+#base heroes/crystal_sorceress/abilities.txt
 #base creeps/zone1/boss/ursa/abilities.txt
 #base creeps/zone1/boss/lycan/abilities.txt
 #base creeps/zone1/boss/brood/abilities.txt

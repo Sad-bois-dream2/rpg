@@ -1,0 +1,232 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 16
+	m_BoundingBoxMin = [ -510.0, -510.0, -10.0 ]
+	m_BoundingBoxMax = [ 510.0, 510.0, 10.0 ]
+	m_flConstantRadius = 200.0
+	m_bShouldSort = false
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderDeferredLight"
+			m_flStartFalloff = 0.65
+			m_flAlphaScale = 3.0
+			m_flRadiusScale = 2.25
+			m_hTexture = resource:"materials/models/heroes/mirana/javelin_color.vtex"
+			m_vecColorScale = 
+			{
+				m_nType = "PVEC_TYPE_LITERAL_COLOR"
+				m_LiteralColor = [ 11, 75, 219 ]
+			}
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_BasicMovement"
+		},
+		{
+			_class = "C_OP_Decay"
+			m_nOpEndCapState = 1
+		},
+		{
+			_class = "C_OP_SetControlPointsToParticle"
+			m_nFirstControlPoint = 3
+		},
+		{
+			_class = "C_OP_MovementPlaceOnGround"
+			m_nRefCP1 = 3
+			m_CollisionGroupName = "DEBRIS"
+			m_flTraceOffset = 256.0
+			m_flMaxTraceLength = 1024.0
+			m_bIncludeWater = true
+			m_flOffset = 120.0
+			m_flTolerance = 96.0
+			m_nLerpCP = 3
+			m_bDisableOperator = true
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_CreateWithinSphere"
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 0.2
+			m_fLifetimeMax = 0.2
+		},
+		{
+			_class = "C_INIT_NormalAlignToCP"
+		},
+		{
+			_class = "C_INIT_PositionOffset"
+			m_OffsetMin = [ 0.0, 0.0, 512.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 512.0 ]
+		},
+		{
+			_class = "C_INIT_PositionPlaceOnGround"
+			m_flOffset = 120.0
+			m_bIncludeWater = true
+			m_flMaxTraceLength = 4096.0
+			m_CollisionGroupName = "DEBRIS"
+			m_bDisableOperator = true
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_trail_c_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_final_grid_b_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_sphere_final_smoke_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_b_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_initial_explode_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_sphere_final_smoke_glow_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_final_grid_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_sphere_final_glow_b_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_final_grid_c_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_sphere_final_glow_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_main_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_c_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_trail_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_trail_b_ti5.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/ancient_apparition/aa_blast_ti_5/ancient_apparition_ice_blast_ice_trail_d_ti5.vpcf"
+		},
+	]
+	m_PreEmissionOperators = 
+	[
+		{
+			_class = "C_OP_StopAfterCPDuration"
+			m_flDuration = 
+			{
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
+				m_nControlPoint = 5
+				m_nVectorComponent = 0
+				m_nMapType = "PF_MAP_TYPE_MULT"
+				m_flMultFactor = 1.0
+			}
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 3
+	m_ForceGenerators = 
+	[
+		{
+			_class = "C_OP_AttractToControlPoint"
+			m_fForceAmount = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
+				m_flLiteralValue = 4000.0
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flLOD0 = 0.0
+				m_flLOD1 = 0.0
+				m_flLOD2 = 0.0
+				m_flLOD3 = 0.0
+				m_nInputMode = "PF_INPUT_MODE_CLAMPED"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
+			m_fFalloffPower = 0.0
+			m_nControlPointNumber = 1
+		},
+	]
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 1012.435059 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 1
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 5
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 5.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.092568, 1.092568, -46.310692 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+}
