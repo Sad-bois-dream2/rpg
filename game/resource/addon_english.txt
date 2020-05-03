@@ -392,6 +392,8 @@
         "DOTA_Tooltip_Ability_crystal_sorceress_sheer_cold_stun_cd"		"FREEZE COOLDOWN: "
         "DOTA_Tooltip_Ability_crystal_sorceress_sheer_cold_radius"		"RADIUS: "
         "DOTA_Tooltip_Ability_crystal_sorceress_sheer_cold_mana"		"%MAXIMUM MANA PER SECOND: "
+        "DOTA_Tooltip_modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"		"Sheer Cold"
+        "DOTA_Tooltip_modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks_Description"		"Slowed, frost damage taken increased."
 		// Inventory
 		"DOTA_Inventory_Title"		"Inventory"
 		"DOTA_Inventory_Description"		"Your way of changing equipment to find the most powerful build that fits your needs. <br>Here you can equip the items acquired from your countless battles."

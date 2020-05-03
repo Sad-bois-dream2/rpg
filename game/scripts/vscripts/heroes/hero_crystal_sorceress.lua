@@ -110,7 +110,7 @@ end
 -- crystal_sorceress_sheer_cold modifiers
 modifier_crystal_sorceress_sheer_cold_aura = modifier_crystal_sorceress_sheer_cold_aura or class({
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsAuraActiveOnDeath = function(self)
         return false
@@ -135,18 +135,35 @@ modifier_crystal_sorceress_sheer_cold_aura = modifier_crystal_sorceress_sheer_co
     end,
     GetAuraDuration = function(self)
         return 0
+    end,
+    GetEffectName = function(self)
+        return "particles/units/crystal_sorceress/sheer_cold/sheer_cold.vpcf"
     end
 })
 
 function modifier_crystal_sorceress_sheer_cold_aura:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self:GetParent()
     self.radius = self.ability:GetSpecialValueFor("radius")
-
+    self.mana = self.ability:GetSpecialValueFor("mana") / 100
+    local tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(tick)
 end
 
+function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local newMana = math.max(0, self.caster:GetMana() - (self.caster:GetMaxMana() * self.mana))
+    self.caster:SetMana(newMana)
+    if(newMana < 1) then
+        self.ability:ToggleAbility()
+        self:Destroy()
+    end
+end
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_sheer_cold_aura_debuff or class({
@@ -154,7 +171,7 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_s
         return true
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -166,6 +183,43 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_s
         return false
     end
 })
+
+function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetAuraOwner()
+    self.target = self:GetParent()
+    self.slowPerStack = self.ability:GetSpecialValueFor("slow_per_stack") / 100
+    self.damagePerStack = self.ability:GetSpecialValueFor("damage_per_stack") / 100
+    self.maxSlow = self.ability:GetSpecialValueFor("max_slow") / 100
+    self.maxDamage = self.ability:GetSpecialValueFor("max_damage") / 100
+    self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
+    local tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(tick)
+end
+
+function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.caster = self.caster
+    modifierTable.target = self.target
+    modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"
+    modifierTable.modifier_params = {
+        slowPerStack = self.slowPerStack,
+        damagePerStack = self.damagePerStack,
+        maxSlow = self.maxSlow,
+        maxDamage = self.maxDamage
+    }
+    modifierTable.duration = 1
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = self.maxStacks
+    GameMode:ApplyStackingDebuff(modifierTable)
+end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
@@ -184,8 +238,37 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = modifier_crystal_sorc
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
     end
 })
+
+function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (not keys) then
+        self:Destroy()
+    end
+    self.slowPerStack = keys.slowPerStack
+    self.damagePerStack = keys.damagePerStack
+    self.maxSlow = keys.maxSlow
+    self.maxDamage = keys.maxDamage
+end
+
+function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:GetMoveSpeedPercentBonus()
+    return math.min(-self:GetStackCount() * self.slowPerStack, self.maxSlow)
+end
+
+---@param damageTable DAMAGE_TABLE
+function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks")
+    if (modifier and damageTable.damage > 0 and damageTable.frostdmg) then
+        damageTable.damage = damageTable.damage * (1 + math.min(modifier:GetStackCount() * modifier.damagePerStack, modifier.maxDamage))
+        return damageTable
+    end
+end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
 
@@ -217,4 +300,8 @@ end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)
+end
+
+if (IsServer()) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
 end

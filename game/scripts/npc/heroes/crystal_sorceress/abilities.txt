@@ -97,7 +97,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slow_per_stack"				"2 3 4 5"
+				"slow_per_stack"				"1.5 2 2.5 3"
 			}
 			"02"
 			{
@@ -107,7 +107,7 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_per_stack"				"2 3 4 5"
+				"damage_per_stack"				"3 4 5 6"
 			}
 			"04"
 			{
@@ -117,27 +117,37 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_chance"				"25"
+				"max_stacks"				"10"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"2"
+				"stun_chance"				"25"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_cd"				"30"
+				"stun_duration"				"2"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"mana"				"2 3 4 5"
+				"stun_cd"				"30"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"mana"				"4 5 6 7"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"radius"				"800"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
 			}
 		}
 		"precache"
