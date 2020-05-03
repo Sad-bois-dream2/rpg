@@ -159,7 +159,7 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
     end
     local newMana = math.max(0, self.caster:GetMana() - (self.caster:GetMaxMana() * self.mana))
     self.caster:SetMana(newMana)
-    if(newMana < 1) then
+    if (newMana < 1) then
         self.ability:ToggleAbility()
         self:Destroy()
     end
@@ -196,8 +196,11 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnCreated()
     self.maxSlow = self.ability:GetSpecialValueFor("max_slow") / 100
     self.maxDamage = self.ability:GetSpecialValueFor("max_damage") / 100
     self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    self.stunChance = self.ability:GetSpecialValueFor("stun_chance")
+    self.stunDuration = self.ability:GetSpecialValueFor("stun_duration")
+    self.stunCooldown = self.ability:GetSpecialValueFor("stun_cd")
+    self.tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(self.tick)
 end
 
 function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
@@ -215,6 +218,12 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
         maxSlow = self.maxSlow,
         maxDamage = self.maxDamage
     }
+    if (self.ability:GetLevel() > 3) then
+        modifierTable.modifier_params.stunChance = self.stunChance
+        modifierTable.modifier_params.stunDuration = self.stunDuration
+        modifierTable.modifier_params.stunCooldown = self.stunCooldown
+        modifierTable.modifier_params.tick = self.tick
+    end
     modifierTable.duration = 1
     modifierTable.stacks = 1
     modifierTable.max_stacks = self.maxStacks
@@ -258,6 +267,39 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnCreated(keys
     self.damagePerStack = keys.damagePerStack
     self.maxSlow = keys.maxSlow
     self.maxDamage = keys.maxDamage
+    if (keys.stunChance) then
+        self.stunChance = keys.stunChance
+        self.stunDuration = keys.stunDuration
+        self.stunCooldown = keys.stunCooldown
+        self.tick = keys.tick
+        self.ability = self:GetAbility()
+        self.caster = self:GetCaster()
+        self.target = self:GetParent()
+        self:StartIntervalThink(self.tick)
+    end
+end
+
+function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    if (RollPercentage(self.stunChance) and not self.target:HasModifier("modifier_crystal_sorceress_sheer_cold_stun_cd")) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = self.caster
+        modifierTable.target = self.target
+        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_stun_cd"
+        modifierTable.duration = self.stunCooldown
+        GameMode:ApplyDebuff(modifierTable)
+        modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = self.caster
+        modifierTable.target = self.target
+        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_stun"
+        modifierTable.duration = self.stunDuration
+        GameMode:ApplyDebuff(modifierTable)
+        EmitSoundOnLocationWithCaster(self.target:GetAbsOrigin(), "hero_Crystal.frostbite", self.target)
+    end
 end
 
 function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:GetMoveSpeedPercentBonus()
@@ -274,6 +316,64 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnTakeDamage(d
 end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_sheer_cold_stun = modifier_crystal_sorceress_sheer_cold_stun or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    IsStunDebuff = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_FROZEN] = true
+        }
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_sheer_cold_stun_cd = modifier_crystal_sorceress_sheer_cold_stun_cd or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun_cd"] = LUA_MODIFIER_MOTION_NONE
 
 -- crystal_sorceress_sheer_cold
 crystal_sorceress_sheer_cold = class({
