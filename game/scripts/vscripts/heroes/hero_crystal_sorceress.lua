@@ -437,14 +437,6 @@ function modifier_crystal_sorceress_glacier_rush:GetCriticalChanceBonus()
     return self.critChancePerStack * self:GetStackCount()
 end
 
----@param damageTable DAMAGE_TABLE
-function modifier_crystal_sorceress_glacier_rush:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_crystal_sorceress_glacier_rush")
-    if (damageTable.damage > 0 and modifier and damageTable.frostdmg) then
-        modifier:Destroy()
-    end
-end
-
 LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_crystal_sorceress_glacier_rush_stun = modifier_crystal_sorceress_glacier_rush_stun or class({
@@ -603,6 +595,25 @@ function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
     end
     self.caster = self:GetCaster()
     self.target = self:GetCursorTarget()
+    self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControlEnt(self.pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_staff1", self.caster:GetAbsOrigin(), true)
+    return true
+end
+--[[
+Freezing Destruction ( initiative / can't be dispelled ) 极寒爆轰
+Born in the primitive ice shard crumbling off from the Freezing Core, a piece of primordial source of the Frozen Realm is sealed in the heart of Crystal Sorceress. While awaking the power inside and pouring its will of destruction upon an target, she locks it in a crystal phase, then causes fatal ice blasts on it with bonus critical damage after 2 seconds' channeling.
+
+ice blast: 2/3/4/5
+blast damage: 150%/200%/250%/300% of Crystal Sorceress' intelligence
+critical damage bonus:120%/150%/180%/200%
+cd: 60 seconds
+--]]
+function crystal_sorceress_freezing_destruction:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.caster = self.caster
@@ -611,19 +622,26 @@ function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
     modifierTable.duration = self:GetSpecialValueFor("stun_duration")
     GameMode:ApplyDebuff(modifierTable)
     EmitSoundOn("Hero_Ancient_Apparition.ColdFeetCast", self.target)
-    return true
+    local meteors = self:GetSpecialValueFor("meteors")
+    local angleBetweenMeteors = 360 / meteors
+    local distanceFromCenter = 200
+    local targetPosition = self.target:GetAbsOrigin()
+    local currentAngle = angleBetweenMeteors
+    for i = 1, meteors do
+        local angleInRadians = math.rad(currentAngle)
+        local landPoint = Vector(targetPosition[1] + distanceFromCenter * math.cos(angleInRadians), targetPosition[2] + distanceFromCenter * math.sin(angleInRadians), targetPosition[3])
+        local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN, self.caster)
+        ParticleManager:SetParticleControl(pidx, 1, landPoint)
+        currentAngle = currentAngle + angleBetweenMeteors
+    end
 end
 
 function crystal_sorceress_freezing_destruction:OnAbilityPhaseInterrupted()
     if (not IsServer()) then
         return
     end
-    local cooldownTable = {}
-    cooldownTable.reduction = Units:GetCooldownReduction(self.caster)
-    cooldownTable.ability = self:GetAbilityName()
-    cooldownTable.isflat = false
-    cooldownTable.target = self.caster
-    GameMode:ReduceAbilityCooldown(cooldownTable)
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
 -- Internal stuff
@@ -633,5 +651,4 @@ end
 
 if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
-    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_glacier_rush, 'OnPostTakeDamage'))
 end

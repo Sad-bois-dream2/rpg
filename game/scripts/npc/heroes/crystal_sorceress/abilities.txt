@@ -198,7 +198,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_crit"				"20 25 30 35"
+				"stack_crit"				"6 8 10 12"
 			}
 			"03"
 			{
@@ -274,7 +274,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"meteors"				"20 25 30 35"
+				"meteors"				"2 3 4 5"
 			}
 			"03"
 			{
@@ -290,6 +290,7 @@
 		"precache"
 		{
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction.vpcf"
+            "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}
