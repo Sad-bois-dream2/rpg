@@ -640,6 +640,13 @@ if (IsServer()) then
     function GameMode:RollCriticalChance(unit, chance)
         return RollPercentage(chance * Units:GetCriticalChanceMultiplier(unit))
     end
+    GameMode.PostApplyModifierEventHandlersTable = {}
+    ---@param modifierTable MODIFIER_TABLE
+    function GameMode:OnModifierApplied(modifierTable)
+        if (modifierTable.target) then
+            Units:ForceStatsCalculation(modifierTable.target)
+        end
+    end
 end
 
 modifier_cooldown_reduction_custom = modifier_cooldown_reduction_custom or class({
@@ -852,4 +859,5 @@ end, nil)
 if (IsServer()) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
 end
