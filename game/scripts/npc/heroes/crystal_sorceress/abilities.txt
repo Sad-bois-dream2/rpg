@@ -178,6 +178,7 @@
 		//-------------------------------------------------------------------------------------------------------------
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
 		"AbilityCastPoint"				"0.25"
+		"AbilityCastRange"				"900"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -274,7 +275,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"meteors"				"2 3 4 5"
+				"meteors"				"3 4 5 6"
 			}
 			"03"
 			{
@@ -286,11 +287,17 @@
 				"var_type"				"FIELD_FLOAT"
 				"stun_duration"				"2"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_aoe"				"450"
+			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction.vpcf"
+            "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_projectile.vpcf"
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf"
+            "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}

@@ -595,23 +595,17 @@ function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
     end
     self.caster = self:GetCaster()
     self.target = self:GetCursorTarget()
+    EmitSoundOn("hero_Crystal.freezingField.wind", self.caster)
     self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN, self.caster)
     ParticleManager:SetParticleControlEnt(self.pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_staff1", self.caster:GetAbsOrigin(), true)
     return true
 end
---[[
-Freezing Destruction ( initiative / can't be dispelled ) 极寒爆轰
-Born in the primitive ice shard crumbling off from the Freezing Core, a piece of primordial source of the Frozen Realm is sealed in the heart of Crystal Sorceress. While awaking the power inside and pouring its will of destruction upon an target, she locks it in a crystal phase, then causes fatal ice blasts on it with bonus critical damage after 2 seconds' channeling.
 
-ice blast: 2/3/4/5
-blast damage: 150%/200%/250%/300% of Crystal Sorceress' intelligence
-critical damage bonus:120%/150%/180%/200%
-cd: 60 seconds
---]]
 function crystal_sorceress_freezing_destruction:OnSpellStart()
     if (not IsServer()) then
         return
     end
+    StopSoundOn("hero_Crystal.freezingField.wind", self.caster)
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
     local modifierTable = {}
@@ -627,19 +621,66 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
     local distanceFromCenter = 200
     local targetPosition = self.target:GetAbsOrigin()
     local currentAngle = angleBetweenMeteors
+    local particlesTable = {}
+    local landTime = 0
+    local meteorSpeed = 1250
     for i = 1, meteors do
         local angleInRadians = math.rad(currentAngle)
         local landPoint = Vector(targetPosition[1] + distanceFromCenter * math.cos(angleInRadians), targetPosition[2] + distanceFromCenter * math.sin(angleInRadians), targetPosition[3])
-        local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN, self.caster)
+        local lengthVector = (landPoint - targetPosition)
+        local direction = lengthVector:Normalized()
+        local spawnPoint = landPoint + (direction * 800) + Vector(0, 0, 700)
+        landTime = (landPoint - spawnPoint):Length() / meteorSpeed
+        local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_projectile.vpcf", PATTACH_ABSORIGIN, self.caster)
+        ParticleManager:SetParticleControl(pidx, 0, spawnPoint)
         ParticleManager:SetParticleControl(pidx, 1, landPoint)
+        ParticleManager:SetParticleControl(pidx, 5, Vector(landTime, 0, 0))
+        table.insert(particlesTable, { id = pidx, point = landPoint })
         currentAngle = currentAngle + angleBetweenMeteors
     end
+    Timers:CreateTimer(landTime, function()
+        local anotherParticleTable = {}
+        for _, particleInfo in pairs(particlesTable) do
+            ParticleManager:DestroyParticle(particleInfo.id, true)
+            ParticleManager:ReleaseParticleIndex(particleInfo.id)
+            local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
+            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
+            table.insert(anotherParticleTable, pidx)
+        end
+        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
+        local enemies = FindUnitsInRadius(self.caster:GetTeam(),
+                targetPosition,
+                nil,
+                self:GetSpecialValueFor("damage_aoe"),
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.frostdmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+        Timers:CreateTimer(2, function()
+            for _, pidx in pairs(anotherParticleTable) do
+                ParticleManager:DestroyParticle(pidx, true)
+                ParticleManager:ReleaseParticleIndex(pidx)
+            end
+        end, self)
+    end, self)
 end
 
 function crystal_sorceress_freezing_destruction:OnAbilityPhaseInterrupted()
     if (not IsServer()) then
         return
     end
+    StopSoundOn("hero_Crystal.freezingField.wind", self.caster)
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
 end
