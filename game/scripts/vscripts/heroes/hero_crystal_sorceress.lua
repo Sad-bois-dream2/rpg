@@ -552,6 +552,41 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     GameMode:ApplyStackingBuff(modifierTable)
 end
 
+modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceress_freezing_destruction_stun or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    IsStunDebuff = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return crystal_sorceress_freezing_destruction:GetAbilityTextureName()
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_FROZEN] = true
+        }
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_stun"] = LUA_MODIFIER_MOTION_NONE
+
 -- crystal_sorceress_freezing_destruction
 crystal_sorceress_freezing_destruction = class({
     GetAbilityTextureName = function(self)
@@ -561,6 +596,35 @@ crystal_sorceress_freezing_destruction = class({
         return true
     end
 })
+
+function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
+    if (not IsServer()) then
+        return true
+    end
+    self.caster = self:GetCaster()
+    self.target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = self.caster
+    modifierTable.target = self.target
+    modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction_stun"
+    modifierTable.duration = self:GetSpecialValueFor("stun_duration")
+    GameMode:ApplyDebuff(modifierTable)
+    EmitSoundOn("Hero_Ancient_Apparition.ColdFeetCast", self.target)
+    return true
+end
+
+function crystal_sorceress_freezing_destruction:OnAbilityPhaseInterrupted()
+    if (not IsServer()) then
+        return
+    end
+    local cooldownTable = {}
+    cooldownTable.reduction = Units:GetCooldownReduction(self.caster)
+    cooldownTable.ability = self:GetAbilityName()
+    cooldownTable.isflat = false
+    cooldownTable.target = self.caster
+    GameMode:ReduceAbilityCooldown(cooldownTable)
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
