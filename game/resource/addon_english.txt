@@ -317,6 +317,8 @@
         "DOTA_Tooltip_Ability_blazing_berserker_battle_hunger_stun_chance"		"%STUN CHANCE: "
         "DOTA_Tooltip_Ability_blazing_berserker_battle_hunger_stun_duration"		"STUN DURATION: "
         "DOTA_Tooltip_Ability_blazing_berserker_battle_hunger_mana"		"%MAXIMUM MANA PER SECOND: "
+        "DOTA_Tooltip_modifier_blazing_berserker_battle_hunger"		"Batthe Hunger"
+        "DOTA_Tooltip_modifier_blazing_berserker_battle_hunger_Description"		"Strength increased."
 		"DOTA_Tooltip_Ability_blazing_berserker_rage_eruption"		"Rage Eruption"
 		"DOTA_Tooltip_Ability_blazing_berserker_rage_eruption_Description"		"No amount of pain inflicted on Blazing Berserker can make him surrender - it only enrages him and gives him strength to fight back. Each time Blazing Berserker is attacked, he gains attack speed, stacking up to 10 times. He also has a chance to apply Incinerating Souls (if learned) to the attacking enemy."
         "DOTA_Tooltip_Ability_blazing_berserker_rage_eruption_aaspeed"		"ATTACK SPEED PER STACK: "
