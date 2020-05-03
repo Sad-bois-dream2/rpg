@@ -551,6 +551,17 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     modifierTable.max_stacks = self:GetSpecialValueFor("max_stacks")
     GameMode:ApplyStackingBuff(modifierTable)
 end
+
+-- crystal_sorceress_freezing_destruction
+crystal_sorceress_freezing_destruction = class({
+    GetAbilityTextureName = function(self)
+        return "crystal_sorceress_freezing_destruction"
+    end,
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)
