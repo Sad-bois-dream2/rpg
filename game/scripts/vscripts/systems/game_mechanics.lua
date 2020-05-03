@@ -640,7 +640,7 @@ if (IsServer()) then
     function GameMode:RollCriticalChance(unit, chance)
         return RollPercentage(chance * Units:GetCriticalChanceMultiplier(unit))
     end
-    GameMode.PostApplyModifierEventHandlersTable = {}
+
     ---@param modifierTable MODIFIER_TABLE
     function GameMode:OnModifierApplied(modifierTable)
         if (modifierTable.target) then
