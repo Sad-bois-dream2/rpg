@@ -210,14 +210,12 @@
 			{
 				"var_type"					"FIELD_FLOAT"
                 "stun"               "2 4 7"
-
-
+		    }
 		}
-				"precache"
-        		{
-                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
-
-        		}
+		"precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+        }
     }
 
     //=================================================================================================================
@@ -309,12 +307,10 @@
     			"var_type"					"FIELD_FLOAT"
     			"spawn_interval"			"8 6 4"
     		}
-
     	}
    		"precache"
-        		{
-                "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
-        		}
-
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
+        }
 	}
 }

@@ -245,5 +245,46 @@ function modifier_inventory_item_example:GetBaseAttackTime()
     return 1.7
 end
 
+function modifier_inventory_item_example:GetHealingReceivedBonus()
+    return 0 -- finalHeal = heal + this
+end
+
+function modifier_inventory_item_example:GetHealingReceivedPercentBonus()
+    return 0 -- finalHeal = heal * this
+end
+
+function modifier_inventory_item_example:GetHealingCausedBonus()
+    return 0 -- finalHeal = heal + this
+end
+
+function modifier_inventory_item_example:GetHealingCausedPercentBonus()
+    return 0 -- finalHeal = heal * this
+end
+
+-- increase duration all of debuffs caused by entity, 1.0 = 100%
+function modifier_inventory_item_example:GetDebuffAmplificationBonus()
+    return 0
+end
+
+-- decrease duration all of debuffs that entity get, 1.0 = 100%
+function modifier_inventory_item_example:GetDebuffResistanceBonus()
+    return 0
+end
+
+-- increase duration all of buffs caused by entity, 1.0 = 100%
+function modifier_inventory_item_example:GetBuffAmplificationBonus()
+    return 0
+end
+
+-- increase all critical damage caused by owner, 1.0 = 100%
+function modifier_inventory_item_example:GetCriticalDamageBonus()
+    return 0
+end
+
+-- increase all critical strikes proc chance of owner, 1.0 = 100%. finalCritChance = critChance * this
+function modifier_inventory_item_example:GetCriticalChanceBonus()
+    return 0
+end
+
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)

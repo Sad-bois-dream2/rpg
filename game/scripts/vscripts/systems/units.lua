@@ -36,6 +36,16 @@ function Units:Init()
     Units.STATS_CALCULATE_INTERVAL = 1
 end
 
+function Units:ForceStatsCalculation(unit)
+    if (not unit) then
+        return
+    end
+    local stats = unit:FindModifierByName("modifier_stats_system")
+    if (stats) then
+        stats:OnIntervalThink()
+    end
+end
+
 ---@param unit CDOTA_BaseNPC
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
@@ -91,6 +101,15 @@ function Units:CalculateStats(unit, statsTable)
         local unitArmor = 0
         local unitArmorPercent = 1
         local unitCooldownReduction = 1
+        local unitHealingReceived = 0
+        local unitHealingReceivedPercent = 1
+        local unitHealingCaused = 0
+        local unitHealingCausedPercent = 1
+        local unitBuffAmplification = 1
+        local unitDebuffAmplification = 1
+        local unitDebuffResistance = 1
+        local unitCriticalChance = 1
+        local unitCriticalDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         for i = 1, #unitModifiers do
@@ -252,6 +271,33 @@ function Units:CalculateStats(unit, statsTable)
                     unitBaseAttackTime = newBaseAttackTime
                 end
             end
+            if (unitModifiers[i].GetHealingReceivedBonus) then
+                unitHealingReceived = unitHealingReceived + (tonumber(unitModifiers[i].GetHealingReceivedBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingReceivedPercentBonus) then
+                unitHealingReceivedPercent = unitHealingReceivedPercent + (tonumber(unitModifiers[i].GetHealingReceivedPercentBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingCausedBonus) then
+                unitHealingCaused = unitHealingCaused + (tonumber(unitModifiers[i].GetHealingCausedBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetHealingCausedPercentBonus) then
+                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetDebuffAmplificationBonus) then
+                unitDebuffAmplification = unitDebuffAmplification + (tonumber(unitModifiers[i].GetDebuffAmplificationBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetDebuffResistanceBonus) then
+                unitDebuffResistance = unitDebuffResistance + (tonumber(unitModifiers[i].GetDebuffResistanceBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetBuffAmplificationBonus) then
+                unitBuffAmplification = unitBuffAmplification + (tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetCriticalDamageBonus) then
+                unitCriticalDamage = unitCriticalDamage + (tonumber(unitModifiers[i].GetCriticalDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetCriticalChanceBonus) then
+                unitCriticalChance = unitCriticalChance + (tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -346,6 +392,18 @@ function Units:CalculateStats(unit, statsTable)
         -- bat
         statsTable.bat = unitBaseAttackTime
         unit:SetBaseAttackTime(unitBaseAttackTime)
+        -- healing related bonuses
+        statsTable.healingReceived = unitHealingReceived
+        statsTable.healingReceivedPercent = unitHealingReceivedPercent
+        statsTable.healingCaused = unitHealingCaused
+        statsTable.healingCausedPercent = unitHealingCausedPercent
+        -- modifier related bonuses
+        statsTable.buffAmplification = unitBuffAmplification
+        statsTable.debuffAmplification = unitDebuffAmplification
+        statsTable.debuffResistance = unitDebuffResistance
+        -- crit related bonuses
+        statsTable.critChance = unitCriticalChance
+        statsTable.critDamage = unitCriticalDamage
         -- all elements protections
         statsTable.elementsProtection = statsTable.elementsProtection or {}
         statsTable.elementsProtection.fire = unitFireProtection
@@ -1072,6 +1130,87 @@ end
 function Units:GetCooldownReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.cdr or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingReceived(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingReceived or 0
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingReceivedPercent(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingReceivedPercent or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingCaused(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingCaused or 0
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetHealingCausedPercent(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.healingCausedPercent or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetBuffAmplification(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.buffAmplification or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDebuffAmplification(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.debuffAmplification or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDebuffResistance(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.debuffResistance or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetCriticalChanceMultiplier(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.critChance or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetCriticalDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.critDamage or 1
     end
     return 1
 end

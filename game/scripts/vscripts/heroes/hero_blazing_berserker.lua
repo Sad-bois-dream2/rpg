@@ -519,6 +519,5 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer()) then
-    GameMode.PostDamageEventHandlersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modiifer_blazing_berserker_rage_eruption, 'OnPostTakeDamage'))
 end

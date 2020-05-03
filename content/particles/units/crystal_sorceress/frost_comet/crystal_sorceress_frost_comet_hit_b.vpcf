@@ -1,0 +1,48 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 0
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/heroes/hero_crystalmaiden/maiden_loadout_vapor.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b_vapor.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b_snow.vpcf"
+		},
+	]
+	m_PreEmissionOperators = 
+	[
+		{
+			_class = "C_OP_SetSingleControlPointPosition"
+			m_bUseWorldLocation = true
+			m_vecCP1Pos = [ 0.0, 0.0, 0.0 ]
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "loadout"
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/crystal_maiden/crystal_maiden.vmdl"
+				m_bAnimationNonLooping = true
+			}
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_ABSORIGIN_FOLLOW"
+					m_entityName = "self"
+					m_attachmentName = "attach_hitloc"
+					m_vecOffset = [ null, null, null ]
+					m_angOffset = [ null, null, null ]
+				},
+			]
+		},
+	]
+}

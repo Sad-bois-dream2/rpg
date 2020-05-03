@@ -237,6 +237,9 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
+                if (args.duration > 0) then
+                    args.duration = args.duration * Units:GetBuffAmplification(args.caster)
+                end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (modifier ~= nil and fireEvent and fireEvent == true) then
@@ -279,6 +282,9 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
+                if (args.duration > 0) then
+                    args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
+                end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (modifier ~= nil and fireEvent and fireEvent == true) then
@@ -488,6 +494,9 @@ if (IsServer()) then
             local preDamageHandlerResultTable
             local damageCanceled = false
             for i = 1, #GameMode.PreDamageEventHandlersTable do
+                if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                    break
+                end
                 preDamageHandlerResultTable = GameMode.PreDamageEventHandlersTable[i](nil, damageTable)
                 if (preDamageHandlerResultTable ~= nil) then
                     if (not damageCanceled) then
@@ -502,14 +511,20 @@ if (IsServer()) then
             end
             if (not damageCanceled) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit
+                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
+                        if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                            break
+                        end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
                     PopupCriticalDamage(target, damageTable.damage)
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
+                    if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                        break
+                    end
                     GameMode.PostDamageEventHandlersTable[i](nil, damageTable)
                 end
             end
@@ -526,21 +541,20 @@ if (IsServer()) then
         if (args == null) then
             return
         end
-        local caster = args.caster
-        local target = args.target
-        local heal = tonumber(args.heal)
-        if (caster == nil or target == nil or heal == nil) then
+        args.heal = tonumber(args.heal)
+        if (args.caster == nil or args.target == nil or args.heal == nil) then
             return
         end
+        args.heal = (args.heal + Units:GetHealingCaused(args.caster) + Units:GetHealingReceived(args.target)) * Units:GetHealingCausedPercent(args.caster) * Units:GetHealingReceivedPercent(args.target)
         args.crit = 1.0
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealEventHandlersTable do
+            if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                break
+            end
             preHealHandlerResultTable = GameMode.PreHealEventHandlersTable[i](nil, args)
             if (preHealHandlerResultTable ~= nil) then
-                if (not healCanceled) then
-                    healCanceled = (preHealHandlerResultTable.heal <= 0)
-                end
                 local latestCrit = args.crit
                 args = preHealHandlerResultTable
                 if (latestCrit > args.crit) then
@@ -548,16 +562,23 @@ if (IsServer()) then
                 end
             end
         end
+        healCanceled = (args.heal < 1)
         if (not healCanceled) then
             if (args.crit > 1.0) then
                 args.heal = args.heal * args.crit
                 for i = 1, #GameMode.CritHealEventHandlersTable do
+                    if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                        break
+                    end
                     GameMode.CritHealEventHandlersTable[i](nil, args)
                 end
             end
-            target:Heal(args.heal, caster)
-            PopupHealing(target, args.heal)
+            args.target:Heal(args.heal, caster)
+            PopupHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealEventHandlersTable do
+                if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                    break
+                end
                 GameMode.PostHealEventHandlersTable[i](nil, args)
             end
         end
@@ -573,21 +594,20 @@ if (IsServer()) then
         if (args == null) then
             return
         end
-        local caster = args.caster
-        local target = args.target
-        local heal = tonumber(args.heal)
-        if (caster == nil or target == nil or heal == nil) then
+        args.heal = tonumber(args.heal)
+        if (args.caster == nil or args.target == nil or args.heal == nil) then
             return
         end
         args.crit = 1.0
+        args.heal = (args.heal + Units:GetHealingCaused(args.caster) + Units:GetHealingReceived(args.target)) * Units:GetHealingCausedPercent(args.caster) * Units:GetHealingReceivedPercent(args.target)
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealManaEventHandlersTable do
+            if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                break
+            end
             preHealHandlerResultTable = GameMode.PreHealManaEventHandlersTable[i](nil, args)
             if (preHealHandlerResultTable ~= nil) then
-                if (not healCanceled) then
-                    healCanceled = (preHealHandlerResultTable.heal <= 0)
-                end
                 local latestCrit = args.crit
                 args = preHealHandlerResultTable
                 if (latestCrit > args.crit) then
@@ -595,18 +615,36 @@ if (IsServer()) then
                 end
             end
         end
+        healCanceled = (args.heal < 1)
         if (not healCanceled) then
             if (args.crit > 1.0) then
                 args.heal = args.heal * args.crit
                 for i = 1, #GameMode.CritHealManaEventHandlersTable do
+                    if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                        break
+                    end
                     GameMode.CritHealManaEventHandlersTable[i](nil, args)
                 end
             end
-            target:GiveMana(args.heal)
-            PopupManaHealing(target, args.heal)
+            args.target:GiveMana(args.heal)
+            PopupManaHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealManaEventHandlersTable do
+                if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                    break
+                end
                 GameMode.PostHealManaEventHandlersTable[i](nil, args)
             end
+        end
+    end
+
+    function GameMode:RollCriticalChance(unit, chance)
+        return RollPercentage(chance * Units:GetCriticalChanceMultiplier(unit))
+    end
+
+    ---@param modifierTable MODIFIER_TABLE
+    function GameMode:OnModifierApplied(modifierTable)
+        if (modifierTable.target) then
+            Units:ForceStatsCalculation(modifierTable.target)
         end
     end
 end
@@ -695,8 +733,7 @@ function modifier_out_of_combat:OnCreated(keys)
         return
     end
     self.caster = self:GetParent()
-    self.delay = 5
-    self.timer = 0
+    self.delay = 4
     self:StartIntervalThink(1.0)
 end
 
@@ -704,35 +741,43 @@ function modifier_out_of_combat:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    self.timer = self.timer + 1
-    if (self.timer > self.delay) then
-        self.timer = self.delay
-        if (not self.modifier) then
-            self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
-        end
-    else
-        if (self.modifier) then
-            self.modifier:Destroy()
-            self.modifier = nil
+    local stacks = self:GetStackCount() + 1
+    if (stacks > self.delay) then
+        stacks = self.delay
+        if (not self.buff) then
+            self.buff = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
         end
     end
+    self:SetStackCount(stacks)
 end
 
 function modifier_out_of_combat:OnPostTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier.timer = 0
+        modifier:SetStackCount(0)
+        modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
+        end
     end
     modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier.timer = 0
+        modifier:SetStackCount(0)
+        modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
+        end
     end
 end
 
 function modifier_out_of_combat:OnPostHeal(healTable)
     local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
     if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
-        modifier.timer = 0
+        modifier:SetStackCount(0)
+        modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
+        if (modifier) then
+            modifier:Destroy()
+        end
     end
 end
 
@@ -765,16 +810,18 @@ modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
 function modifier_out_of_combat_buff:GetMoveSpeedBonus()
     return 100
 end
-function modifier_out_of_combat_buff:OnCreated()
+
+function modifier_out_of_combat_buff:OnCreated(keys)
     if (not IsServer()) then
         return
     end
     self.caster = self:GetParent()
     self:StartIntervalThink(1.0)
+    self:OnIntervalThink()
 end
 
 function modifier_out_of_combat_buff:OnIntervalThink()
-    if(not IsServer()) then
+    if (not IsServer() or not self.caster:IsAlive()) then
         return
     end
     local healTable = {}
@@ -791,10 +838,9 @@ function modifier_out_of_combat_buff:OnDestroy()
     if (not IsServer()) then
         return
     end
-    local modifier = self:GetParent():FindModifierByName("modifier_out_of_combat")
-    if (modifier) then
-        modifier.timer = 0
-    end
+    local modifier = self.caster:FindModifierByName("modifier_out_of_combat")
+    modifier:SetStackCount(0)
+    modifier.buff = nil
 end
 
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
@@ -813,4 +859,5 @@ end, nil)
 if (IsServer()) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
 end

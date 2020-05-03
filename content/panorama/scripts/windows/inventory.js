@@ -303,7 +303,13 @@ function OnHeroStatsUpdateRequest(event) {
 		var block = parsedData.statsTable.block;
 		var magicBlock = parsedData.statsTable.magicBlock;
 		var damageReduction = parsedData.statsTable.damageReduction;
+		var cooldownReduction = parsedData.statsTable.cdr;
 		var attackSpeed = parsedData.statsTable.attackSpeed;
+		var buffAmplification = parsedData.statsTable.buffAmplification;
+		var debuffAmplification = parsedData.statsTable.debuffAmplification;
+		var debuffResistance = parsedData.statsTable.debuffResistance;
+		var criticalDamage = parsedData.statsTable.critDamage;
+		var criticalChance = parsedData.statsTable.critChance;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -342,6 +348,18 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
+		cooldownReduction = 1 - cooldownReduction;
+		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
+		debuffAmplification = debuffAmplification - 1;
+		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
+		debuffResistance = 1 - debuffResistance;
+		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
+		buffAmplification = buffAmplification - 1;
+		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
+		criticalDamage = criticalDamage - 1;
+		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
+		criticalChance = criticalChance - 1;
+		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
     }
 }
 
@@ -382,6 +400,7 @@ function UpdateValues() {
 		$("#MoveSpeedLabel").text = Math.round(Entities.GetMoveSpeedModifier(currentHero, Entities.GetBaseMoveSpeed(currentHero)));
 		$("#ManaRegenLabel").text = Math.round(Entities.GetManaThinkRegen(currentHero) * 100) / 100;
 		$("#HealthRegenLabel").text = Math.round(Entities.GetHealthThinkRegen(currentHero) * 100) / 100;
+		$("#BaseAttackTimeLabel").text = Math.round(Entities.GetBaseAttackTime(currentHero) * 100) / 100;
 	} else {
 		var localPlayer = Players.GetLocalPlayer();
 		currentHero = Players.GetPlayerHeroEntityIndex(localPlayer);
