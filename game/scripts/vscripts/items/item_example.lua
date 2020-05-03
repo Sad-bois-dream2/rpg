@@ -276,5 +276,15 @@ function modifier_inventory_item_example:GetBuffAmplificationBonus()
     return 0
 end
 
+-- increase all critical damage caused by owner, 1.0 = 100%
+function modifier_inventory_item_example:GetCriticalDamageBonus()
+    return 0
+end
+
+-- increase all critical strikes proc chance of owner, 1.0 = 100%. finalCritChance = critChance * this
+function modifier_inventory_item_example:GetCriticalChanceBonus()
+    return 0
+end
+
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)

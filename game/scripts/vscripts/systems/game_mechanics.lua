@@ -237,7 +237,7 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
-                if(args.duration > 0) then
+                if (args.duration > 0) then
                     args.duration = args.duration * Units:GetBuffAmplification(args.caster)
                 end
                 modifierParams.Duration = args.duration
@@ -282,7 +282,7 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
-                if(args.duration > 0) then
+                if (args.duration > 0) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
@@ -635,6 +635,10 @@ if (IsServer()) then
                 GameMode.PostHealManaEventHandlersTable[i](nil, args)
             end
         end
+    end
+
+    function GameMode:RollCriticalChance(unit, chance)
+        return RollPercentage(chance * Units:GetCriticalChanceMultiplier(unit))
     end
 end
 
