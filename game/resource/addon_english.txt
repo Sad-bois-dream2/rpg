@@ -410,6 +410,12 @@
         "DOTA_Tooltip_modifier_crystal_sorceress_glacier_rush_Description"		"Frost damage instances will have increase critical strike chance by %dMODIFIER_PROPERTY_TOOLTIP%%%."
         "DOTA_Tooltip_modifier_crystal_sorceress_glacier_rush_stun"		"Glacier Rush"
         "DOTA_Tooltip_modifier_crystal_sorceress_glacier_rush_stun_Description"		"Stunned."
+		"DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction"		"Freezing Destruction"
+		"DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_Description"		"Crystal Sorceress freezing target in ice and summoning several comets from Frozen Realm to hurt all enemies around target (including it too). Critical strike damage for this ability increased.<br>Cast time: 2 seconds"
+        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_damage"		"%INTELLECT TO DAMAGE: "
+        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_meteors"		"COMETS: "
+        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_crit_dmg"		"%BONUS CRITICAL DAMAGE: "
+        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_stun_duration"		"FREEZE DURATION: "
 		// Inventory
 		"DOTA_Inventory_Title"		"Inventory"
 		"DOTA_Inventory_Description"		"Your way of changing equipment to find the most powerful build that fits your needs. <br>Here you can equip the items acquired from your countless battles."

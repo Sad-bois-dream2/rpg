@@ -579,6 +579,48 @@ modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceres
 
 LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_stun"] = LUA_MODIFIER_MOTION_NONE
 
+modifier_crystal_sorceress_freezing_destruction = modifier_crystal_sorceress_freezing_destruction or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_crystal_sorceress_freezing_destruction:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.bonusCritDamage = self.ability:GetSpecialValueFor("crit_dmg") * 0.01
+end
+
+function modifier_crystal_sorceress_freezing_destruction:OnCreated()
+    return self.bonusCritDamage
+end
+
+function modifier_crystal_sorceress_freezing_destruction:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_crystal_sorceress_freezing_destruction")
+    if (modifier and damageTable.ability and damageTable.ability == modifier.ability) then
+        modifier:Destroy()
+    end
+end
+
+LinkedModifiers["modifier_crystal_sorceress_freezing_destruction"] = LUA_MODIFIER_MOTION_NONE
+
 -- crystal_sorceress_freezing_destruction
 crystal_sorceress_freezing_destruction = class({
     GetAbilityTextureName = function(self)
@@ -657,6 +699,14 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction"
+        modifierTable.duration = 1
+        local modifier = GameMode:ApplyBuff(modifierTable)
+        modifier:SetDuration(1.0, false)
         local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
         for _, enemy in pairs(enemies) do
             local damageTable = {}
@@ -692,4 +742,5 @@ end
 
 if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
 end
