@@ -359,7 +359,7 @@ function OnHeroStatsUpdateRequest(event) {
 		criticalDamage = 1 - criticalDamage;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = 1 - criticalChance;
-		$("#CriticalChanceLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
+		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
     }
 }
 
