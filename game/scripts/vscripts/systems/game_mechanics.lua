@@ -511,7 +511,7 @@ if (IsServer()) then
             end
             if (not damageCanceled) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit
+                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
                         if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
                             break
