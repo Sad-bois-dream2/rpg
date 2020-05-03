@@ -846,8 +846,6 @@ ListenToGameEvent("npc_spawned", function(keys)
 end, nil)
 
 if (IsServer()) then
-    GameMode.PostDamageEventHandlersTable = {}
-    GameMode.PostHealEventHandlersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
 end
