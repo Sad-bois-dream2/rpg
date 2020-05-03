@@ -32,9 +32,35 @@ modifier_hero = modifier_hero or class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ORDER }
+        return { MODIFIER_EVENT_ON_ORDER, MODIFIER_EVENT_ON_DEATH }
     end
 })
+
+function modifier_hero:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.parent = self:GetParent()
+end
+
+function modifier_hero:OnDeath(keys)
+    if (not IsServer()) then
+        return
+    end
+    local hero = keys.unit
+    local killer = keys.attacker
+    if (hero ~= self.parent) then
+        return
+    end
+    if (Enemies:IsBoss(killer)) then
+        Enemies:OnBossHealing(killer)
+    else
+        local owner = killer:GetOwnerEntity()
+        if(Enemies:IsBoss(owner)) then
+            Enemies:OnBossHealing(killer)
+        end
+    end
+end
 
 function modifier_hero:OnOrder(event)
     if IsServer() then

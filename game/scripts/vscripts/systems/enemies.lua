@@ -134,6 +134,25 @@ function Enemies:IsBoss(unit)
     return false
 end
 
+function Enemies:OnBossHealing(unit)
+    -- dont work atm
+    if(not unit or unit:IsNull() or true) then
+        return
+    end
+    print("Healed " .. unit:GetUnitName())
+    local healTable = {}
+    healTable.caster = unit
+    healTable.target = unit
+    healTable.ability = nil
+    healTable.heal = unit:GetMaxHealth() * 0.2
+    GameMode:HealUnit(healTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.creep)
+    Timers:CreateTimer(2, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+end
+
 modifier_creep_scaling = modifier_creep_scaling or class({
     IsDebuff = function(self)
         return false
@@ -154,10 +173,6 @@ modifier_creep_scaling = modifier_creep_scaling or class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
-
-function modifier_creep_scaling:GetValue(minValue, maxValue, scaling)
-    return minValue + ((maxValue - minValue) * scaling)
-end
 
 function modifier_creep_scaling:OnCreated()
     if (not IsServer()) then
