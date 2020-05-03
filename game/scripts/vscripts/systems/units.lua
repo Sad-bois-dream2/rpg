@@ -108,6 +108,8 @@ function Units:CalculateStats(unit, statsTable)
         local unitBuffAmplification = 1
         local unitDebuffAmplification = 1
         local unitDebuffResistance = 1
+        local unitCriticalChance = 1
+        local unitCriticalDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         for i = 1, #unitModifiers do
@@ -290,6 +292,12 @@ function Units:CalculateStats(unit, statsTable)
             if (unitModifiers[i].GetBuffAmplificationBonus) then
                 unitBuffAmplification = unitBuffAmplification + (tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i])) or 0)
             end
+            if (unitModifiers[i].GetCriticalDamageBonus) then
+                unitCriticalDamage = unitCriticalDamage + (tonumber(unitModifiers[i].GetCriticalDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetCriticalChanceBonus) then
+                unitCriticalChance = unitCriticalChance + (tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -393,6 +401,9 @@ function Units:CalculateStats(unit, statsTable)
         statsTable.buffAmplification = unitBuffAmplification
         statsTable.debuffAmplification = unitDebuffAmplification
         statsTable.debuffResistance = unitDebuffResistance
+        -- crit related bonuses
+        statsTable.critChance = unitCriticalChance
+        statsTable.critDamage = unitCriticalDamage
         -- all elements protections
         statsTable.elementsProtection = statsTable.elementsProtection or {}
         statsTable.elementsProtection.fire = unitFireProtection
@@ -1182,6 +1193,24 @@ end
 function Units:GetDebuffResistance(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.debuffResistance or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetCriticalChanceMultiplier(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.critChance or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetCriticalDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.critDamage or 1
     end
     return 1
 end

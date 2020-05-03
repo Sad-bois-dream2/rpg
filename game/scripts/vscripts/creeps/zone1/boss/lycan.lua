@@ -362,7 +362,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_lycan_transform:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_lycan_transform")
-    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.crit_chance) and not damageTable.ability and damageTable.physdmg) then
+    if (damageTable.damage > 0 and modifier and GameMode:RollCriticalChance(damageTable.attacker, modifier.crit_chance) and not damageTable.ability and damageTable.physdmg) then
         local victimPosition = damageTable.victim:GetAbsOrigin()
         local crit_particle = "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
         local coup_pfx = ParticleManager:CreateParticle(crit_particle, PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
