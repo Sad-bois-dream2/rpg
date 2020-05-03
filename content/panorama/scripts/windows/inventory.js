@@ -308,6 +308,8 @@ function OnHeroStatsUpdateRequest(event) {
 		var buffAmplification = parsedData.statsTable.buffAmplification;
 		var debuffAmplification = parsedData.statsTable.debuffAmplification;
 		var debuffResistance = parsedData.statsTable.debuffResistance;
+		var criticalDamage = parsedData.statsTable.critDamage;
+		var criticalChance = parsedData.statsTable.critChance;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -354,6 +356,10 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
 		buffAmplification = 1 - buffAmplification;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
+		criticalDamage = 1 - criticalDamage;
+		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
+		criticalChance = 1 - criticalChance;
+		$("#CriticalChanceLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
     }
 }
 

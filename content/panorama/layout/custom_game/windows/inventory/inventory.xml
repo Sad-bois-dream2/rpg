@@ -191,6 +191,16 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DebuffResistance" />
 							<Label id="DebuffResistanceLabel" class="WindowText InventoryAttributeValue" text="0%" />
 						</Panel>
+						<Panel id="CriticalDamage" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_CriticalDamage', '#DOTA_Tooltip_CriticalDamage_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/manaregen.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_CriticalDamage" />
+							<Label id="CriticalDamageLabel" class="WindowText InventoryAttributeValue" text="100%" />
+						</Panel>
+						<Panel id="CriticalChance" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_CriticalChance', '#DOTA_Tooltip_CriticalChance_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Image class="StatIcon" src="file://{images}/custom_game/hud/manaregen.png" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_CriticalChance" />
+							<Label id="CriticalChanceLabel" class="WindowText InventoryAttributeValue" text="0%" />
+						</Panel>
 						<Panel id="OffensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsDamage', '#DOTA_Tooltip_ElementsDamage_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
 						</Panel>
 						<Panel id="Page2" class="HeroStatsPage">
