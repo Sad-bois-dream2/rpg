@@ -76,7 +76,7 @@ modifier_phantom_ranger_hunters_focus_buff = modifier_phantom_ranger_hunters_foc
         return "phantom_ranger_hunters_focus"
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+        return { MODIFIER_EVENT_ON_ATTACK }
     end
 })
 
@@ -107,24 +107,14 @@ end
 --------------------------------------------------------------------------------
 -- Multishot talent logic 
 
--- function modifier_phantom_ranger_hunters_focus_buff:GetModifierDamageOutgoing_Percentage()
--- 	if not IsServer() then return end
--- 	if self.multishotReducedDamage then
--- 		return -80 + (10 * self.talent37Level)
--- 	else 
--- 		return 0
--- 	end
--- end
-
 function modifier_phantom_ranger_hunters_focus_buff:OnTakeDamage(damageTable)
 	
 	if not IsServer() then return end
+	local talent37Level = TalentTree:GetHeroTalentLevel(damageTable.attacker, 37)
 	if (damageTable.damage > 0) then 
-		print (multishotReducedDamage)
-		if (damageTable.attacker:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and multishotReducedDamage) then
-			damageTable.damage = damageTable.damage * (0.2 + (0.1 * TalentTree:GetHeroTalentLevel(damageTable.attacker, 37)))
+		if (damageTable.attacker:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and talent37Level > 0) then
+			damageTable.damage = damageTable.damage * (0.45 + (0.1 * talent37Level))
 			print (damageTable.damage)
-			multishotReducedDamage = false
 			return damageTable
 		end
 	end
@@ -132,18 +122,7 @@ end
 
 --------------------------------------------------------------------------------
 
--- function modifier_phantom_ranger_hunters_focus_buff:GetSpellDamageBonus()
--- 	if not IsServer() then return end
--- 	if self.multishotReducedDamage then
--- 		return -0.8 + (0.1 * self.talent37Level)
--- 	else 
--- 		return 0
--- 	end
--- end
-
---------------------------------------------------------------------------------
-
-function modifier_phantom_ranger_hunters_focus_buff:OnAttackLanded(keys)
+function modifier_phantom_ranger_hunters_focus_buff:OnAttack(keys)
 	if not IsServer() then return end
 	if self.talent37Level == 0 then return end
 	-- "Secondary arrows are not released upon attacking allies."
@@ -155,8 +134,7 @@ function modifier_phantom_ranger_hunters_focus_buff:OnAttackLanded(keys)
 		
 		local targetNumber = 0
 				
-		for _, enemy in pairs(enemies) do		
-			multishotReducedDamage = true				
+		for _, enemy in pairs(enemies) do						
 			self.caster:PerformAttack(enemy, true, true, true, true, true, false, false)
 			targetNumber = targetNumber + 1
 			if targetNumber >= bonusTargets then
@@ -250,8 +228,6 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_36"] = LUA_MODIFIER_M
 
 --------------------------------------------------------------------------------
 -- Internal stuff
-
-multishotReducedDamage = false
 
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_phantom_ranger", MotionController)
