@@ -137,7 +137,7 @@
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"mana"				"4 5 6 7"
+				"mana"				"2 3 4 5"
 			}
 			"10"
 			{
@@ -153,6 +153,7 @@
 		"precache"
 		{
             "particle"  "particles/units/crystal_sorceress/sheer_cold/sheer_cold.vpcf"
+            "particle"  "particles/units/crystal_sorceress/sheer_cold/sheer_cold_debuff.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}

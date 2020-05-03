@@ -241,6 +241,9 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = modifier_crystal_sorc
     end,
     GetTexture = function(self)
         return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/crystal_sorceress/sheer_cold/sheer_cold_debuff.vpcf"
     end
 })
 
