@@ -242,7 +242,10 @@ if (IsServer()) then
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if (modifier ~= nil and fireEvent and fireEvent == true) then
+                if(fireEvent == nil) then
+                    fireEvent = true
+                end
+                if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
@@ -287,7 +290,10 @@ if (IsServer()) then
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if (modifier ~= nil and fireEvent and fireEvent == true) then
+                if(fireEvent == nil) then
+                    fireEvent = true
+                end
+                if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
