@@ -418,25 +418,31 @@ modifier_crystal_sorceress_glacier_rush = modifier_crystal_sorceress_glacier_rus
     end,
     GetTexture = function(self)
         return crystal_sorceress_glacier_rush:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
     end
 })
 
-function modifier_crystal_sorceress_glacier_rush:OnCreated()
-    if(not IsServer()) then
-        return
-    end
-    self.ability = self:GetAbility()
-    self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
-    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit")
+function modifier_crystal_sorceress_glacier_rush:OnTooltip()
+    return self.critChancePerStack * self:GetStackCount() * 100
 end
 
 function modifier_crystal_sorceress_glacier_rush:OnCreated()
-    if(not IsServer()) then
-        return
-    end
     self.ability = self:GetAbility()
-    self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
-    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit")
+    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit") / 100
+end
+
+function modifier_crystal_sorceress_glacier_rush:GetCriticalChanceBonus()
+    return self.critChancePerStack * self:GetStackCount()
+end
+
+---@param damageTable DAMAGE_TABLE
+function modifier_crystal_sorceress_glacier_rush:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_crystal_sorceress_glacier_rush")
+    if (damageTable.damage > 0 and modifier and damageTable.frostdmg) then
+        modifier:Destroy()
+    end
 end
 
 LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
@@ -491,7 +497,8 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     local casterPosition = caster:GetAbsOrigin()
     local targetPosition = self:GetCursorPosition()
     local direction = (targetPosition - casterPosition):Normalized()
-    local range = 1200 --self:GetSpecialValueFor("range")
+    local width = self:GetSpecialValueFor("width")
+    local range = self:GetSpecialValueFor("range")
     local lifeDuration = 2
     targetPosition = casterPosition + (direction * range)
     EmitSoundOn("Hero_Jakiro.IcePath", caster)
@@ -508,6 +515,41 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         ParticleManager:ReleaseParticleIndex(pidx2)
         StopSoundOn("Hero_Jakiro.IcePath", caster)
     end)
+    local enemies = FindUnitsInLine(caster:GetTeam(),
+            casterPosition,
+            targetPosition,
+            caster,
+            width,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = self:GetSpecialValueFor("damage") * Units:GetHeroIntellect(caster) * 0.01
+    local stunDuration = self:GetSpecialValueFor("stun_duration")
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.frostdmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = caster
+        modifierTable.target = enemy
+        modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush_stun"
+        modifierTable.duration = stunDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = caster
+    modifierTable.target = caster
+    modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush"
+    modifierTable.duration = self:GetSpecialValueFor("stacks_duration")
+    modifierTable.stacks = #enemies
+    modifierTable.max_stacks = self:GetSpecialValueFor("max_stacks")
+    GameMode:ApplyStackingBuff(modifierTable)
 end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -516,4 +558,5 @@ end
 
 if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_glacier_rush, 'OnPostTakeDamage'))
 end
