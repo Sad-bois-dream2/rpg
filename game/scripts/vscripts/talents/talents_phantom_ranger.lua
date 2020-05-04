@@ -111,10 +111,9 @@ function modifier_phantom_ranger_hunters_focus_buff:OnTakeDamage(damageTable)
 	
 	if not IsServer() then return end
 	local talent37Level = TalentTree:GetHeroTalentLevel(damageTable.attacker, 37)
-	if (damageTable.damage > 0) then 
-		if (damageTable.attacker:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and talent37Level > 0) then
+	if (talent37Level > 0 and damageTable.damage > 0) then 
+		if (damageTable.attacker:HasModifier("modifier_phantom_ranger_hunters_focus_buff")) then
 			damageTable.damage = damageTable.damage * (0.45 + (0.1 * talent37Level))
-			print (damageTable.damage)
 			return damageTable
 		end
 	end
@@ -187,9 +186,6 @@ modifier_npc_dota_hero_drow_ranger_talent_36 = modifier_npc_dota_hero_drow_range
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
-    GetTexture = function(self)
-        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_36.png"
-    end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_DEATH }
     end
@@ -227,6 +223,97 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_36"] = LUA_MODIFIER_M
 
 
 --------------------------------------------------------------------------------
+-- Drow Ranger Talent 42 - Phantom Wail
+
+modifier_npc_dota_hero_drow_ranger_talent_42 = modifier_npc_dota_hero_drow_ranger_talent_42 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+    return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png"
+    end
+})
+
+function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
+    if (damageTable.damage > 0) then
+        local modifier = damageTable.victim:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_42")
+        local coolingDown = damageTable.victim:HasModifier("modifier_phantom_ranger_phantom_wail_cd")
+        local talent42Level = TalentTree:GetHeroTalentLevel(damageTable.victim, 42)
+        if (modifier ~= nil and not coolingDown) then
+            local remainingHealth = damageTable.victim:GetHealth() - damageTable.damage
+            if (remainingHealth < 1) then
+                damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_phantom_ranger_phantom_wail_cd", { duration = 210 - (30 * talent42Level) })
+                local healTable = {}
+                healTable.caster = damageTable.victim
+                healTable.target = damageTable.victim
+                healTable.heal = (100 / 100) * damageTable.victim:GetMaxHealth()
+                GameMode:HealUnit(healTable)
+                local pulse_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+				ParticleManager:SetParticleControl(pulse_particle, 1, Vector(2400, 1, 0))
+				ParticleManager:ReleaseParticleIndex(pulse_particle)
+                damageTable.victim:EmitSound("Hero_QueenOfPain.SonicWave")
+                damageTable.damage = 0
+                return damageTable
+            end
+        end
+    end
+end
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_42"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_phantom_ranger_phantom_wail_cd = modifier_phantom_ranger_phantom_wail_cd or class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end
+})
+
+function modifier_phantom_ranger_phantom_wail_cd:OnDeath(event)
+    local hero = self:GetParent()
+    if (hero ~= event.unit) then
+        return
+    end
+    self:Destroy()
+end
+
+LinkedModifiers["modifier_phantom_ranger_phantom_wail_cd"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
 -- Internal stuff
 
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -234,6 +321,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer()) then
-    GameMode.PreDamageEventHandlersTable = {}
+    --GameMode.PreDamageEventHandlersTable = {}
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
+	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
 end
