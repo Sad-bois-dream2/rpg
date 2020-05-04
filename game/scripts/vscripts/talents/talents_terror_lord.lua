@@ -1230,6 +1230,9 @@ modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = modifier_n
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_36.png"
+    end
 })
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:OnCreated()
@@ -1324,9 +1327,6 @@ modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity = modifier_npc
     end,
     GetTexture = function(self)
         return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_40.png"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_TOOLTIP }
     end
 })
 
@@ -1343,10 +1343,6 @@ end
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:GetFireDamageBonus()
     return self:GetStackCount() * (0.01 + (0.01 * TalentTree:GetHeroTalentLevel(self.caster, 40)))
-end
-
-function modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity:OnTooltip()
-    return self:GetStackCount() * (TalentTree:GetHeroTalentLevel(self.caster, 40) + 1)
 end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity"] = LUA_MODIFIER_MOTION_NONE
