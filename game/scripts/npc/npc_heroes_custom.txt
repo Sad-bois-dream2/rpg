@@ -5,6 +5,7 @@
 #base heroes/terror_lord/hero.txt
 #base heroes/blazing_berserker/hero.txt
 #base heroes/chosen_invoker/hero.txt
+#base heroes/crystal_sorceress/hero.txt
 
 "DOTAHeroes"
 {
@@ -33,27 +34,6 @@
   {
     "AbilityLayout"     "6"
 	"override_hero"     "npc_dota_hero_juggernaut"
-	"Ability1"	"lina_dragon_slave"
-	"Ability2"	"lina_light_strike_array"
-	"Ability3"	"lina_fiery_soul"
-    "Ability4"	"lina_laguna_blade"
-    "Ability5"	"empty5"
-	"Ability6"	"antimage_blink"
-    "Ability7"	""
-    "Ability8"	""
-    "Ability9"	""
-    "Ability10"	""
-    "Ability11"	""
-    "Ability12"	""
-    "Ability13"	""
-    "Ability14"	""
-    "Ability15"	""
-    "Ability16"	""
-  }
-  "rpg_dota_hero_crystal_maiden"
-  {
-    "AbilityLayout"     "6"
-	"override_hero"     "npc_dota_hero_crystal_maiden"
 	"Ability1"	"lina_dragon_slave"
 	"Ability2"	"lina_light_strike_array"
 	"Ability3"	"lina_fiery_soul"

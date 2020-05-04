@@ -237,12 +237,15 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
-                if(args.duration > 0) then
+                if (args.duration > 0) then
                     args.duration = args.duration * Units:GetBuffAmplification(args.caster)
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if (modifier ~= nil and fireEvent and fireEvent == true) then
+                if(fireEvent == nil) then
+                    fireEvent = true
+                end
+                if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
@@ -282,12 +285,15 @@ if (IsServer()) then
             args.duration = tonumber(args.duration)
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
-                if(args.duration > 0) then
+                if (args.duration > 0) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if (modifier ~= nil and fireEvent and fireEvent == true) then
+                if(fireEvent == nil) then
+                    fireEvent = true
+                end
+                if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
@@ -511,7 +517,7 @@ if (IsServer()) then
             end
             if (not damageCanceled) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit
+                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
                         if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
                             break
@@ -634,6 +640,17 @@ if (IsServer()) then
                 end
                 GameMode.PostHealManaEventHandlersTable[i](nil, args)
             end
+        end
+    end
+
+    function GameMode:RollCriticalChance(unit, chance)
+        return RollPercentage(chance * Units:GetCriticalChanceMultiplier(unit))
+    end
+
+    ---@param modifierTable MODIFIER_TABLE
+    function GameMode:OnModifierApplied(modifierTable)
+        if (modifierTable.target) then
+            Units:ForceStatsCalculation(modifierTable.target)
         end
     end
 end
@@ -846,8 +863,7 @@ ListenToGameEvent("npc_spawned", function(keys)
 end, nil)
 
 if (IsServer()) then
-    GameMode.PostDamageEventHandlersTable = {}
-    GameMode.PostHealEventHandlersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
 end

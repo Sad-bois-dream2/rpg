@@ -1120,11 +1120,9 @@ end
 
 function modifier_light_cardinal_patronage:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_light_cardinal_patronage")
-    if (modifier) then
-        if (RollPercentage(modifier.crit_chance)) then
-            damageTable.crit = modifier.crit_factor
-            return damageTable
-        end
+    if (modifier and GameMode:RollCriticalChance(damageTable.attacker, modifier.crit_chance)) then
+        damageTable.crit = modifier.crit_factor
+        return damageTable
     end
 end
 
