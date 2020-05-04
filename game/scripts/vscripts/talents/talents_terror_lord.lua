@@ -963,15 +963,6 @@ modifier_terror_lord_ruthless_predator_aura = modifier_terror_lord_ruthless_pred
     end
 })
 
-function modifier_terror_lord_ruthless_predator_aura:onDestroy()
-    if (not IsServer()) then
-        return
-    end
-    if (self.reg_modifier) then
-        self.reg_modifier:Destroy()
-    end
-end
-
 function modifier_terror_lord_ruthless_predator_aura:OnCreated()
     if (not IsServer()) then
         return
@@ -1097,7 +1088,9 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     end
     local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
     if (not ability) then
+        local auraModifier = self.caster:FindModifierByName(terror_lord_ruthless_predator:GetIntrinsicModifierName())
         self:Destroy()
+        auraModifier.reg_modifier = nil
     end
 end
 
