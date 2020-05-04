@@ -26,6 +26,8 @@ function Precache(context)
     PrecacheResource("particle", "particles/units/dummy/dummy.vpcf", context)
     PrecacheResource("particle", "particles/units/dummy/dummy_number.vpcf", context)
     PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_ogre_magi.vsndevts", context)
+    -- Broodmama sounds
+    PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts", context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
     -- All enemy abilities

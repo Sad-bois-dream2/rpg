@@ -2,7 +2,7 @@
 --HELPER FUNCTION
 -----------------
 function IsSpiderling(unit)
-    if unit:GetUnitName() == "npc_boss_brood_spiderling"then
+    if unit:GetUnitName() == "npc_boss_brood_spiderling" then
         return true
     else
         return false
@@ -10,7 +10,7 @@ function IsSpiderling(unit)
 end
 
 function IsToxinStunned(unit)
-    if unit:HasModifier("modifier_brood_toxin_stunned")then
+    if unit:HasModifier("modifier_brood_toxin_stunned") then
         return true
     else
         return false
@@ -89,12 +89,14 @@ function modifier_brood_toxin:OnAttackLanded(keys)
     --local immune = keys.target:FindModifierByName("modifier_brood_toxin_immunity")
     local stun = keys.target:FindModifierByName("modifier_brood_toxin_stunned")
     --check oneshot
-    if (keys.attacker:HasModifier("modifier_brood_comes_mother") and keys.attacker == self.parent and stun ~= nil ) then
+    if (keys.attacker:HasModifier("modifier_brood_comes_mother") and keys.attacker == self.parent and stun ~= nil) then
         keys.target:ForceKill(false)
         --taunting
         local i = math.random(2)
-        if i == 1 then self.parent:EmitSound("broodmother_broo_ability_incap_02")
-        else self.parent:EmitSound("broodmother_broo_ability_incap_04")
+        if i == 1 then
+            self.parent:EmitSound("broodmother_broo_ability_incap_02")
+        else
+            self.parent:EmitSound("broodmother_broo_ability_incap_04")
         end
         --particle
         local particle_cast_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_spit_explosion.vpcf", PATTACH_ABSORIGIN, keys.target)
@@ -103,7 +105,8 @@ function modifier_brood_toxin:OnAttackLanded(keys)
             ParticleManager:ReleaseParticleIndex(particle_cast_fx)
         end)
         --apply stack
-    elseif (keys.attacker == self.parent and stun==nil) then --and immune == nil
+    elseif (keys.attacker == self.parent and stun == nil) then
+        --and immune == nil
         self.ability:ApplyToxin(keys.target, self.parent)
     end
 end
@@ -137,12 +140,12 @@ function modifier_brood_toxin:OnTakeDamage(damageTable)
             GameMode:ApplyDebuff(modifierTable)
             damageTable.victim:EmitSound("Hero_Slardar.Bash")
             damageTable.victim:FindModifierByName("modifier_brood_toxin_slow"):Destroy()
-        else -- else add stack
+        else
+            -- else add stack
             damageTable.victim:FindModifierByName("modifier_brood_toxin_slow"):OnRefresh()
         end
     end
 end
-
 
 LinkLuaModifier("modifier_brood_toxin", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -174,8 +177,8 @@ function modifier_brood_toxin_slow:OnCreated()
     self.caster = self:GetCaster()
     self.target = self:GetParent()
     self.ability = self:GetAbility()
-    self.base_slow = self:GetAbility():GetSpecialValueFor("base_slow")*-0.01
-    self.slow = self:GetAbility():GetSpecialValueFor("stack_slow") * -0.01 * (self:GetStackCount()+1) + self.base_slow
+    self.base_slow = self:GetAbility():GetSpecialValueFor("base_slow") * -0.01
+    self.slow = self:GetAbility():GetSpecialValueFor("stack_slow") * -0.01 * (self:GetStackCount() + 1) + self.base_slow
     self.stun = self:GetAbility():GetSpecialValueFor("stun")
     self.max_stacks = self:GetAbility():GetSpecialValueFor("max_stacks")
 end
@@ -245,13 +248,12 @@ function modifier_brood_toxin_stunned:OnCreated()
     --self.immunity = self:GetAbility():GetSpecialValueFor("immunity")
 end
 
-
 function modifier_brood_toxin_stunned:CheckState()
-    return {[MODIFIER_STATE_STUNNED]= true}
+    return { [MODIFIER_STATE_STUNNED] = true }
 end
 
 function modifier_brood_toxin_stunned:DeclareFunctions()
-    local funcs = {MODIFIER_PROPERTY_PROVIDES_FOW_POSITION}
+    local funcs = { MODIFIER_PROPERTY_PROVIDES_FOW_POSITION }
 
     return funcs
 end
@@ -354,13 +356,14 @@ function modifier_brood_comes_mother:OnIntervalThink()
             modifierTable.modifier_params = { target = enemy }
             GameMode:ApplyBuff(modifierTable)
             local i = math.random(2)
-            if i == 1 then self.parent:EmitSound("broodmother_broo_ability_hunger_05")
-            else self.parent:EmitSound("broodmother_broo_cast_02")
+            if i == 1 then
+                self.parent:EmitSound("broodmother_broo_ability_hunger_05")
+            else
+                self.parent:EmitSound("broodmother_broo_cast_02")
             end
         end
     end
 end
-
 
 LinkLuaModifier("modifier_brood_comes_mother", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -385,7 +388,8 @@ modifier_brood_comes_random_taunt = modifier_brood_comes_random_taunt or class({
 
 function modifier_brood_comes_random_taunt:OnCreated()
     if (not IsServer()) then
-        return end
+        return
+    end
 end
 
 function modifier_brood_comes_random_taunt:IsTaunt()
@@ -419,7 +423,8 @@ modifier_brood_comes_charge = modifier_brood_comes_charge or class({
 
 function modifier_brood_comes_charge:OnCreated(keys)
     if (not IsServer()) then
-        return end
+        return
+    end
     self.charge_speed = self:GetAbility():GetSpecialValueFor("charge_speed")
     if (not keys or keys.target) then
         self:Destroy()
@@ -479,7 +484,7 @@ function brood_comes:FindTauntTarget(caster)
     end
     if (#enemies > 0) then
         local tauntTarget = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
-        if(#enemies > 0) then
+        if (#enemies > 0) then
             return tauntTarget
         else
             return nil
@@ -523,8 +528,8 @@ function brood_comes:OnSpellStart()
     local summon_origin = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
     local summon_point = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
     for i = 0, self.number - 1, 1 do
-        angleLeft = QAngle(0, i*(math.floor(360/self.number)), 0)
-        summon_point = RotatePosition(tauntTarget:GetAbsOrigin(),angleLeft,summon_origin)
+        angleLeft = QAngle(0, i * (math.floor(360 / self.number)), 0)
+        summon_point = RotatePosition(tauntTarget:GetAbsOrigin(), angleLeft, summon_origin)
         local spider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, caster, caster, caster:GetTeamNumber())
         spider:AddNewModifier(caster, self.ability, "modifier_kill", { duration = 30 })
         --find all spiders to charge
@@ -539,17 +544,17 @@ function brood_comes:OnSpellStart()
                 false)
         for _, charger in pairs(alltrash) do
             --spider horde charge!
-                if IsSpiderling(charger) then
-                    modifierTable = {}
-                    modifierTable.ability = self
-                    modifierTable.target = charger
-                    modifierTable.caster = caster
-                    modifierTable.modifier_params = { target = tauntTarget }
-                    modifierTable.modifier_name = "modifier_brood_comes_charge"
-                    modifierTable.duration = duration
-                    GameMode:ApplyBuff(modifierTable)
+            if IsSpiderling(charger) then
+                modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = charger
+                modifierTable.caster = caster
+                modifierTable.modifier_params = { target = tauntTarget }
+                modifierTable.modifier_name = "modifier_brood_comes_charge"
+                modifierTable.duration = duration
+                GameMode:ApplyBuff(modifierTable)
 
-                end
+            end
         end
     end
     --mother charge!
@@ -600,14 +605,14 @@ function modifier_brood_cocoons:OnCreated()
     self:StartIntervalThink(self.interval)
 end
 
-
 function modifier_brood_cocoons:CheckState()
-    local state = {[MODIFIER_STATE_INVULNERABLE] = true,
-                   [MODIFIER_STATE_OUT_OF_GAME] = true,
-                   [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-                   [MODIFIER_STATE_STUNNED] = true,
-                   [MODIFIER_STATE_FROZEN] = true,}
-    return state end
+    local state = { [MODIFIER_STATE_INVULNERABLE] = true,
+                    [MODIFIER_STATE_OUT_OF_GAME] = true,
+                    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+                    [MODIFIER_STATE_STUNNED] = true,
+                    [MODIFIER_STATE_FROZEN] = true, }
+    return state
+end
 
 function modifier_brood_cocoons:OnIntervalThink()
     if (not IsServer()) then
@@ -618,7 +623,6 @@ function modifier_brood_cocoons:OnIntervalThink()
     spider:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
     spider:EmitSound("Hero_Broodmother.SpawnSpiderlings")
 end
-
 
 LinkLuaModifier("modifier_brood_cocoons", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -648,15 +652,13 @@ function brood_cocoons:FindTargetForBanish(caster)
     end
     if (#enemies > 0) then
         local banishTarget = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
-        if(#enemies > 0) then
+        if (#enemies > 0) then
             return banishTarget
         else
             return nil
         end
     end
 end
-
-
 
 function brood_cocoons:Banish(target)
     if (not IsServer()) then
@@ -682,7 +684,6 @@ function brood_cocoons:Banish(target)
     GameMode:ApplyDebuff(modifierTable)
 end
 
-
 function brood_cocoons:OnSpellStart()
     if (not IsServer()) then
         return
@@ -692,7 +693,7 @@ function brood_cocoons:OnSpellStart()
     local counter = 0
     local target
     Timers:CreateTimer(0, function()
-        if counter<number then
+        if counter < number then
             target = self:FindTargetForBanish(caster)
             self:Banish(target)
             counter = counter + 1
@@ -765,7 +766,7 @@ function brood_kiss:FindTargetForBlink(caster)
     end
     if (#enemies > 0) then
         local blinkTarget = enemies[keys[math.random(#keys)]] --pick one number = pick one enemy
-        if(#enemies > 0) then
+        if (#enemies > 0) then
             return blinkTarget
         else
             return nil
@@ -777,7 +778,7 @@ function brood_kiss:BlinkKiss(target)
     if (not IsServer()) then
         return
     end
-    if (target==nil) then
+    if (target == nil) then
         return
     end
     --set parameter
@@ -792,7 +793,7 @@ function brood_kiss:BlinkKiss(target)
     local vector = (targetPosition - caster:GetAbsOrigin())
     --local distance = vector:Length2D()
     local direction = vector:Normalized()
-    local blink_point = targetPosition - (target:GetForwardVector()*100)--+ direction * (distance -10 )
+    local blink_point = targetPosition - (target:GetForwardVector() * 100)--+ direction * (distance -10 )
     caster:SetAbsOrigin(blink_point)
     Timers:CreateTimer(0.3, function()
         FindClearSpaceForUnit(caster, blink_point, true)
@@ -837,7 +838,7 @@ function brood_kiss:OnSpellStart()
     self:BlinkKiss(target)
     --particle
     local particle_cast = "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
-    local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_ABSORIGIN, self:GetCaster() )
+    local effect_cast = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, self:GetCaster())
     Timers:CreateTimer(1.0, function()
         ParticleManager:DestroyParticle(effect_cast, false)
         ParticleManager:ReleaseParticleIndex(effect_cast)
@@ -853,7 +854,6 @@ brood_spit = class({
         return "brood_spit"
     end,
 })
-
 
 function brood_spit:OnSpellStart()
     if (not IsServer()) then
@@ -875,35 +875,37 @@ function brood_spit:OnSpellStart()
 end
 
 function brood_spit:GetAOERadius()
-    return self:GetSpecialValueFor( "impact_radius" )
+    return self:GetSpecialValueFor("impact_radius")
 end
 
-function brood_spit:OnProjectileHit( target, location )
+function brood_spit:OnProjectileHit(target, location)
     if (not IsServer()) then
         return
     end
-    if not target then return end
+    if not target then
+        return
+    end
 
     -- load data
-    local damage = self:GetSpecialValueFor( "damage_per_impact" )
-    local duration = self:GetSpecialValueFor( "burn_ground_duration" )
-    local impact_radius = self:GetSpecialValueFor( "impact_radius" )
+    local damage = self:GetSpecialValueFor("damage_per_impact")
+    local duration = self:GetSpecialValueFor("burn_ground_duration")
+    local impact_radius = self:GetSpecialValueFor("impact_radius")
     local linger = self:GetSpecialValueFor("burn_linger_duration")
     -- precache damage
 
     local enemies = FindUnitsInRadius(
-            self:GetCaster():GetTeamNumber(),  -- int, your team number
-            location,  -- point, center point
-            nil,   -- handle, cacheUnit. (not known)
+            self:GetCaster():GetTeamNumber(), -- int, your team number
+            location, -- point, center point
+            nil, -- handle, cacheUnit. (not known)
             impact_radius, -- float, radius. or use FIND_UNITS_EVERYWHERE
-            DOTA_UNIT_TARGET_TEAM_ENEMY,   -- int, team filter
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,    -- int, type filter
+            DOTA_UNIT_TARGET_TEAM_ENEMY, -- int, team filter
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, -- int, type filter
             DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,--int, order filter
+            FIND_ANY_ORDER, --int, order filter
             false  -- bool, can grow cache
     )
 
-    for _,enemy in pairs(enemies) do
+    for _, enemy in pairs(enemies) do
         local damageTable = {}
         damageTable.caster = self.caster
         damageTable.target = enemy
@@ -930,31 +932,29 @@ function brood_spit:OnProjectileHit( target, location )
             } -- kv
     )
 
-    self:PlayEffects( location )
+    self:PlayEffects(location)
 end
 
-
-function brood_spit:PlayEffects( loc )
+function brood_spit:PlayEffects(loc)
     if (not IsServer()) then
         return
     end
     -- Get Resources
     local particle_cast = "particles/units/npc_boss_brood/brood_spit_ground.vpcf"
     local sound_location = "Hero_Viper.NetherToxin"
-    local duration = self:GetSpecialValueFor( "burn_ground_duration" )
+    local duration = self:GetSpecialValueFor("burn_ground_duration")
     -- Create Particle
-    local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, self:GetCaster() )
-    ParticleManager:SetParticleControl( effect_cast, 0, loc )
-    ParticleManager:SetParticleControl( effect_cast, 1, loc )
+    local effect_cast = ParticleManager:CreateParticle(particle_cast, PATTACH_WORLDORIGIN, self:GetCaster())
+    ParticleManager:SetParticleControl(effect_cast, 0, loc)
+    ParticleManager:SetParticleControl(effect_cast, 1, loc)
     Timers:CreateTimer(duration, function()
         ParticleManager:DestroyParticle(effect_cast, false)
         ParticleManager:ReleaseParticleIndex(effect_cast)
     end)
 
     -- Create Sound
-    EmitSoundOnLocationWithCaster( loc, sound_location, self:GetCaster() )
+    EmitSoundOnLocationWithCaster(loc, sound_location, self:GetCaster())
 end
-
 
 modifier_brood_spit = modifier_brood_spit or class({
 
@@ -981,21 +981,23 @@ modifier_brood_spit = modifier_brood_spit or class({
 
 
 -- Initializations
-function modifier_brood_spit:OnCreated( kv )
-    if not IsServer() then return end
+function modifier_brood_spit:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
     -- references
     self.caster = self:GetAbility():GetCaster()
-    self.min_range = self:GetAbility():GetSpecialValueFor( "min_range" )
-    self.max_range = self:GetAbility():GetSpecialValueFor( "max_range" )
-    self.range = self.max_range-self.min_range
+    self.min_range = self:GetAbility():GetSpecialValueFor("min_range")
+    self.max_range = self:GetAbility():GetSpecialValueFor("max_range")
+    self.range = self.max_range - self.min_range
 
-    self.min_travel = self:GetAbility():GetSpecialValueFor( "min_lob_travel_time" )
-    self.max_travel = self:GetAbility():GetSpecialValueFor( "max_lob_travel_time" )
-    self.travel_range = self.max_travel-self.min_travel
-    local projectile_count = self:GetAbility():GetSpecialValueFor( "projectile_count" )
-    local interval = self:GetAbility():GetSpecialValueFor("duration")  / projectile_count + 0.01 -- so it only have 8 projectiles instead of 9
+    self.min_travel = self:GetAbility():GetSpecialValueFor("min_lob_travel_time")
+    self.max_travel = self:GetAbility():GetSpecialValueFor("max_lob_travel_time")
+    self.travel_range = self.max_travel - self.min_travel
+    local projectile_count = self:GetAbility():GetSpecialValueFor("projectile_count")
+    local interval = self:GetAbility():GetSpecialValueFor("duration") / projectile_count + 0.01 -- so it only have 8 projectiles instead of 9
     -- Start interval
-    self:StartIntervalThink( interval )
+    self:StartIntervalThink(interval)
     self:OnIntervalThink()
 end
 
@@ -1030,22 +1032,22 @@ function modifier_brood_spit:CreateBlob()
             FIND_ANY_ORDER,
             false)
     for _, enemy in pairs(enemies) do
-        local projectile_landing_point =  enemy:GetAbsOrigin() --+ some random accuracy error?
+        local projectile_landing_point = enemy:GetAbsOrigin() --+ some random accuracy error?
         local origin = self:GetParent():GetOrigin()
         local vec = projectile_landing_point - origin
         local direction = vec
         direction.z = 0
         direction = direction:Normalized()
 
-        if vec:Length2D()<self.min_range then
+        if vec:Length2D() < self.min_range then
             vec = direction * self.min_range -- minimum range
             --elseif vec:Length2D()>self.max_range then
             --vec = direction * self.max_range --if farther than 3000 set to 3000
         end
 
-        self.target = GetGroundPosition( origin + vec, nil )
+        self.target = GetGroundPosition(origin + vec, nil)
         self.vector = vec
-        self.travel_time = (vec:Length2D()-self.min_range)/self.range * self.travel_range + self.min_travel
+        self.travel_time = (vec:Length2D() - self.min_range) / self.range * self.travel_range + self.min_travel
         -- create target thinker
         local thinker = CreateModifierThinker(
                 self:GetParent(), -- player source --brood
@@ -1056,7 +1058,7 @@ function modifier_brood_spit:CreateBlob()
                 self:GetParent():GetTeamNumber(),
                 false)
         -- load data
-        local projectile_speed = self:GetAbility():GetSpecialValueFor( "projectile_speed" ) -- not using this but just in case something dont work this can call projectile speed
+        local projectile_speed = self:GetAbility():GetSpecialValueFor("projectile_speed") -- not using this but just in case something dont work this can call projectile speed
 
 
         -- precache projectile
@@ -1066,24 +1068,23 @@ function modifier_brood_spit:CreateBlob()
             Ability = self:GetAbility(),
 
             EffectName = "particles/units/npc_boss_brood/brood_spit_projectile.vpcf",
-            iMoveSpeed =self.vector:Length2D() / self.travel_time,
-            bDodgeable = false,                           -- Optional
+            iMoveSpeed = self.vector:Length2D() / self.travel_time,
+            bDodgeable = false, -- Optional
 
-            vSourceLoc = self:GetCaster():GetOrigin(),                -- Optional (HOW)
+            vSourceLoc = self:GetCaster():GetOrigin(), -- Optional (HOW)
 
-            bDrawsOnMinimap = false,                          -- Optional
-            bVisibleToEnemies = true,                         -- Optional
+            bDrawsOnMinimap = false, -- Optional
+            bVisibleToEnemies = true, -- Optional
         }
 
         -- launch projectile
-        ProjectileManager:CreateTrackingProjectile( self.info )
+        ProjectileManager:CreateTrackingProjectile(self.info)
 
     end
 
     -- play sound
-    EmitSoundOn( "Hero_Viper.Nethertoxin.Cast", self:GetParent() )
+    EmitSoundOn("Hero_Viper.Nethertoxin.Cast", self:GetParent())
 end
-
 
 modifier_brood_spit_burn_slow = modifier_brood_spit_burn_slow or class({
 
@@ -1109,23 +1110,22 @@ modifier_brood_spit_burn_slow = modifier_brood_spit_burn_slow or class({
 
 
 -- Initializations
-function modifier_brood_spit_burn_slow:OnCreated( kv )
+function modifier_brood_spit_burn_slow:OnCreated(kv)
     -- references
     if (not IsServer()) then
         return
     end
 
-    local interval = self:GetAbility():GetSpecialValueFor( "burn_interval" )
-    self.slow = self:GetAbility():GetSpecialValueFor( "slow" ) * -0.01
+    local interval = self:GetAbility():GetSpecialValueFor("burn_interval")
+    self.slow = self:GetAbility():GetSpecialValueFor("slow") * -0.01
     -- Start interval
-    self:StartIntervalThink( interval )
+    self:StartIntervalThink(interval)
     self:OnIntervalThink()
 end
 
 LinkLuaModifier("modifier_brood_spit_burn_slow", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
-
-function modifier_brood_spit_burn_slow:OnRefresh( kv )
+function modifier_brood_spit_burn_slow:OnRefresh(kv)
 
 end
 
@@ -1158,8 +1158,8 @@ function modifier_brood_spit_burn_slow:OnIntervalThink()
         return
     end
     local dps = self:GetAbility():GetSpecialValueFor("burn_damage")
-    local parent            = self:GetParent()
-    local caster            = self:GetCaster()
+    local parent = self:GetParent()
+    local caster = self:GetCaster()
     -- apply damage
     local damageTable = {}
     damageTable.caster = caster
@@ -1186,37 +1186,40 @@ end
 
 modifier_brood_spit_thinker = class({})
 
-
-function modifier_brood_spit_thinker:OnCreated( kv )
+function modifier_brood_spit_thinker:OnCreated(kv)
     if (not IsServer()) then
         return
     end
     -- references
-    self.max_travel = self:GetAbility():GetSpecialValueFor( "max_lob_travel_time" )
-    self.radius = self:GetAbility():GetSpecialValueFor( "impact_radius" )
-    self.linger = self:GetAbility():GetSpecialValueFor( "burn_linger_duration" )
+    self.max_travel = self:GetAbility():GetSpecialValueFor("max_lob_travel_time")
+    self.radius = self:GetAbility():GetSpecialValueFor("impact_radius")
+    self.linger = self:GetAbility():GetSpecialValueFor("burn_linger_duration")
 
-    if not IsServer() then return end
+    if not IsServer() then
+        return
+    end
 
     -- dont start aura right off
     self.start = false
 
     -- create aoe finder particle
-    self:PlayEffects( kv.travel_time )
+    self:PlayEffects(kv.travel_time)
 end
 
 LinkLuaModifier("modifier_brood_spit_thinker", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
-function modifier_brood_spit_thinker:OnRefresh( kv )
+function modifier_brood_spit_thinker:OnRefresh(kv)
     if (not IsServer()) then
         return
     end
     -- references
-    self.max_travel = self:GetAbility():GetSpecialValueFor( "max_lob_travel_time" )
-    self.radius = self:GetAbility():GetSpecialValueFor( "impact_radius" )
-    self.linger = self:GetAbility():GetSpecialValueFor( "burn_linger_duration" )
+    self.max_travel = self:GetAbility():GetSpecialValueFor("max_lob_travel_time")
+    self.radius = self:GetAbility():GetSpecialValueFor("impact_radius")
+    self.linger = self:GetAbility():GetSpecialValueFor("burn_linger_duration")
 
-    if not IsServer() then return end
+    if not IsServer() then
+        return
+    end
 
     -- start aura
     self.start = true
@@ -1229,8 +1232,10 @@ function modifier_brood_spit_thinker:OnRemoved()
 end
 
 function modifier_brood_spit_thinker:OnDestroy()
-    if not IsServer() then return end
-    UTIL_Remove( self:GetParent() )
+    if not IsServer() then
+        return
+    end
+    UTIL_Remove(self:GetParent())
 end
 
 --------------------------------------------------------------------------------
@@ -1259,7 +1264,7 @@ function modifier_brood_spit_thinker:GetAuraSearchType()
     return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
 end
 
-function modifier_brood_spit_thinker:PlayEffects( time )
+function modifier_brood_spit_thinker:PlayEffects(time)
     if (not IsServer()) then
         return
     end
@@ -1267,15 +1272,15 @@ function modifier_brood_spit_thinker:PlayEffects( time )
     local particle_cast = "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"
 
     -- Create Particle
-    self.effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_CUSTOMORIGIN, self:GetCaster())
-    ParticleManager:SetParticleControl( self.effect_cast, 0, self:GetParent():GetOrigin() )
-    ParticleManager:SetParticleControl( self.effect_cast, 1, Vector( self.radius, 0, -self.radius*(self.max_travel/time) ) )
-    ParticleManager:SetParticleControl( self.effect_cast, 2, Vector( time, 0, 0 ) )
+    self.effect_cast = ParticleManager:CreateParticle(particle_cast, PATTACH_CUSTOMORIGIN, self:GetCaster())
+    ParticleManager:SetParticleControl(self.effect_cast, 0, self:GetParent():GetOrigin())
+    ParticleManager:SetParticleControl(self.effect_cast, 1, Vector(self.radius, 0, -self.radius * (self.max_travel / time)))
+    ParticleManager:SetParticleControl(self.effect_cast, 2, Vector(time, 0, 0))
 end
 
 function modifier_brood_spit_thinker:StopEffects()
-    ParticleManager:DestroyParticle( self.effect_cast, true )
-    ParticleManager:ReleaseParticleIndex( self.effect_cast )
+    ParticleManager:DestroyParticle(self.effect_cast, true)
+    ParticleManager:ReleaseParticleIndex(self.effect_cast)
 end
 
 
@@ -1308,9 +1313,9 @@ function modifier_brood_hunger:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     --particle
-    self.pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_broodmother/broodmother_hunger_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-    ParticleManager:SetParticleControlEnt(self.pfx, 0, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_thorax", self:GetParent():GetAbsOrigin(), true)
-    Timers:CreateTimer(duration, function()
+    self.pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_broodmother/broodmother_hunger_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(self.pfx, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_thorax", self.parent:GetAbsOrigin(), true)
+    Timers:CreateTimer(2.0, function()
         ParticleManager:DestroyParticle(self.pfx, false)
         ParticleManager:ReleaseParticleIndex(self.pfx)
     end)
@@ -1372,7 +1377,9 @@ modifier_brood_web_aura = modifier_brood_web_aura or class({})
 
 function modifier_brood_web_aura:OnCreated()
     if IsServer() then
-        if not self:GetAbility() then self:Destroy() end
+        if not self:GetAbility() then
+            self:Destroy()
+        end
     end
 
     -- Ability properties
@@ -1387,21 +1394,45 @@ function modifier_brood_web_aura:OnCreated()
     end
 end
 
-function modifier_brood_web_aura:IsAura() return true end
-function modifier_brood_web_aura:GetAuraDuration() return 0.1 end
-function modifier_brood_web_aura:GetAuraRadius() return self.radius end
-function modifier_brood_web_aura:GetAuraSearchFlags() return DOTA_UNIT_TARGET_FLAG_INVULNERABLE + DOTA_UNIT_TARGET_FLAG_OUT_OF_WORLD end
-function modifier_brood_web_aura:GetAuraSearchTeam() return DOTA_UNIT_TARGET_TEAM_FRIENDLY end
-function modifier_brood_web_aura:GetAuraSearchType() return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC end
-function modifier_brood_web_aura:GetModifierAura() return "modifier_brood_web" end
+function modifier_brood_web_aura:IsAura()
+    return true
+end
+function modifier_brood_web_aura:GetAuraDuration()
+    return 0.1
+end
+function modifier_brood_web_aura:GetAuraRadius()
+    return self.radius
+end
+function modifier_brood_web_aura:GetAuraSearchFlags()
+    return DOTA_UNIT_TARGET_FLAG_INVULNERABLE + DOTA_UNIT_TARGET_FLAG_OUT_OF_WORLD
+end
+function modifier_brood_web_aura:GetAuraSearchTeam()
+    return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+end
+function modifier_brood_web_aura:GetAuraSearchType()
+    return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+end
+function modifier_brood_web_aura:GetModifierAura()
+    return "modifier_brood_web"
+end
 
-function modifier_brood_web_aura:IsHidden() return true end
-function modifier_brood_web_aura:IsPurgable() return false end
-function modifier_brood_web_aura:IsPurgeException() return false end
-function modifier_brood_web_aura:RemoveOnDeath() return true end
+function modifier_brood_web_aura:IsHidden()
+    return true
+end
+function modifier_brood_web_aura:IsPurgable()
+    return false
+end
+function modifier_brood_web_aura:IsPurgeException()
+    return false
+end
+function modifier_brood_web_aura:RemoveOnDeath()
+    return true
+end
 
 function modifier_brood_web_aura:GetAuraEntityReject(hTarget)
-    if not IsServer() then return end
+    if not IsServer() then
+        return
+    end
 
     if hTarget == self:GetCaster() or IsSpiderling(hTarget) then
         return false
@@ -1410,21 +1441,25 @@ function modifier_brood_web_aura:GetAuraEntityReject(hTarget)
     return true
 end
 
-function modifier_brood_web_aura:CheckState() return {
-    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-    [MODIFIER_STATE_INVULNERABLE] = true,
-    [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-} end
+function modifier_brood_web_aura:CheckState()
+    return {
+        [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+        [MODIFIER_STATE_INVULNERABLE] = true,
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+    }
+end
 
-function modifier_brood_web_aura:DeclareFunctions() return {
-    MODIFIER_EVENT_ON_DEATH,
-    MODIFIER_EVENT_ON_ABILITY_EXECUTED,
-} end
-
-
+function modifier_brood_web_aura:DeclareFunctions()
+    return {
+        MODIFIER_EVENT_ON_DEATH,
+        MODIFIER_EVENT_ON_ABILITY_EXECUTED,
+    }
+end
 
 function modifier_brood_web_aura:OnDeath(params)
-    if not IsServer() then return end
+    if not IsServer() then
+        return
+    end
 
     if params.unit == self:GetParent() then
         self:GetParent():StopSound("Hero_Broodmother.WebLoop")
@@ -1453,7 +1488,9 @@ modifier_brood_web = modifier_brood_web or class({
 
 function modifier_brood_web:OnCreated()
     if IsServer() then
-        if not self:GetAbility() then self:Destroy() end
+        if not self:GetAbility() then
+            self:Destroy()
+        end
     end
 
     -- Ability properties
@@ -1462,11 +1499,10 @@ function modifier_brood_web:OnCreated()
     self.parent = self:GetParent()
 
     -- Ability specials
-    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus")*0.01
-    self.ms_bonus = self.ability:GetSpecialValueFor("ms_bonus")*0.01
+    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01
+    self.ms_bonus = self.ability:GetSpecialValueFor("ms_bonus") * 0.01
 
 end
-
 
 function modifier_brood_web:GetAttackSpeedPercentBonus()
     return self.as_bonus
@@ -1484,7 +1520,9 @@ modifier_brood_web_aura_enemy = modifier_brood_web_aura_enemy or class({})
 
 function modifier_brood_web_aura_enemy:OnCreated()
     if IsServer() then
-        if not self:GetAbility() then self:Destroy() end
+        if not self:GetAbility() then
+            self:Destroy()
+        end
     end
 
     -- Ability properties
@@ -1495,18 +1533,40 @@ function modifier_brood_web_aura_enemy:OnCreated()
     self.radius = self.ability:GetSpecialValueFor("radius")
 end
 
-function modifier_brood_web_aura_enemy:IsAura() return true end
-function modifier_brood_web_aura_enemy:GetAuraDuration() return 0.1 end
-function modifier_brood_web_aura_enemy:GetAuraRadius() return self.radius end
-function modifier_brood_web_aura_enemy:GetAuraSearchFlags() return DOTA_UNIT_TARGET_FLAG_NONE end
-function modifier_brood_web_aura_enemy:GetAuraSearchTeam() return DOTA_UNIT_TARGET_TEAM_ENEMY end
-function modifier_brood_web_aura_enemy:GetAuraSearchType() return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC end
-function modifier_brood_web_aura_enemy:GetModifierAura() return "modifier_brood_web_enemy" end
+function modifier_brood_web_aura_enemy:IsAura()
+    return true
+end
+function modifier_brood_web_aura_enemy:GetAuraDuration()
+    return 0.1
+end
+function modifier_brood_web_aura_enemy:GetAuraRadius()
+    return self.radius
+end
+function modifier_brood_web_aura_enemy:GetAuraSearchFlags()
+    return DOTA_UNIT_TARGET_FLAG_NONE
+end
+function modifier_brood_web_aura_enemy:GetAuraSearchTeam()
+    return DOTA_UNIT_TARGET_TEAM_ENEMY
+end
+function modifier_brood_web_aura_enemy:GetAuraSearchType()
+    return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+end
+function modifier_brood_web_aura_enemy:GetModifierAura()
+    return "modifier_brood_web_enemy"
+end
 
-function modifier_brood_web_aura_enemy:IsHidden() return true end
-function modifier_brood_web_aura_enemy:IsPurgable() return false end
-function modifier_brood_web_aura_enemy:IsPurgeException() return false end
-function modifier_brood_web_aura_enemy:RemoveOnDeath() return true end
+function modifier_brood_web_aura_enemy:IsHidden()
+    return true
+end
+function modifier_brood_web_aura_enemy:IsPurgable()
+    return false
+end
+function modifier_brood_web_aura_enemy:IsPurgeException()
+    return false
+end
+function modifier_brood_web_aura_enemy:RemoveOnDeath()
+    return true
+end
 LinkLuaModifier("modifier_brood_web_aura_enemy", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 -----------------------------
 -- SPIN WEB ENEMY MODIFIER --
@@ -1528,7 +1588,9 @@ modifier_brood_web_enemy = modifier_brood_web_enemy or class({
 
 function modifier_brood_web_enemy:OnCreated()
     if IsServer() then
-        if not self:GetAbility() then return end
+        if not self:GetAbility() then
+            return
+        end
     end
 
     -- Ability properties
@@ -1537,7 +1599,7 @@ function modifier_brood_web_enemy:OnCreated()
     self.parent = self:GetParent()
 
     -- Ability specials
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow")*-0.01
+    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
     self.interval = self.ability:GetSpecialValueFor("spawn_interval")
 
     --spawn spiderling on enemy in web
@@ -1550,13 +1612,15 @@ end
 
 function modifier_brood_web_enemy:OnIntervalThink()
     if IsServer() then
-        if not self:GetAbility() then return end
+        if not self:GetAbility() then
+            return
+        end
     end
     local caster = self:GetAbility():GetCaster()
-    if (self.parent~= nil ) then
+    if (self.parent ~= nil) then
         local summon_point = self.parent:GetAbsOrigin()
         local webspider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, caster, caster, caster:GetTeamNumber())
-        FindClearSpaceForUnit(webspider,summon_point,true)
+        FindClearSpaceForUnit(webspider, summon_point, true)
         webspider:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 30 })
         --on spawn
         webspider:EmitSound("broodmother_broo_ability_spawn_04")
@@ -1601,7 +1665,8 @@ function brood_web:FindTargetForWebCenter(caster)
     end
 end
 
-function brood_web:FindTargetForWeb(caster) --random with already hit removal
+function brood_web:FindTargetForWeb(caster)
+    --random with already hit removal
     if IsServer() then
         local radius = self:GetSpecialValueFor("range")
         -- Find all nearby enemies
@@ -1626,7 +1691,6 @@ function brood_web:FindTargetForWeb(caster) --random with already hit removal
     end
 end
 
-
 function brood_web:OnSpellStart()
     if (not IsServer()) then
         return
@@ -1635,23 +1699,23 @@ function brood_web:OnSpellStart()
     caster:EmitSound("Hero_Broodmother.SpinWebCast")
     local summon_point = caster:GetAbsOrigin()
     local number = self:GetSpecialValueFor("number")
-    self.already_hit ={}
+    self.already_hit = {}
     local counter = 0
     Timers:CreateTimer(0, function()
-        if counter<number then
+        if counter < number then
             local target = self:FindTargetForWeb(caster)
             -- in case there are no enemy spawn web randomly around caster
             if target == nil then
-                local target_point = caster:GetAbsOrigin() + caster:GetForwardVector()*math.random(6,9)*100
-                local angleLeft = QAngle(0, (math.floor(360/math.random(6))), 0)
-                summon_point = RotatePosition(target_point,angleLeft,caster:GetAbsOrigin())
+                local target_point = caster:GetAbsOrigin() + caster:GetForwardVector() * math.random(6, 9) * 100
+                local angleLeft = QAngle(0, (math.floor(360 / math.random(6))), 0)
+                summon_point = RotatePosition(target_point, angleLeft, caster:GetAbsOrigin())
                 local web = CreateUnitByName("npc_dota_broodmother_web", summon_point, false, caster, caster, caster:GetTeamNumber())
                 web:AddNewModifier(caster, self, "modifier_brood_web_aura", {})
                 web:AddNewModifier(caster, self, 'modifier_brood_web_aura_enemy', {})
                 web:AddNewModifier(caster, self, "modifier_kill", { duration = 30 })
                 counter = counter + 1
             else
-                 summon_point = target:GetAbsOrigin()
+                summon_point = target:GetAbsOrigin()
                 local web = CreateUnitByName("npc_dota_broodmother_web", summon_point, false, caster, caster, caster:GetTeamNumber())
                 web:AddNewModifier(caster, self, "modifier_brood_web_aura", {})
                 web:AddNewModifier(caster, self, 'modifier_brood_web_aura_enemy', {})
