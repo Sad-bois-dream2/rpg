@@ -47,8 +47,6 @@ if (IsServer()) then
             DebugPrintTable(debug.getinfo(2))
             return
         end
-        print("POST REGISTER #" .. #GameMode.PostDamageEventHandlersTable)
-        PrintTable(debug.getinfo(2))
         table.insert(GameMode.PostDamageEventHandlersTable, handler)
     end
 
