@@ -128,14 +128,13 @@ function Enemies:IsBoss(unit)
     if (not unit or unit:IsNull()) then
         return false
     end
-    if (string.find(unit:GetUnitName(), "boss")) then
+    if (string.find(unit:GetUnitLabel():lower(), "boss")) then
         return true
     end
     return false
 end
 
 function Enemies:OnBossHealing(unit)
-    -- dont work atm
     if(not unit or unit:IsNull() or true) then
         return
     end
