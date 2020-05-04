@@ -963,15 +963,6 @@ modifier_terror_lord_ruthless_predator_aura = modifier_terror_lord_ruthless_pred
     end
 })
 
-function modifier_terror_lord_ruthless_predator_aura:onDestroy()
-    if (not IsServer()) then
-        return
-    end
-    if (self.reg_modifier) then
-        self.reg_modifier:Destroy()
-    end
-end
-
 function modifier_terror_lord_ruthless_predator_aura:OnCreated()
     if (not IsServer()) then
         return
@@ -1097,7 +1088,9 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     end
     local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
     if (not ability) then
+        local auraModifier = self.caster:FindModifierByName(terror_lord_ruthless_predator:GetIntrinsicModifierName())
         self:Destroy()
+        auraModifier.reg_modifier = nil
     end
 end
 
@@ -1526,7 +1519,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_43 = modifier_npc_dota_hero_abys
 })
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_43:OnPostTakeDamage(damageTable)
-    if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43")) then
+    if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43") and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43_cd")) then
         local casterHealth = damageTable.victim:GetHealth() / damageTable.victim:GetMaxHealth()
         if (casterHealth < 0.5) then
             local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/talents/vengeance/vengeance.vpcf", PATTACH_ABSORIGIN, damageTable.victim)
@@ -2279,7 +2272,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_terror_lord", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.TALENTS_TERROR_LORD_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_inferno_impulse, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_41, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_42, 'OnPostTakeDamage'))
@@ -2289,4 +2282,5 @@ if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_48, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_49, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_abyssal_underlord_talent_51, 'OnTakeDamage'))
+    GameMode.TALENTS_TERROR_LORD_INIT = true
 end

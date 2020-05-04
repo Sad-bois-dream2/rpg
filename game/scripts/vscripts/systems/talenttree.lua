@@ -689,7 +689,7 @@ function TalentTree:OnTalentTreeWindowCloseRequest(event, args)
     end
 end
 
-if not TalentTree.initialized then
+if IsServer() and not TalentTree.initialized then
     TalentTree:Init()
     TalentTree.initialized = true
 end
