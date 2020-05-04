@@ -682,23 +682,9 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
     end
     Timers:CreateTimer(landTime, function()
         local anotherParticleTable = {}
-        for _, particleInfo in pairs(particlesTable) do
-            ParticleManager:DestroyParticle(particleInfo.id, true)
-            ParticleManager:ReleaseParticleIndex(particleInfo.id)
-            local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
-            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
-            table.insert(anotherParticleTable, pidx)
-        end
-        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
-        local enemies = FindUnitsInRadius(self.caster:GetTeam(),
-                targetPosition,
-                nil,
-                self:GetSpecialValueFor("damage_aoe"),
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
+        local casterTeam = self.caster:GetTeam()
+        local damageAoe = self:GetSpecialValueFor("damage_aoe")
+        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.caster = self.caster
@@ -707,16 +693,33 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
         modifierTable.duration = 1
         local modifier = GameMode:ApplyBuff(modifierTable)
         modifier:SetDuration(1.0, false)
-        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
-        for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = enemy
-            damageTable.ability = self
-            damageTable.damage = damage
-            damageTable.frostdmg = true
-            GameMode:DamageUnit(damageTable)
+        for _, particleInfo in pairs(particlesTable) do
+            ParticleManager:DestroyParticle(particleInfo.id, true)
+            ParticleManager:ReleaseParticleIndex(particleInfo.id)
+            local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
+            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
+            local enemies = FindUnitsInRadius(casterTeam,
+                    particleInfo.point,
+                    nil,
+                    damageAoe,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_ALL,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = damage
+                damageTable.frostdmg = true
+                GameMode:DamageUnit(damageTable)
+            end
+            table.insert(anotherParticleTable, pidx)
         end
+        modifier:Destroy()
+        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
         Timers:CreateTimer(2, function()
             for _, pidx in pairs(anotherParticleTable) do
                 ParticleManager:DestroyParticle(pidx, true)
