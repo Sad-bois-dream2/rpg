@@ -868,9 +868,4 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
     GameMode.GAME_MECHANICS_INIT = true
-    print("GAME MECHANICS INIT")
-    Timers:CreateTimer(10.0, function()
-        print("PRE COUNT")
-        print(#GameMode.PostDamageEventHandlersTable)
-    end)
 end
