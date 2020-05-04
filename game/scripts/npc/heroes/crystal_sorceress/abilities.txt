@@ -290,7 +290,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_aoe"				"250"
+				"damage_aoe"				"350"
 			}
 		}
 		"precache"
