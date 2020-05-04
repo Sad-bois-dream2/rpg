@@ -525,11 +525,11 @@ function brood_comes:OnSpellStart()
     GameMode:ApplyDebuff(modifierTable) --apply taunt buff
     --spawn spider horde
     local angleLeft = 0
-    local summon_origin = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
+    local summon_origin = tauntTarget:GetAbsOrigin()
     local summon_point = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
     for i = 0, self.number - 1, 1 do
         angleLeft = QAngle(0, i * (math.floor(360 / self.number)), 0)
-        summon_point = RotatePosition(tauntTarget:GetAbsOrigin(), angleLeft, summon_origin)
+        summon_point = RotatePosition(summon_origin, angleLeft, summon_point)
         local spider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, caster, caster, caster:GetTeamNumber())
         spider:AddNewModifier(caster, self.ability, "modifier_kill", { duration = 30 })
         --find all spiders to charge
@@ -714,15 +714,6 @@ modifier_brood_kiss = modifier_brood_kiss or class({
     end,
     IsPurgable = function(self)
         return true
-    end,
-    GetEffectName = function(self)
-        return "particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf"
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_OVERHEAD_FOLLOW
-    end,
-    ShouldUseOverheadOffset = function(self)
-        return true
     end
 })
 
@@ -731,15 +722,37 @@ function modifier_brood_kiss:OnCreated()
         return
     end
     self.parent = self:GetParent()
-    self.timer = self:GetAbility():GetSpecialValueFor("timer")
-    self:StartIntervalThink(self.timer)
+    self.delay = self:GetAbility():GetSpecialValueFor("timer")
+    self.pidx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
+    ParticleManager:SetParticleControl(self.pidx, 3, Vector(255, 0, 0))
+    self:StartIntervalThink(1)
+end
+
+function modifier_brood_kiss:UpdateNumber(number)
+    local digits = 0
+    number = math.floor(number)
+    digits = #tostring(number)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, digits, 0))
+    ParticleManager:SetParticleControl(self.pidx, 4, Vector(0, number, 0))
+end
+
+function modifier_brood_kiss:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
 function modifier_brood_kiss:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    self.parent:ForceKill(false)
+    self.delay = self.delay - 1
+    self:UpdateNumber(self.delay)
+    if (self.delay < 1) then
+        self.parent:ForceKill(false)
+    end
 end
 
 LinkLuaModifier("modifier_brood_kiss", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)

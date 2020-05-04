@@ -36,6 +36,7 @@
 		{
 			_class = "C_OP_SetChildControlPoints"
 			m_nFirstControlPoint = 1
+			m_nNumControlPoints = 0
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
@@ -96,6 +97,10 @@
 		{
 			m_ChildRef = resource:"particles/units/npc_boss_brood/brood_kiss/brood_kiss_overhead_icon.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_brood/brood_kiss/brood_kiss_overhead_counter.vpcf"
+			m_flDelay = 0.4
+		},
 	]
 	m_nBehaviorVersion = 10
 	m_nFirstMultipleOverride_BackwardCompat = 3
@@ -107,15 +112,36 @@
 			[
 				{
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 175.434006, 10.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 175.434006, 10.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 2
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 2.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 255.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 10.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]

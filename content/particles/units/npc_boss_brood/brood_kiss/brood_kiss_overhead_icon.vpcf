@@ -58,6 +58,11 @@
 			m_nFieldOutput = "16"
 			m_flLerpTime = 0.5
 		},
+		{
+			_class = "C_OP_OscillateScalarSimple"
+			m_Rate = 0.5
+			m_nField = "4"
+		},
 	]
 	m_Initializers = 
 	[

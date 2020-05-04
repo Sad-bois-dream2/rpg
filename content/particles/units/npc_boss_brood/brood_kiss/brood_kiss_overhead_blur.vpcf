@@ -56,6 +56,11 @@
 		{
 			_class = "C_OP_PositionLock"
 		},
+		{
+			_class = "C_OP_OscillateScalarSimple"
+			m_Rate = 0.5
+			m_nField = "4"
+		},
 	]
 	m_Initializers = 
 	[
