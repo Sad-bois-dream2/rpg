@@ -224,6 +224,7 @@
                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
                    "particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
                    "particle"   "particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf"
+                   "particle"   "particles/units/npc_boss_brood/brood_kiss/brood_kiss_overhead_counter.vpcf"
     		}
     	}
 

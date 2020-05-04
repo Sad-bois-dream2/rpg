@@ -740,12 +740,9 @@ function modifier_brood_kiss:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    self.delay = self.delay - 1
-    local number = math.floor(self.delay)
-    local digits = #tostring(self.delay)
-    print("Delay " .. number)
-    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, digits, 0))
-    ParticleManager:SetParticleControl(self.pidx, 4, Vector(0, number, 0))
+    local tick = 1
+    self.delay = self.delay - tick
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, math.max(0, math.floor(self.delay)), 0))
     if (self.delay < 1) then
         self.parent:ForceKill(false)
     end
@@ -1603,7 +1600,7 @@ function modifier_brood_web_enemy:OnCreated()
     if (not IsServer()) then
         return
     end
-    if(not self.ability or self.ability:IsNull()) then
+    if (not self.ability or self.ability:IsNull()) then
         -- creation at the moment of brood death probably
         self:Destroy()
     end

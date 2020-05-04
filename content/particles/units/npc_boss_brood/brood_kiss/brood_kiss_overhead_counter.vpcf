@@ -2,9 +2,8 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 16
-	m_flConstantRadius = 10.0
-	m_ConstantColor = [ 255, 200, 33, 255 ]
+	m_nMaxParticles = 1
+	m_flConstantRadius = 11.0
 	m_Renderers = 
 	[
 		{
@@ -13,32 +12,55 @@
 			m_bDisableZBuffering = true
 			m_flAddSelfAmount = 1.0
 			m_bSaturateColorPreAlphaBlend = false
-			m_hTexture = resource:"materials/particle/msg/msg_radiance_noring.vtex"
+			m_hTexture = resource:"materials/particle/msg/msg_01.vtex"
+			VisibilityInputs = 
+			{
+				m_flCameraBias = 3.0
+			}
 		},
 	]
 	m_Operators = 
 	[
 		{
-			_class = "C_OP_MovementMaintainOffset"
-			m_bRadiusScale = true
-			m_vecOffset = [ 1.15, 0.0, 0.0 ]
+			_class = "C_OP_Decay"
+			m_nOpEndCapState = 1
 		},
 		{
-			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 1.0
+			_class = "C_OP_BasicMovement"
+			m_fDrag = 0.15
+			m_Gravity = [ 0.0, 0.0, -200.0 ]
 			m_bDisableOperator = true
 		},
 		{
-			_class = "C_OP_EndCapDecay"
+			_class = "C_OP_SetToCP"
+			m_vecOffset = [ 0.0, 0.0, 27.0 ]
+		},
+		{
+			_class = "C_OP_RemapCPtoScalar"
+			m_nCPInput = 2
+			m_nFieldOutput = "9"
+			m_nField = 1
+			m_flInputMax = 9.0
+			m_flOutputMin = 10.0
+			m_flOutputMax = 19.0
 		},
 		{
 			_class = "C_OP_OscillateScalarSimple"
-			m_Rate = 0.5
-			m_nField = "4"
+			m_Rate = 10.0
+			m_nField = "3"
 			m_bDisableOperator = true
 		},
 		{
-			_class = "C_OP_PositionLock"
+			_class = "C_OP_InterpolateRadius"
+			m_flStartScale = 2.0
+			m_flBias = 0.9
+		},
+		{
+			_class = "C_OP_RemapCPtoVector"
+			m_nCPInput = 3
+			m_nFieldOutput = "6"
+			m_vInputMax = [ 255.0, 255.0, 255.0 ]
+			m_vOutputMax = [ 255.0, 255.0, 255.0 ]
 		},
 	]
 	m_Initializers = 
@@ -48,48 +70,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMax = 2.0
-			m_fLifetimeMin = 2.0
-			m_bDisableOperator = true
-		},
-		{
-			_class = "C_INIT_SequenceFromCP"
-			m_bRadiusScale = true
-			m_nCP = 4
-		},
-		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_nCPInput = 2
-			m_flInputMax = 10.0
-			m_nFieldOutput = "1"
-			m_flOutputMax = 10.0
-			m_bDisableOperator = true
-		},
-		{
-			_class = "C_INIT_RemapCPtoVector"
-			m_nCPInput = 3
-			m_vInputMax = [ 255.0, 255.0, 255.0 ]
-			m_nFieldOutput = "6"
-			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
-		},
-		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMax = [ 0.0, 0.0, -96.0 ]
-			m_OffsetMin = [ 0.0, 0.0, -64.0 ]
-			m_bDisableOperator = true
-		},
-		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_nCPInput = 2
-			m_nField = 1
-			m_flInputMax = 4.0
-			m_flOutputMin = 8.0
-			m_flOutputMax = 14.0
-		},
-		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, 27.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 27.0 ]
+			m_fLifetimeMin = 1.0
+			m_fLifetimeMax = 1.0
 		},
 	]
 	m_Emitters = 
@@ -98,16 +80,12 @@
 			_class = "C_OP_InstantaneousEmitter"
 			m_nParticlesToEmit = 
 			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 2
-				m_nVectorComponent = 1
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 1.0
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
 			}
 		},
 	]
 	m_nBehaviorVersion = 10
-	m_nFirstMultipleOverride_BackwardCompat = 2
 	m_controlPointConfigurations = 
 	[
 		{
@@ -123,7 +101,7 @@
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 2.0, 0.0 ]
+					m_vecOffset = [ 0.0, 5.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -131,13 +109,6 @@
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 255.0, 255.0, 255.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 4
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 10.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},

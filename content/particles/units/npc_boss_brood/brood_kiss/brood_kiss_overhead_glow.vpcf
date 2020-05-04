@@ -65,9 +65,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 25
-			m_nAlphaMax = 50
-			m_bDisableOperator = true
+			m_nAlphaMin = 75
+			m_nAlphaMax = 100
 		},
 		{
 			_class = "C_INIT_RandomRotation"
