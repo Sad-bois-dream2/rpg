@@ -1,15 +1,4 @@
 if (IsServer()) then
-    GameMode.PreDamageEventHandlersTable = GameMode.PreDamageEventHandlersTable or {}
-    GameMode.PostDamageEventHandlersTable = GameMode.PostDamageEventHandlersTable or {}
-    GameMode.CritDamageEventHandlersTable = GameMode.CritDamageEventHandlersTable or {}
-    GameMode.PostApplyModifierEventHandlersTable = GameMode.PostApplyModifierEventHandlersTable or {}
-    GameMode.PreHealEventHandlersTable = GameMode.PreHealEventHandlersTable or {}
-    GameMode.PostHealEventHandlersTable = GameMode.PostHealEventHandlersTable or {}
-    GameMode.CritHealEventHandlersTable = GameMode.CritHealEventHandlersTable or {}
-    GameMode.PreHealManaEventHandlersTable = GameMode.PreHealEventHandlersTable or {}
-    GameMode.PostHealManaEventHandlersTable = GameMode.PostHealEventHandlersTable or {}
-    GameMode.CritHealManaEventHandlersTable = GameMode.CritHealEventHandlersTable or {}
-
     ---@param handler function
     function GameMode:RegisterCritDamageEventHandler(handler)
         if (handler == nil) then
@@ -58,6 +47,8 @@ if (IsServer()) then
             DebugPrintTable(debug.getinfo(2))
             return
         end
+        print("POST REGISTER #" .. #GameMode.PostDamageEventHandlersTable)
+        PrintTable(debug.getinfo(2))
         table.insert(GameMode.PostDamageEventHandlersTable, handler)
     end
 
@@ -862,8 +853,24 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-if (IsServer()) then
+if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
+    GameMode.PreDamageEventHandlersTable = {}
+    GameMode.PostDamageEventHandlersTable = {}
+    GameMode.CritDamageEventHandlersTable = {}
+    GameMode.PostApplyModifierEventHandlersTable = {}
+    GameMode.PreHealEventHandlersTable = {}
+    GameMode.PostHealEventHandlersTable = {}
+    GameMode.CritHealEventHandlersTable = {}
+    GameMode.PreHealManaEventHandlersTable = {}
+    GameMode.PostHealManaEventHandlersTable = {}
+    GameMode.CritHealManaEventHandlersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+    GameMode.GAME_MECHANICS_INIT = true
+    print("GAME MECHANICS INIT")
+    Timers:CreateTimer(10.0, function()
+        print("PRE COUNT")
+        print(#GameMode.PostDamageEventHandlersTable)
+    end)
 end
