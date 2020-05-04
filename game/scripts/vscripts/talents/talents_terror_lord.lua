@@ -1230,6 +1230,9 @@ modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = modifier_n
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talent_36.png"
+    end
 })
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker:OnCreated()
