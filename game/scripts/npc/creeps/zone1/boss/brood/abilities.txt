@@ -49,10 +49,9 @@
 		}
 				"precache"
         		{
-        			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
                     "particle"  "particles/status_fx/status_effect_poison_venomancer.vpcf"
                     "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
-                    "particle"  "particles/units/npc_boss_brood/brood_spit_explosion.vpcf"
+                    "particle"  "particles/units/npc_boss_brood/brood_toxin/brood_toxin.vpcf"
         		}
 	}
     //=================================================================================================================
@@ -169,7 +168,7 @@
 		    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
 		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
             "particle"  "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
-            "particle"  "particles/items5_fx/spider_legs_buff_webs.vpcf"
+            "particle"  "particles/units/npc_boss_brood/brood_cocoons/brood_web.vpcf"
 
 		}
 	}
@@ -224,7 +223,7 @@
                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
                    "particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
-
+                   "particle"   "particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf"
     		}
     	}
 
@@ -331,7 +330,7 @@
         		{
                     "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
                     "particle" "particles/units/npc_boss_brood/brood_spit_projectile.vpcf"
-                    "particle"  "particles/units/npc_boss_brood/brood_spit_ground.vpcf"
+                    "particle"  "particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin.vpcf"
                     "particle"  "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"
                     "particle"  "particles/status_fx/status_effect_poison_viper.vpcf"
         		}

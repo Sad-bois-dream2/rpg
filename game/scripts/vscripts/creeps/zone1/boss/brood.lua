@@ -99,7 +99,7 @@ function modifier_brood_toxin:OnAttackLanded(keys)
             self.parent:EmitSound("broodmother_broo_ability_incap_04")
         end
         --particle
-        local particle_cast_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_spit_explosion.vpcf", PATTACH_ABSORIGIN, keys.target)
+        local particle_cast_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_toxin/brood_toxin.vpcf", PATTACH_ABSORIGIN, keys.target)
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(particle_cast_fx, false)
             ParticleManager:ReleaseParticleIndex(particle_cast_fx)
@@ -591,7 +591,9 @@ modifier_brood_cocoons = modifier_brood_cocoons or class({
     GetStatusEffectName = function(self)
         return "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
     end,
-
+    GetEffectName = function(self)
+        return "particles/units/npc_boss_brood/brood_cocoons/brood_web.vpcf"
+    end
 })
 
 function modifier_brood_cocoons:OnCreated()
@@ -669,11 +671,6 @@ function brood_cocoons:Banish(target)
     end
     local caster = self:GetCaster()
     local duration = self:GetSpecialValueFor("duration")
-    local particle_cast_fx = ParticleManager:CreateParticle("particles/items5_fx/spider_legs_buff_webs.vpcf", PATTACH_ABSORIGIN, target)
-    Timers:CreateTimer(duration, function()
-        ParticleManager:DestroyParticle(particle_cast_fx, false)
-        ParticleManager:ReleaseParticleIndex(particle_cast_fx)
-    end)
     --apply banish debuff banish until rescue by channeling at melee range for some time if not saved for 30s = ded ==> lazy
     local modifierTable = {}
     modifierTable.ability = self
@@ -718,6 +715,15 @@ modifier_brood_kiss = modifier_brood_kiss or class({
     IsPurgable = function(self)
         return true
     end,
+    GetEffectName = function(self)
+        return "particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
+    end
 })
 
 function modifier_brood_kiss:OnCreated()
@@ -940,7 +946,7 @@ function brood_spit:PlayEffects(loc)
         return
     end
     -- Get Resources
-    local particle_cast = "particles/units/npc_boss_brood/brood_spit_ground.vpcf"
+    local particle_cast = "particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin.vpcf"
     local sound_location = "Hero_Viper.NetherToxin"
     local duration = self:GetSpecialValueFor("burn_ground_duration")
     -- Create Particle
