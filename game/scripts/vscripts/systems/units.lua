@@ -37,7 +37,7 @@ function Units:Init()
 end
 
 function Units:ForceStatsCalculation(unit)
-    if (not unit) then
+    if (not unit or unit:IsNull()) then
         return
     end
     local stats = unit:FindModifierByName("modifier_stats_system")
@@ -50,7 +50,7 @@ end
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
 function Units:CalculateStats(unit, statsTable)
-    if (unit ~= nil and statsTable ~= nil and IsServer()) then
+    if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
         local unitBonusAgi = 0
@@ -456,7 +456,7 @@ modifier_stats_system = modifier_stats_system or class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false

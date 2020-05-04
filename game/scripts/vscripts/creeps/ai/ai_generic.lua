@@ -1,4 +1,5 @@
 GENERIC_AI_THINK_INTERVAL = 0.5
+GENERIC_AI_SPELL_CASTING_DELAY = 5
 
 function Spawn(keys)
     if not IsServer() then
@@ -47,6 +48,17 @@ function Think()
                         thisEntity.ai.castedAbility = ability
                         break
                     end
+                end
+            end
+        end
+        for i = 0, abiltiesCount do
+            local ability = thisEntity:GetAbilityByIndex(i)
+            if (ability and ability:IsCooldownReady()) then
+                local behavior = ability:GetBehavior()
+                local isPassive = (bit.band(behavior, DOTA_ABILITY_BEHAVIOR_PASSIVE) == DOTA_ABILITY_BEHAVIOR_PASSIVE)
+                local abilityCooldown = ability:GetCooldown(ability:GetLevel())
+                if (abilityCooldown > 0 and not isPassive and ability ~= thisEntity.ai.castedAbility) then
+                    ability:StartCooldown(GENERIC_AI_SPELL_CASTING_DELAY)
                 end
             end
         end
