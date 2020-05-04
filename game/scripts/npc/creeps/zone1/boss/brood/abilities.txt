@@ -329,7 +329,7 @@
    		"precache"
         		{
                     "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
-                    "particle" "particles/units/npc_boss_brood/brood_spit_projectile.vpcf"
+                    "particle" "particles/units/npc_boss_brood/brood_spit/brood_spit_proj.vpcf"
                     "particle"  "particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin.vpcf"
                     "particle"  "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"
                     "particle"  "particles/status_fx/status_effect_poison_viper.vpcf"

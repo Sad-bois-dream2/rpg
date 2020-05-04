@@ -1073,7 +1073,7 @@ function modifier_brood_spit:CreateBlob()
             Source = self:GetCaster(),
             Ability = self:GetAbility(),
 
-            EffectName = "particles/units/npc_boss_brood/brood_spit_projectile.vpcf",
+            EffectName = "particles/units/npc_boss_brood/brood_spit/brood_spit_proj.vpcf",
             iMoveSpeed = self.vector:Length2D() / self.travel_time,
             bDodgeable = false, -- Optional
 
