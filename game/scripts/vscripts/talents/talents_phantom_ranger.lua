@@ -230,7 +230,7 @@ modifier_npc_dota_hero_drow_ranger_talent_42 = modifier_npc_dota_hero_drow_range
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -242,10 +242,7 @@ modifier_npc_dota_hero_drow_ranger_talent_42 = modifier_npc_dota_hero_drow_range
         return false
     end,
     GetAttributes = function(self)
-    return MODIFIER_ATTRIBUTE_PERMANENT
-    end,
-    GetTexture = function(self)
-        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png"
+    	return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
 
