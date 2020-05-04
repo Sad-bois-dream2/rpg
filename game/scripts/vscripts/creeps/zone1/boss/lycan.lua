@@ -36,7 +36,7 @@ function lycan_call:OnSpellStart()
         for i = 0, self.number - 1, 1 do
             summon_point = enemy:GetAbsOrigin() + 50 * enemy:GetForwardVector() * i
             local wolf = CreateUnitByName("npc_boss_lycan_call_wolf", summon_point, true, caster, caster, casterTeam)
-            wolf:AddNewModifier(caster, self.ability, "modifier_kill", { duration = 5 })
+            wolf:AddNewModifier(caster, self, "modifier_kill", { duration = 5 })
         end
     end
 end
@@ -91,7 +91,7 @@ function modifier_lycan_companion:OnCreated()
         return
     end
     self.parent = self:GetParent()
-    self.parentTeam = self.parent:GetTeam()
+    self.parentTeam = self.parent:GetTeamNumber()
     self.ability = self:GetAbility()
 end
 
@@ -184,6 +184,7 @@ function modifier_lycan_wound_debuff:OnCreated(keys)
     self.caster = self:GetCaster()
     self.target = self:GetParent()
     self.dot = keys.dot
+    self:StartIntervalThink(1.0)
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink()
@@ -315,12 +316,7 @@ modifier_lycan_transform = modifier_lycan_transform or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function()
-        return { MODIFIER_PROPERTY_MODEL_CHANGE }
-    end,
-    GetModifierModelChange = function()
-        return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
-    end
+
 })
 
 function modifier_lycan_transform:OnCreated()
@@ -331,15 +327,29 @@ function modifier_lycan_transform:OnCreated()
     self.bat = self.ability:GetSpecialValueFor("bat")
     self.crit_factor = self.ability:GetSpecialValueFor("crit_factor") / 100
     self.crit_chance = self.ability:GetSpecialValueFor("crit_chance")
-    self.ms_bonus = self.ability:GetSpecialValueFor("ms_bonus") / 100
-end
-
-function modifier_lycan_transform:GetMoveSpeedPercentBonus()
-    return self.ms_bonus
+    self.ms_absolute = self.ability:GetSpecialValueFor("ms_absolute")
 end
 
 function modifier_lycan_transform:GetBaseAttackTime()
     return self.bat
+end
+
+function modifier_lycan_transform:DeclareFunctions()
+    return {
+        MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN,
+        MODIFIER_PROPERTY_MODEL_CHANGE,
+    }
+end
+
+function modifier_lycan_transform:CheckState()
+    return {[MODIFIER_STATE_NO_UNIT_COLLISION] = true}
+end
+function modifier_lycan_transform:GetModifierModelChange()
+    return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
+end
+
+function modifier_lycan_transform:GetModifierMoveSpeed_AbsoluteMin()
+    return self.ms_absolute
 end
 
 ---@param damageTable DAMAGE_TABLE
@@ -532,6 +542,10 @@ function lycan_howl_aura:OnSpellStart()
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 0, casterPosition)
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 1, casterPosition)
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 2, casterPosition)
+        Timers:CreateTimer(duration, function()
+            ParticleManager:DestroyParticle(particle_lycan_howl_fx, false)
+            ParticleManager:ReleaseParticleIndex(particle_lycan_howl_fx)
+        end)
         self.caster:EmitSound("Hero_Lycan.Howl")
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 casterPosition,
@@ -563,7 +577,7 @@ lycan_agility = class({
     end,
 })
 
-function lycan_agility:FindTargetForBlink(caster)
+function lycan_agility:FindTargetForBlink(caster) --random with already hit removal
     if IsServer() then
         local radius = self:GetSpecialValueFor("jump_range")
         -- Find all nearby enemies

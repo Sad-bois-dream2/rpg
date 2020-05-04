@@ -5,11 +5,11 @@
 	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
 		//----------------------------------------------------------------
-		"Model"						"models/items/broodmother/spiderling/araknarok_broodmother_araknarok_spiderling/araknarok_broodmother_araknarok_spiderling.vmdl"	// Model.
+		"Model"						"models/items/broodmother/spiderling/the_glacial_creeper_creepling/the_glacial_creeper_creepling.vmdl"
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"0"
 		"Level"						"0"
-		"ModelScale" 				"0.5"
+		"ModelScale" 				"0.35"
 		"IsNeutralUnitType"			"0"
 		// Abilities
 		//----------------------------------------------------------------

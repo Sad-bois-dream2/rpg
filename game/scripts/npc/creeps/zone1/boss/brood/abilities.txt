@@ -1,3 +1,4 @@
+
 "DOTAAbilities"
 {
     //=================================================================================================================
@@ -27,12 +28,12 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"base_slow"		            "40 50 60"
+				"base_slow"		            "10 15 20"
 			}
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"stack_slow"		         "15 20 25"
+				"stack_slow"		         "7 10 13"
 			}
 			"04"
 			{
@@ -42,7 +43,7 @@
 			"05"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"max_stacks"				"5 4 3"
+				"max_stacks"				"20"
 			}
 
 		}
@@ -50,6 +51,8 @@
         		{
         			"soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
                     "particle"  "particles/status_fx/status_effect_poison_venomancer.vpcf"
+                    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+                    "particle"  "particles/units/npc_boss_brood/brood_spit_explosion.vpcf"
         		}
 	}
     //=================================================================================================================
@@ -68,12 +71,12 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"30"
+   		"AbilityCooldown"				"300"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.1"
+        "AbilityCastPoint"				"0.8"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -82,27 +85,34 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"range"				    "1500"
+   				"range"				        "1200"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"number"	    	"4 8 16"
+   				"number"	    	        "4 8 16"
    			}
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"charge_movespeed_bonus"			"700 900 1200"
+   				"charge_speed"              "700 900 1200"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"			"800"
+   				"radius"			        "800 700 600"
    			}
+            "05"
+             {
+                "var_type"                  "FIELD_FLOAT"
+                "duration"                  "5 7 10"
+             }
+
    		}
 		"precache"
 		{
 			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+			"particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
 		}
 	}
     //=================================================================================================================
@@ -126,7 +136,7 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"30"
+   		"AbilityCooldown"				"300"
 
 
    		// Special
@@ -136,64 +146,87 @@
    		    "01"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"range"				        "1000"
+               	"range"				        "1200"
              }
    		    "02"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"targets"				    "1 2 3"
+               	"number"				    "1 2 3"
              }
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
    				"duration"				    "5 6 7"
    			}
+            "04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"interval"				    "2.5 1.5 1"
+   			}
    		}
 		"precache"
 		{
+		    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
+            "particle"  "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
+            "particle"  "particles/items5_fx/spider_legs_buff_webs.vpcf"
 
 		}
 	}
-    //=================================================================================================================
+	//=================================================================================================================
     // Brood : Kiss of Death
     //=================================================================================================================
-    "brood_kiss"
-    {
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/boss/brood"
-        "AbilityTextureName"			"brood_kiss"
-        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"MaxLevel"						"3"
+        "brood_kiss"
+       	{
+       		// General
+       		//-------------------------------------------------------------------------------------------------------------
+       		"BaseClass"						"ability_lua"
+            "ScriptFile"					"creeps/zone1/boss/brood"
+            "AbilityTextureName"			"brood_kiss"
+            "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+       		"MaxLevel"						"3"
 
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30"
+    		// Casting
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+            "AbilityCastPoint"				"0.8"
 
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"					"FIELD_FLOAT"
-                "timer"               "6 4 2"
-            }
-            "02"
-            {
-               	"var_type"					"FIELD_FLOAT"
-               	"range"				    "500 700 1000"
-            }
+       		// Time
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilityCooldown"				"300"
 
-		}
-			"precache"
-        	{
-                			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
 
-        	}
-    }
+       		// Special
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilitySpecial"
+       		{
+                "01"
+                {
+                    "var_type"					"FIELD_FLOAT"
+                    "timer"                     "5 3.5 2"
+                }
+                "02"
+                {
+                    "var_type"					"FIELD_FLOAT"
+                    "range"				        "1200"
+                }
+                "03"
+                {
+                    "var_type"                  "FIELD_FLOAT"
+                    "stun"                      "0.25 1 2"
+                }
+
+       		}
+    		"precache"
+    		{
+                   "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+                   "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+                   "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
+                   "particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
+
+    		}
+    	}
 
     //=================================================================================================================
     // Brood : Spitting Poison
@@ -211,7 +244,7 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"100"
+   		"AbilityCooldown"				"300"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -235,12 +268,12 @@
             "03"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"damage_per_impact"			"0"
+    			"damage_per_impact"			"300 1200 4000"
     		}
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"burn_damage"			    "0"
+    			"burn_damage"			    "75 300 1000 "
     		}
             "05"
     		{
@@ -260,7 +293,7 @@
             "08"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"min_lob_travel_time"	    "0.5"
+    			"min_lob_travel_time"	    "0.8"
     		}
             "09"
     		{
@@ -280,7 +313,7 @@
             "12"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"burn_interval"			    "0.5"
+   				"burn_interval"			    "1"
    			}
             "13"
    			{
@@ -290,9 +323,8 @@
             "14"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"slow"				        "50 60 70"
+   				"slow"				        "10 15 20"
    			}
-
 
    		}
    		"precache"
@@ -300,7 +332,6 @@
                     "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
                     "particle" "particles/units/npc_boss_brood/brood_spit_projectile.vpcf"
                     "particle"  "particles/units/npc_boss_brood/brood_spit_ground.vpcf"
-                    "particle"  "particles/base_attacks/generic_projectile_explosion.vpcf"
                     "particle"  "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"
                     "particle"  "particles/status_fx/status_effect_poison_viper.vpcf"
         		}
@@ -323,14 +354,12 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"30"
+   		"AbilityCooldown"				"8"
 
    		// Casting
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AnimationPlaybackRate"         "0.4"
-        "AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"2.0"
+        "AbilityCastPoint"				"0.8"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -345,12 +374,15 @@
    			"02"
    			{
 	            "var_type"				    "FIELD_FLOAT"
-   				"ms_slow"	    	        "-10 -5 0"
+   				"duration"	    	        "7 8 9"
    			}
+
+
    		}
    			"precache"
              {
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
+                "particle"  "particles/units/heroes/hero_broodmother/broodmother_hunger_buff.vpcf"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_broodmother.vsndevts"
              }
     }
 
@@ -370,12 +402,12 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"30"
+   		"AbilityCooldown"				"300"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.2"
+        "AbilityCastPoint"				"0.8"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -384,32 +416,42 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "7 10 15"
+   				"radius"				    "900"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_bonus"			"10 20 30"
+   				"ms_bonus"			        "10 20 30"
    			}
             "03"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"as_bonus"			"30 45 60"
+    			"as_bonus"			        "30 45 60"
     		}
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"ms_slow"			"10 25 40 "
+    			"ms_slow"			        "10 15 20 "
     		}
             "05"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"spawn_interval"			 "10 8 6"
+    			"spawn_interval"			 "6 4 2"
     		}
             "06"
     		{
     			"var_type"					"FIELD_FLOAT"
     			"duration"			        "30"
+    		}
+            "07"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"number"			        "1 2 3"
+    		}
+    		"08"
+    		{
+    		    "var_type"					"FIELD_FLOAT"
+                "range"			            "1200"
     		}
 
    		}

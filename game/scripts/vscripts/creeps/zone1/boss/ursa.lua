@@ -167,7 +167,7 @@ function modifier_ursa_fury:OnCreated()
     self.target = self:GetParent()
     self.ability = self:GetAbility()
     self.duration = self.ability:GetSpecialValueFor("duration")
-    self.attackspeed_bonus = self.ability:GetSpecialValueFor("attackspeed_bonus")
+    self.attackspeed_bonus = self.ability:GetSpecialValueFor("attackspeed_bonus")*0.01
     self.movespeed_bonus = self.ability:GetSpecialValueFor("movespeed_bonus")*0.01
     self.ursa_overpower_buff_particle = "particles/units/heroes/hero_ursa/ursa_overpower_buff.vpcf"
 
@@ -197,9 +197,6 @@ function modifier_ursa_fury:GetMoveSpeedPercentBonus()
     return self.movespeed_bonus
 end
 
-function modifier_ursa_fury:GetModifierMoveSpeed_Limit()
-    return 1
-end
 
 LinkLuaModifier("modifier_ursa_fury", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
