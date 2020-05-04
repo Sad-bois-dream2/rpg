@@ -371,10 +371,6 @@ function modifier_lycan_transform:OnTakeDamage(damageTable)
     end
 end
 
-if (IsServer()) then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
-end
-
 LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
@@ -989,3 +985,7 @@ end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
+if (IsServer() and not GameMode.ZONE1_BOSS_LYCAN) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_LYCAN = true
+end

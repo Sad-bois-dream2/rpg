@@ -740,7 +740,8 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
+    GameMode.CRYSTAL_SORCERESS_INIT = true
 end
