@@ -456,7 +456,7 @@ modifier_stats_system = modifier_stats_system or class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
