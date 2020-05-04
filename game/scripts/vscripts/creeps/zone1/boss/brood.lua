@@ -728,14 +728,6 @@ function modifier_brood_kiss:OnCreated()
     self:StartIntervalThink(1)
 end
 
-function modifier_brood_kiss:UpdateNumber(number)
-    local digits = 0
-    number = math.floor(number)
-    digits = #tostring(number)
-    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, digits, 0))
-    ParticleManager:SetParticleControl(self.pidx, 4, Vector(0, number, 0))
-end
-
 function modifier_brood_kiss:OnDestroy()
     if (not IsServer()) then
         return
@@ -749,7 +741,11 @@ function modifier_brood_kiss:OnIntervalThink()
         return
     end
     self.delay = self.delay - 1
-    self:UpdateNumber(self.delay)
+    local number = math.floor(self.delay)
+    local digits = #tostring(self.delay)
+    print("Delay " .. number)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, digits, 0))
+    ParticleManager:SetParticleControl(self.pidx, 4, Vector(0, number, 0))
     if (self.delay < 1) then
         self.parent:ForceKill(false)
     end
@@ -1603,12 +1599,16 @@ modifier_brood_web_enemy = modifier_brood_web_enemy or class({
 })
 
 function modifier_brood_web_enemy:OnCreated()
+    self.ability = self:GetAbility()
     if (not IsServer()) then
         return
     end
+    if(not self.ability or self.ability:IsNull()) then
+        -- creation at the moment of brood death probably
+        self:Destroy()
+    end
     -- Ability properties
     self.caster = self:GetCaster()
-    self.ability = self:GetAbility()
     self.parent = self:GetParent()
     self.caster = self.ability:GetCaster()
     self.casterTeam = self.caster:GetTeam()

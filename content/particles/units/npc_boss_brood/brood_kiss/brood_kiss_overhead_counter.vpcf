@@ -39,18 +39,12 @@
 		},
 		{
 			_class = "C_OP_PositionLock"
-			m_nControlPointNumber = 1
 		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
-			m_fSpeedMax = 100.0
-			m_fSpeedMin = 10.0
-			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 150.0 ]
-			m_LocalCoordinateSystemSpeedMin = [ 0.0, 0.0, 50.0 ]
-			m_vecDistanceBias = [ 1.0, 0.0, 1.0 ]
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"

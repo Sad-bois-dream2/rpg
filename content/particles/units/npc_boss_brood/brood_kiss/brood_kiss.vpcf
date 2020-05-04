@@ -36,7 +36,6 @@
 		{
 			_class = "C_OP_SetChildControlPoints"
 			m_nFirstControlPoint = 1
-			m_nNumControlPoints = 0
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
