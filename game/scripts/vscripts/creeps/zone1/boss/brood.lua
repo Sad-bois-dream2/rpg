@@ -115,7 +115,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_brood_toxin:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_brood_toxin")
-    if (damageTable.damage > 0 and modifier and damageTable.ability) then
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.ability == modifier.ability) then
         local slowmod = damageTable.victim:FindModifierByName("modifier_brood_toxin_slow")
         local stun_duration = slowmod.stun
         --if no toxin slow apply it
@@ -1323,9 +1323,6 @@ end
 
 ---@param damageTable DAMAGE_TABLE
 function modifier_brood_hunger:OnTakeDamage(damageTable)
-    if (not IsServer()) then
-        return
-    end
     local modifier = damageTable.attacker:FindModifierByName("modifier_brood_hunger")
     if (damageTable.damage > 0 and modifier and not damageTable.ability and damageTable.physdmg) then
         local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
@@ -1587,17 +1584,15 @@ modifier_brood_web_enemy = modifier_brood_web_enemy or class({
 })
 
 function modifier_brood_web_enemy:OnCreated()
-    if IsServer() then
-        if not self:GetAbility() then
-            return
-        end
+    if (not IsServer()) then
+        return
     end
-
     -- Ability properties
     self.caster = self:GetCaster()
     self.ability = self:GetAbility()
     self.parent = self:GetParent()
-
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeam()
     -- Ability specials
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
     self.interval = self.ability:GetSpecialValueFor("spawn_interval")
@@ -1611,21 +1606,20 @@ function modifier_brood_web_enemy:GetMoveSpeedPercentBonus()
 end
 
 function modifier_brood_web_enemy:OnIntervalThink()
-    if IsServer() then
-        if not self:GetAbility() then
-            return
-        end
+    if (not IsServer()) then
+        return
     end
-    local caster = self:GetAbility():GetCaster()
-    if (self.parent ~= nil) then
+    -- idk about alive thing
+    if (self.parent and not self.parent:IsNull() and self.parent:IsAlive()) then
         local summon_point = self.parent:GetAbsOrigin()
-        local webspider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, caster, caster, caster:GetTeamNumber())
+        local webspider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, self.caster, self.caster, self.casterTeam)
         FindClearSpaceForUnit(webspider, summon_point, true)
         webspider:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 30 })
         --on spawn
         webspider:EmitSound("broodmother_broo_ability_spawn_04")
     end
 end
+
 LinkLuaModifier("modifier_brood_web_enemy", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 -----------
 --active
@@ -1726,4 +1720,9 @@ function brood_web:OnSpellStart()
         end
     end)
     caster:EmitSound("broodmother_broo_ability_spin_01")
+end
+
+if (IsServer()) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_toxin, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_hunger, 'OnTakeDamage'))
 end
