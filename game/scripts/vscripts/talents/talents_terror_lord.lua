@@ -1526,7 +1526,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_43 = modifier_npc_dota_hero_abys
 })
 
 function modifier_npc_dota_hero_abyssal_underlord_talent_43:OnPostTakeDamage(damageTable)
-    if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43")) then
+    if (damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43") and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_43_cd")) then
         local casterHealth = damageTable.victim:GetHealth() / damageTable.victim:GetMaxHealth()
         if (casterHealth < 0.5) then
             local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/talents/vengeance/vengeance.vpcf", PATTACH_ABSORIGIN, damageTable.victim)
