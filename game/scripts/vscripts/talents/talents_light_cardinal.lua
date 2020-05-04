@@ -1493,7 +1493,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_light_cardinal", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.TALENTS_LIGHT_CARDINAL_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_spirit_shield, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_silencer_talent_40, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_silencer_talent_40, 'OnPostTakeDamage'))
@@ -1504,4 +1504,5 @@ if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_silencer_talent_44, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_silencer_talent_50, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_silencer_talent_51, 'OnTakeDamage'))
+    GameMode.TALENTS_LIGHT_CARDINAL_INIT = true
 end
