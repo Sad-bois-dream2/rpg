@@ -166,7 +166,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_bonus"			        "10 30 50"
+   				"ms_absolute"			        "600 700 800"
    			}
             "03"
              {
