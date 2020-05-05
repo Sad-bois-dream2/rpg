@@ -582,7 +582,7 @@ modifier_terror_lord_pit_of_seals_root = modifier_terror_lord_pit_of_seals_root 
         return terror_lord_pit_of_seals:GetAbilityTextureName()
     end,
     CheckState = function(self)
-        return { MODIFIER_STATE_ROOTED }
+        return { [MODIFIER_STATE_ROOTED] = true }
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/heroes_underlord/abyssal_underlord_pitofmalice_stun.vpcf"
