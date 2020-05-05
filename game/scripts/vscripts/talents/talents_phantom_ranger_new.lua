@@ -143,6 +143,54 @@ function phantom_ranger_hunters_focus:OnSpellStart()
     GameMode:ApplyBuff({ caster = caster, target = caster, ability = self, modifier_name = "modifier_phantom_ranger_hunters_focus_buff", duration = hunters_focus_duration })
 end
 
+modifier_npc_dota_hero_drow_ranger_talent_36 = modifier_npc_dota_hero_drow_ranger_talent_36 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end
+})
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_36:GetManaRestore()
+    return 0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 36))
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_36:OnDeath( params )
+    if not IsServer() then return end
+    if (params.attacker ~= self.caster) then return end
+    if (self.caster:GetTeamNumber() == params.unit:GetTeamNumber()) then return end
+    if (params.unit:IsBuilding()) then return end
+    GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self.caster:GetMaxMana() })
+end
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_36"] = LUA_MODIFIER_MOTION_NONE
 
 --------------------------------------------------------------------------------
 -- Internal stuff
