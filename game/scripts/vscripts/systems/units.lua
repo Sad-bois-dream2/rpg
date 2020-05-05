@@ -438,9 +438,7 @@ function Units:OnCreation(unit)
         return
     end
     unit:AddNewModifier(unit, nil, "modifier_stats_system", { Duration = -1 })
-    if (unit:IsRealHero()) then
-        Heroes:OnHeroCreation(unit)
-    else
+    if (not unit:IsRealHero()) then
         Aggro:OnCreepSpawn(unit)
     end
 end

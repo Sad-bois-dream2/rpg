@@ -4,7 +4,7 @@ end
 
 ---@param hero CDOTA_BaseNPC_Hero
 function Heroes:OnHeroCreation(hero)
-    if (hero ~= nil and IsServer()) then
+    if (hero ~= nil and IsServer() and not hero:HasModifier("modifier_hero")) then
         hero:AddNewModifier(hero, nil, "modifier_hero", { Duration = -1 })
         TalentTree:SetupForHero(hero)
         Inventory:SetupForHero(hero)

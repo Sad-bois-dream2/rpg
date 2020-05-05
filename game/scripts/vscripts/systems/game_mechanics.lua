@@ -1,15 +1,4 @@
 if (IsServer()) then
-    GameMode.PreDamageEventHandlersTable = GameMode.PreDamageEventHandlersTable or {}
-    GameMode.PostDamageEventHandlersTable = GameMode.PostDamageEventHandlersTable or {}
-    GameMode.CritDamageEventHandlersTable = GameMode.CritDamageEventHandlersTable or {}
-    GameMode.PostApplyModifierEventHandlersTable = GameMode.PostApplyModifierEventHandlersTable or {}
-    GameMode.PreHealEventHandlersTable = GameMode.PreHealEventHandlersTable or {}
-    GameMode.PostHealEventHandlersTable = GameMode.PostHealEventHandlersTable or {}
-    GameMode.CritHealEventHandlersTable = GameMode.CritHealEventHandlersTable or {}
-    GameMode.PreHealManaEventHandlersTable = GameMode.PreHealEventHandlersTable or {}
-    GameMode.PostHealManaEventHandlersTable = GameMode.PostHealEventHandlersTable or {}
-    GameMode.CritHealManaEventHandlersTable = GameMode.CritHealEventHandlersTable or {}
-
     ---@param handler function
     function GameMode:RegisterCritDamageEventHandler(handler)
         if (handler == nil) then
@@ -242,7 +231,7 @@ if (IsServer()) then
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if(fireEvent == nil) then
+                if (fireEvent == nil) then
                     fireEvent = true
                 end
                 if (modifier ~= nil and fireEvent == true) then
@@ -289,8 +278,32 @@ if (IsServer()) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
+                local isTargetCasting = false
+                local abilitiesCount = args.target:GetAbilityCount() - 1
+                local ability = nil
+                for i = 0, abilitiesCount do
+                    ability = args.target:GetAbilityByIndex(i)
+                    if (ability and ability:IsInAbilityPhase()) then
+                        isTargetCasting = true
+                        break
+                    end
+                end
+                if (isTargetCasting == true) then
+                    local isModifierWillPreventCasting = false
+                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                    if (crowdControlModifier) then
+                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
+                    else
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                            isModifierWillPreventCasting = true
+                        end
+                    end
+                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                        return nil
+                    end
+                end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
-                if(fireEvent == nil) then
+                if (fireEvent == nil) then
                     fireEvent = true
                 end
                 if (modifier ~= nil and fireEvent == true) then
@@ -500,7 +513,7 @@ if (IsServer()) then
             local preDamageHandlerResultTable
             local damageCanceled = false
             for i = 1, #GameMode.PreDamageEventHandlersTable do
-                if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                     break
                 end
                 preDamageHandlerResultTable = GameMode.PreDamageEventHandlersTable[i](nil, damageTable)
@@ -519,7 +532,7 @@ if (IsServer()) then
                 if (damageTable.crit > 1.0) then
                     damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
-                        if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                        if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                             break
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
@@ -528,7 +541,7 @@ if (IsServer()) then
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
-                    if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.attacker or damageTable.attacker:IsNull()) then
+                    if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                         break
                     end
                     GameMode.PostDamageEventHandlersTable[i](nil, damageTable)
@@ -556,7 +569,7 @@ if (IsServer()) then
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealEventHandlersTable do
-            if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+            if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                 break
             end
             preHealHandlerResultTable = GameMode.PreHealEventHandlersTable[i](nil, args)
@@ -573,7 +586,7 @@ if (IsServer()) then
             if (args.crit > 1.0) then
                 args.heal = args.heal * args.crit
                 for i = 1, #GameMode.CritHealEventHandlersTable do
-                    if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                    if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                         break
                     end
                     GameMode.CritHealEventHandlersTable[i](nil, args)
@@ -582,7 +595,7 @@ if (IsServer()) then
             args.target:Heal(args.heal, caster)
             PopupHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealEventHandlersTable do
-                if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                     break
                 end
                 GameMode.PostHealEventHandlersTable[i](nil, args)
@@ -609,7 +622,7 @@ if (IsServer()) then
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealManaEventHandlersTable do
-            if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+            if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                 break
             end
             preHealHandlerResultTable = GameMode.PreHealManaEventHandlersTable[i](nil, args)
@@ -626,7 +639,7 @@ if (IsServer()) then
             if (args.crit > 1.0) then
                 args.heal = args.heal * args.crit
                 for i = 1, #GameMode.CritHealManaEventHandlersTable do
-                    if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                    if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                         break
                     end
                     GameMode.CritHealManaEventHandlersTable[i](nil, args)
@@ -635,7 +648,7 @@ if (IsServer()) then
             args.target:GiveMana(args.heal)
             PopupManaHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealManaEventHandlersTable do
-                if (not args.caster or args.caster:IsNull() or not args.target or args.target:IsNull()) then
+                if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
                     break
                 end
                 GameMode.PostHealManaEventHandlersTable[i](nil, args)
@@ -652,6 +665,21 @@ if (IsServer()) then
         if (modifierTable.target) then
             Units:ForceStatsCalculation(modifierTable.target)
         end
+    end
+
+    function GameMode:BuildCrowdControlModifiersList()
+        Timers:CreateTimer(2.0, function()
+            for k, v in pairs(_G) do
+                if (type(v) == "table" and v.CheckState) then
+                    local stateTable = v.CheckState(nil)
+                    local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
+                    local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
+                    local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
+                    local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
+                    GameMode.CrowdControlModifiersTable[k] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
+                end
+            end
+        end)
     end
 end
 
@@ -862,8 +890,21 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-if (IsServer()) then
+if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
+    GameMode.PreDamageEventHandlersTable = {}
+    GameMode.PostDamageEventHandlersTable = {}
+    GameMode.CritDamageEventHandlersTable = {}
+    GameMode.PostApplyModifierEventHandlersTable = {}
+    GameMode.PreHealEventHandlersTable = {}
+    GameMode.PostHealEventHandlersTable = {}
+    GameMode.CritHealEventHandlersTable = {}
+    GameMode.PreHealManaEventHandlersTable = {}
+    GameMode.PostHealManaEventHandlersTable = {}
+    GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.CrowdControlModifiersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+    GameMode:BuildCrowdControlModifiersList()
+    GameMode.GAME_MECHANICS_INIT = true
 end

@@ -1738,7 +1738,8 @@ function brood_web:OnSpellStart()
     caster:EmitSound("broodmother_broo_ability_spin_01")
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.ZONE1_BOSS_BROOD) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_toxin, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_hunger, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_BROOD = true
 end
