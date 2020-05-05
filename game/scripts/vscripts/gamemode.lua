@@ -56,7 +56,8 @@ require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
 require('systems/dummy')
-
+require('heroes/require')
+require('creeps/require')
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.
 

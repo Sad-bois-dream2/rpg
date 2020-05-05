@@ -278,6 +278,30 @@ if (IsServer()) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
+                local isTargetCasting = false
+                local abilitiesCount = args.target:GetAbilityCount() - 1
+                local ability = nil
+                for i = 0, abilitiesCount do
+                    ability = args.target:GetAbilityByIndex(i)
+                    if (ability and ability:IsInAbilityPhase()) then
+                        isTargetCasting = true
+                        break
+                    end
+                end
+                if (isTargetCasting == true) then
+                    local isModifierWillPreventCasting = false
+                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                    if (crowdControlModifier) then
+                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
+                    else
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                            isModifierWillPreventCasting = true
+                        end
+                    end
+                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                        return nil
+                    end
+                end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (fireEvent == nil) then
                     fireEvent = true
@@ -642,6 +666,21 @@ if (IsServer()) then
             Units:ForceStatsCalculation(modifierTable.target)
         end
     end
+
+    function GameMode:BuildCrowdControlModifiersList()
+        Timers:CreateTimer(2.0, function()
+            for k, v in pairs(_G) do
+                if (type(v) == "table" and v.CheckState) then
+                    local stateTable = v.CheckState(nil)
+                    local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
+                    local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
+                    local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
+                    local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
+                    GameMode.CrowdControlModifiersTable[k] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
+                end
+            end
+        end)
+    end
 end
 
 modifier_cooldown_reduction_custom = modifier_cooldown_reduction_custom or class({
@@ -862,8 +901,10 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PreHealManaEventHandlersTable = {}
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.CrowdControlModifiersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+    GameMode:BuildCrowdControlModifiersList()
     GameMode.GAME_MECHANICS_INIT = true
 end
