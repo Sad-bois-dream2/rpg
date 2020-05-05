@@ -25,7 +25,7 @@ function Precache(context)
     -- Phantom Ranger talents
     PrecacheResource("particle", "particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", context)
     PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_queenofpain.vsndevts", context)
-    --PrecacheResource()
+    PrecacheResource("soundfilee", "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts", context)
     -- Dummy
     PrecacheResource("particle", "particles/units/dummy/dummy.vpcf", context)
     PrecacheResource("particle", "particles/units/dummy/dummy_number.vpcf", context)

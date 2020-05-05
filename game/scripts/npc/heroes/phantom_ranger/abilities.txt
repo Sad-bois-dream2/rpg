@@ -262,7 +262,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_phantom_ranger_new"
+		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"dark_seer_surge"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
@@ -309,7 +309,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_phantom_ranger_new"
+		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"phantom_ranger_hunters_focus"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
