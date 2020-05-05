@@ -317,8 +317,9 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_phantom_ranger", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
     --GameMode.PreDamageEventHandlersTable = {}
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
+	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
 end
