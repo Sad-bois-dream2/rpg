@@ -582,7 +582,7 @@ modifier_terror_lord_pit_of_seals_root = modifier_terror_lord_pit_of_seals_root 
         return terror_lord_pit_of_seals:GetAbilityTextureName()
     end,
     CheckState = function(self)
-        return { MODIFIER_STATE_ROOTED }
+        return { [MODIFIER_STATE_ROOTED] = true }
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/heroes_underlord/abyssal_underlord_pitofmalice_stun.vpcf"
@@ -938,13 +938,13 @@ end
 -- terror_lord_ruthless_predator modifiers
 modifier_terror_lord_ruthless_predator_aura = modifier_terror_lord_ruthless_predator_aura or class({
     IsHidden = function(self)
-        return true
+        return false
     end,
     IsAuraActiveOnDeath = function(self)
         return false
     end,
     GetAuraRadius = function(self)
-        return self.radius or 0
+        return self.ability.radius or 0
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
@@ -969,7 +969,7 @@ function modifier_terror_lord_ruthless_predator_aura:OnCreated()
     end
     self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    local tick = self.ability:GetLevelSpecialValueFor("tick", 0)
+    local tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(tick)
 end
 
@@ -977,13 +977,13 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    if (not self.reg_modifier) then
+    if (not self.ability.reg_modifier) then
         return
     end
     local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             self.caster:GetAbsOrigin(),
             nil,
-            self.radius,
+            self.ability.radius,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,
@@ -1003,7 +1003,7 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
     if (talentLevel > 0) then
         stackCount = math.max(stackCount, math.min(talentLevel, 5))
     end
-    self.reg_modifier:SetStackCount(stackCount)
+    self.ability.reg_modifier:SetStackCount(stackCount)
 end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator_aura"] = LUA_MODIFIER_MOTION_NONE
@@ -1035,16 +1035,14 @@ function modifier_terror_lord_ruthless_predator_aura_debuff:OnCreated()
     end
     local auraOwner = self:GetAuraOwner()
     self.ability = auraOwner:FindAbilityByName("terror_lord_ruthless_predator")
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow")
-    self.regeneration_debuff = self.ability:GetSpecialValueFor("regeneration_debuff") * -0.01
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetMoveSpeedBonus()
-    return -self.ms_slow
+    return -self.ability.ms_slow
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetHealthRegenerationPercentBonus()
-    return self.regeneration_debuff or 0
+    return self.ability.regeneration_debuff or 0
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetManaRegenerationPercentBonus()
@@ -1079,6 +1077,7 @@ function modifier_terror_lord_ruthless_predator:OnCreated()
         return
     end
     self.caster = self:GetParent()
+    self.ability = self:GetAbility()
     self:StartIntervalThink(1.0)
 end
 
@@ -1089,13 +1088,15 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
     if (not ability) then
         local auraModifier = self.caster:FindModifierByName(terror_lord_ruthless_predator:GetIntrinsicModifierName())
+        if(auraModifier) then
+            auraModifier.reg_modifier = nil
+        end
         self:Destroy()
-        auraModifier.reg_modifier = nil
     end
 end
 
 function modifier_terror_lord_ruthless_predator:GetHealthRegenerationBonus()
-    return math.min(self:GetStackCount() * self.regeration_bonus, self.regeneration_cap) * self.caster:GetMaxHealth()
+    return math.min(self:GetStackCount() * self.ability.regeration_bonus, self.ability.regeneration_cap) * self.caster:GetMaxHealth()
 end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator"] = LUA_MODIFIER_MOTION_NONE
@@ -1114,14 +1115,15 @@ function terror_lord_ruthless_predator:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
-    modifier.radius = self:GetSpecialValueFor("radius")
-    if (not modifier.reg_modifier) then
-        modifier.reg_modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_ruthless_predator", { Duration = -1 })
+    self.radius = self:GetSpecialValueFor("radius")
+    self.regeration_bonus = self:GetSpecialValueFor("regeneration_buff") / 100
+    self.regeneration_cap = self:GetSpecialValueFor("regeneration_cap_buff") / 100
+    self.ms_slow = self:GetSpecialValueFor("ms_slow")
+    self.regeneration_debuff = self:GetSpecialValueFor("regeneration_debuff") * -0.01
+    if(self:GetLevel() == 1) then
+        local caster = self:GetCaster()
+        self.reg_modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_ruthless_predator", { Duration = -1 })
     end
-    modifier.reg_modifier.regeration_bonus = self:GetSpecialValueFor("regeneration_buff") / 100
-    modifier.reg_modifier.regeneration_cap = self:GetSpecialValueFor("regeneration_cap_buff") / 100
 end
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation (Scorched Immolation)]
@@ -1155,6 +1157,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:
     end
     self.caster = self:GetParent()
 end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:GetMoveSpeedPercentBonus()
     return math.min(0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 35)), 0.3)
 end
