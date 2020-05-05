@@ -642,6 +642,17 @@ if (IsServer()) then
             Units:ForceStatsCalculation(modifierTable.target)
         end
     end
+
+    function GameMode:LoadModifiersWithInterrupt()
+        Timers:CreateTimer(2.0, function()
+            for k, v in pairs(_G) do
+                if (type(v) == "table" and v.CheckState) then
+                    print(k)
+                    PrintTable(v.CheckState(nil))
+                end
+            end
+        end)
+    end
 end
 
 modifier_cooldown_reduction_custom = modifier_cooldown_reduction_custom or class({
@@ -862,8 +873,10 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PreHealManaEventHandlersTable = {}
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.CrowdControlModifiersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+    GameMode:LoadModifiersWithInterrupt()
     GameMode.GAME_MECHANICS_INIT = true
 end
