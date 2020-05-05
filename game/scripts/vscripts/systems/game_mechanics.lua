@@ -643,7 +643,7 @@ if (IsServer()) then
         end
     end
 
-    function GameMode:LoadModifiersWithInterrupt()
+    function GameMode:BuildCrowdControlModifiersList()
         Timers:CreateTimer(2.0, function()
             for k, v in pairs(_G) do
                 if (type(v) == "table" and v.CheckState) then
@@ -877,6 +877,6 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
-    GameMode:LoadModifiersWithInterrupt()
+    GameMode:BuildCrowdControlModifiersList()
     GameMode.GAME_MECHANICS_INIT = true
 end
