@@ -278,6 +278,30 @@ if (IsServer()) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
+                local isTargetCasting = false
+                local abilitiesCount = args.target:GetAbilityCount() - 1
+                local ability = nil
+                for i = 0, abilitiesCount do
+                    ability = args.target:GetAbilityByIndex(i)
+                    if (ability and ability:IsInAbilityPhase()) then
+                        isTargetCasting = true
+                        break
+                    end
+                end
+                if (isTargetCasting == true) then
+                    local isModifierWillPreventCasting = false
+                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                    if (crowdControlModifier) then
+                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
+                    else
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                            isModifierWillPreventCasting = true
+                        end
+                    end
+                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                        return nil
+                    end
+                end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (fireEvent == nil) then
                     fireEvent = true
@@ -647,8 +671,12 @@ if (IsServer()) then
         Timers:CreateTimer(2.0, function()
             for k, v in pairs(_G) do
                 if (type(v) == "table" and v.CheckState) then
-                    print(k)
-                    PrintTable(v.CheckState(nil))
+                    local stateTable = v.CheckState(nil)
+                    local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
+                    local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
+                    local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
+                    local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
+                    GameMode.CrowdControlModifiersTable[k] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
                 end
             end
         end)
