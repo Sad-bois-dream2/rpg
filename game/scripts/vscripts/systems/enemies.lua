@@ -125,17 +125,20 @@ function Enemies:IsElite(unit)
 end
 
 function Enemies:IsBoss(unit)
+    print("Boss check")
     if (not unit or unit:IsNull()) then
         return false
     end
-    if (string.find(unit:GetUnitLabel():lower(), "boss")) then
+    print(unit:GetUnitName())
+    print(unit:GetUnitLabel())
+    if (unit.GetUnitLabel and string.find(unit:GetUnitLabel():lower(), "boss")) then
         return true
     end
     return false
 end
 
 function Enemies:OnBossHealing(unit)
-    if(not unit or unit:IsNull() or true) then
+    if(not unit or unit:IsNull()) then
         return
     end
     print("Healed " .. unit:GetUnitName())
