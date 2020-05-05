@@ -377,9 +377,16 @@
 	border: 2px solid transparent;
 }
 
-.auto_cast_enabled #AbilityStatusBorder
+#AutoCastBorder
 {
-	border: 4px solid orange;
+	width: 100%;
+	height: 100%;
+	visibility: collapse;
+}
+
+.auto_cast_enabled #AutoCastBorder
+{
+    visibility: visible;
 }
 
 .toggle_enabled #AbilityStatusBorder
