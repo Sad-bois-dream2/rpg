@@ -53,16 +53,30 @@ function modifier_hero:OnDeath(keys)
         return
     end
     if (Enemies:IsBoss(killer)) then
-        print("Killer is boss")
-        Enemies:OnBossHealing(killer)
+        if (Enemies:IsDamagedByHero(killer, hero)) then
+            Enemies:OnBossHealing(killer)
+        end
     else
         local owner = killer:GetOwner()
-        print("Seems summon")
-        if(Enemies:IsBoss(owner)) then
-            print("Found owner")
-            Enemies:OnBossHealing(killer)
+        if (Enemies:IsBoss(owner)) then
+            if (Enemies:IsDamagedByHero(owner, hero)) then
+                Enemies:OnBossHealing(owner)
+            end
         else
-            print("No idea")
+            local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+                    hero:GetAbsOrigin(),
+                    nil,
+                    5000,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_ALL,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                if (Enemies:IsBoss(enemy) and Enemies:IsDamagedByHero(enemy, hero)) then
+                    Enemies:OnBossHealing(enemy)
+                end
+            end
         end
     end
 end
@@ -74,13 +88,3 @@ function modifier_hero:OnOrder(event)
 end
 
 LinkLuaModifier("modifier_hero", "systems/heroes", LUA_MODIFIER_MOTION_NONE)
-
-GameMode.PreDamageEventHandlersTable = {}
-
-function GameMode:Lycan(damageTable)
-        if(damageTable.attacker:GetUnitName()=="npc_boss_lycan") then
-            damageTable.damage = 0
-            return damageTable
-        end
-end
-GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(GameMode, "Lycan"))

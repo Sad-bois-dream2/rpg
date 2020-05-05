@@ -28,7 +28,7 @@ function Precache(context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
     -- Boss healing mechanic particle
-    PrecacheResource("particle", "particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf", context)
+    PrecacheResource("particle", "particles/units/boss/boss_healing.vpcf", context)
     -- All enemy abilities
     for _, ability in pairs(Enemies.enemyAbilities) do
         PrecacheItemByNameSync(ability.name, context)
