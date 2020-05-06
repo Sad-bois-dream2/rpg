@@ -310,7 +310,7 @@ end
 function TalentTree:SetHeroTalentLevel(hero, talentId, level)
     talentId = tonumber(talentId)
     level = tonumber(level)
-    if (hero ~= nil and talentId ~= nil and level ~= nil and level > -1) then
+    if (hero ~= nil and hero:IsAlive() and talentId ~= nil and level ~= nil and level > -1) then
         if (TalentTree:IsHeroHaveTalentTree(hero)) then
             if (TalentTree:IsTalentIdValid(talentId)) then
                 hero.talents.level[talentId] = level
@@ -689,7 +689,7 @@ function TalentTree:OnTalentTreeWindowCloseRequest(event, args)
     end
 end
 
-if not TalentTree.initialized then
+if IsServer() and not TalentTree.initialized then
     TalentTree:Init()
     TalentTree.initialized = true
 end

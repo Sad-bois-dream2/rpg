@@ -108,7 +108,7 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Cast", self.caster)
 end
 -- crystal_sorceress_sheer_cold modifiers
-modifier_crystal_sorceress_sheer_cold_aura = modifier_crystal_sorceress_sheer_cold_aura or class({
+modifier_crystal_sorceress_sheer_cold_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -166,7 +166,7 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
 end
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_sheer_cold_aura_debuff or class({
+modifier_crystal_sorceress_sheer_cold_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -232,7 +232,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks or class({
+modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = class({
     IsDebuff = function(self)
         return true
     end,
@@ -317,7 +317,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun = modifier_crystal_sorceress_sheer_cold_stun or class({
+modifier_crystal_sorceress_sheer_cold_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -352,7 +352,7 @@ modifier_crystal_sorceress_sheer_cold_stun = modifier_crystal_sorceress_sheer_co
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun_cd = modifier_crystal_sorceress_sheer_cold_stun_cd or class({
+modifier_crystal_sorceress_sheer_cold_stun_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -400,7 +400,7 @@ function crystal_sorceress_sheer_cold:OnToggle()
     end
 end
 -- crystal_sorceress_glacier_rush modifiers
-modifier_crystal_sorceress_glacier_rush = modifier_crystal_sorceress_glacier_rush or class({
+modifier_crystal_sorceress_glacier_rush = class({
     IsDebuff = function(self)
         return false
     end,
@@ -439,7 +439,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_glacier_rush_stun = modifier_crystal_sorceress_glacier_rush_stun or class({
+modifier_crystal_sorceress_glacier_rush_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -544,7 +544,7 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     GameMode:ApplyStackingBuff(modifierTable)
 end
 
-modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceress_freezing_destruction_stun or class({
+modifier_crystal_sorceress_freezing_destruction_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -579,7 +579,7 @@ modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceres
 
 LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_freezing_destruction = modifier_crystal_sorceress_freezing_destruction or class({
+modifier_crystal_sorceress_freezing_destruction = class({
     IsDebuff = function(self)
         return false
     end,
@@ -682,23 +682,9 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
     end
     Timers:CreateTimer(landTime, function()
         local anotherParticleTable = {}
-        for _, particleInfo in pairs(particlesTable) do
-            ParticleManager:DestroyParticle(particleInfo.id, true)
-            ParticleManager:ReleaseParticleIndex(particleInfo.id)
-            local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
-            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
-            table.insert(anotherParticleTable, pidx)
-        end
-        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
-        local enemies = FindUnitsInRadius(self.caster:GetTeam(),
-                targetPosition,
-                nil,
-                self:GetSpecialValueFor("damage_aoe"),
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
+        local casterTeam = self.caster:GetTeam()
+        local damageAoe = self:GetSpecialValueFor("damage_aoe")
+        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.caster = self.caster
@@ -707,16 +693,33 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
         modifierTable.duration = 1
         local modifier = GameMode:ApplyBuff(modifierTable)
         modifier:SetDuration(1.0, false)
-        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
-        for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = enemy
-            damageTable.ability = self
-            damageTable.damage = damage
-            damageTable.frostdmg = true
-            GameMode:DamageUnit(damageTable)
+        for _, particleInfo in pairs(particlesTable) do
+            ParticleManager:DestroyParticle(particleInfo.id, true)
+            ParticleManager:ReleaseParticleIndex(particleInfo.id)
+            local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
+            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
+            local enemies = FindUnitsInRadius(casterTeam,
+                    particleInfo.point,
+                    nil,
+                    damageAoe,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_ALL,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = damage
+                damageTable.frostdmg = true
+                GameMode:DamageUnit(damageTable)
+            end
+            table.insert(anotherParticleTable, pidx)
         end
+        modifier:Destroy()
+        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
         Timers:CreateTimer(2, function()
             for _, pidx in pairs(anotherParticleTable) do
                 ParticleManager:DestroyParticle(pidx, true)
@@ -740,7 +743,8 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
+    GameMode.CRYSTAL_SORCERESS_INIT = true
 end

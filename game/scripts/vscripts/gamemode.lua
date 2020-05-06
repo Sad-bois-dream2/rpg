@@ -56,7 +56,8 @@ require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
 require('systems/dummy')
-
+require('heroes/require')
+require('creeps/require')
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.
 
@@ -106,9 +107,7 @@ end
 ]]
 
 function GameMode:OnHeroInGame(hero)
-    -- This line for example will set the starting gold of every hero to 500 unreliable gold
-    --hero:SetGold(500, false)
-    -- These lines will create an item and add it to the player, effectively ensuring they start with the item
+    Heroes:OnHeroCreation(hero)
 end
 
 --[[

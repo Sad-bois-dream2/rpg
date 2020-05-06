@@ -438,14 +438,12 @@ function Units:OnCreation(unit)
         return
     end
     unit:AddNewModifier(unit, nil, "modifier_stats_system", { Duration = -1 })
-    if (unit:IsRealHero()) then
-        Heroes:OnHeroCreation(unit)
-    else
+    if (not unit:IsRealHero()) then
         Aggro:OnCreepSpawn(unit)
     end
 end
 
-modifier_stats_system = modifier_stats_system or class({
+modifier_stats_system = class({
     IsDebuff = function(self)
         return false
     end,
@@ -595,7 +593,7 @@ function modifier_stats_system:OnIntervalThink()
     end
 end
 
-modifier_stats_system_aaspeed = modifier_stats_system_aaspeed or class({
+modifier_stats_system_aaspeed = class({
     IsDebuff = function(self)
         return false
     end,
@@ -622,7 +620,7 @@ modifier_stats_system_aaspeed = modifier_stats_system_aaspeed or class({
     end
 })
 
-modifier_stats_system_aarange = modifier_stats_system_aarange or class({
+modifier_stats_system_aarange = class({
     IsDebuff = function(self)
         return false
     end,
@@ -649,7 +647,7 @@ modifier_stats_system_aarange = modifier_stats_system_aarange or class({
     end
 })
 
-modifier_stats_system_castrange = modifier_stats_system_castrange or class({
+modifier_stats_system_castrange = class({
     IsDebuff = function(self)
         return false
     end,
@@ -676,7 +674,7 @@ modifier_stats_system_castrange = modifier_stats_system_castrange or class({
     end
 })
 
-modifier_stats_system_movespeed = modifier_stats_system_movespeed or class({
+modifier_stats_system_movespeed = class({
     IsDebuff = function(self)
         return false
     end,

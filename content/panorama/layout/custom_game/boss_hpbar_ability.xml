@@ -4,9 +4,10 @@
 	</styles>
 	<script>
 		function ShowAbilityTooltip() {
-			var abilityName = $('#BossAbility').abilityname;
+			var bossAbility = $('#BossAbility');
+			var abilityName = bossAbility.abilityname;
 			if(abilityName !== "empty") {
-				$.DispatchEvent( "DOTAShowAbilityTooltip", $.GetContextPanel(), abilityName);
+				$.DispatchEvent( "DOTAShowAbilityTooltipForLevel", $.GetContextPanel(), abilityName, bossAbility.abilitylevel);
 			}
 		}
 				

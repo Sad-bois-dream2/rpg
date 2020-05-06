@@ -39,7 +39,7 @@ end
 
 LinkedModifiers["modifier_chosen_invoker_purification_brilliance_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_chosen_invoker_purification_brilliance = modifier_chosen_invoker_purification_brilliance or class({
+modifier_chosen_invoker_purification_brilliance = class({
     IsDebuff = function(self)
         return false
     end,

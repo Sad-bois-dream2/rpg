@@ -4,7 +4,9 @@ var currentAbility = -1;
 var castBarId;
 
 function UpdateValues() {
-    currentCastTime = currentCastTime - 0.1;
+    if(!Game.IsGamePaused()) {
+        currentCastTime = currentCastTime - 0.1;
+    }
     if(castBarId === undefined) {
         castBarId = $.GetContextPanel().Data.id;
     }

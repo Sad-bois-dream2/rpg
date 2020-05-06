@@ -1,6 +1,6 @@
 local LinkedModifiers = {}
 -- terror_lord_malicious_flames modifiers
-modifier_terror_lord_malicious_flames = modifier_terror_lord_malicious_flames or class({
+modifier_terror_lord_malicious_flames = class({
     IsDebuff = function(self)
         return true
     end,
@@ -160,7 +160,7 @@ function terror_lord_malicious_flames:OnSpellStart(unit, special_cast)
 end
 
 -- terror_lord_mighty_defiance modifiers
-modifier_terror_lord_mighty_defiance = modifier_terror_lord_mighty_defiance or class({
+modifier_terror_lord_mighty_defiance = class({
     IsDebuff = function(self)
         return false
     end,
@@ -223,7 +223,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_mighty_defiance"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_mighty_defiance_debuff = modifier_terror_lord_mighty_defiance_debuff or class({
+modifier_terror_lord_mighty_defiance_debuff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -304,7 +304,7 @@ function terror_lord_mighty_defiance:OnSpellStart(unit, special_cast)
     GameMode:ApplyBuff(modifierTable)
 end
 -- terror_lord_destructive_stomp modifiers
-modifier_terror_lord_destructive_stomp_thinker = modifier_terror_lord_destructive_stomp_thinker or class({
+modifier_terror_lord_destructive_stomp_thinker = class({
     IsDebuff = function(self)
         return false
     end,
@@ -422,7 +422,7 @@ function terror_lord_destructive_stomp:OnSpellStart(unit, special_cast)
 end
 
 -- terror_lord_horror_genesis modifiers
-modifier_terror_lord_horror_genesis_thinker = modifier_terror_lord_horror_genesis_thinker or class({
+modifier_terror_lord_horror_genesis_thinker = class({
     IsHidden = function(self)
         return true
     end,
@@ -488,7 +488,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_horror_genesis_thinker_debuff = modifier_terror_lord_horror_genesis_thinker_debuff or class({
+modifier_terror_lord_horror_genesis_thinker_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -566,7 +566,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_horror_genesis_thinker_buff = modifier_terror_lord_horror_genesis_thinker_buff or class({
+modifier_terror_lord_horror_genesis_thinker_buff = class({
     IsDebuff = function(self)
         return false
     end,

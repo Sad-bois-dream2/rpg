@@ -189,7 +189,7 @@ function Aggro:IsValidTarget(creep, target)
     return true
 end
 
-modifier_aggro_system = modifier_aggro_system or class({
+modifier_aggro_system = class({
     IsDebuff = function(self)
         return false
     end,
@@ -231,6 +231,7 @@ end
 
 LinkLuaModifier("modifier_aggro_system", "systems/aggro", LUA_MODIFIER_MOTION_NONE)
 
-if IsServer() then
+if IsServer() and not Aggro.initialized then
     Aggro:Init()
+    Aggro.initialized = true
 end

@@ -19,7 +19,7 @@ function ursa_rend:OnUpgrade()
     self.armor_reduction_duration = self:GetSpecialValueFor("duration")
 end
 
-modifier_ursa_rend = modifier_ursa_rend or class({
+modifier_ursa_rend = class({
     IsDebuff = function(self)
         return false
     end,
@@ -104,7 +104,7 @@ function ursa_rend:ApplyRend(target, parent)
     GameMode:ApplyDebuff(modifierTable)
 end
 
-modifier_ursa_rend_armor = modifier_ursa_rend_armor or class({
+modifier_ursa_rend_armor = class({
     IsDebuff = function(self)
         return true
     end,
@@ -330,7 +330,7 @@ end
 -- ursa fury modifier
 ---------------------
 
-modifier_ursa_fury = modifier_ursa_fury or class({
+modifier_ursa_fury = class({
     IsDebuff = function(self)
         return false
     end,
@@ -535,7 +535,7 @@ end
 -- ability class
 
 -- modifiers
-modifier_ursa_swift = modifier_ursa_swift or class({
+modifier_ursa_swift = class({
     IsDebuff = function(self)
         return false
     end,
@@ -773,7 +773,7 @@ function ursa_slam:OnSpellStart()
         -- Add appropriate particles
         local earthshock_particle_fx = ParticleManager:CreateParticle(earthshock_particle, PATTACH_ABSORIGIN, self.caster)
         ParticleManager:SetParticleControl(earthshock_particle_fx, 2, Vector(255, 125, 0))
-        Timers:CreateTimer(2.0, function()
+        Timers:CreateTimer(5.0, function()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
@@ -819,7 +819,7 @@ end
 
 
 -- Slow modifier
-modifier_ursa_slam_slow = modifier_ursa_slam_slow or class({
+modifier_ursa_slam_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -872,7 +872,7 @@ LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MOD
 -- ursa hunting prey
 ---------------------
 -- modifiers
-modifier_ursa_hunt_buff_stats = modifier_ursa_hunt_buff_stats or class({
+modifier_ursa_hunt_buff_stats = class({
     IsDebuff = function(self)
         return false
     end,
@@ -937,7 +937,7 @@ end
 
 LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_ursa_hunt_random_taunt = modifier_ursa_hunt_random_taunt or class({
+modifier_ursa_hunt_random_taunt = class({
     IsDebuff = function(self)
         return true
     end,

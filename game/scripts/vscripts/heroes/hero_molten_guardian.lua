@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- molten_guardian_scorching_clash modifiers
-modifier_molten_guardian_scorching_clash_dot = modifier_molten_guardian_scorching_clash_dot or class({
+modifier_molten_guardian_scorching_clash_dot = class({
     IsDebuff = function(self)
         return true
     end,
@@ -53,7 +53,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_scorching_clash_dot"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_scorching_clash_stun = modifier_molten_guardian_scorching_clash_stun or class({
+modifier_molten_guardian_scorching_clash_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -97,7 +97,7 @@ modifier_molten_guardian_scorching_clash_stun = modifier_molten_guardian_scorchi
 
 LinkedModifiers["modifier_molten_guardian_scorching_clash_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_scorching_clash_motion = modifier_molten_guardian_scorching_clash_motion or class({
+modifier_molten_guardian_scorching_clash_motion = class({
     IsDebuff = function(self)
         return false
     end,
@@ -243,7 +243,7 @@ end
 LinkedModifiers["modifier_molten_guardian_scorching_clash_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
 
 -- molten_guardian_scorching_clash
-molten_guardian_scorching_clash = molten_guardian_scorching_clash or class({
+molten_guardian_scorching_clash = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_scorching_clash"
     end,
@@ -265,7 +265,7 @@ function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
 end
 
 -- molten_guardian_lava_skin modifiers
-modifier_molten_guardian_lava_skin_toggle = modifier_molten_guardian_lava_skin_toggle or class({
+modifier_molten_guardian_lava_skin_toggle = class({
     IsDebuff = function(self)
         return false
     end,
@@ -357,7 +357,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_lava_skin_toggle"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_lava_skin_slow = modifier_molten_guardian_lava_skin_slow or class({
+modifier_molten_guardian_lava_skin_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -393,7 +393,7 @@ end
 LinkedModifiers["modifier_molten_guardian_lava_skin_slow"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_lava_skin
-molten_guardian_lava_skin = molten_guardian_lava_skin or class({
+molten_guardian_lava_skin = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_lava_skin"
     end,
@@ -416,7 +416,7 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
     end
 end
 -- molten_guardian_volcanic_blow modifiers
-modifier_molten_guardian_volcanic_blow_block = modifier_molten_guardian_volcanic_blow_block or class({
+modifier_molten_guardian_volcanic_blow_block = class({
     IsDebuff = function(self)
         return false
     end,
@@ -456,7 +456,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_block"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_volcanic_blow_stun = modifier_molten_guardian_volcanic_blow_stun or class({
+modifier_molten_guardian_volcanic_blow_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -501,7 +501,7 @@ modifier_molten_guardian_volcanic_blow_stun = modifier_molten_guardian_volcanic_
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_stun"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_volcanic_blow
-molten_guardian_volcanic_blow = molten_guardian_volcanic_blow or class({
+molten_guardian_volcanic_blow = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_volcanic_blow"
     end,
@@ -549,7 +549,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
 end
 
 -- molten_guardian_molten_fortress modifiers
-modifier_molten_guardian_molten_fortress_helper = modifier_molten_guardian_molten_fortress_helper or class({
+modifier_molten_guardian_molten_fortress_helper = class({
     IsDebuff = function(self)
         return false
     end,
@@ -597,7 +597,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_helper"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_thinker = modifier_molten_guardian_molten_fortress_thinker or class({
+modifier_molten_guardian_molten_fortress_thinker = class({
     IsHidden = function(self)
         return true
     end,
@@ -666,7 +666,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_thinker_buff = modifier_molten_guardian_molten_fortress_thinker_buff or class({
+modifier_molten_guardian_molten_fortress_thinker_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -714,7 +714,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_aggro = modifier_molten_guardian_molten_fortress_aggro or class({
+modifier_molten_guardian_molten_fortress_aggro = class({
     IsDebuff = function(self)
         return true
     end,
@@ -762,7 +762,8 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_molten_guardian", MotionController)
 end
 
-if (IsServer()) then
+if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_toggle, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
+    GameMode.MOLTEN_GUARDIAN_INIT = true
 end

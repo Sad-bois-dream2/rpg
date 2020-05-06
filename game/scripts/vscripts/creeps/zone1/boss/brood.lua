@@ -61,7 +61,7 @@ function brood_toxin:ApplyToxin(target, parent)
     GameMode:ApplyStackingDebuff(modifierTable)
 end
 
-modifier_brood_toxin = modifier_brood_toxin or class({
+modifier_brood_toxin = class({
     IsDebuff = function(self)
         return false
     end,
@@ -152,7 +152,7 @@ end
 
 LinkLuaModifier("modifier_brood_toxin", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_brood_toxin_slow = modifier_brood_toxin_slow or class({
+modifier_brood_toxin_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -220,7 +220,7 @@ end
 LinkLuaModifier("modifier_brood_toxin_slow", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 --special stun for one hit kill check
-modifier_brood_toxin_stunned = modifier_brood_toxin_stunned or class({
+modifier_brood_toxin_stunned = class({
     IsDebuff = function(self)
         return true
     end,
@@ -282,7 +282,7 @@ end
 
 LinkLuaModifier("modifier_brood_toxin_stunned", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
---modifier_brood_toxin_immunity = modifier_brood_toxin_immunity or class({
+--modifier_brood_toxin_immunity = class({
 --IsDebuff = function(self)
 --return true
 --end,
@@ -312,7 +312,7 @@ LinkLuaModifier("modifier_brood_toxin_stunned", "creeps/zone1/boss/brood.lua", L
 -- brood comes
 ---------------------
 --mother of spider modifier
-modifier_brood_comes_mother = modifier_brood_comes_mother or class({
+modifier_brood_comes_mother = class({
     IsDebuff = function(self)
         return false
     end,
@@ -376,7 +376,7 @@ end
 LinkLuaModifier("modifier_brood_comes_mother", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 --random taunt modifier
-modifier_brood_comes_random_taunt = modifier_brood_comes_random_taunt or class({
+modifier_brood_comes_random_taunt = class({
     IsDebuff = function(self)
         return true
     end,
@@ -411,7 +411,7 @@ end
 LinkLuaModifier("modifier_brood_comes_random_taunt", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 --charge ms bonus and getignoreaggrotarget(focus target) modifier
-modifier_brood_comes_charge = modifier_brood_comes_charge or class({
+modifier_brood_comes_charge = class({
     IsDebuff = function(self)
         return false
     end,
@@ -581,7 +581,7 @@ end
 --brood cocoons
 ---------------------
 -- modifier
-modifier_brood_cocoons = modifier_brood_cocoons or class({
+modifier_brood_cocoons = class({
     IsDebuff = function(self)
         return true
     end,
@@ -716,7 +716,7 @@ end
 -- brood kiss
 ---------------------
 --modifier
-modifier_brood_kiss = modifier_brood_kiss or class({
+modifier_brood_kiss = class({
     IsDebuff = function(self)
         return true
     end,
@@ -933,7 +933,7 @@ function brood_spit:OnProjectileHit(target, location)
         damageTable.caster = self.caster
         damageTable.target = enemy
         damageTable.ability = self -- can be nil
-        damageTable.damage = damage*0.05
+        damageTable.damage = damage
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
         --local modifierTable = {}
@@ -979,8 +979,7 @@ function brood_spit:PlayEffects(loc)
     EmitSoundOnLocationWithCaster(loc, sound_location, self:GetCaster())
 end
 
-modifier_brood_spit = modifier_brood_spit or class({
-
+modifier_brood_spit = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1109,8 +1108,7 @@ function modifier_brood_spit:CreateBlob()
     EmitSoundOn("Hero_Viper.Nethertoxin.Cast", self:GetParent())
 end
 
-modifier_brood_spit_burn_slow = modifier_brood_spit_burn_slow or class({
-
+modifier_brood_spit_burn_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1311,7 +1309,7 @@ end
 -- brood hunger
 ----------------
 
-modifier_brood_hunger = modifier_brood_hunger or class({
+modifier_brood_hunger = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1394,7 +1392,7 @@ end
 --------
 --BUFF AURA
 ----------
-modifier_brood_web_aura = modifier_brood_web_aura or class({})
+modifier_brood_web_aura = class({})
 
 function modifier_brood_web_aura:OnCreated()
     if IsServer() then
@@ -1492,7 +1490,7 @@ LinkLuaModifier("modifier_brood_web_aura", "creeps/zone1/boss/brood.lua", LUA_MO
 -- SPIN WEB FRIENDLY MODIFIER --
 --------------------------------
 
-modifier_brood_web = modifier_brood_web or class({
+modifier_brood_web = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1537,7 +1535,7 @@ LinkLuaModifier("modifier_brood_web", "creeps/zone1/boss/brood.lua", LUA_MODIFIE
 -------------
 --DEBUFF AURA
 --------------
-modifier_brood_web_aura_enemy = modifier_brood_web_aura_enemy or class({})
+modifier_brood_web_aura_enemy = class({})
 
 function modifier_brood_web_aura_enemy:OnCreated()
     if IsServer() then
@@ -1592,7 +1590,7 @@ LinkLuaModifier("modifier_brood_web_aura_enemy", "creeps/zone1/boss/brood.lua", 
 -----------------------------
 -- SPIN WEB ENEMY MODIFIER --
 -----------------------------
-modifier_brood_web_enemy = modifier_brood_web_enemy or class({
+modifier_brood_web_enemy = class({
     IsDebuff = function(self)
         return true
     end,

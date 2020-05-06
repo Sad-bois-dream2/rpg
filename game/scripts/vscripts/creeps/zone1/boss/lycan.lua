@@ -65,7 +65,7 @@ function lycan_companion:OnUpgrade()
     end
 end
 
-modifier_lycan_companion = modifier_lycan_companion or class({
+modifier_lycan_companion = class({
     IsDebuff = function(self)
         return false
     end,
@@ -155,7 +155,7 @@ function lycan_wound:OnSpellStart()
     self:ApplyDamageAndDebuff(target, caster)
 end
 
-modifier_lycan_wound_debuff = modifier_lycan_wound_debuff or class({
+modifier_lycan_wound_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -253,7 +253,7 @@ function lycan_wolf_form:Transform()
     caster:EmitSound("Hero_Lycan.Shapeshift.Cast")
 end
 
-modifier_lycan_wolf_form = modifier_lycan_wolf_form or class({
+modifier_lycan_wolf_form = class({
     IsDebuff = function(self)
         return false
     end,
@@ -300,7 +300,7 @@ end
 
 LinkLuaModifier("modifier_lycan_wolf_form", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_transform = modifier_lycan_transform or class({
+modifier_lycan_transform = class({
     IsDebuff = function(self)
         return false
     end,
@@ -371,10 +371,6 @@ function modifier_lycan_transform:OnTakeDamage(damageTable)
     end
 end
 
-if (IsServer()) then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
-end
-
 LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------------------
@@ -429,7 +425,7 @@ end
 
 LinkLuaModifier("modifier_lycan_howl_aura", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_howl_aura_buff = modifier_lycan_howl_aura_buff or class({
+modifier_lycan_howl_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -475,7 +471,7 @@ end
 
 LinkLuaModifier("modifier_lycan_howl_aura_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_howl_debuff = modifier_lycan_howl_debuff or class({
+modifier_lycan_howl_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -626,7 +622,7 @@ function lycan_agility:Blink(target, caster)
     caster:SetForwardVector(direction)
 end
 
-modifier_lycan_agility_buff = modifier_lycan_agility_buff or class({
+modifier_lycan_agility_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -719,7 +715,7 @@ function lycan_double_strike:OnUpgrade()
     self.max_hits = self:GetSpecialValueFor("max_hits")
 end
 
-modifier_lycan_double_strike = modifier_lycan_double_strike or class({
+modifier_lycan_double_strike = class({
     IsDebuff = function(self)
         return false
     end,
@@ -780,7 +776,7 @@ end
 LinkLuaModifier("modifier_lycan_double_strike", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 --modifier double strike quick
-modifier_lycan_double_strike_quick = modifier_lycan_double_strike_quick or class({
+modifier_lycan_double_strike_quick = class({
     IsDebuff = function(self)
         return false
     end,
@@ -862,7 +858,7 @@ function lycan_bleeding:ApplyBleeding(target, parent)
     GameMode:ApplyStackingDebuff(modifierTable)
 end
 
-modifier_lycan_bleeding = modifier_lycan_bleeding or class({
+modifier_lycan_bleeding = class({
     IsDebuff = function(self)
         return false
     end,
@@ -902,7 +898,7 @@ end
 
 LinkLuaModifier("modifier_lycan_bleeding", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_bleeding_dot = modifier_lycan_bleeding_dot or class({
+modifier_lycan_bleeding_dot = class({
     IsDebuff = function(self)
         return true
     end,
@@ -948,7 +944,7 @@ end
 
 LinkLuaModifier("modifier_lycan_bleeding_dot", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_lycan_bleeding_heal_reduced = modifier_lycan_bleeding_heal_reduced or class({
+modifier_lycan_bleeding_heal_reduced = class({
     IsDebuff = function(self)
         return true
     end,
@@ -986,3 +982,7 @@ end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
+if (IsServer() and not GameMode.ZONE1_BOSS_LYCAN) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_LYCAN = true
+end
