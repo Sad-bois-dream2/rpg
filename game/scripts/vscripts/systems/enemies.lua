@@ -136,6 +136,25 @@ function Enemies:IsBoss(unit)
     return false
 end
 
+function Enemies:GetBossHealingPercentFor(unit)
+    if (not unit or unit:IsNull()) then
+        return 0
+    end
+    local modifier = unit:FindModifierByName("modifier_creep_scaling")
+    if(not modifier or not modifier.difficulty) then
+        return 0
+    end
+    local result = 0.1
+    local difficulty = modifier.difficulty
+    if (difficulty > 4) then
+        result = 0.2
+    end
+    if (difficulty > 7) then
+        result = 0.3
+    end
+    return result
+end
+
 function Enemies:OnBossHealing(unit)
     if (not unit or unit:IsNull()) then
         return
@@ -144,7 +163,7 @@ function Enemies:OnBossHealing(unit)
     healTable.caster = unit
     healTable.target = unit
     healTable.ability = nil
-    healTable.heal = unit:GetMaxHealth() * 0.2
+    healTable.heal = unit:GetMaxHealth() * Enemies:GetBossHealingPercentFor(unit)
     GameMode:HealUnit(healTable)
     local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
     Timers:CreateTimer(2, function()
@@ -163,6 +182,14 @@ function Enemies:IsDamagedByHero(unit, hero)
         return false
     end
 end
+
+function Enemies:ResetDamageForHero(unit, hero)
+    if (not unit or not hero or unit:IsNull() or hero:IsNull() or not unit.bossHealing) then
+        return
+    end
+    unit.bossHealing.damage[hero:GetEntityIndex()] = nil
+end
+
 modifier_creep_scaling = modifier_creep_scaling or class({
     IsDebuff = function(self)
         return false

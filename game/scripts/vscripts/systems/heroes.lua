@@ -55,12 +55,14 @@ function modifier_hero:OnDeath(keys)
     if (Enemies:IsBoss(killer)) then
         if (Enemies:IsDamagedByHero(killer, hero)) then
             Enemies:OnBossHealing(killer)
+            Enemies:ResetDamageForHero(killer, hero)
         end
     else
         local owner = killer:GetOwner()
         if (Enemies:IsBoss(owner)) then
             if (Enemies:IsDamagedByHero(owner, hero)) then
                 Enemies:OnBossHealing(owner)
+                Enemies:ResetDamageForHero(owner, hero)
             end
         else
             local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
@@ -75,6 +77,7 @@ function modifier_hero:OnDeath(keys)
             for _, enemy in pairs(enemies) do
                 if (Enemies:IsBoss(enemy) and Enemies:IsDamagedByHero(enemy, hero)) then
                     Enemies:OnBossHealing(enemy)
+                    Enemies:ResetDamageForHero(enemy, hero)
                 end
             end
         end
