@@ -45,9 +45,11 @@ function Enemies:Init()
     Enemies.ABILITY_TYPE_LAST = 2
     Enemies.eliteAbilities = {}
     Enemies.enemyAbilities = {}
-    Enemies.STATS_CALCULATE_INTERVAL = 1
+    Enemies.STATS_SENDING_INTERVAL = 1
     Enemies.MAX_ABILITIES = 10
+    Enemies.DAMAGE_CLEAN_INTERVAL = 30
     Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_creep_scaling, 'OnPostTakeDamage'))
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
 end
@@ -106,7 +108,7 @@ function Enemies:OnUpdateEnemyStatsRequest(event, args)
             Timers:CreateTimer(0, function()
                 if (enemy ~= nil and not enemy:IsNull() and enemy == player.latestSelectedEnemy) then
                     CustomGameEventManager:Send_ServerToPlayer(player, "rpg_update_enemy_stats_from_server", { enemy = enemy:entindex(), stats = json.encode(enemy.stats) })
-                    return Enemies.STATS_CALCULATE_INTERVAL
+                    return Enemies.STATS_SENDING_INTERVAL
                 end
             end)
         end
@@ -128,10 +130,64 @@ function Enemies:IsBoss(unit)
     if (not unit or unit:IsNull()) then
         return false
     end
-    if (string.find(unit:GetUnitName(), "boss")) then
+    if (unit.GetUnitLabel and string.find(unit:GetUnitLabel():lower(), "boss")) then
         return true
     end
     return false
+end
+
+function Enemies:GetBossHealingPercentFor(unit)
+    if (not unit or unit:IsNull()) then
+        return 0
+    end
+    local modifier = unit:FindModifierByName("modifier_creep_scaling")
+    if(not modifier or not modifier.difficulty) then
+        return 0
+    end
+    local result = 0.1
+    local difficulty = modifier.difficulty
+    if (difficulty > 4) then
+        result = 0.2
+    end
+    if (difficulty > 7) then
+        result = 0.3
+    end
+    return result
+end
+
+function Enemies:OnBossHealing(unit)
+    if (not unit or unit:IsNull()) then
+        return
+    end
+    local healTable = {}
+    healTable.caster = unit
+    healTable.target = unit
+    healTable.ability = nil
+    healTable.heal = unit:GetMaxHealth() * Enemies:GetBossHealingPercentFor(unit)
+    GameMode:HealUnit(healTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+    Timers:CreateTimer(2, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+end
+
+function Enemies:IsDamagedByHero(unit, hero)
+    if (not unit or not hero or unit:IsNull() or hero:IsNull() or not unit.bossHealing) then
+        return false
+    end
+    if (unit.bossHealing.damage[hero:GetEntityIndex()]) then
+        return true
+    else
+        return false
+    end
+end
+
+function Enemies:ResetDamageForHero(unit, hero)
+    if (not unit or not hero or unit:IsNull() or hero:IsNull() or not unit.bossHealing) then
+        return
+    end
+    unit.bossHealing.damage[hero:GetEntityIndex()] = nil
 end
 
 modifier_creep_scaling = modifier_creep_scaling or class({
@@ -154,10 +210,6 @@ modifier_creep_scaling = modifier_creep_scaling or class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
-
-function modifier_creep_scaling:GetValue(minValue, maxValue, scaling)
-    return minValue + ((maxValue - minValue) * scaling)
-end
 
 function modifier_creep_scaling:OnCreated()
     if (not IsServer()) then
@@ -226,6 +278,9 @@ function modifier_creep_scaling:OnCreated()
             return 0.25
         end
     end, self)
+    self.creep.bossHealing = {}
+    self.creep.bossHealing.damage = {}
+    self:StartIntervalThink(Enemies.DAMAGE_CLEAN_INTERVAL)
 end
 
 function modifier_creep_scaling:GetAttackDamageBonus()
@@ -270,6 +325,20 @@ end
 
 function modifier_creep_scaling:GetHealthBonus()
     return self.baseHealth
+end
+
+function modifier_creep_scaling:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.creep.bossHealing.damage = {}
+end
+
+function modifier_creep_scaling:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_creep_scaling")
+    if (modifier) then
+        damageTable.victim.bossHealing.damage[damageTable.attacker:GetEntityIndex()] = true
+    end
 end
 
 LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
@@ -322,8 +391,6 @@ ListenToGameEvent("npc_spawned", function(keys)
         unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
     end
 end, nil)
-
-Enemies.initialized = false
 
 if not Enemies.initialized then
     Enemies:Init()

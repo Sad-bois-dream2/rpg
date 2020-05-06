@@ -11,6 +11,7 @@
 		"Level"						"30"
 		"ModelScale" 				"1"
 		"IsNeutralUnitType"			"0"
+		"UnitLabel"         "boss"
 		// Abilities
 		//----------------------------------------------------------------
 	          "Ability1"          "lycan_call"     // Ability 1.
