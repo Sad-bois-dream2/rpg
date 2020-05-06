@@ -73,7 +73,11 @@ function Enemies:GetAbilityListsForEnemy(unit)
         return result
     end
     if (Enemies:IsElite(unit)) then
-        result[2] = Enemies.eliteAbilities
+        local eliteAbilities = {}
+        for _, ability in pairs(Enemies.eliteAbilities) do
+            table.insert(eliteAbilities, ability)
+        end
+        result[2] = eliteAbilities
     end
     local unitName = unit:GetUnitName()
     for _, ability in pairs(Enemies.enemyAbilities) do
@@ -90,7 +94,7 @@ end
 
 function Enemies:GetAbilitiesLevel(difficulty)
     difficulty = tonumber(difficulty)
-    if(not difficulty) then
+    if (not difficulty) then
         return 1
     end
     local result = 1
@@ -145,7 +149,7 @@ function Enemies:GetBossHealingPercentFor(unit)
         return 0
     end
     local modifier = unit:FindModifierByName("modifier_creep_scaling")
-    if(not modifier or not modifier.difficulty) then
+    if (not modifier or not modifier.difficulty) then
         return 0
     end
     local result = 0.1
@@ -253,15 +257,22 @@ function modifier_creep_scaling:OnCreated()
             end
         end
     end
-    if (abilitiesAdded < 10) then
-        for i, ability in pairs(abilities[2]) do
-            if (not self.creep:HasAbility(ability)) then
-                local addedAbility = self.creep:AddAbility(ability)
-                addedAbility:SetLevel(abilitiesLevel)
-                abilitiesAdded = abilitiesAdded + 1
-                if (addedAbility.IsRequireCastbar and not castbarRequired) then
-                    castbarRequired = addedAbility:IsRequireCastbar()
-                end
+    local missAbilities = Enemies.MAX_ABILITIES - abilitiesAdded
+    local randomAbilities = {}
+    if (missAbilities > #abilities[2]) then
+        missAbilities = #abilities[2]
+    end
+    for i = 0, missAbilities do
+        local randIndex = math.random(1, #abilities[2])
+        table.insert(randomAbilities, abilities[2][randIndex])
+        table.remove(abilities[2], randIndex)
+    end
+    for _, ability in pairs(randomAbilities) do
+        if (not self.creep:HasAbility(ability)) then
+            local addedAbility = self.creep:AddAbility(ability)
+            addedAbility:SetLevel(abilitiesLevel)
+            if (addedAbility.IsRequireCastbar and not castbarRequired) then
+                castbarRequired = addedAbility:IsRequireCastbar()
             end
         end
     end
