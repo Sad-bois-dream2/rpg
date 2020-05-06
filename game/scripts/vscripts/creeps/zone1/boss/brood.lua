@@ -724,6 +724,7 @@ function modifier_brood_kiss:OnCreated()
     self.parent = self:GetParent()
     self.delay = self:GetAbility():GetSpecialValueFor("timer")
     self.pidx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_kiss/brood_kiss.vpcf", PATTACH_OVERHEAD_FOLLOW, self.parent)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, math.max(0, math.floor(self.delay)), 0))
     ParticleManager:SetParticleControl(self.pidx, 3, Vector(255, 0, 0))
     self:StartIntervalThink(1)
 end
