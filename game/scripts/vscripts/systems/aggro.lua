@@ -189,7 +189,7 @@ function Aggro:IsValidTarget(creep, target)
     return true
 end
 
-modifier_aggro_system = modifier_aggro_system or class({
+modifier_aggro_system = class({
     IsDebuff = function(self)
         return false
     end,
