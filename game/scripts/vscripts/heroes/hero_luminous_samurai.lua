@@ -18,13 +18,16 @@ modifier_luminous_samurai_bankai_buff = class({
     end,
     GetTexture = function(self)
         return luminous_samurai_bankai:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_TOOLTIP,
+            MODIFIER_PROPERTY_TOOLTIP2
+        }
     end
 })
 
 function modifier_luminous_samurai_bankai_buff:OnCreated()
-    if (not IsServer()) then
-        return
-    end
     self.ability = self:GetAbility()
     self.attackDamage = self.ability:GetSpecialValueFor("attack_dmg_per_stack")
     self.critDamage = self.ability:GetSpecialValueFor("crit_dmg_per_stack") / 100
@@ -36,6 +39,14 @@ end
 
 function modifier_luminous_samurai_bankai_buff:GetCriticalDamageBonus()
     return self.critDamage * self:GetStackCount()
+end
+
+function modifier_luminous_samurai_bankai_buff:OnTooltip()
+    return self.attackDamage * self:GetStackCount()
+end
+
+function modifier_luminous_samurai_bankai_buff:OnTooltip2()
+    return self.critDamage * self:GetStackCount() * 100
 end
 
 LinkedModifiers["modifier_luminous_samurai_bankai_buff"] = LUA_MODIFIER_MOTION_NONE
@@ -60,7 +71,10 @@ modifier_luminous_samurai_bankai = class({
         return "particles/units/luminous_samurai/bankai/bankai_buff.vpcf"
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+        return {
+            MODIFIER_EVENT_ON_ATTACK_LANDED,
+            MODIFIER_EVENT_ON_DEATH
+        }
     end
 })
 
@@ -72,6 +86,7 @@ function modifier_luminous_samurai_bankai:OnCreated()
     self.ability = self:GetAbility()
     self.stackDuration = self.ability:GetSpecialValueFor("stack_duration")
     self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
+    self.bonusDuration = self.ability:GetSpecialValueFor("bonus_duration")
 end
 
 function modifier_luminous_samurai_bankai:OnAttackLanded(keys)
@@ -96,6 +111,15 @@ function modifier_luminous_samurai_bankai:OnAttackLanded(keys)
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
+    end
+end
+
+function modifier_luminous_samurai_bankai:OnDeath(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.attacker == self.caster) then
+        self:SetDuration(self:GetElapsedTime() + self.bonusDuration, true)
     end
 end
 

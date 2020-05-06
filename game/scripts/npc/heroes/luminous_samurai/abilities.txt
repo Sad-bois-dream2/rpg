@@ -56,19 +56,9 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"miss_chance"				"20 40 60 80"
-			}
-			"06"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"miss_radius"				"20 40 60 80"
-			}
-			"07"
-			{
-				"var_type"				"FIELD_FLOAT"
 				"duration"				"5 10 15 20"
 			}
-			"08"
+			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"bonus_duration"				"2 3 4 5"
