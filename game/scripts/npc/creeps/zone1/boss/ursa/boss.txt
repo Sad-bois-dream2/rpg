@@ -99,7 +99,7 @@
                         "1" { "ItemDef" "9688" }
                         "2" { "ItemDef" "9689" }
                         "3" { "ItemDef" "9690" }
-                        "4" { "ItemDef" "7654" }
+                        "4" { "ItemDef" "9691" }
                         "5" { "ItemDef" "6893" }
                     }
 

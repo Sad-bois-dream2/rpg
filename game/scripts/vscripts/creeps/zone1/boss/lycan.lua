@@ -388,9 +388,6 @@ lycan_howl_aura = class({
 })
 
 modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
-    IsHidden = function(self)
-        return false
-    end,
     IsAuraActiveOnDeath = function(self)
         return false
     end,

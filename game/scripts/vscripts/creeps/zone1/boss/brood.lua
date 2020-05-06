@@ -9,6 +9,14 @@ function IsSpiderling(unit)
     end
 end
 
+function IsMother(unit)
+    if unit:GetUnitName() == "npc_boss_brood" then
+        return true
+    else
+        return false
+    end
+end
+
 function IsToxinStunned(unit)
     if unit:HasModifier("modifier_brood_toxin_stunned") then
         return true
@@ -92,14 +100,8 @@ function modifier_brood_toxin:OnAttackLanded(keys)
     if (keys.attacker:HasModifier("modifier_brood_comes_mother") and keys.attacker == self.parent and stun ~= nil) then
         keys.target:ForceKill(false)
         --taunting
-        local i = math.random(2)
-        if i == 1 then
-            self.parent:EmitSound("broodmother_broo_ability_incap_02")
-        else
-            self.parent:EmitSound("broodmother_broo_ability_incap_04")
-        end
-        --particle
-        local particle_cast_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_toxin/brood_toxin.vpcf", PATTACH_ABSORIGIN, keys.target)
+        self.parent:EmitSound("broodmother_broo_ability_incap_0"..math.random(2,4))
+        local particle_cast_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_toxin/brood_toxin.vpcf", PATTACH_ABSORIGIN, keys.attacker)
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(particle_cast_fx, false)
             ParticleManager:ReleaseParticleIndex(particle_cast_fx)
@@ -115,22 +117,26 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_brood_toxin:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_brood_toxin")
-    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.ability == modifier.ability) then
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.naturedmg == true) then
         local slowmod = damageTable.victim:FindModifierByName("modifier_brood_toxin_slow")
-        local stun_duration = slowmod.stun
-        --if no toxin slow apply it
-        if slowmod == nil then
+        local stunmod = damageTable.victim:FindModifierByName("modifier_brood_toxin_stunned")
+        --if no stun and (no toxin slow or lower than max stack) add stack
+        if (slowmod == nil or (slowmod:GetStackCount() < modifier:GetAbility():GetSpecialValueFor("max_stacks"))) and stunmod ==nil then
             local modifierTable = {}
             modifierTable.ability = modifier:GetAbility()
             modifierTable.target = damageTable.victim
             modifierTable.caster = damageTable.attacker
             modifierTable.modifier_name = "modifier_brood_toxin_slow"
-            modifierTable.duration = modifier.duration
+            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
             modifierTable.stacks = 1
-            modifierTable.max_stacks = modifier.max_stacks
+            modifierTable.max_stacks = modifier:GetAbility():GetSpecialValueFor("max_stacks")
             GameMode:ApplyStackingDebuff(modifierTable)
+            --if already stun do nothing
+        elseif slowmod == nil and stunmod  ~= nil then
+            return
             -- if toxin slow max > stun
-        elseif slowmod:GetStackCount() == slowmod.max_stacks then
+        elseif slowmod:GetStackCount() == modifier:GetAbility():GetSpecialValueFor("max_stacks") then
+            local stun_duration = modifier:GetAbility():GetSpecialValueFor("stun")
             local modifierTable = {}
             modifierTable.ability = modifier:GetAbility()
             modifierTable.target = damageTable.victim
@@ -140,9 +146,6 @@ function modifier_brood_toxin:OnTakeDamage(damageTable)
             GameMode:ApplyDebuff(modifierTable)
             damageTable.victim:EmitSound("Hero_Slardar.Bash")
             damageTable.victim:FindModifierByName("modifier_brood_toxin_slow"):Destroy()
-        else
-            -- else add stack
-            damageTable.victim:FindModifierByName("modifier_brood_toxin_slow"):OnRefresh()
         end
     end
 end
@@ -160,7 +163,7 @@ modifier_brood_toxin_slow = modifier_brood_toxin_slow or class({
         return true
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -249,9 +252,11 @@ function modifier_brood_toxin_stunned:OnCreated()
 end
 
 function modifier_brood_toxin_stunned:CheckState()
-    return { [MODIFIER_STATE_STUNNED] = true }
+    return { [MODIFIER_STATE_STUNNED] = true,
+             [MODIFIER_STATE_FROZEN] = true, }
 end
 
+--give vision to mother
 function modifier_brood_toxin_stunned:DeclareFunctions()
     local funcs = { MODIFIER_PROPERTY_PROVIDES_FOW_POSITION }
 
@@ -330,6 +335,12 @@ function modifier_brood_comes_mother:OnCreated()
     self:StartIntervalThink(1.0)
 end
 
+function modifier_brood_comes_mother:CheckState()
+    return {
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+    }
+end
+
 --smart mother tries to find enemy to charge in and oneshot
 function modifier_brood_comes_mother:OnIntervalThink()
     if (not IsServer()) then
@@ -352,15 +363,12 @@ function modifier_brood_comes_mother:OnIntervalThink()
             modifierTable.target = self.parent
             modifierTable.caster = self.parent
             modifierTable.modifier_name = "modifier_brood_comes_charge"
-            modifierTable.duration = 3
+            modifierTable.duration = 5
             modifierTable.modifier_params = { target = enemy }
             GameMode:ApplyBuff(modifierTable)
-            local i = math.random(2)
-            if i == 1 then
-                self.parent:EmitSound("broodmother_broo_ability_hunger_05")
-            else
-                self.parent:EmitSound("broodmother_broo_cast_02")
-            end
+            self.parent:EmitSound("broodmother_broo_cast_0"..math.random(2,3))
+            self.parent:MoveToTargetToAttack(enemy)
+            self.parent:PerformAttack(enemy, true, true, true, true, false, false, false)
         end
     end
 end
@@ -425,6 +433,7 @@ function modifier_brood_comes_charge:OnCreated(keys)
     if (not IsServer()) then
         return
     end
+    self.parent = self:GetParent()
     self.charge_speed = self:GetAbility():GetSpecialValueFor("charge_speed")
     if (not keys or keys.target) then
         self:Destroy()
@@ -440,8 +449,8 @@ function modifier_brood_comes_charge:GetIgnoreAggroTarget()
 end
 
 function modifier_brood_comes_charge:CheckState()
-    --phase and haste
     return {
+        [MODIFIER_STATE_SILENCED] = true,
         [MODIFIER_STATE_NO_UNIT_COLLISION] = true
     }
 end
@@ -591,9 +600,7 @@ modifier_brood_cocoons = modifier_brood_cocoons or class({
     GetStatusEffectName = function(self)
         return "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
     end,
-    GetEffectName = function(self)
-        return "particles/units/npc_boss_brood/brood_cocoons/brood_web.vpcf"
-    end
+
 })
 
 function modifier_brood_cocoons:OnCreated()
@@ -669,36 +676,40 @@ function brood_cocoons:Banish(target)
     if (target == nil) then
         return
     end
-    local caster = self:GetCaster()
-    local duration = self:GetSpecialValueFor("duration")
     --apply banish debuff banish until rescue by channeling at melee range for some time if not saved for 30s = ded ==> lazy
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = target
-    modifierTable.caster = caster
+    modifierTable.caster = self.caster
     modifierTable.modifier_name = "modifier_brood_cocoons"
-    modifierTable.duration = duration
+    modifierTable.duration = self.duration
     GameMode:ApplyDebuff(modifierTable)
+    local cocoon_fx = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_cocoons/brood_web.vpcf",PATTACH_ABSORIGIN, target)
+    Timers:CreateTimer(self.duration, function()
+        ParticleManager:DestroyParticle(cocoon_fx, false)
+        ParticleManager:ReleaseParticleIndex(cocoon_fx)
+    end)
+    target:EmitSound("Hero_Broodmother.SpawnSpiderlingsCast")
 end
 
 function brood_cocoons:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
+    self.caster = self:GetCaster()
     local number = self:GetSpecialValueFor("number")
+    self.duration = self:GetSpecialValueFor("duration")
     local counter = 0
     local target
     Timers:CreateTimer(0, function()
         if counter < number then
-            target = self:FindTargetForBanish(caster)
+            target = self:FindTargetForBanish(self.caster)
             self:Banish(target)
             counter = counter + 1
             return 0.1
         end
     end)
-    caster:EmitSound("broodmother_broo_move_09")
-    caster:EmitSound("Hero_Broodmother.SpawnSpiderlingsCast")
+    self.caster:EmitSound("broodmother_broo_move_09")
 end
 
 ---------------------
@@ -902,7 +913,7 @@ function brood_spit:OnProjectileHit(target, location)
     local damage = self:GetSpecialValueFor("damage_per_impact")
     local duration = self:GetSpecialValueFor("burn_ground_duration")
     local impact_radius = self:GetSpecialValueFor("impact_radius")
-    local linger = self:GetSpecialValueFor("burn_linger_duration")
+    --local linger = self:GetSpecialValueFor("burn_linger_duration")
     -- precache damage
 
     local enemies = FindUnitsInRadius(
@@ -922,16 +933,16 @@ function brood_spit:OnProjectileHit(target, location)
         damageTable.caster = self.caster
         damageTable.target = enemy
         damageTable.ability = self -- can be nil
-        damageTable.damage = damage
+        damageTable.damage = damage*0.05
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = enemy
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_brood_spit_burn_slow"
-        modifierTable.duration = linger
-        GameMode:ApplyDebuff(modifierTable)
+        --local modifierTable = {}
+        --modifierTable.ability = self
+        --modifierTable.target = enemy
+        --modifierTable.caster = self.caster
+        --modifierTable.modifier_name = "modifier_brood_spit_burn_slow"
+        --modifierTable.duration = linger
+        --GameMode:ApplyDebuff(modifierTable)
 
     end
 
@@ -1176,7 +1187,7 @@ function modifier_brood_spit_burn_slow:OnIntervalThink()
     local damageTable = {}
     damageTable.caster = caster
     damageTable.target = parent
-    damageTable.ability = nil
+    damageTable.ability = self:GetAbility()
     damageTable.damage = dps
     damageTable.naturedmg = true
     GameMode:DamageUnit(damageTable)
@@ -1192,9 +1203,9 @@ function modifier_brood_spit_burn_slow:GetEffectAttachType()
     return PATTACH_ABSORIGIN_FOLLOW
 end
 
-function modifier_brood_spit_burn_slow:GetStatusEffectName()
-    return "particles/status_fx/status_effect_poison_viper.vpcf"
-end
+--function modifier_brood_spit_burn_slow:GetStatusEffectName()
+    --return "particles/status_fx/status_effect_poison_viper.vpcf"
+--end
 
 modifier_brood_spit_thinker = class({})
 
@@ -1324,10 +1335,11 @@ function modifier_brood_hunger:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
+    local duration = self.ability:GetSpecialValueFor("duration")
     --particle
     self.pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_broodmother/broodmother_hunger_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
     ParticleManager:SetParticleControlEnt(self.pfx, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_thorax", self.parent:GetAbsOrigin(), true)
-    Timers:CreateTimer(2.0, function()
+    Timers:CreateTimer(duration, function()
         ParticleManager:DestroyParticle(self.pfx, false)
         ParticleManager:ReleaseParticleIndex(self.pfx)
     end)
@@ -1738,7 +1750,195 @@ function brood_web:OnSpellStart()
     caster:EmitSound("broodmother_broo_ability_spin_01")
 end
 
-if (IsServer()) then
+--------------
+--brood angry
+----------------
+brood_angry = class({
+    GetAbilityTextureName = function(self)
+        return "brood_angry"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_brood_angry"
+    end,
+})
+
+modifier_brood_angry = modifier_brood_angry or class({
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.radius or 0
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_INVULNERABLE + DOTA_UNIT_TARGET_FLAG_OUT_OF_WORLD
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_brood_angry_buff" --  The name of the secondary modifier that will be applied by this modifier (if it is an aura).
+    end,
+    GetTexture = function(self)
+        return brood_angry:GetAbilityTextureName()
+    end
+})
+
+
+function brood_angry:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.max_stacks = self:GetSpecialValueFor("max_stacks")
+    self.damage = self:GetSpecialValueFor("self_damage")
+    self.cd_reduce = self:GetSpecialValueFor("cd_reduce")
+    self.radius = self:GetSpecialValueFor("radius")
+end
+
+function modifier_brood_angry:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    if (keys.attacker:HasModifier("modifier_brood_angry") and keys.attacker:HasModifier("modifier_brood_comes_mother"))then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = keys.attacker
+        modifierTable.caster = keys.attacker
+        modifierTable.modifier_name = "modifier_brood_angry_stack"
+        modifierTable.duration = self.ability.duration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.ability.max_stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+        local Health = keys.attacker:GetHealth()
+        local damage = Health * self.ability.damage *0.01
+        local damageTable = {}
+        damageTable.caster = keys.attacker
+        damageTable.target = keys.attacker
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.puredmg = true
+        GameMode:DamageUnit(damageTable)
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_comes", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_cocoon", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_kiss", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_spit", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_hunger", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_web", reduction = self.ability.cd_reduce, isflat = true })
+    end
+end
+
+LinkLuaModifier("modifier_brood_angry", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+modifier_brood_angry_buff = modifier_brood_angry_buff or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH}
+    end
+})
+
+function modifier_brood_angry_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+function modifier_brood_angry_buff:OnDeath(params)
+    if (params.victim == self.parent) and IsSpiderling(self.parent) then
+        local brood = self:GetAuraOwner()
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = brood
+        modifierTable.caster = brood
+        modifierTable.modifier_name = "modifier_brood_angry_stack"
+        modifierTable.duration = self.ability.duration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.ability.max_stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+        local Health = brood:GetHealth()
+        local damage = Health * self.ability.damage *0.01
+        local damageTable = {}
+        damageTable.caster = brood
+        damageTable.target = brood
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.puredmg = true
+        GameMode:DamageUnit(damageTable)
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_comes", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_cocoon", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_kiss", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_spit", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_hunger", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_web", reduction = self.ability.cd_reduce, isflat = true })
+        local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, brood)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(healFX, false)
+            ParticleManager:ReleaseParticleIndex(healFX)
+        end)
+    end
+end
+
+--spiderling dead buff mother
+LinkLuaModifier("modifier_brood_angry_buff", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_brood_angry_stack = modifier_brood_angry_stack or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+})
+
+function modifier_brood_angry_stack:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01 * self:GetStackCount()
+    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * self:GetStackCount()
+end
+
+function modifier_brood_angry_stack:GetAttackSpeedPercentBonus()
+    return self.as_bonus
+end
+
+function modifier_brood_angry_stack:GetDamageReductionBonus()
+    return self.dmg_reduction
+end
+
+LinkLuaModifier("modifier_brood_angry_stack", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+
+--internal stuff
+if (IsServer() and not GameMode.ZONE1_BOSS_BROOD) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_toxin, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_brood_hunger, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_BROOD = true
 end

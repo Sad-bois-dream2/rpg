@@ -65,18 +65,20 @@
         "ScriptFile"					"creeps/zone1/boss/brood"
         "AbilityTextureName"			"brood_comes"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+  		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+  		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"300"
+   		"AbilityCooldown"				"60"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.8"
-
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"800"
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
@@ -84,7 +86,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"range"				        "1200"
+   				"range"				        "1500"
    			}
    			"02"
    			{
@@ -125,17 +127,20 @@
         "ScriptFile"					"creeps/zone1/boss/brood"
         "AbilityTextureName"			"brood_cocoons"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+  		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+  		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"800"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"300"
+   		"AbilityCooldown"				"30"
 
 
    		// Special
@@ -145,7 +150,7 @@
    		    "01"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"range"				        "1200"
+               	"range"				        "1500"
              }
    		    "02"
              {
@@ -183,17 +188,19 @@
             "ScriptFile"					"creeps/zone1/boss/brood"
             "AbilityTextureName"			"brood_kiss"
             "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
        		"MaxLevel"						"3"
 
     		// Casting
     		//-------------------------------------------------------------------------------------------------------------
     		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-            "AbilityCastPoint"				"0.8"
-
+            "AbilityCastPoint"				"0.4"
+         	"AbilityCastRange"				"800"
        		// Time
        		//-------------------------------------------------------------------------------------------------------------
-       		"AbilityCooldown"				"300"
+       		"AbilityCooldown"				"30"
 
 
        		// Special
@@ -203,12 +210,12 @@
                 "01"
                 {
                     "var_type"					"FIELD_FLOAT"
-                    "timer"                     "5 3.5 2"
+                    "timer"                     "8 7 6"
                 }
                 "02"
                 {
                     "var_type"					"FIELD_FLOAT"
-                    "range"				        "1200"
+                    "range"				        "1500"
                 }
                 "03"
                 {
@@ -239,17 +246,20 @@
         "ScriptFile"					"creeps/zone1/boss/brood"
         "AbilityTextureName"			"brood_spit"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"300"
+   		"AbilityCooldown"				"30"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"800"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -354,12 +364,12 @@
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"8"
+   		"AbilityCooldown"				"30"
 
    		// Casting
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastPoint"				"0.1"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -368,7 +378,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"lifesteal"				    "50 100 300"
+   				"lifesteal"				    "100 200 400"
    			}
 
    			"02"
@@ -397,17 +407,20 @@
         "ScriptFile"					"creeps/zone1/boss/brood"
         "AbilityTextureName"			"brood_web"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"300"
+   		"AbilityCooldown"				"30"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"2000"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -451,7 +464,7 @@
     		"08"
     		{
     		    "var_type"					"FIELD_FLOAT"
-                "range"			            "1200"
+                "range"			            "2000"
     		}
 
    		}
@@ -461,5 +474,65 @@
 			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
         	}
 
+	}
+    //=================================================================================================================
+	// Brood : Mother is Angry
+	//=================================================================================================================
+	"brood_angry"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/brood"
+        "AbilityTextureName"			"brood_angry"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"MaxLevel"						"3"
+
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"cd_reduce"				    "0.33 0.66 1"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"as_bonus"		            "3 6 9"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"dmg_reduction"		         "0.5 1 1.5"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"self_damage"				"0.3 0.15 0"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"max_stacks"				"66"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"				    "30"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"radius"				    "3000"
+			}
+		}
+				"precache"
+        		{
+                    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+        		}
 	}
 }

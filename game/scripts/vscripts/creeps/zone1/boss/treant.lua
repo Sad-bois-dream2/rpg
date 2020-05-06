@@ -5,9 +5,9 @@ target:EmitSound("treant_treant_attack_09") --come here
 caster:EmitSound("sounds/weapons/hero/treant/natures_guise.vsnd") --casting sound
 caster:EmitSound("sounds/weapons/hero/dark_willow/bramble_spawn.vsnd")  --vine spawn sound
 ---------------------
--- treant seed
+-- treant storm
 ---------------------
---get sound from imba
+local OnHit = "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf"
 ---------------------
 -- treant growth
 ---------------------
