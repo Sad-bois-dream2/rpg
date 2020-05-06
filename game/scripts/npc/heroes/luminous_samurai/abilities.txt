@@ -132,7 +132,7 @@
 		}
 		"precache"
 		{
-
+            "particle"  "particles/units/luminous_samurai/jhana/jhana.vpcf"
 		}
 	}
 }

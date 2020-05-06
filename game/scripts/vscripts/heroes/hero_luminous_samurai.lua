@@ -144,6 +144,7 @@ function luminous_samurai_bankai:OnSpellStart()
     modifierTable.modifier_name = "modifier_luminous_samurai_bankai"
     modifierTable.duration = self:GetSpecialValueFor("duration")
     GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("Hero_Juggernaut.HealingWard.Cast", caster)
     local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/bankai/bankai.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
     Timers:CreateTimer(3.0, function()
         ParticleManager:DestroyParticle(pidx, false)
@@ -163,7 +164,7 @@ modifier_luminous_samurai_jhana_buff = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -175,20 +176,6 @@ function modifier_luminous_samurai_jhana_buff:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-end
-
-function modifier_luminous_samurai_jhana_buff:OnStackCountChanged(oldStacks)
-    if (not IsServer()) then
-        return
-    end
-    Timers:CreateTimer(self.ability.stackDuration, function()
-        local stacks = self:GetStackCount() - 1
-        if(stacks < 1) then
-            self:Destroy()
-        else
-            self:SetStackCount(stacks)
-        end
-    end)
 end
 
 function modifier_luminous_samurai_jhana_buff:GetHealthRegenerationBonus()
@@ -241,9 +228,21 @@ function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
         modifierTable.duration = -1
         modifierTable.stacks = 1
         modifierTable.max_stacks = modifier.ability.maxStacks
-        GameMode:ApplyStackingBuff(modifierTable)
+        local buff = GameMode:ApplyStackingBuff(modifierTable)
         modifier.cooldown = true
+        EmitSoundOn("Hero_Juggernaut.HealingWard.Stop", damageTable.victim)
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/jhana/jhana.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
+        Timers:CreateTimer(modifier.ability.stackDuration, function()
+            local stacks = buff:GetStackCount() - 1
+            if (stacks < 1) then
+                buff:Destroy()
+            else
+                buff:SetStackCount(stacks)
+            end
+        end)
         Timers:CreateTimer(modifier.ability.stackCooldown, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
             modifier.cooldown = nil
         end)
         damageTable.damage = 0
