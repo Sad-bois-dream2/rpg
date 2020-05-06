@@ -12,7 +12,7 @@ function Heroes:OnHeroCreation(hero)
     end
 end
 
-modifier_hero = modifier_hero or class({
+modifier_hero = class({
     IsDebuff = function(self)
         return false
     end,

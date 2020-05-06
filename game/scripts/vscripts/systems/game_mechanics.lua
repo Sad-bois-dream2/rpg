@@ -683,7 +683,7 @@ if (IsServer()) then
     end
 end
 
-modifier_cooldown_reduction_custom = modifier_cooldown_reduction_custom or class({
+modifier_cooldown_reduction_custom = class({
     IsDebuff = function(self)
         return false
     end,
@@ -741,7 +741,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-modifier_out_of_combat = modifier_out_of_combat or class({
+modifier_out_of_combat = class({
     IsDebuff = function(self)
         return false
     end,
@@ -817,7 +817,7 @@ end
 
 LinkLuaModifier("modifier_out_of_combat", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
 
-modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
+modifier_out_of_combat_buff = class({
     IsDebuff = function(self)
         return false
     end,

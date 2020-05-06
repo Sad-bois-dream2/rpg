@@ -2,7 +2,7 @@ if (IsServer()) then
     require("libraries/worldpanels")
 end
 
-modifier_castbar = modifier_castbar or class({
+modifier_castbar = class({
     IsDebuff = function(self)
         return false
     end,

@@ -190,7 +190,7 @@ function Enemies:ResetDamageForHero(unit, hero)
     unit.bossHealing.damage[hero:GetEntityIndex()] = nil
 end
 
-modifier_creep_scaling = modifier_creep_scaling or class({
+modifier_creep_scaling = class({
     IsDebuff = function(self)
         return false
     end,
@@ -343,7 +343,7 @@ end
 
 LinkLuaModifier("modifier_creep_scaling", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
-modifier_creep_elite = modifier_creep_elite or class({
+modifier_creep_elite = class({
     IsDebuff = function(self)
         return false
     end,

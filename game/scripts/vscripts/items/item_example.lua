@@ -1,7 +1,7 @@
 -- This is example how to add modifiers to each item and how make any modifier affect any hero stat. Items may work without modifier, but idk reason because they will not give anything.
 -- Don't forgot to require item file in items/require.lua
 
-modifier_inventory_item_example = modifier_inventory_item_example or class({
+modifier_inventory_item_example = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
