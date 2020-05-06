@@ -71,7 +71,7 @@
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_duration"				"1"
+				"bonus_duration"				"2 3 4 5"
 			}
 		}
 		"precache"
