@@ -76,10 +76,8 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet.vpcf"
-            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_cast.vpcf"
-            "particle"  "particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b.vpcf"
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
+            "particle"  "particles/units/luminous_samurai/bankai/bankai.vpcf"
+            "particle"  "particles/units/luminous_samurai/bankai/bankai_buff.vpcf"
 		}
 	}
 }
