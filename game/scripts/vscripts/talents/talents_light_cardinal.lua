@@ -994,6 +994,7 @@ function modifier_npc_dota_hero_silencer_talent_48:OnTakeDamage(damageTable)
                 damageTable.victim:SetMana(casterMana - damageTable.damage)
                 damageTable.damage = 0
             end
+            modifier_out_of_combat:ResetTimer(damageTable.victim)
             return damageTable
         end
     end
