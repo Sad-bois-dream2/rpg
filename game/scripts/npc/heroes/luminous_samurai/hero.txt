@@ -5,7 +5,7 @@
         "AbilityLayout"     "6"
         "override_hero"     "npc_dota_hero_juggernaut"
         "Ability1"	"luminous_samurai_bankai"
-        "Ability2"	"crystal_sorceress_sheer_cold"
+        "Ability2"	"luminous_samurai_jhana"
         "Ability3"	"crystal_sorceress_glacier_rush"
         "Ability4"	"crystal_sorceress_freezing_destruction"
         "Ability5"	"empty5"

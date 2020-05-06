@@ -151,7 +151,136 @@ function luminous_samurai_bankai:OnSpellStart()
     end)
 end
 
+-- luminous_samurai_jhana modifiers
+modifier_luminous_samurai_jhana_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_luminous_samurai_jhana_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_luminous_samurai_jhana_buff:OnStackCountChanged(oldStacks)
+    if (not IsServer()) then
+        return
+    end
+    Timers:CreateTimer(self.ability.stackDuration, function()
+        local stacks = self:GetStackCount() - 1
+        if(stacks < 1) then
+            self:Destroy()
+        else
+            self:SetStackCount(stacks)
+        end
+    end)
+end
+
+function modifier_luminous_samurai_jhana_buff:GetHealthRegenerationBonus()
+    return self.ability.hpPerStack * self:GetStackCount()
+end
+
+function modifier_luminous_samurai_jhana_buff:GetManaRegenerationBonus()
+    return self.ability.mpPerStack * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_luminous_samurai_jhana_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_luminous_samurai_jhana = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_luminous_samurai_jhana:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_luminous_samurai_jhana")
+    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.ability.procChance) and not modifier.cooldown) then
+        local modifierTable = {}
+        modifierTable.ability = modifier.ability
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.victim
+        modifierTable.modifier_name = "modifier_luminous_samurai_jhana_buff"
+        modifierTable.duration = -1
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = modifier.ability.maxStacks
+        GameMode:ApplyStackingBuff(modifierTable)
+        modifier.cooldown = true
+        Timers:CreateTimer(modifier.ability.stackCooldown, function()
+            modifier.cooldown = nil
+        end)
+        damageTable.damage = 0
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_luminous_samurai_jhana"] = LUA_MODIFIER_MOTION_NONE
+
+-- luminous_samurai_jhana
+luminous_samurai_jhana = class({
+    GetAbilityTextureName = function(self)
+        return "luminous_samurai_jhana"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_luminous_samurai_jhana"
+    end
+})
+
+function luminous_samurai_jhana:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.procChance = self:GetSpecialValueFor("proc_chance")
+    self.hpPerStack = self:GetSpecialValueFor("hp_per_stack")
+    self.mpPerStack = self:GetSpecialValueFor("mp_per_stack")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.stackDuration = self:GetSpecialValueFor("stack_duration")
+    self.stackCooldown = self:GetSpecialValueFor("stack_cd")
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_luminous_samurai", MotionController)
+end
+
+if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
+    GameMode.LUMINOUS_SAMURAI_INIT = true
 end
