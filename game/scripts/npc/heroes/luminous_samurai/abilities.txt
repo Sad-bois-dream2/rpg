@@ -78,6 +78,7 @@
 		{
             "particle"  "particles/units/luminous_samurai/bankai/bankai.vpcf"
             "particle"  "particles/units/luminous_samurai/bankai/bankai_buff.vpcf"
+            "particle"  "particles/units/luminous_samurai/bankai/bankai_impact.vpcf"
 		}
 	}
 }
