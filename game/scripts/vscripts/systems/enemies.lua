@@ -89,6 +89,10 @@ function Enemies:GetAbilityListsForEnemy(unit)
 end
 
 function Enemies:GetAbilitiesLevel(difficulty)
+    difficulty = tonumber(difficulty)
+    if(not difficulty) then
+        return 1
+    end
     local result = 1
     if (difficulty > 4) then
         result = 2
@@ -96,7 +100,7 @@ function Enemies:GetAbilitiesLevel(difficulty)
     if (difficulty > 7) then
         result = 3
     end
-    return 1
+    return result
 end
 
 function Enemies:OnUpdateEnemyStatsRequest(event, args)
