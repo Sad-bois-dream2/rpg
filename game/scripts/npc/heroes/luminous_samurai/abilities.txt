@@ -217,27 +217,100 @@
 		}
 	}
 	//=================================================================================================================
-	// Luminous Samurai: Blade Dance
+     	// Luminous Samurai: Blade Dance
+     	//=================================================================================================================
+     	"luminous_samurai_blade_dance"
+     	{
+     		// General
+     		//-------------------------------------------------------------------------------------------------------------
+     		"BaseClass"						"ability_lua"
+     		"ScriptFile"					"heroes/hero_luminous_samurai"
+     		"AbilityTextureName"			"luminous_samurai_blade_dance"
+             "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+     	    "MaxLevel"               "4"
+     	    "RequiredLevel"          "0"
+     	    "LevelsBetweenUpgrades"  "0"
+     		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+     		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+     		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+     		// Casting
+     		//-------------------------------------------------------------------------------------------------------------
+     		// Time
+     		//-------------------------------------------------------------------------------------------------------------
+     		"AbilityCooldown"				"1.5"
+     		// Cost
+     		//-------------------------------------------------------------------------------------------------------------
+     		"AbilityManaCost"				"40"
+
+     		// Special
+     		//-------------------------------------------------------------------------------------------------------------
+     		"AbilitySpecial"
+     		{
+     			"01"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"damage"				"35 40 45 50"
+     			}
+     			"02"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"slashes"				"1 1 1 2"
+     			}
+     			"03"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"dash_range"				"450"
+     			}
+     			"04"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"proc_damage"				"150%"
+     			}
+     			"05"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"proc_radius"				"350"
+     			}
+     			"06"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"proc_count"				"5"
+     			}
+     			"07"
+     			{
+     				"var_type"				"FIELD_FLOAT"
+     				"stack_duration"				"5"
+     			}
+     		}
+     		"precache"
+     		{
+     		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf"
+     		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_proc.vpcf"
+     		    "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
+     		}
+     	}
 	//=================================================================================================================
-	"luminous_samurai_blade_dance"
+	// Luminous Samurai: Light Iai-Giri
+	//=================================================================================================================
+	"luminous_samurai_light_iai_giri"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_luminous_samurai"
-		"AbilityTextureName"			"luminous_samurai_blade_dance"
+		"AbilityTextureName"			"luminous_samurai_light_iai_giri"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"1.5"
+		"AbilityCooldown"				"1"
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityManaCost"				"40"
@@ -249,37 +322,12 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"35 40 45 50"
+				"damage"				"75 100 125 150"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slashes"				"1 1 1 2"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"dash_range"				"450"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"proc_damage"				"150%"
-			}
-			"05"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"proc_radius"				"350"
-			}
-			"06"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"proc_count"				"5"
-			}
-			"07"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"stack_duration"				"5"
+				"proc_stacks"				"3"
 			}
 		}
 		"precache"

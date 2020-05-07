@@ -791,6 +791,20 @@ function luminous_samurai_blade_dance:OnSpellStart()
     caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
 end
 
+-- luminous_samurai_blade_dance
+luminous_samurai_light_iai_giri = class({
+    GetAbilityTextureName = function(self)
+        return "luminous_samurai_light_iai_giri"
+    end
+})
+
+function luminous_samurai_light_iai_giri:OnSpellStart()
+    if(not IsServer()) then
+        return
+    end
+
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_luminous_samurai", MotionController)

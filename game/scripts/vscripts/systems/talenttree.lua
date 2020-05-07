@@ -118,7 +118,7 @@ function TalentTree:Init()
             "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_juggernaut"] = {
-            "phantom_ranger_phantom_arrow",
+            "luminous_samurai_blade_dance",
             "phantom_ranger_remnant_arrow",
             "phantom_ranger_barrage",
             "phantom_ranger_hunter_focus",
