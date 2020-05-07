@@ -277,6 +277,16 @@ function luminous_samurai_jhana:OnUpgrade()
     self.stackCooldown = self:GetSpecialValueFor("stack_cd")
 end
 
+-- luminous_samurai_judgment_of_light
+luminous_samurai_judgment_of_light = class({
+    GetAbilityTextureName = function(self)
+        return "luminous_samurai_judgment_of_light"
+    end,
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_luminous_samurai", MotionController)

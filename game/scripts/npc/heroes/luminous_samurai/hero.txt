@@ -6,7 +6,7 @@
         "override_hero"     "npc_dota_hero_juggernaut"
         "Ability1"	"luminous_samurai_bankai"
         "Ability2"	"luminous_samurai_jhana"
-        "Ability3"	"crystal_sorceress_glacier_rush"
+        "Ability3"	"luminous_samurai_judgment_of_light"
         "Ability4"	"crystal_sorceress_freezing_destruction"
         "Ability5"	"empty5"
         "Ability6"	"antimage_blink"
