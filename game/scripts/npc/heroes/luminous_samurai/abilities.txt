@@ -190,7 +190,9 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/luminous_samurai/jhana/jhana.vpcf"
+		    "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light.vpcf"
+            "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
+            "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_impact.vpcf"
 		}
 	}
 }

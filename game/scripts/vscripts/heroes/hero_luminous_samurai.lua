@@ -202,7 +202,7 @@ modifier_luminous_samurai_jhana = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -276,6 +276,56 @@ function luminous_samurai_jhana:OnUpgrade()
     self.stackDuration = self:GetSpecialValueFor("stack_duration")
     self.stackCooldown = self:GetSpecialValueFor("stack_cd")
 end
+-- luminous_samurai_judgment_of_light modifiers
+modifier_luminous_samurai_judgment_of_light = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_luminous_samurai_judgment_of_light:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
+    ParticleManager:SetParticleControlEnt(self.pidx, 1, self.ability.target, PATTACH_POINT_FOLLOW, "attach_hitloc", self.ability.target:GetAbsOrigin(), true)
+    self:StartIntervalThink(0.05)
+end
+
+function modifier_luminous_samurai_judgment_of_light:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    if(not self.ability.target or self.ability.target:IsNull() or not self.ability.target:IsAlive()) then
+        self:Destroy()
+    end
+end
+
+function modifier_luminous_samurai_judgment_of_light:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["modifier_luminous_samurai_judgment_of_light"] = LUA_MODIFIER_MOTION_NONE
 
 -- luminous_samurai_judgment_of_light
 luminous_samurai_judgment_of_light = class({
@@ -286,6 +336,32 @@ luminous_samurai_judgment_of_light = class({
         return true
     end
 })
+
+function luminous_samurai_judgment_of_light:OnSpellStart()
+    if (not IsServer()) then
+        return true
+    end
+    self.modifier:Destroy()
+end
+
+function luminous_samurai_judgment_of_light:OnAbilityPhaseStart()
+    if (not IsServer()) then
+        return true
+    end
+    self.caster = self:GetCaster()
+    self.target = self:GetCursorTarget()
+    self.modifier = self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_judgment_of_light", { duration = -1 })
+    return true
+end
+
+function luminous_samurai_judgment_of_light:OnAbilityPhaseInterrupted()
+    if (not IsServer()) then
+        return
+    end
+    if(self.modifier and not self.modifier:IsNull()) then
+        self.modifier:Destroy()
+    end
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
