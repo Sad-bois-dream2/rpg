@@ -567,6 +567,7 @@ function luminous_samurai_judgment_of_light:OnAbilityPhaseInterrupted()
         self.modifier:Destroy()
     end
 end
+
 -- luminous_samurai_blade_dance modifiers
 modifier_luminous_samurai_blade_dance_debuff = class({
     IsDebuff = function(self)
@@ -585,6 +586,140 @@ modifier_luminous_samurai_blade_dance_debuff = class({
         return false
     end
 })
+
+modifier_luminous_samurai_blade_dance_motion = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetMotionControllerPriority = function(self)
+        return DOTA_MOTION_CONTROLLER_PRIORITY_MEDIUM
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+        }
+    end
+})
+
+function modifier_luminous_samurai_blade_dance_motion:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeam()
+    self.ability = self:GetAbility()
+    self.damagedEnemies = {}
+    self.dashRange = math.min(self.ability.castDistance, self.ability:GetSpecialValueFor("dash_range"))
+    self.dashSpeed = 4000
+    self.slashPositions = {
+        { Vector(31, 65, 71), Vector(15, -111, 52) },
+        { Vector(-43, 65, 71), Vector(62, -111, 52) },
+    }
+    self.startLocation = self.caster:GetAbsOrigin()
+    self.caster:StartGesture(ACT_DOTA_ATTACK)
+    if (self:ApplyHorizontalMotionController() == false) then
+        self:Destroy()
+    end
+end
+
+function modifier_luminous_samurai_blade_dance_motion:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(pidx, 0, self.startLocation)
+    ParticleManager:SetParticleControl(pidx, 1, self.caster:GetAbsOrigin())
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    self.caster:RemoveGesture(ACT_DOTA_ATTACK)
+    self.caster:RemoveHorizontalMotionController(self)
+end
+
+function modifier_luminous_samurai_blade_dance_motion:OnHorizontalMotionInterrupted()
+    if (not IsServer()) then
+        return
+    end
+    self:Destroy()
+end
+
+function modifier_luminous_samurai_blade_dance_motion:UpdateHorizontalMotion(me, dt)
+    if (not IsServer()) then
+        return
+    end
+    local currentLocation = self.caster:GetAbsOrigin()
+    local desiredLocation = currentLocation + self.caster:GetForwardVector() * self.dashSpeed * dt
+    local isTraversable = GridNav:IsTraversable(desiredLocation)
+    local isBlocked = GridNav:IsBlocked(desiredLocation)
+    local isTreeNearby = GridNav:IsNearbyTree(desiredLocation, self.caster:GetHullRadius(), true)
+    local traveled_distance = DistanceBetweenVectors(self.startLocation, currentLocation)
+    if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dashRange) then
+        self.caster:SetAbsOrigin(desiredLocation)
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                desiredLocation,
+                nil,
+                100,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            if (not TableContains(self.damagedEnemies, enemy)) then
+                for i = 1, self.ability.slashes do
+                    local slashPosition = self.slashPositions[math.random(1, #self.slashPositions)]
+                    local enemyPosition = enemy:GetAbsOrigin()
+                    local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
+                    ParticleManager:SetParticleControl(pidx, 7, enemyPosition + slashPosition[1])
+                    ParticleManager:SetParticleControl(pidx, 8, enemyPosition + slashPosition[2])
+                    Timers:CreateTimer(1.0, function()
+                        ParticleManager:DestroyParticle(pidx, false)
+                        ParticleManager:ReleaseParticleIndex(pidx)
+                    end)
+                    EmitSoundOn("Hero_Juggernaut.OmniSlash.Damage", enemy)
+                    local damageTable = {}
+                    damageTable.caster = self.caster
+                    damageTable.target = enemy
+                    damageTable.ability = self.ability
+                    damageTable.damage = self.ability.damage
+                    damageTable.holydmg = true
+                    GameMode:DamageUnit(damageTable)
+                    local modifierTable = {}
+                    modifierTable.ability = self.ability
+                    modifierTable.target = enemy
+                    modifierTable.caster = self.caster
+                    modifierTable.modifier_name = "modifier_luminous_samurai_blade_dance_debuff"
+                    modifierTable.duration = -1
+                    modifierTable.stacks = 1
+                    modifierTable.max_stacks = 99999
+                    GameMode:ApplyStackingDebuff(modifierTable)
+                end
+                table.insert(self.damagedEnemies, enemy)
+            end
+        end
+    else
+        self:Destroy()
+    end
+end
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
 
 function modifier_luminous_samurai_blade_dance_debuff:OnCreated()
     if (not IsServer()) then
@@ -627,6 +762,7 @@ function modifier_luminous_samurai_blade_dance_debuff:OnStackCountChanged()
         end
     end
 end
+
 LinkedModifiers["modifier_luminous_samurai_blade_dance_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- luminous_samurai_blade_dance
@@ -641,45 +777,12 @@ function luminous_samurai_blade_dance:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
-    local slashes = self:GetSpecialValueFor("slashes")
-    local damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster) * 0.01
-    local slashPositions = {
-        { Vector(31, 65, 71), Vector(15, -111, 52) },
-        { Vector(-43, 65, 71), Vector(62, -111, 52) },
-    }
-    local targetPosition = target:GetAbsOrigin()
-    Timers:CreateTimer(0, function()
-        local slashPosition = slashPositions[math.random(1, #slashPositions)]
-        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
-        ParticleManager:SetParticleControl(pidx, 7, targetPosition + slashPosition[1])
-        ParticleManager:SetParticleControl(pidx, 8, targetPosition + slashPosition[2])
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
-        EmitSoundOn("Hero_Juggernaut.OmniSlash.Damage", target)
-        local damageTable = {}
-        damageTable.caster = caster
-        damageTable.target = target
-        damageTable.ability = self
-        damageTable.damage = damage
-        damageTable.holydmg = true
-        GameMode:DamageUnit(damageTable)
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = target
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_luminous_samurai_blade_dance_debuff"
-        modifierTable.duration = -1
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = 99999
-        GameMode:ApplyStackingDebuff(modifierTable)
-        slashes = slashes - 1
-        if (slashes > 0) then
-            return 0.1
-        end
-    end, self)
+    self.slashes = self:GetSpecialValueFor("slashes")
+    self.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster) * 0.01
+    local distanceVector = self:GetCursorPosition() - caster:GetAbsOrigin()
+    self.castDistance = distanceVector:Length2D()
+    caster:SetForwardVector(distanceVector:Normalized())
+    caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
 end
 
 -- Internal stuff
