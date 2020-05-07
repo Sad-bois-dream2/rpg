@@ -312,7 +312,7 @@ function modifier_luminous_samurai_judgment_of_light:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    if(not self.ability.target or self.ability.target:IsNull() or not self.ability.target:IsAlive()) then
+    if (not self.ability.target or self.ability.target:IsNull() or not self.ability.target:IsAlive()) then
         self:Destroy()
     end
 end
@@ -342,6 +342,14 @@ function luminous_samurai_judgment_of_light:OnSpellStart()
         return true
     end
     self.modifier:Destroy()
+    local targetLocation = self.target:GetAbsOrigin()
+    local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(pidx, 1, targetLocation)
+    Timers:CreateTimer(2.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    FindClearSpaceForUnit(self.caster, targetLocation, false)
 end
 
 function luminous_samurai_judgment_of_light:OnAbilityPhaseStart()
@@ -358,7 +366,7 @@ function luminous_samurai_judgment_of_light:OnAbilityPhaseInterrupted()
     if (not IsServer()) then
         return
     end
-    if(self.modifier and not self.modifier:IsNull()) then
+    if (self.modifier and not self.modifier:IsNull()) then
         self.modifier:Destroy()
     end
 end

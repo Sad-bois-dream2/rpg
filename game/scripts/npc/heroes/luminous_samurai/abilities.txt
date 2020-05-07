@@ -102,7 +102,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_chance"				"10 15 20 25"
+				"proc_chance"				"15 30 45 60"
 			}
 			"02"
 			{

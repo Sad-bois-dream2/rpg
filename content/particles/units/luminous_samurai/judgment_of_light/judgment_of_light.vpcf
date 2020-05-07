@@ -53,5 +53,8 @@
 		{
 			m_ChildRef = resource:"particles/units/luminous_samurai/judgment_of_light/judgment_of_light_sword_light.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/judgment_of_light/judgment_of_light_sparks.vpcf"
+		},
 	]
 }
