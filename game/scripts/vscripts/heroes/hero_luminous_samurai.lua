@@ -568,6 +568,13 @@ function luminous_samurai_judgment_of_light:OnAbilityPhaseInterrupted()
     end
 end
 
+-- luminous_samurai_blade_dance
+luminous_samurai_blade_dance = class({
+    GetAbilityTextureName = function(self)
+        return "luminous_samurai_blade_dance"
+    end
+})
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_luminous_samurai", MotionController)

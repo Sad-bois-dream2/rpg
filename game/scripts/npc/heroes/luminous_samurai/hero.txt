@@ -7,7 +7,7 @@
         "Ability1"	"luminous_samurai_bankai"
         "Ability2"	"luminous_samurai_jhana"
         "Ability3"	"luminous_samurai_judgment_of_light"
-        "Ability4"	"crystal_sorceress_freezing_destruction"
+        "Ability4"	"luminous_samurai_blade_dance"
         "Ability5"	"empty5"
         "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"
