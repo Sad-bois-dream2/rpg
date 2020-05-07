@@ -295,6 +295,19 @@ modifier_luminous_samurai_judgment_of_light_buff = class({
         return false
     end
 })
+function modifier_luminous_samurai_judgment_of_light_buff:OnCreated(keys)
+    if(not IsServer()) then
+        return
+    end
+    if(not keys) then
+        self:Destroy()
+    end
+    self.attackDamage = keys.attackDamage
+end
+
+function modifier_luminous_samurai_judgment_of_light_buff:GetAttackDamageBonus()
+    return self.attackDamage * self:GetStackCount()
+end
 
 LinkedModifiers["modifier_luminous_samurai_judgment_of_light_buff"] = LUA_MODIFIER_MOTION_NONE
 
