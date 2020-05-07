@@ -426,6 +426,7 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnDestroy()
         return
     end
     self.caster:RemoveGesture(ACT_DOTA_OVERRIDE_ABILITY_4)
+    Units:ForceStatsCalculation(self.caster)
 end
 
 function modifier_luminous_samurai_judgment_of_light_jump:GetCriticalDamageBonus()
