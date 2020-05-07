@@ -276,7 +276,172 @@ function luminous_samurai_jhana:OnUpgrade()
     self.stackDuration = self:GetSpecialValueFor("stack_duration")
     self.stackCooldown = self:GetSpecialValueFor("stack_cd")
 end
+
 -- luminous_samurai_judgment_of_light modifiers
+modifier_luminous_samurai_judgment_of_light_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_judgment_of_light_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_luminous_samurai_judgment_of_light_jump = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_omnislash.vpcf"
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_EVENT_ON_DEATH,
+            MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE
+        }
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true,
+            [MODIFIER_STATE_STUNNED] = true
+        }
+    end
+})
+
+function modifier_luminous_samurai_judgment_of_light_jump:GetModifierBaseDamageOutgoing_Percentage()
+    return -100
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:OnDeath(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.attacker == self.caster) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_luminous_samurai_judgment_of_light_buff"
+        modifierTable.modifier_params = {
+            attackDamage = self.attackDamage
+        }
+        modifierTable.duration = self.attackDamageDuration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = 99999
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:OnCreated(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (not keys) then
+        self:Destroy()
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.target = EntIndexToHScript(keys.target)
+    if (not self.target or self.target:IsNull()) then
+        self:Destroy()
+    end
+    self.jumps = keys.jumps
+    self.critDamage = keys.critDamage
+    self.critChance = keys.critChance
+    self.holyDamage = keys.holyDamage
+    self.attackDamage = keys.attackDamage
+    self.attackDamageDuration = keys.attackDamageDuration
+    self.jumpDelay = keys.jumpDelay
+    self.jumpDamage = keys.jumpDamage
+    self.caster:StartGesture(ACT_DOTA_OVERRIDE_ABILITY_4)
+    self:StartIntervalThink(self.jumpDelay)
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.jumps = self.jumps - 1
+    if (self.jumps < 1 or not self.target or self.target:IsNull() or not self.caster:IsAlive()) then
+        self:Destroy()
+    else
+        local casterPosition = self.caster:GetAbsOrigin()
+        local targetPosition = self.target:GetAbsOrigin()
+        local jumpPosition = targetPosition + RandomVector(128)
+        self.caster:SetAbsOrigin(jumpPosition)
+        self.caster:SetForwardVector((targetPosition - jumpPosition):Normalized())
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf", PATTACH_ABSORIGIN, self.caster)
+        ParticleManager:SetParticleControl(pidx, 0, casterPosition)
+        ParticleManager:SetParticleControl(pidx, 1, jumpPosition)
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+        EmitSoundOn("Hero_Juggernaut.OmniSlash", self.caster)
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.target
+        damageTable.ability = self.ability
+        damageTable.damage = Units:GetAttackDamage(self.caster) * self.jumpDamage
+        damageTable.holydmg = true
+        GameMode:DamageUnit(damageTable)
+        self.caster:PerformAttack(self.target, true, true, true, true, false, false, true)
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+        ParticleManager:SetParticleControlEnt(pidx, 0, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", targetPosition, true)
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+    end
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    self.caster:RemoveGesture(ACT_DOTA_OVERRIDE_ABILITY_4)
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:GetCriticalDamageBonus()
+    return self.critDamage
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:GetCriticalChanceBonus()
+    return self.critChance
+end
+
+function modifier_luminous_samurai_judgment_of_light_jump:GetHolyDamageBonus()
+    return self.holyDamage
+end
+
+LinkedModifiers["modifier_luminous_samurai_judgment_of_light_jump"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_luminous_samurai_judgment_of_light = class({
     IsDebuff = function(self)
         return false
@@ -350,6 +515,24 @@ function luminous_samurai_judgment_of_light:OnSpellStart()
         ParticleManager:ReleaseParticleIndex(pidx)
     end)
     FindClearSpaceForUnit(self.caster, targetLocation, false)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_luminous_samurai_judgment_of_light_jump"
+    modifierTable.modifier_params = {
+        target = self.target:GetEntityIndex(),
+        jumps = self:GetSpecialValueFor("jumps"),
+        critDamage = self:GetSpecialValueFor("crit_dmg") / 100,
+        critChance = self:GetSpecialValueFor("crit_chance") / 100,
+        holyDamage = self:GetSpecialValueFor("holy_dmg") / 100,
+        attackDamage = self:GetSpecialValueFor("aa_dmg"),
+        jumpDelay = self:GetSpecialValueFor("jump_delay"),
+        jumpDamage = self:GetSpecialValueFor("jump_damage") / 100,
+        attackDamageDuration = self:GetSpecialValueFor("aa_dmg_duration")
+    }
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
 end
 
 function luminous_samurai_judgment_of_light:OnAbilityPhaseStart()
