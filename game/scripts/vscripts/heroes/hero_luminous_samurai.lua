@@ -587,6 +587,55 @@ modifier_luminous_samurai_blade_dance_debuff = class({
     end
 })
 
+function modifier_luminous_samurai_blade_dance_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetCaster()
+    self.casterTeam = self.caster:GetTeam()
+    self.target = self:GetParent()
+    self.damage = self.ability:GetSpecialValueFor("proc_damage") * 0.01
+    self.radius = self.ability:GetSpecialValueFor("proc_radius")
+    self.count = self.ability:GetSpecialValueFor("proc_count")
+end
+
+function modifier_luminous_samurai_blade_dance_debuff:OnStackCountChanged()
+    if (not IsServer()) then
+        return
+    end
+    local stacks = self:GetStackCount()
+    if (stacks >= self.count) then
+        self:Destroy()
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/blade_dance/blade_dance_proc.vpcf", PATTACH_ABSORIGIN, self.target)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.target:GetAbsOrigin(),
+                nil,
+                self.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = self.damage * Units:GetAttackDamage(self.caster)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = enemy
+            damageTable.ability = self.ability
+            damageTable.damage = damage
+            damageTable.holydmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+end
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_debuff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_luminous_samurai_blade_dance_motion = class({
     IsDebuff = function(self)
         return false
@@ -706,7 +755,7 @@ function modifier_luminous_samurai_blade_dance_motion:UpdateHorizontalMotion(me,
                     modifierTable.target = enemy
                     modifierTable.caster = self.caster
                     modifierTable.modifier_name = "modifier_luminous_samurai_blade_dance_debuff"
-                    modifierTable.duration = -1
+                    modifierTable.duration = self.ability.stackDuration
                     modifierTable.stacks = 1
                     modifierTable.max_stacks = 99999
                     GameMode:ApplyStackingDebuff(modifierTable)
@@ -720,50 +769,6 @@ function modifier_luminous_samurai_blade_dance_motion:UpdateHorizontalMotion(me,
 end
 
 LinkedModifiers["modifier_luminous_samurai_blade_dance_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
-
-function modifier_luminous_samurai_blade_dance_debuff:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.ability = self:GetAbility()
-    self.caster = self:GetCaster()
-    self.casterTeam = self.caster:GetTeam()
-    self.target = self:GetParent()
-    self.damage = self.ability:GetSpecialValueFor("proc_damage") * 0.01
-    self.radius = self.ability:GetSpecialValueFor("proc_radius")
-    self.count = self.ability:GetSpecialValueFor("proc_stacks")
-end
-
-function modifier_luminous_samurai_blade_dance_debuff:OnStackCountChanged()
-    if (not IsServer()) then
-        return
-    end
-    local stacks = self:GetStackCount()
-    if (stacks >= self.count) then
-        self:Destroy()
-        local enemies = FindUnitsInRadius(self.casterTeam,
-                self.target:GetAbsOrigin(),
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        local damage = self.damage * Units:GetAttackDamage(self.caster)
-        for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = enemy
-            damageTable.ability = self.ability
-            damageTable.damage = damage
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
-        end
-    end
-end
-
-LinkedModifiers["modifier_luminous_samurai_blade_dance_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- luminous_samurai_blade_dance
 luminous_samurai_blade_dance = class({
@@ -779,6 +784,7 @@ function luminous_samurai_blade_dance:OnSpellStart()
     local caster = self:GetCaster()
     self.slashes = self:GetSpecialValueFor("slashes")
     self.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster) * 0.01
+    self.stackDuration = self:GetSpecialValueFor("stack_duration")
     local distanceVector = self:GetCursorPosition() - caster:GetAbsOrigin()
     self.castDistance = distanceVector:Length2D()
     caster:SetForwardVector(distanceVector:Normalized())

@@ -276,6 +276,11 @@
 				"var_type"				"FIELD_FLOAT"
 				"proc_count"				"5"
 			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stack_duration"				"5"
+			}
 		}
 		"precache"
 		{

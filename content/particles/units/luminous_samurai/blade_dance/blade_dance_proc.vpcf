@@ -79,7 +79,7 @@
 			_class = "C_INIT_RemapParticleCountToScalar"
 			m_nInputMax = 40
 			m_flOutputMin = 50.0
-			m_flOutputMax = 350.0
+			m_flOutputMax = 136.0
 		},
 		{
 			_class = "C_INIT_RemapParticleCountToScalar"
