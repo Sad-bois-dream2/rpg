@@ -268,12 +268,15 @@
 				"var_type"				"FIELD_FLOAT"
 				"proc_radius"				"350"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_count"				"5"
+			}
 		}
 		"precache"
 		{
-		    "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light.vpcf"
-            "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
-            "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_impact.vpcf"
+		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf"
 		}
 	}
 }
