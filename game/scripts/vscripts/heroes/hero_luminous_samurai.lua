@@ -790,19 +790,53 @@ function luminous_samurai_blade_dance:OnSpellStart()
     caster:SetForwardVector(distanceVector:Normalized())
     caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
 end
+-- luminous_samurai_light_iai_giri modifiers
+modifier_luminous_samurai_light_iai_giri = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
 
--- luminous_samurai_blade_dance
+LinkedModifiers["modifier_luminous_samurai_light_iai_giri"] = LUA_MODIFIER_MOTION_NONE
+
+-- luminous_samurai_light_iai_giri
 luminous_samurai_light_iai_giri = class({
     GetAbilityTextureName = function(self)
         return "luminous_samurai_light_iai_giri"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_luminous_samurai_light_iai_giri"
     end
 })
 
 function luminous_samurai_light_iai_giri:OnSpellStart()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
+    self:GetCaster():FindModifierByName("modifier_luminous_samurai_light_iai_giri"):SetStackCount(1)
+end
 
+function luminous_samurai_light_iai_giri:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.damage = self:GetSpecialValueFor("damage") * 0.01
+    self.procStacks = self:GetSpecialValueFor("proc_stacks")
 end
 
 -- Internal stuff

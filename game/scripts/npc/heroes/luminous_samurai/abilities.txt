@@ -303,7 +303,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
@@ -332,9 +332,7 @@
 		}
 		"precache"
 		{
-		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf"
-		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_proc.vpcf"
-		    "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
+
 		}
 	}
 }
