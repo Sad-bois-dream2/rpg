@@ -106,6 +106,7 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail_glow_b.vpcf"
+			m_bDisableChild = true
 		},
 	]
 	m_nBehaviorVersion = 10

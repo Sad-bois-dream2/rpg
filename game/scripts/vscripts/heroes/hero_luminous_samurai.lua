@@ -401,7 +401,7 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnIntervalThink()
         return
     end
     self.jumps = self.jumps - 1
-    if (self.jumps < 1 or not self.target or self.target:IsNull() or not self.caster:IsAlive()) then
+    if (self.jumps < 0 or not self.target or self.target:IsNull() or not self.caster:IsAlive()) then
         self:Destroy()
     else
         local casterPosition = self.caster:GetAbsOrigin()
