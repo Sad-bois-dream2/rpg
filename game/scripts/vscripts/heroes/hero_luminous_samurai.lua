@@ -828,15 +828,21 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    self:GetCaster():FindModifierByName("modifier_luminous_samurai_light_iai_giri"):SetStackCount(1)
+
 end
 
-function luminous_samurai_light_iai_giri:OnUpgrade()
-    if (not IsServer()) then
-        return
+function luminous_samurai_light_iai_giri:CastFilterResultTarget( hTarget )
+    if self:GetCaster() == hTarget then
+        return UF_FAIL_CUSTOM
     end
-    self.damage = self:GetSpecialValueFor("damage") * 0.01
-    self.procStacks = self:GetSpecialValueFor("proc_stacks")
+    return UF_FAIL_CUSTOM
+end
+
+function luminous_samurai_light_iai_giri:GetCustomCastErrorTarget( hTarget )
+    if self:GetCaster() == hTarget then
+        return "#dota_hud_error_cant_cast_on_self"
+    end
+    return "What you even did to cause that?"
 end
 
 -- Internal stuff
