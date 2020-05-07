@@ -168,6 +168,9 @@ modifier_luminous_samurai_jhana_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetTexture = function(self)
+        return luminous_samurai_jhana:GetAbilityTextureName()
     end
 })
 
