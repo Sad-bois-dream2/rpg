@@ -1403,7 +1403,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_41 = class({
     end
 })
 
-function modifier_npc_dota_hero_abyssal_underlord_talent_41:GetFireDamageBonus()
+function modifier_npc_dota_hero_abyssal_underlord_talent_41:OnCreated()
     if (not IsServer()) then
         return
     end

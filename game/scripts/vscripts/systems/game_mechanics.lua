@@ -875,7 +875,13 @@ function modifier_out_of_combat:OnIntervalThink()
     if (stacks > self.delay) then
         stacks = self.delay
         if (not self.buff) then
-            self.buff = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_out_of_combat_buff"
+            modifierTable.duration = -1
+            self.buff = GameMode:ApplyBuff(modifierTable)
         end
     end
     self:SetStackCount(stacks)
