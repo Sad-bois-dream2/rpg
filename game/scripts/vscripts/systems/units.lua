@@ -483,7 +483,14 @@ function modifier_stats_system:OnModifierAdded(keys)
         return
     end
     if (keys.unit == self.unit) then
-        PrintTable(GameMode.AuraModifiersTable)
+        for _, name in pairs(GameMode.AuraModifiersTable) do
+            local auraModifier = self.unit:FindModifierByName(name)
+            if (auraModifier and not auraModifier.IsMarkedByGameMechanics) then
+                GameMode:OverwriteModifierFunctions(auraModifier)
+                Units:ForceStatsCalculation(self.unit)
+                auraModifier.IsMarkedByGameMechanics = true
+            end
+        end
     end
 end
 
