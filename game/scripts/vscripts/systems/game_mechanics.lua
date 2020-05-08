@@ -30,7 +30,7 @@ if (IsServer()) then
             DebugPrintTable(debug.getinfo(2))
             return
         end
-        if(calculateBeforeResistances == true) then
+        if (calculateBeforeResistances == true) then
             table.insert(GameMode.PreDamageBeforeResistancesEventHandlersTable, handler)
         else
             table.insert(GameMode.PreDamageAfterResistancesEventHandlersTable, handler)
@@ -409,22 +409,18 @@ if (IsServer()) then
 
     ---@param args DAMAGE_TABLE
     function GameMode:DamageUnit(args)
-        if (args == nil) then
+        if (not args) then
             return
         end
-        local caster = args.caster
-        local target = args.target
-        local damage = tonumber(args.damage)
-        if (caster == nil or target == nil or damage == nil) then
+        if (args.caster == nil or args.target == nil or args.damage == nil) then
             return
         end
-        local ability = args.ability
         local damageTable = {
-            victim = target,
-            attacker = caster,
-            damage = damage,
+            victim = args.target,
+            attacker = args.caster,
+            damage = args.damage,
             damage_type = DAMAGE_TYPE_PURE,
-            ability = ability,
+            ability = args.ability,
             physdmg = args.physdmg,
             firedmg = args.firedmg,
             frostdmg = args.frostdmg,
@@ -456,87 +452,96 @@ if (IsServer()) then
             end
         end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
-        local totalReduction = 1
+        local totalReduction = 0
         local totalBlock = 0
-        if (not args.puredmg) then
-            local instanceHasPhysDmg = args.physdmg
-            local instanceHasSpellDmg = false
-            if (instanceHasPhysDmg) then
+        local IsPureDamage = (args.puredmg == true)
+        local IsPhysicalDamage = (args.physdmg == true)
+        local IsFireDamage = (args.firedmg == true)
+        local IsFrostDamage = (args.frostdmg == true)
+        local IsEarthDamage = (args.earthdmg == true)
+        local IsNatureDamage = (args.naturedmg == true)
+        local IsVoidDamage = (args.voiddmg == true)
+        local IsInfernoDamage = (args.infernodmg == true)
+        local IsHolyDamage = (args.holydmg == true)
+        local typesCount = 0
+        if (IsPureDamage == false) then
+            if (IsPhysicalDamage) then
                 -- armor formula gl hf, 999999999 armor = 100% phys resistance, 2000 armor = 99,1% phys resistance
-                local targetArmor = Units:GetArmor(target)
+                local targetArmor = Units:GetArmor(args.target)
                 local physReduction = (targetArmor * 0.06) / (1 + targetArmor * 0.06)
-                totalReduction = totalReduction * (1 - physReduction)
+                physReduction = 1 - physReduction
+                typesCount = typesCount + 1
             end
-            if (args.firedmg) then
-                totalReduction = totalReduction * Units:GetFireProtection(target)
-                instanceHasSpellDmg = true
+            if (IsFireDamage) then
+                totalReduction = Units:GetFireProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.frostdmg) then
-                totalReduction = totalReduction * Units:GetFrostProtection(target)
-                instanceHasSpellDmg = true
+            if (IsFrostDamage) then
+                totalReduction = Units:GetFrostProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.earthdmg) then
-                totalReduction = totalReduction * Units:GetEarthProtection(target)
-                instanceHasSpellDmg = true
+            if (IsEarthDamage) then
+                totalReduction = Units:GetEarthProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.naturedmg) then
-                totalReduction = totalReduction * Units:GetNatureProtection(target)
-                instanceHasSpellDmg = true
+            if (IsNatureDamage) then
+                totalReduction = Units:GetNatureProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.voiddmg) then
-                totalReduction = totalReduction * Units:GetVoidProtection(target)
-                instanceHasSpellDmg = true
+            if (IsVoidDamage) then
+                totalReduction = Units:GetVoidProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.infernodmg) then
-                totalReduction = totalReduction * Units:GetInfernoProtection(target)
-                instanceHasSpellDmg = true
+            if (IsInfernoDamage) then
+                totalReduction = Units:GetInfernoProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.holydmg) then
-                totalReduction = totalReduction * Units:GetHolyProtection(target)
-                instanceHasSpellDmg = true
+            if (IsHolyDamage) then
+                totalReduction = Units:GetHolyProtection(args.target)
+                typesCount = typesCount + 1
             end
-            -- post reduction effects
-            if (instanceHasPhysDmg) then
-                totalBlock = totalBlock + Units:GetBlock(target)
-            end
-            if (instanceHasSpellDmg) then
-                totalBlock = totalBlock + Units:GetMagicBlock(target)
-            end
+            totalReduction = totalReduction / typesCount
         end
-        if (args.firedmg) then
-            totalReduction = totalReduction * Units:GetFireDamage(caster)
+        -- post reduction effects
+        if (IsPhysicalDamage) then
+            totalBlock = totalBlock + Units:GetBlock(args.target)
         end
-        if (args.frostdmg) then
-            totalReduction = totalReduction * Units:GetFrostDamage(caster)
+        if (args.ability) then
+            totalBlock = totalBlock + Units:GetMagicBlock(args.target)
+            damageTable.damage = damageTable.damage * (1 + Units:GetSpellDamage(args.caster))
         end
-        if (args.earthdmg) then
-            totalReduction = totalReduction * Units:GetEarthDamage(caster)
+        local totalAmplification = 1
+        if (IsFireDamage) then
+            totalAmplification = totalAmplification + Units:GetFireDamage(args.caster)
         end
-        if (args.naturedmg) then
-            totalReduction = totalReduction * Units:GetNatureDamage(caster)
+        if (IsFrostDamage) then
+            totalAmplification = totalAmplification + Units:GetFrostDamage(args.caster)
         end
-        if (args.voiddmg) then
-            totalReduction = totalReduction * Units:GetVoidDamage(caster)
+        if (IsEarthDamage) then
+            totalAmplification = totalAmplification + Units:GetEarthDamage(args.caster)
         end
-        if (args.infernodmg) then
-            totalReduction = totalReduction * Units:GetInfernoDamage(caster)
+        if (IsNatureDamage) then
+            totalAmplification = totalAmplification + Units:GetNatureDamage(args.caster)
         end
-        if (args.holydmg) then
-            totalReduction = totalReduction * Units:GetHolyDamage(caster)
+        if (IsVoidDamage) then
+            totalAmplification = totalAmplification + Units:GetVoidDamage(args.caster)
+        end
+        if (IsInfernoDamage) then
+            totalAmplification = totalAmplification + Units:GetInfernoDamage(args.caster)
+        end
+        if (IsHolyDamage) then
+            totalAmplification = totalAmplification + Units:GetHolyDamage(args.caster)
         end
         -- Damage reduction reduce even pure dmg
-        totalReduction = totalReduction * Units:GetDamageReduction(target)
-        if (ability ~= nil) then
-            damage = damage * (1 + Units:GetSpellDamage(caster))
-        end
+        totalReduction = totalReduction * Units:GetDamageReduction(args.target)
         -- well, let them suffer
         if (totalReduction < 0.01) then
             totalReduction = 0.01
         end
         -- final damage
-        damage = (damage * totalReduction) - totalBlock
+        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification) - totalBlock
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
-        if (damage > 0) then
+        if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc
             local preDamageHandlerResultTable
             for i = 1, #GameMode.PreDamageAfterResistancesEventHandlersTable do
