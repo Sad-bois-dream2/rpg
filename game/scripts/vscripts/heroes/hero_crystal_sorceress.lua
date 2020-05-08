@@ -389,7 +389,13 @@ function crystal_sorceress_sheer_cold:OnToggle()
     local caster = self:GetCaster()
     caster.crystal_sorceress_sheer_cold = caster.crystal_sorceress_sheer_cold or {}
     if (self:GetToggleState()) then
-        caster.crystal_sorceress_sheer_cold.modifier = caster:AddNewModifier(caster, self, "modifier_crystal_sorceress_sheer_cold_aura", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_aura"
+        modifierTable.duration = -1
+        caster.crystal_sorceress_sheer_cold.modifier = GameMode:ApplyBuff(modifierTable)
         self:EndCooldown()
         self:StartCooldown(self:GetCooldown(1))
         EmitSoundOn("Hero_Ancient_Apparition.IceVortexCast", caster)

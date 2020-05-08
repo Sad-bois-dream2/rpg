@@ -150,7 +150,13 @@ function chosen_invoker_purification_brilliance:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    self.modifier = caster:AddNewModifier(caster, self, "modifier_chosen_invoker_purification_brilliance", { duration = self:GetChannelTime() })
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_chosen_invoker_purification_brilliance"
+    modifierTable.duration = self:GetChannelTime()
+    self.modifier = GameMode:ApplyBuff(modifierTable)
 end
 
 -- chosen_invoker_flare_array modifiers
@@ -497,7 +503,13 @@ function chosen_invoker_photon_pulse:OnAbilityPhaseStart()
         return true
     end
     local caster = self:GetCaster()
-    self.modifier = caster:AddNewModifier(caster, self, "modifier_chosen_invoker_photon_pulse", { duration = -1 })
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_chosen_invoker_photon_pulse"
+    modifierTable.duration = -1
+    self.modifier = GameMode:ApplyBuff(modifierTable)
     return true
 end
 
