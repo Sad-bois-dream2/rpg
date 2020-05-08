@@ -74,7 +74,13 @@ function light_cardinal_harmony:OnUpgrade()
         caster.light_cardinal_harmony.armor_bonus = self:GetSpecialValueFor("armor_bonus") / 100
         caster.light_cardinal_harmony.int_bonus = self:GetSpecialValueFor("int_bonus") / 100
         if (not caster:HasModifier("modifier_light_cardinal_harmony")) then
-            caster:AddNewModifier(caster, self, "modifier_light_cardinal_harmony", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_harmony"
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
         end
     end
 end
@@ -338,7 +344,13 @@ function modifier_npc_dota_hero_silencer_talent_40:OnIntervalThink()
     self.timer = self.timer + 1
     if (self.timer > 5) then
         self.timer = 0
-        local cloak = self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_silencer_talent_40_divine_cloak", { duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_40_divine_cloak"
+        modifierTable.duration = -1
+        local cloak = GameMode:ApplyBuff(modifierTable)
         cloak:SetStackCount(math.min(2 + TalentTree:GetHeroTalentLevel(self.caster, 40), 7))
     end
 end
@@ -615,7 +627,13 @@ function modifier_npc_dota_hero_silencer_talent_36:OnAbilityFullyCast(keys)
         return
     end
     if keys.unit == self.caster and keys.ability:GetName() == "light_cardinal_desecration" then
-        self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_silencer_talent_36_sacrilege", { duration = 5 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_36_sacrilege"
+        modifierTable.duration = 5
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
@@ -760,7 +778,13 @@ function light_cardinal_consecration:OnToggle(unit, special_cast)
         local caster = self:GetCaster()
         caster.light_cardinal_consecration = caster.light_cardinal_consecration or {}
         if (self:GetToggleState()) then
-            caster.light_cardinal_consecration.modifier = caster:AddNewModifier(caster, self, "modifier_light_cardinal_consecration", { Duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_consecration"
+            modifierTable.duration = -1
+            caster.light_cardinal_consecration.modifier = GameMode:ApplyBuff(modifierTable)
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
         else
@@ -1254,7 +1278,13 @@ function modifier_npc_dota_hero_silencer_talent_38:OnAbilityFullyCast(keys)
     local target = keys.ability:GetCursorTarget()
     local modifier = caster:FindModifierByName("modifier_npc_dota_hero_silencer_talent_38_misery")
     if (not modifier) then
-        modifier = caster:AddNewModifier(caster, nil, "modifier_npc_dota_hero_silencer_talent_38_misery", { duration = 5 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_38_misery"
+        modifierTable.duration = 5
+        modifier = GameMode:ApplyBuff(modifierTable)
         modifier.target = target
     end
     modifier:ForceRefresh()
@@ -1446,9 +1476,23 @@ function modifier_npc_dota_hero_silencer_talent_50:OnTakeDamage(damageTable)
         local cap = damageTable.victim:GetMaxHealth() * 0.05
         if ((casterHealth - damageTable.damage) <= cap and not damageTable.victim:HasModifier("modifier_npc_dota_hero_silencer_talent_50_nullification_cd")) then
             local talentLevel = TalentTree:GetHeroTalentLevel(damageTable.victim, 50)
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification_cd", { duration = math.min(90, 125 - talentLevel) })
+            local duration = math.min(90, 125 - talentLevel)
+            local modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = damageTable.victim
+            modifierTable.caster = damageTable.victim
+            modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_50_nullification_cd"
+            modifierTable.duration = duration
+            local cooldownModifier = GameMode:ApplyBuff(modifierTable)
+            cooldownModifier:SetDuration(duration, true)
             local shieldAmount = (damageTable.victim:GetMaxHealth() - casterHealth) * (0.60 + (0.15 * talentLevel))
-            local shield = damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification", { duration = -1 })
+            modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = damageTable.victim
+            modifierTable.caster = damageTable.victim
+            modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_50_nullification"
+            modifierTable.duration = -1
+            local shield = GameMode:ApplyBuff(modifierTable)
             shield:SetStackCount(math.floor(shieldAmount))
             damageTable.damage = 0
             return damageTable

@@ -260,7 +260,13 @@ function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
         self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_ember_spirit/ember_spirit_remnant_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
         ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
         ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
-        caster:AddNewModifier(caster, self, "modifier_molten_guardian_scorching_clash_motion", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_motion"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
@@ -404,7 +410,13 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
         local caster = self:GetCaster()
         caster.molten_guardian_lava_skin = caster.molten_guardian_lava_skin or {}
         if (self:GetToggleState()) then
-            caster.molten_guardian_lava_skin.modifier = caster:AddNewModifier(caster, self, "modifier_molten_guardian_lava_skin_toggle", { Duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_toggle"
+            modifierTable.duration = -1
+            caster.molten_guardian_lava_skin.modifier = GameMode:ApplyBuff(modifierTable)
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
         else
@@ -751,7 +763,13 @@ if (IsServer()) then
         if (event ~= nil) then
             local entity = EntIndexToHScript(event.entindex)
             if entity:IsRealHero() and entity:HasAbility("mars_arena_of_blood") then
-                entity:AddNewModifier(entity, nil, "modifier_molten_guardian_molten_fortress_helper", { Duration = -1 })
+                local modifierTable = {}
+                modifierTable.ability = nil
+                modifierTable.target = entity
+                modifierTable.caster = entity
+                modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_helper"
+                modifierTable.duration = -1
+                GameMode:ApplyBuff(modifierTable)
             end
         end
     end, nil)
