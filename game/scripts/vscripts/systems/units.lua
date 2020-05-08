@@ -37,7 +37,7 @@ function Units:Init()
 end
 
 function Units:ForceStatsCalculation(unit)
-    if (not unit or unit:IsNull()) then
+    if (not unit) then
         return
     end
     local stats = unit:FindModifierByName("modifier_stats_system")
@@ -50,7 +50,7 @@ end
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
 function Units:CalculateStats(unit, statsTable)
-    if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
+    if (unit ~= nil and statsTable ~= nil and IsServer()) then
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
         local unitBonusAgi = 0
@@ -438,7 +438,9 @@ function Units:OnCreation(unit)
         return
     end
     unit:AddNewModifier(unit, nil, "modifier_stats_system", { Duration = -1 })
-    if (not unit:IsRealHero()) then
+    if (unit:IsRealHero()) then
+        Heroes:OnHeroCreation(unit)
+    else
         Aggro:OnCreepSpawn(unit)
     end
 end
@@ -454,7 +456,7 @@ modifier_stats_system = modifier_stats_system or class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false

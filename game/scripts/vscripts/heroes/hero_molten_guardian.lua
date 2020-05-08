@@ -762,8 +762,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_molten_guardian", MotionController)
 end
 
-if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
+if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_toggle, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
-    GameMode.MOLTEN_GUARDIAN_INIT = true
 end

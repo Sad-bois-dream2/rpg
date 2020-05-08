@@ -110,28 +110,28 @@ function TalentTree:Init()
     self.tempAbilities = { "empty5", "antimage_blink" }
     self.talent_abilities = {
         ["npc_dota_hero_drow_ranger"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "phantom_ranger_void_arrows",
-            "phantom_ranger_hunters_focus",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_juggernaut"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_phantom_assassin"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_abyssal_underlord"] = {
             "terror_lord_flame_of_menace",
@@ -142,36 +142,36 @@ function TalentTree:Init()
             "terror_lord_aura_of_seals"
         },
         ["npc_dota_hero_mars"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_axe"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "blazing_berserker_rage_eruption",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_crystal_maiden"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_invoker"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_silencer"] = {
             "light_cardinal_spirit_shield",
@@ -182,28 +182,28 @@ function TalentTree:Init()
             "light_cardinal_patronage"
         },
         ["npc_dota_hero_enchantress"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_doom_bringer"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         },
         ["npc_dota_hero_dark_willow"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace",
-            "terror_lord_flame_of_menace"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_remnant_arrow",
+            "phantom_ranger_barrage",
+            "phantom_ranger_hunter_focus",
+            "phantom_ranger_huntress",
+            "phantom_ranger_intimidation"
         }
     }
     TalentTree:InitPanaromaEvents()
@@ -310,7 +310,7 @@ end
 function TalentTree:SetHeroTalentLevel(hero, talentId, level)
     talentId = tonumber(talentId)
     level = tonumber(level)
-    if (hero ~= nil and hero:IsAlive() and talentId ~= nil and level ~= nil and level > -1) then
+    if (hero ~= nil and talentId ~= nil and level ~= nil and level > -1) then
         if (TalentTree:IsHeroHaveTalentTree(hero)) then
             if (TalentTree:IsTalentIdValid(talentId)) then
                 hero.talents.level[talentId] = level
@@ -689,7 +689,7 @@ function TalentTree:OnTalentTreeWindowCloseRequest(event, args)
     end
 end
 
-if IsServer() and not TalentTree.initialized then
+if not TalentTree.initialized then
     TalentTree:Init()
     TalentTree.initialized = true
 end

@@ -231,7 +231,6 @@ end
 
 LinkLuaModifier("modifier_aggro_system", "systems/aggro", LUA_MODIFIER_MOTION_NONE)
 
-if IsServer() and not Aggro.initialized then
+if IsServer() then
     Aggro:Init()
-    Aggro.initialized = true
 end

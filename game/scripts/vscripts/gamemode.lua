@@ -106,7 +106,9 @@ end
 ]]
 
 function GameMode:OnHeroInGame(hero)
-    Heroes:OnHeroCreation(hero)
+    -- This line for example will set the starting gold of every hero to 500 unreliable gold
+    --hero:SetGold(500, false)
+    -- These lines will create an item and add it to the player, effectively ensuring they start with the item
 end
 
 --[[

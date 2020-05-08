@@ -518,7 +518,6 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_blazing_berserker", MotionController)
 end
 
-if (IsServer() and not GameMode.BLAZING_BERSERKER_INIT) then
+if (IsServer()) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modiifer_blazing_berserker_rage_eruption, 'OnPostTakeDamage'))
-    GameMode.BLAZING_BERSERKER_INIT = true
 end

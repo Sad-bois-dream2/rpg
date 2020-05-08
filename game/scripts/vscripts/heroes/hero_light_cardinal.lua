@@ -521,7 +521,6 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_light_cardinal", MotionController)
 end
 
-if (IsServer() and not GameMode.LIGHT_CARDINAL_INIT) then
+if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_salvation_aura_buff, 'OnTakeDamage'))
-    GameMode.LIGHT_CARDINAL_INIT = true
 end

@@ -7,7 +7,7 @@
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/ursa/ursa.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "0"
+        "Level"           "30"
         "UnitLabel"         "healing_ward"
 
         // Abilities
@@ -69,7 +69,7 @@
 
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"        "1000"     // Base health.
+        "StatusHealth"        "10000"     // Base health.
         "StatusHealthRegen"     "0"     // Health regeneration rate.
         "StatusMana"        "99999999"     // Base mana.
         "StatusManaRegen"     "0"     // Mana regeneration rate.

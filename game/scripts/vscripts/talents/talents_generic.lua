@@ -985,7 +985,6 @@ function modifier_generic_talent_33:GetSpellHasteBonus()
 end
 
 LinkedModifiers["modifier_generic_talent_33"] = LUA_MODIFIER_MOTION_NONE
-
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "talents/talents_generic", MotionController)

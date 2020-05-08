@@ -528,8 +528,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_priestess_of_sacred_forest", MotionController)
 end
 
-if (IsServer() and not GameMode.PRIESTESS_OF_SACRED_FOREST_INIT) then
+if (IsServer()) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_thorny_protection_buff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_airy, 'OnTakeDamage'))
-    GameMode.PRIESTESS_OF_SACRED_FOREST_INIT = true
 end
