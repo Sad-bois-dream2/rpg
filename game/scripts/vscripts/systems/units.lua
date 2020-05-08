@@ -472,9 +472,19 @@ function modifier_stats_system:DeclareFunctions()
         MODIFIER_PROPERTY_STATS_INTELLECT_BONUS,
         MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT,
         MODIFIER_PROPERTY_MANA_REGEN_CONSTANT,
-        MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT
+        MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT,
+        MODIFIER_EVENT_ON_MODIFIER_ADDED
     }
     return funcs
+end
+
+function modifier_stats_system:OnModifierAdded(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.unit) then
+        PrintTable(GameMode.AuraModifiersTable)
+    end
 end
 
 function modifier_stats_system:GetModifierConstantManaRegen()
