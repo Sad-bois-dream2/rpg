@@ -40,6 +40,7 @@ function modifier_treant_hook_motion:OnCreated()
         self.dash_range = ability:GetSpecialValueFor("range")
         self.stun = ability:GetSpecialValueFor("stun")
         self.taunt = ability:GetSpecialValueFor("taunt")
+        self.parent:StartGesture(ACT_DOTA_FLAIL)
         if (self:ApplyHorizontalMotionController() == false) then
             self:Destroy()
         end
@@ -63,6 +64,7 @@ function modifier_treant_hook_motion:OnDestroy()
         modifierTable.modifier_name = "modifier_treant_hook_taunt"
         modifierTable.duration = self.taunt
         GameMode:ApplyDebuff(modifierTable)
+        self.parent:RemoveGesture(ACT_DOTA_FLAIL)
     end
 end
 
@@ -84,7 +86,7 @@ function modifier_treant_hook_motion:UpdateHorizontalMotion(me, dt)
         local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
         if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range and distance_to_caster > 200 ) then --and not distance_to_caster< 250
             self.parent:SetAbsOrigin(expected_location)
-            EmitSoundOn("sounds/weapons/hero/dark_willow/bramble_spawn.vsnd", self.caster)--vine spawn sound
+            self.parent:EmitSound("Hero_DarkWillow.Bramble.Spawn")--vine spawn sound
             local vine = "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
             local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, self.parent)
             Timers:CreateTimer(2, function()
@@ -194,7 +196,7 @@ function treant_hook:OnSpellStart()
             iVisionTeamNumber = caster:GetTeamNumber(),        -- Optional
         }
         projectile = ProjectileManager:CreateTrackingProjectile(info)
-        caster:EmitSound("sounds/weapons/hero/treant/natures_guise.vsnd") --casting sound
+        caster:EmitSound("Hero_Treant.NaturesGrasp.Cast") --casting sound
     end
 end
 
@@ -257,6 +259,7 @@ function modifier_treant_flux_eye:OnCreated()
     self.slow = self.ability:GetSpecialValueFor("self_ms_slow")
     --gather particle
     Timers:CreateTimer(2.5, function()
+        self.parent:EmitSound("Hero_Oracle.FortunesEnd.Channel")
         self.ppfx = ParticleManager:CreateParticle("particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
         Timers:CreateTimer(1.5, function()
             ParticleManager:DestroyParticle(self.ppfx, false)
@@ -304,6 +307,7 @@ function modifier_treant_flux_eye:OnIntervalThink()
     ParticleManager:SetParticleControlEnt(self.pfx, 0, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
     ParticleManager:SetParticleControlEnt(self.pfx, 1, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
     ParticleManager:SetParticleControl(self.pfx, 2, Vector(self.radius, 0, 0))
+    self.parent:EmitSound("Hero_Oracle.FortunesEnd.Attack")
     Timers:CreateTimer(1.5, function()
         ParticleManager:DestroyParticle(self.pfx, false)
         ParticleManager:ReleaseParticleIndex(self.pfx)
@@ -311,6 +315,7 @@ function modifier_treant_flux_eye:OnIntervalThink()
     --gather particle
     Timers:CreateTimer(2.5, function()
         self.ppfx = ParticleManager:CreateParticle("particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+        self.parent:EmitSound("Hero_Oracle.FortunesEnd.Channel")
         Timers:CreateTimer(1.5, function()
             ParticleManager:DestroyParticle(self.ppfx, false)
             ParticleManager:ReleaseParticleIndex(self.ppfx)
@@ -364,6 +369,7 @@ function modifier_treant_flux_eye_enemy:OnCreated(keys)
         self:Destroy()
     end
     self.parent = self:GetParent()
+    self.parent:EmitSound("Hero_Oracle.FortunesEnd.Target")
     keys.attacker = EntIndexToHScript(keys.attacker)
     local modifier = keys.attacker:FindModifierByName("modifier_treant_flux_eye")
     self.ability = modifier:GetAbility()
@@ -429,6 +435,7 @@ function treant_flux:OnSpellStart()
         modifierTable.modifier_name = "modifier_treant_flux_eye"
         modifierTable.duration = duration + 1
         GameMode:ApplyBuff(modifierTable)
+        self.caster:EmitSound("treant_treant_move_07")
     end
 end
 
@@ -453,7 +460,7 @@ modifier_treant_storm_eye = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/npc_boss_treant/treant_storm/storm.vpcf"
+        return "particles/units/npc_boss_treant/treant_storm/wind.vpcf"
     end,
     GetEffectAttachType = function(self)
         return PATTACH_ABSORIGIN_FOLLOW
@@ -472,18 +479,6 @@ function modifier_treant_storm_eye:OnCreated()
     self.range = self.ability:GetSpecialValueFor("range")
     --local duration = self.ability:GetSpecialValueFor("duration") --5
     self.tick = self.ability:GetSpecialValueFor("tick")
-    local leaves = "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf"
-    --randomly create leaves particle
-    Timers:CreateTimer(0, function() --doesnt work kekw
-        self.pfx = ParticleManager:CreateParticle(leaves, PATTACH_WORLDORIGIN, self.parent)
-        --randomnly set cp0 to spawn leaves
-        ParticleManager:SetParticleControl(self.pfx, 0, Vector(math.random(300,1500), math.random(300,1500),0))
-        Timers:CreateTimer(2.0, function()
-        ParticleManager:DestroyParticle(self.pfx, false)
-        ParticleManager:ReleaseParticleIndex(self.pfx)
-    end)
-        return 0.1
-    end)
     self.parent:EmitSound("Ability.Windrun")
     self:StartIntervalThink(self.tick)
 end
@@ -517,11 +512,12 @@ function modifier_treant_storm_eye:OnIntervalThink()
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
         --particle on hit
-        self.pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf", PATTACH_ABSORIGIN, enemy)
+        self.pfx = ParticleManager:CreateParticle( "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(self.pfx, false)
             ParticleManager:ReleaseParticleIndex(self.pfx)
         end)
+        enemy:EmitSound("Hero_Furion.TreantFootsteps")
     end
 end
 
@@ -545,6 +541,7 @@ function treant_storm:OnSpellStart()
         modifierTable.modifier_name = "modifier_treant_storm_eye"
         modifierTable.duration = duration
         GameMode:ApplyBuff(modifierTable)
+        self.caster:EmitSound("treant_treant_ability_naturesguise_04")
     end
 end
 
@@ -695,6 +692,7 @@ function treant_seed:OnSpellStart()
     local counter = 0
     local target
     self.already_hit = {}
+    self.caster:EmitSound("Hero_Treant.LeechSeed.Cast")
     Timers:CreateTimer(0, function()
         if counter < number then
             target = self:FindTargetForSeed(self.caster)
@@ -703,7 +701,7 @@ function treant_seed:OnSpellStart()
             return 0.1
         end
     end)
-    self.caster:EmitSound("Hero_Treant.LeechSeed.Cast")
+    self.caster:EmitSound("treant_treant_ability_leechseed_0"..math.random(1,6))
     local seed_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_treant/treant_leech_seed.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster())
     ParticleManager:SetParticleControl(seed_particle, 1, self:GetCaster():GetAttachmentOrigin(self:GetCaster():ScriptLookupAttachment("attach_attack1")))
 end
@@ -902,7 +900,7 @@ modifier_treant_ingrain = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -936,16 +934,14 @@ function modifier_treant_ingrain:OnIntervalThink()
     if distance == 0 then
         self.active = true
         --tried to set particle that get destroyed every 0.1s but it stacks up and looks ugly
-        --local armor = "particles/econ/items/treant_protector/ti7_shoulder/treant_ti7_crimson_livingarmor.vpcf"
-        --local healFX = ParticleManager:CreateParticle(armor, PATTACH_ABSORIGIN_FOLLOW, self.parent)
-        --ParticleManager:SetParticleControlEnt(healFX, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
-        --ParticleManager:SetParticleControlEnt(healFX, 1, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
-        --ParticleManager:SetParticleControlEnt(healFX, 3, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
-        --ParticleManager:SetParticleControlEnt(healFX, 6, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
-        --Timers:CreateTimer(0.1, function()
-            --ParticleManager:DestroyParticle(healFX, false)
-            --ParticleManager:ReleaseParticleIndex(healFX)
-        --end)
+        local armor = "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
+        local healFX = ParticleManager:CreateParticle(armor, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+        ParticleManager:SetParticleControlEnt(healFX, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(healFX, 1, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+        Timers:CreateTimer(0.1, function()
+            ParticleManager:DestroyParticle(healFX, false)
+            ParticleManager:ReleaseParticleIndex(healFX)
+        end)
     else
         self.active = false
     end
@@ -1045,7 +1041,7 @@ end
 function modifier_treant_regrowth_channel:OnDestroy()
     if IsServer() then
         local caster = self:GetParent()
-        caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_4)
+        caster:RemoveGesture(ACT_DOTA_TELEPORT)
     end
 end
 
@@ -1070,10 +1066,10 @@ function treant_regrowth:OnSpellStart(unit, special_cast)
         local caster = self:GetCaster()
         caster.treant_regrowth_modifier = caster:AddNewModifier(caster, self, "modifier_treant_regrowth_channel", { Duration = -1 })
         caster:EmitSound("Hero_Furion.Teleport_Grow")
-        caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+        caster:StartGesture(ACT_DOTA_TELEPORT)
         Timers:CreateTimer(0.9, function()
             if (caster:HasModifier("modifier_treant_regrowth_channel")) then
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+                caster:StartGesture(ACT_DOTA_TELEPORT)
                 return 1
             end
         end)

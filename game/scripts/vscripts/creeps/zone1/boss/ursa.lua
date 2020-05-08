@@ -201,7 +201,7 @@ end
 function modifier_ursa_dash_motion:OnDestroy()
     if IsServer() then
         self.caster:RemoveHorizontalMotionController(self)
-        self.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_4)
+        self.caster:RemoveGesture(ACT_DOTA_ATTACK)
         ParticleManager:DestroyParticle(self.ability.particle, false)
         ParticleManager:ReleaseParticleIndex(self.ability.particle)
     end
@@ -312,7 +312,7 @@ function ursa_dash:OnSpellStart(unit, special_cast)
                     vector = RotatePosition(vector, angleLeft, caster:GetAbsOrigin())
                 end
                 caster:SetForwardVector(vector)
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+                caster:StartGesture(ACT_DOTA_ATTACK)
                 self.particle = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_dash/ursa_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
                 ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
@@ -388,7 +388,7 @@ function modifier_ursa_fury:CheckState()
     return {
         [MODIFIER_STATE_UNSLOWABLE] = true,
         [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-        [MODIFIER_STATE_SILENCED] = true,
+       --[MODIFIER_STATE_SILENCED] = true,
     }
 end
 
@@ -1098,7 +1098,7 @@ end
 function modifier_ursa_jelly_channel:OnDestroy()
     if IsServer() then
         local caster = self:GetParent()
-        caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_4)
+        caster:RemoveGesture(ACT_DOTA_IDLE_RARE)
     end
 end
 
@@ -1174,10 +1174,9 @@ function ursa_jelly:OnSpellStart(unit, special_cast)
     if IsServer() then
         local caster = self:GetCaster()
         caster.ursa_jelly_modifier = caster:AddNewModifier(caster, self, "modifier_ursa_jelly_channel", { Duration = -1 })
-        caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
         Timers:CreateTimer(0.9, function()
             if (caster:HasModifier("modifier_ursa_jelly_channel")) then
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+                caster:StartGesture(ACT_DOTA_IDLE_RARE)
                 local pidx = ParticleManager:CreateParticle("particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 Timers:CreateTimer(2.0, function()
                     ParticleManager:DestroyParticle(pidx, false)

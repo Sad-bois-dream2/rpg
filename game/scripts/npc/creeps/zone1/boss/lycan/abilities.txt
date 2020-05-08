@@ -18,8 +18,8 @@
 
     		// Casting
     		//-------------------------------------------------------------------------------------------------------------
-    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-            "AbilityCastPoint"				"0.4"
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+            "AbilityCastPoint"				"0.3"
             "AbilityCastRange"              "800"
        		// Time
        		//-------------------------------------------------------------------------------------------------------------
@@ -139,8 +139,9 @@
 		}
 		"precache"
         	{
-        	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-        	    "soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        	    "particle"      "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+        	    "soundfile"		"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        	    "soundfile"     "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
         	}
 	}
     //=================================================================================================================
@@ -189,6 +190,7 @@
     		"precache"
     		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+                "soundfile"  "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
                 "particle"  "particles/hero/phantom_assassin/screen_blood_splatter.vpcf"
                 "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
                 "particle"  "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
@@ -287,7 +289,7 @@
 
    		// Casting
         //-------------------------------------------------------------------------------------------------------------
-        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastRange"              "800"
         "AbilityCastPoint"				"0.4"
 

@@ -132,4 +132,10 @@
 			]
 		},
 	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_storm/leaves_storm.vpcf"
+		},
+	]
 }

@@ -23,7 +23,7 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.2"
+        "AbilityCastPoint"				"0.4"
         "AbilityCastRange"				"2000"
 
 		// Special
@@ -87,8 +87,8 @@
 
         // Casting
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastPoint"				"0.3"
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.4"
         "AbilityCastRange"				"200"
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@
    		    "03"
             {
                	"var_type"					"FIELD_FLOAT"
-               	"self_ms_slow"				"15 8 0"
+               	"total_time"				 "8 16 24"
             }
    			"04"
    			{
@@ -137,12 +137,14 @@
    		    "09"
             {
                	"var_type"					"FIELD_FLOAT"
-               	"total_time"				 "7 15 23"
+               	"self_ms_slow"				"15 8 0"
             }
    		}
 		"precache"
 		{
+		    "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts"
             "particle"  "particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf"
             "particle"  "particles/units/npc_boss_treant/treant_flux/flux_explosion.vpcf"
 		}
@@ -170,8 +172,8 @@
 
             // Casting
     		//-------------------------------------------------------------------------------------------------------------
-    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-            "AbilityCastPoint"				"0.3"
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_5"
+            "AbilityCastPoint"				"0.5"
             "AbilityCastRange"				"1500"
 
 
@@ -213,6 +215,8 @@
     		"precache"
             {
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "particle"  "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf"
                 "particle"  "particles/units/npc_boss_treant/treant_storm/storm.vpcf"
             }
@@ -241,7 +245,7 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.3"
+        "AbilityCastPoint"				"0.4"
         "AbilityCastRange"				"1500"
 
    		// Special
@@ -261,12 +265,12 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"	    	        "150 500 1500"
+   				"damage"	    	        "50 150 450"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"mana_drain"			    "3 7 15"
+   				"mana_drain"			    "10 17 25"
    			}
    			"05"
    			{
@@ -277,7 +281,7 @@
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "3 5 7"
+   				"duration"				    "3 4 5"
    			}
    			"07"
    			{
@@ -288,6 +292,7 @@
    		}
 		"precache"
 		{
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
                 "particle"  "particles/units/heroes/hero_treant/treant_leech_seed_damage_pulse.vpcf"
                 "particle"  "particles/units/heroes/hero_treant/treant_leech_seed.vpcf"
@@ -343,6 +348,7 @@
     	}
    		"precache"
         {
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
                 "particle"  "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
@@ -385,7 +391,7 @@
    		}
    		   		"precache"
                 {
-                        "particle"  "particles/econ/items/treant_protector/ti7_shoulder/treant_ti7_crimson_livingarmor.vpcf"
+                        "particle"  "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
                 }
     }
 
@@ -409,7 +415,7 @@
 
 		// Casting
         //-------------------------------------------------------------------------------------------------------------
-        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastAnimation"			"ACT_DOTA_TELEPORT"
         "AnimationIgnoresModelScale"    "1"
         "AbilityCastPoint"				"0.5"
 
@@ -462,8 +468,8 @@
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.3"
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.4"
         "AbilityCastRange"				"2600"
 
 		// Special

@@ -19,7 +19,7 @@ end
 function lycan_call:OnSpellStart()
     local caster = self:GetCaster()
     local casterTeam = caster:GetTeamNumber()
-    caster:EmitSound("lycan_lycan_ability_summon_03")
+    caster:EmitSound("lycan_lycan_ability_summon_0"..math.random(3,6))
     --Find enemies in range
     local enemies = FindUnitsInRadius(casterTeam,
             caster:GetAbsOrigin(),
@@ -105,6 +105,9 @@ function modifier_lycan_companion:OnAttackLanded(keys)
         local wolf = CreateUnitByName("npc_boss_lycan_companion_wolf", summon_point, true, self.parent, self.parent, self.parentTeam)
         wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 5 })
         self.ability:StartCooldown(self.ability.cooldown)
+        if RollPercentage(15) then
+        self.parent:EmitSound("lycan_lycan_ally_0"..math.random(3,5))
+        end
     end
 end
 
@@ -153,6 +156,10 @@ function lycan_wound:OnSpellStart()
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
     self:ApplyDamageAndDebuff(target, caster)
+    if caster:HasModifier("modifier_lycan_transform") then
+        caster:EmitSound("lycan_lycan_wolf_attack_08")
+    else caster:EmitSound("lycan_lycan_attack_08") end
+
 end
 
 modifier_lycan_wound_debuff = class({
@@ -297,6 +304,7 @@ function modifier_lycan_wolf_form:OnTakeDamage()
     if self.hp_pct <= self.hp_threshold then
         -- hp drop below threshold = transform
         self.ability:Transform()
+        Timers:CreateTimer(5, function() self.ability:EmitSound("lycan_lycan_level_05") end)
     end
 end
 
