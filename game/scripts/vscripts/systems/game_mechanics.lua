@@ -17,7 +17,7 @@ if (IsServer()) then
     end
 
     ---@param handler function
-    function GameMode:RegisterPreDamageEventHandler(handler)
+    function GameMode:RegisterPreDamageEventHandler(handler, calculateBeforeResistances)
         if (handler == nil) then
             DebugPrint("[GAME MECHANICS] Someone passed nil to RegisterPreDamageEventHandler()")
             DebugPrint("[GAME MECHANICS] Source of that shit:")
@@ -30,7 +30,11 @@ if (IsServer()) then
             DebugPrintTable(debug.getinfo(2))
             return
         end
-        table.insert(GameMode.PreDamageEventHandlersTable, handler)
+        if(calculateBeforeResistances == true) then
+            table.insert(GameMode.PreDamageBeforeResistancesEventHandlersTable, handler)
+        else
+            table.insert(GameMode.PreDamageAfterResistancesEventHandlersTable, handler)
+        end
     end
 
     ---@param handler function
@@ -415,6 +419,42 @@ if (IsServer()) then
             return
         end
         local ability = args.ability
+        local damageTable = {
+            victim = target,
+            attacker = caster,
+            damage = damage,
+            damage_type = DAMAGE_TYPE_PURE,
+            ability = ability,
+            physdmg = args.physdmg,
+            firedmg = args.firedmg,
+            frostdmg = args.frostdmg,
+            earthdmg = args.earthdmg,
+            naturedmg = args.naturedmg,
+            voiddmg = args.voiddmg,
+            infernodmg = args.infernodmg,
+            holydmg = args.holydmg,
+            puredmg = args.puredmg,
+            fromsummon = args.fromsummon,
+            crit = 1.0
+        }
+        local damageCanceled = false
+        local preDamageBeforeResistancesHandlerResultTable
+        for i = 1, #GameMode.PreDamageBeforeResistancesEventHandlersTable do
+            if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
+                break
+            end
+            preDamageBeforeResistancesHandlerResultTable = GameMode.PreDamageBeforeResistancesEventHandlersTable[i](nil, damageTable)
+            if (preDamageBeforeResistancesHandlerResultTable ~= nil) then
+                if (not damageCanceled) then
+                    damageCanceled = (preDamageBeforeResistancesHandlerResultTable.damage <= 0)
+                end
+                local latestCrit = damageTable.crit
+                damageTable = preDamageBeforeResistancesHandlerResultTable
+                if (latestCrit > damageTable.crit) then
+                    damageTable.crit = latestCrit
+                end
+            end
+        end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
         local totalReduction = 1
         local totalBlock = 0
@@ -497,32 +537,13 @@ if (IsServer()) then
         damage = (damage * totalReduction) - totalBlock
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
         if (damage > 0) then
-            local damageTable = {
-                victim = target,
-                attacker = caster,
-                damage = damage,
-                damage_type = DAMAGE_TYPE_PURE,
-                ability = ability,
-                physdmg = args.physdmg,
-                firedmg = args.firedmg,
-                frostdmg = args.frostdmg,
-                earthdmg = args.earthdmg,
-                naturedmg = args.naturedmg,
-                voiddmg = args.voiddmg,
-                infernodmg = args.infernodmg,
-                holydmg = args.holydmg,
-                puredmg = args.puredmg,
-                fromsummon = args.fromsummon,
-                crit = 1.0
-            }
             -- trigger pre/post dmg event for all skills/etc
             local preDamageHandlerResultTable
-            local damageCanceled = false
-            for i = 1, #GameMode.PreDamageEventHandlersTable do
+            for i = 1, #GameMode.PreDamageAfterResistancesEventHandlersTable do
                 if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                     break
                 end
-                preDamageHandlerResultTable = GameMode.PreDamageEventHandlersTable[i](nil, damageTable)
+                preDamageHandlerResultTable = GameMode.PreDamageAfterResistancesEventHandlersTable[i](nil, damageTable)
                 if (preDamageHandlerResultTable ~= nil) then
                     if (not damageCanceled) then
                         damageCanceled = (preDamageHandlerResultTable.damage <= 0)
@@ -955,7 +976,8 @@ ListenToGameEvent("npc_spawned", function(keys)
 end, nil)
 
 if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
-    GameMode.PreDamageEventHandlersTable = {}
+    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+    GameMode.PreDamageAfterResistancesEventHandlersTable = {}
     GameMode.PostDamageEventHandlersTable = {}
     GameMode.CritDamageEventHandlersTable = {}
     GameMode.PostApplyModifierEventHandlersTable = {}
