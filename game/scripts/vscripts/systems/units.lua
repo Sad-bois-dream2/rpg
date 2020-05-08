@@ -32,10 +32,6 @@ end
 ---@field public elementsProtection UNIT_STATS_ELEMENTS_TABLE
 ---@field public elementsDamage UNIT_STATS_ELEMENTS_TABLE
 
-function Units:Init()
-    Units.STATS_CALCULATE_INTERVAL = -1
-end
-
 function Units:ForceStatsCalculation(unit)
     if (not unit or unit:IsNull() or not unit.stats) then
         return
@@ -1235,8 +1231,3 @@ LinkLuaModifier("modifier_stats_system_maxhp", "systems/units", LUA_MODIFIER_MOT
 LinkLuaModifier("modifier_stats_system_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_enemies_maxhp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_enemies_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
-
-if not Units.initialized then
-    Units:Init()
-    Units.initialized = true
-end
