@@ -37,13 +37,10 @@ function Units:Init()
 end
 
 function Units:ForceStatsCalculation(unit)
-    if (not unit or unit:IsNull()) then
+    if (not unit or unit:IsNull() or not unit.stats) then
         return
     end
-    local stats = unit:FindModifierByName("modifier_stats_system")
-    if (stats) then
-        stats:OnIntervalThink()
-    end
+    unit.stats = Units:CalculateStats(unit, unit.stats)
 end
 
 ---@param unit CDOTA_BaseNPC
@@ -587,7 +584,8 @@ function modifier_stats_system:OnCreated(event)
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
         end
-        self:StartIntervalThink(Units.STATS_CALCULATE_INTERVAL)
+        Units:ForceStatsCalculation(self.unit)
+        self:StartIntervalThink(1)
     end
 end
 
@@ -595,20 +593,12 @@ function modifier_stats_system:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    local unit = self.unit
-    if (not unit or unit:IsNull()) then
-        return
-    end
-    local statsTable = unit.stats
-    statsTable = Units:CalculateStats(unit, statsTable)
-    -- save calculated stats to entity
-    unit.stats = statsTable
-    if (unit:IsRealHero()) then
-        local playerID = unit:GetPlayerID()
+    if (self.unit:IsRealHero()) then
+        local playerID = self.unit:GetPlayerID()
         -- send data to clients
         local dataTable = {
             player_id = playerID,
-            statsTable = statsTable
+            statsTable = self.unit.stats
         }
         CustomGameEventManager:Send_ServerToAllClients("rpg_update_hero_stats", { data = json.encode(dataTable) })
     end
