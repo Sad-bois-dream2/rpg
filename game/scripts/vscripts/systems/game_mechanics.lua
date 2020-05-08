@@ -237,6 +237,20 @@ if (IsServer()) then
                 if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
+                    if (modifier.OnDestroy and not modifier.OnDestroy2) then
+                        modifier.OnDestroy2 = modifier.OnDestroy
+                        modifier.OnDestroy = function(keys)
+                            modifier.OnDestroy2(modifier, keys)
+                            modifier.BaseClass.OnDestroy(modifier, keys)
+                        end
+                    end
+                    if (modifier.OnStackCountChanged and not modifier.OnStackCountChanged2) then
+                        modifier.OnStackCountChanged2 = modifier.OnStackCountChanged
+                        modifier.OnStackCountChanged = function(keys)
+                            modifier.OnStackCountChanged2(modifier, keys)
+                            modifier.BaseClass.OnStackCountChanged(modifier, keys)
+                        end
+                    end
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
                         GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
                     end
@@ -309,6 +323,20 @@ if (IsServer()) then
                 if (modifier ~= nil and fireEvent == true) then
                     args.stacks = 0
                     args.max_stacks = 0
+                    if (modifier.OnDestroy and not modifier.OnDestroy2) then
+                        modifier.OnDestroy2 = modifier.OnDestroy
+                        modifier.OnDestroy = function(keys)
+                            modifier.OnDestroy2(modifier, keys)
+                            modifier.BaseClass.OnDestroy(modifier, keys)
+                        end
+                    end
+                    if (modifier.OnStackCountChanged and not modifier.OnStackCountChanged2) then
+                        modifier.OnStackCountChanged2 = modifier.OnStackCountChanged
+                        modifier.OnStackCountChanged = function(keys)
+                            modifier.OnStackCountChanged2(modifier, keys)
+                            modifier.BaseClass.OnStackCountChanged(modifier, keys)
+                        end
+                    end
                     for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
                         GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
                     end
@@ -664,6 +692,18 @@ if (IsServer()) then
     function GameMode:OnModifierApplied(modifierTable)
         if (modifierTable.target) then
             Units:ForceStatsCalculation(modifierTable.target)
+        end
+    end
+
+    function CDOTA_Modifier_Lua:OnStackCountChanged(keys)
+        if (self) then
+            Units:ForceStatsCalculation(self:GetParent())
+        end
+    end
+
+    function CDOTA_Modifier_Lua:OnDestroy(keys)
+        if (self) then
+            Units:ForceStatsCalculation(self:GetParent())
         end
     end
 
