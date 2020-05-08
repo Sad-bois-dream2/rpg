@@ -237,22 +237,41 @@ if (IsServer()) then
                 if (modifier ~= nil) then
                     if (modifier.OnDestroy and not modifier.OnDestroy2) then
                         modifier.OnDestroy2 = modifier.OnDestroy
-                        modifier.OnDestroy = function(keys)
-                            modifier.OnDestroy2(modifier, keys)
-                            modifier.BaseClass.OnDestroy(modifier, keys)
-                        end
-                    end
-                    if (not modifier.SetStackCountChanged) then
-                        modifier.SetStackCount2 = modifier.SetStackCount
-                        modifier.SetStackCount = function(context, count)
+                        modifier.OnDestroy = function(context)
+                            context.OnDestroy2(context)
                             if (IsServer()) then
                                 Units:ForceStatsCalculation(context:GetParent())
                             end
-                            modifier.SetStackCount2(context, count)
                         end
-                        modifier.SetStackCountChanged = true
                     end
-                    if(fireEvent == true) then
+                    if (not modifier.SetStackCount2) then
+                        modifier.SetStackCount2 = modifier.SetStackCount
+                        modifier.SetStackCount = function(context, count)
+                            context.SetStackCount2(context, count)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (not modifier.IncrementStackCount2) then
+                        modifier.IncrementStackCount2 = modifier.IncrementStackCount
+                        modifier.IncrementStackCount = function(context)
+                            context.IncrementStackCount2(context)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (not modifier.DecrementStackCount2) then
+                        modifier.DecrementStackCount2 = modifier.DecrementStackCount
+                        modifier.DecrementStackCount = function(context)
+                            context.DecrementStackCount2(context)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
                         for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
@@ -328,22 +347,41 @@ if (IsServer()) then
                 if (modifier ~= nil) then
                     if (modifier.OnDestroy and not modifier.OnDestroy2) then
                         modifier.OnDestroy2 = modifier.OnDestroy
-                        modifier.OnDestroy = function(keys)
-                            modifier.OnDestroy2(modifier, keys)
-                            modifier.BaseClass.OnDestroy(modifier, keys)
-                        end
-                    end
-                    if (not modifier.SetStackCountChanged) then
-                        modifier.SetStackCount2 = modifier.SetStackCount
-                        modifier.SetStackCount = function(context, count)
+                        modifier.OnDestroy = function(context)
+                            context.OnDestroy2(context)
                             if (IsServer()) then
                                 Units:ForceStatsCalculation(context:GetParent())
                             end
-                            modifier.SetStackCount2(context, count)
                         end
-                        modifier.SetStackCountChanged = true
                     end
-                    if(fireEvent == true) then
+                    if (not modifier.SetStackCount2) then
+                        modifier.SetStackCount2 = modifier.SetStackCount
+                        modifier.SetStackCount = function(context, count)
+                            context.SetStackCount2(context, count)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (not modifier.IncrementStackCount2) then
+                        modifier.IncrementStackCount2 = modifier.IncrementStackCount
+                        modifier.IncrementStackCount = function(context)
+                            context.IncrementStackCount2(context)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (not modifier.DecrementStackCount2) then
+                        modifier.DecrementStackCount2 = modifier.DecrementStackCount
+                        modifier.DecrementStackCount = function(context)
+                            context.DecrementStackCount2(context)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                        end
+                    end
+                    if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
                         for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
@@ -701,13 +739,8 @@ if (IsServer()) then
     ---@param modifierTable MODIFIER_TABLE
     function GameMode:OnModifierApplied(modifierTable)
         if (modifierTable.target) then
+            print("Modifier added ", modifierTable.modifier_name)
             Units:ForceStatsCalculation(modifierTable.target)
-        end
-    end
-
-    function CDOTA_Modifier_Lua:OnDestroy(keys)
-        if (self and IsServer()) then
-            Units:ForceStatsCalculation(self:GetParent())
         end
     end
 

@@ -51,6 +51,7 @@ end
 ---@return UNIT_STATS_TABLE
 function Units:CalculateStats(unit, statsTable)
     if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
+        print("Calculate stats for ", unit:GetUnitName())
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
         local unitBonusAgi = 0
