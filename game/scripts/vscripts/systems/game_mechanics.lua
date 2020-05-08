@@ -235,42 +235,7 @@ if (IsServer()) then
                     fireEvent = true
                 end
                 if (modifier ~= nil) then
-                    if (modifier.OnDestroy and not modifier.OnDestroy2) then
-                        modifier.OnDestroy2 = modifier.OnDestroy
-                        modifier.OnDestroy = function(context)
-                            context.OnDestroy2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.SetStackCount2) then
-                        modifier.SetStackCount2 = modifier.SetStackCount
-                        modifier.SetStackCount = function(context, count)
-                            context.SetStackCount2(context, count)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.IncrementStackCount2) then
-                        modifier.IncrementStackCount2 = modifier.IncrementStackCount
-                        modifier.IncrementStackCount = function(context)
-                            context.IncrementStackCount2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.DecrementStackCount2) then
-                        modifier.DecrementStackCount2 = modifier.DecrementStackCount
-                        modifier.DecrementStackCount = function(context)
-                            context.DecrementStackCount2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
+                    GameMode:ChangeModifier(modifier)
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -345,42 +310,7 @@ if (IsServer()) then
                     fireEvent = true
                 end
                 if (modifier ~= nil) then
-                    if (modifier.OnDestroy and not modifier.OnDestroy2) then
-                        modifier.OnDestroy2 = modifier.OnDestroy
-                        modifier.OnDestroy = function(context)
-                            context.OnDestroy2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.SetStackCount2) then
-                        modifier.SetStackCount2 = modifier.SetStackCount
-                        modifier.SetStackCount = function(context, count)
-                            context.SetStackCount2(context, count)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.IncrementStackCount2) then
-                        modifier.IncrementStackCount2 = modifier.IncrementStackCount
-                        modifier.IncrementStackCount = function(context)
-                            context.IncrementStackCount2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
-                    if (not modifier.DecrementStackCount2) then
-                        modifier.DecrementStackCount2 = modifier.DecrementStackCount
-                        modifier.DecrementStackCount = function(context)
-                            context.DecrementStackCount2(context)
-                            if (IsServer()) then
-                                Units:ForceStatsCalculation(context:GetParent())
-                            end
-                        end
-                    end
+                    GameMode:ChangeModifier(modifier)
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -757,6 +687,45 @@ if (IsServer()) then
                 end
             end
         end)
+    end
+
+    function GameMode:ChangeModifier(modifier)
+        if (modifier.OnDestroy and not modifier.OnDestroy2) then
+            modifier.OnDestroy2 = modifier.OnDestroy
+            modifier.OnDestroy = function(context)
+                context.OnDestroy2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.SetStackCount2) then
+            modifier.SetStackCount2 = modifier.SetStackCount
+            modifier.SetStackCount = function(context, count)
+                context.SetStackCount2(context, count)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.IncrementStackCount2) then
+            modifier.IncrementStackCount2 = modifier.IncrementStackCount
+            modifier.IncrementStackCount = function(context)
+                context.IncrementStackCount2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.DecrementStackCount2) then
+            modifier.DecrementStackCount2 = modifier.DecrementStackCount
+            modifier.DecrementStackCount = function(context)
+                context.DecrementStackCount2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
     end
 end
 

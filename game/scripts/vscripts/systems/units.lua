@@ -579,7 +579,7 @@ function modifier_stats_system:OnIntervalThink()
         return
     end
     local unit = self.unit
-    if(not unit or unit:IsNull()) then
+    if (not unit or unit:IsNull()) then
         return
     end
     local statsTable = unit.stats
