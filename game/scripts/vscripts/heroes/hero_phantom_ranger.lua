@@ -301,7 +301,12 @@ function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
         local attacker = kv.attacker
         local target = kv.target
         if (attacker ~= nil and target ~= nil and attacker ~= target and attacker == self.owner) then
-            local IsProc = RollPercentage(self.ability.proc_chance)
+            -- acoount for Deadly Vibration (talent 48) increased chance to proc
+            local talent48Level = TalentTree:GetHeroTalentLevel(self.owner, 48)
+            local talent48ChanceIncreasePerLevel = 10
+            local bonusProcChance = 0
+            if (talent48Level > 0) then bonusProcChance = 10 + talent48ChanceIncreasePerLevel * talent48Level end 
+            local IsProc = RollPercentage(self.ability.proc_chance + bonusProcChance)
             if (not IsProc) then
                 return
             end
@@ -347,6 +352,63 @@ modifier_phantom_ranger_phantom_harmonic_stacks = modifier_phantom_ranger_phanto
 
 LinkedModifiers["modifier_phantom_ranger_phantom_harmonic"] = LUA_MODIFIER_MOTION_NONE
 LinkedModifiers["modifier_phantom_ranger_phantom_harmonic_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+-- Deadly Vibration (talent 48) logic
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.stacks = 0
+    self.talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
+    self.talent48PercentAdPerStack, self.talent48PercentSpellDmgPerStack, self.talent48PercentArmorPerStack, self.talent48ResistsPerStack = 3, 3, 3, 3
+
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:OnRefresh()
+    self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
+    print (self.talent48Level)
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetAttackDamagePercentBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentAdPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetSpellDamageBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentSpellDmgPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetArmorPercentBonus()
+   if (self.talent48Level > 0) then return self.stacks * self.talent48PercentArmorPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetFireProtectionBonus()
+   if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetFrostProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetEarthProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetVoidProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetHolyProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetNatureProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
+
+function modifier_phantom_ranger_phantom_harmonic_stacks:GetInfernoProtectionBonus()
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+end
 
 -- phantom_ranger_phantom_harmonic
 phantom_ranger_phantom_harmonic = phantom_ranger_phantom_harmonic or class({

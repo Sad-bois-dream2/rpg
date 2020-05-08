@@ -2,7 +2,7 @@ local LinkedModifiers = {}
 
 
 --------------------------------------------------------------------------------
--- Phantom Ranger Void Arrows
+-- Void Arrows
 
 phantom_ranger_void_arrows = class({
     GetAbilityTextureName = function(self)
@@ -32,17 +32,20 @@ end
 --------------------------------------------------------------------------------
 
 function phantom_ranger_void_arrows:OnOrbFire(params)
+
 	local caster = self:GetCaster()
 	local manaCost = self:GetManaCost(self:GetLevel() - 1)
 	-- accounting for Power Addiction (talent 36) mana increase
 	local talent36Level = TalentTree:GetHeroTalentLevel(caster, 36)
 	local talent36PercentManaIncreasePerLevel = 100
 	if costIncrease ~= 0 then caster:SpendMana(manaCost * talent36Level * talent36PercentManaIncreasePerLevel / 100, self) end	
+
 end
 
 --------------------------------------------------------------------------------
 
 function phantom_ranger_void_arrows:OnOrbImpact(params)
+
 	local caster = self:GetCaster()
 	local damage = self:GetSpecialValueFor("void_damage")
 	-- accounting for Power Addiction (talent 36) dmg increase
@@ -56,7 +59,7 @@ end
 --------------------------------------------------------------------------------
 -- Hunter's Focus Modifiers
 
-modifier_phantom_ranger_hunters_focus_buff = modifier_phantom_ranger_hunters_focus_buff or class({
+modifier_phantom_ranger_hunters_focus_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -85,11 +88,13 @@ LinkedModifiers["modifier_phantom_ranger_hunters_focus_buff"] = LUA_MODIFIER_MOT
 --------------------------------------------------------------------------------
 
 function modifier_phantom_ranger_hunters_focus_buff:OnCreated()
+
 	if not IsServer() then return end
 	self.caster = self:GetParent()
     self.bonusAttackSpeed = MAXIMUM_ATTACK_SPEED
     self.bonusAttackDamage = self:GetAbility():GetSpecialValueFor("attack_damage") / 100
     self.talent37Level = TalentTree:GetHeroTalentLevel(self.caster, 37)
+
 end
 
 --------------------------------------------------------------------------------
@@ -105,25 +110,27 @@ function modifier_phantom_ranger_hunters_focus_buff:GetAttackDamagePercentBonus(
 end
 
 --------------------------------------------------------------------------------
--- Multishot (talent 37) talent logic 
+-- Multishot (talent 37) logic 
 
 function modifier_phantom_ranger_hunters_focus_buff:OnTakeDamage(damageTable)
 	
 	if not IsServer() then return end
 	local drow = damageTable.attacker
 	local talent37Level = TalentTree:GetHeroTalentLevel(drow, 37)
-	if (drow:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and talent37Level > 0 and damageTable.damage > 0) then 
+	if (drow:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and talent37Level > 0 and not damageTable.fromsummon and damageTable.damage > 0) then 
 
 		local talent37PercentDmgRegainedPerLevel = 0.1
 		damageTable.damage = damageTable.damage * (0.45 + (talent37PercentDmgRegainedPerLevel * talent37Level))
 		return damageTable
 
 	end
+
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_phantom_ranger_hunters_focus_buff:OnAttack(keys)
+
 	if not IsServer() then return end
 	if self.talent37Level == 0 then return end
 	-- "Secondary arrows are not released upon attacking allies."
@@ -157,15 +164,17 @@ phantom_ranger_hunters_focus = class({
 })
 
 function phantom_ranger_hunters_focus:OnSpellStart()
+
     if not IsServer() then return end
     local hunters_focus_duration = self:GetSpecialValueFor("duration")
     local caster = self:GetCaster()
     GameMode:ApplyBuff({ caster = caster, target = caster, ability = self, modifier_name = "modifier_phantom_ranger_hunters_focus_buff", duration = hunters_focus_duration })
     caster:EmitSound("Ability.Focusfire")
+
 end
 
 --------------------------------------------------------------------------------
--- Drow Ranger Talent 36 - Power Addiction 
+-- Talent 36 - Power Addiction 
 
 modifier_npc_dota_hero_drow_ranger_talent_36 = modifier_npc_dota_hero_drow_ranger_talent_36 or class({
     IsDebuff = function(self)
@@ -196,33 +205,41 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_36"] = LUA_MODIFIER_M
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
+
     if not IsServer() then return end
     self.caster = self:GetParent()
+
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:GetManaRestore()
-	return 0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 36))
+
+	local talent36Level = TalentTree:GetHeroTalentLevel(self.caster, 36)
+	local talent36PercentManaOnKillPerLevel = 5
+	return 0.05 + (talent36Level * talent36PercentManaOnKillPerLevel / 100)
+
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:OnDeath(params)
+
 	if not IsServer() then return end
 	if (params.attacker ~= self.caster) then return end
 	if (self.caster:GetTeamNumber() == params.unit:GetTeamNumber()) then return end
 	if (params.unit:IsBuilding()) then return end
-	GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self.caster:GetMaxMana() })   
+	GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self.caster:GetMaxMana() }) 
+
 end
 
 --------------------------------------------------------------------------------
--- Drow Ranger Talent 37 - Multishot 
+-- Talent 37 - Multishot 
 -- logic is in modifier_phantom_ranger_hunters_focus_buff
 
 
 --------------------------------------------------------------------------------
--- Drow Ranger Talent 42 - Phantom Wail
+-- Talent 42 - Phantom Wail
 
 
 modifier_phantom_ranger_phantom_wail_shield = modifier_phantom_ranger_phantom_wail_shield or class({
@@ -287,13 +304,14 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_42"] = LUA_MODIFIER_M
 
 --------------------------------------------------------------------------------
 
-function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
+function modifier_npc_dota_hero_drow_ranger_talent_42:OnCreated()
     if not IsServer() then return end
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
+
 	local drow = damageTable.victim
 	local shielded = drow:FindModifierByName("modifier_phantom_ranger_phantom_wail_shield")
     if (shielded) then
@@ -342,7 +360,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
                	GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_disarmed", duration = talent42CCduration })
 			
 			end
-			
+
             local pulse_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, drow)
 			ParticleManager:SetParticleControl(pulse_particle, 1, Vector(2400, 1, 0))
 			ParticleManager:ReleaseParticleIndex(pulse_particle)
@@ -389,32 +407,227 @@ LinkedModifiers["modifier_phantom_ranger_phantom_wail_cd"] = LUA_MODIFIER_MOTION
 
 --------------------------------------------------------------------------------
 
-function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
+function modifier_phantom_ranger_phantom_wail_cd:OnCreated()
+
     if not IsServer() then return end
+    self.hero = self:GetParent()
+
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_phantom_ranger_phantom_wail_cd:OnDeath(event)
-    local hero = self:GetParent()
-    if (hero ~= event.unit) then
+
+    if self.hero ~= event.unit then return end
+    self:Destroy()
+
+end
+
+--------------------------------------------------------------------------------
+-- Talent 43 - Hunter's Guile 
+
+modifier_npc_dota_hero_drow_ranger_talent_43 = modifier_npc_dota_hero_drow_ranger_talent_43 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+    	return MODIFIER_ATTRIBUTE_PERMANENT 
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED, MODIFIER_EVENT_ON_BREAK_INVISIBILITY }
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_43"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_43:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_43:OnAttackLanded()
+
+    if not IsServer() then return end
+    local talent43Level = TalentTree:GetHeroTalentLevel(self.caster, 43)
+    local talent43ChancePerLevel = 20 / 3
+    local talent43StealthDuration = 1
+    local stealthProc = RollPercentage(talent43Level * talent43ChancePerLevel)
+    if (stealthProc and not self.caster:HasModifier("modifier_phantom_ranger_stealth")) then GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = talent43StealthDuration }) end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_43:OnTakeDamage(damageTable)
+
+	if not IsServer() then return end
+	local drow = damageTable.attacker
+	local talent43Level = TalentTree:GetHeroTalentLevel(drow, 43)
+	if (drow:HasModifier("modifier_phantom_ranger_stealth") and talent43Level > 0 and not damageTable.fromsummon) then 
+
+		local talent43CritDmgPerLevel = 25
+		damageTable.crit = 1.25 + (talent43CritDmgPerLevel * talent43Level / 100)
+		return damageTable
+
+	end
+
+end
+
+--------------------------------------------------------------------------------
+-- Talent 48 - Deadly Vibration 
+-- logic is in hero_phantom_ranger.lua -> modifier_phantom_ranger_phantom_harmonic(_stacks)
+
+--------------------------------------------------------------------------------
+-- Talent 49 - Master of the Cold Void 
+
+modifier_npc_dota_hero_drow_ranger_talent_49 = modifier_npc_dota_hero_drow_ranger_talent_49 or class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_49"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_49:OnCreated()
+    if (not IsServer()) then
         return
     end
-    self:Destroy()
+    self.caster = self:GetParent()
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_49:GetFrostDamageBonus()
+	local talent49Level = TalentTree:GetHeroTalentLevel(self.caster, 49)
+	local talent49FrostDmgPerLevel = 10
+    return 0.2 + (talent49Level * talent49FrostDmgPerLevel / 100)
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_49:OnTakeDamage(damageTable)
+
+    if (damageTable.attacker:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_49") and (damageTable.voiddmg or (damageTable.physdmg and damageTable.ability == nil))) then
+
+        damageTable.frostdmg = true
+        return damageTable
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+-- Phantom Ranger's generic Stealth modifier 
+
+modifier_phantom_ranger_stealth = class({
+	IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetPriority = function(self)
+    	return MODIFIER_PRIORITY_SUPER_ULTRA
+   	end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_43.png"
+    end,
+    DeclareFunctions = function(self)
+    	return { MODIFIER_PROPERTY_INVISIBILITY_LEVEL, MODIFIER_PROPERTY_TRANSLATE_ACTIVITY_MODIFIERS }
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_stealth"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_stealth:OnCreated()
+
+	if not IsServer() then return end
+	self.hero = self:GetParent()
+	self.hero:MoveToTargetToAttack(self.hero:GetAggroTarget()) 
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_stealth:CheckState()
+
+	return {
+		[MODIFIER_STATE_INVISIBLE]			= true,
+		[MODIFIER_STATE_TRUESIGHT_IMMUNE]	= true
+	}
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_stealth:GetModifierInvisibilityLevel()
+	return 1
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_stealth:GetActivityTranslationModifiers()
+	return "phantom_ranger_stealth"
 end
 
 --------------------------------------------------------------------------------
 -- Internal stuff
 
-for LinkedModifier, MotionController in pairs(LinkedModifiers) do
-    LinkLuaModifier(LinkedModifier, "talents/talents_phantom_ranger", MotionController)
-end
-
+for LinkedModifier, MotionController in pairs(LinkedModifiers) do LinkLuaModifier(LinkedModifier, "talents/talents_phantom_ranger", MotionController) end
 if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
-    --GameMode.PreDamageEventHandlersTable = {}
+
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
+	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_43, 'OnTakeDamage'))
+	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_49, 'OnTakeDamage'))
 	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
+
 end
 
 
