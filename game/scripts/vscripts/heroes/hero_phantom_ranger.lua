@@ -146,13 +146,31 @@ function phantom_ranger_soul_echo:OnSpellStart(unit, special_cast)
         EmitSoundOn("Hero_VoidSpirit.Pulse.Cast", caster)
         GameMode:ApplyBuff({ caster = caster, target = caster, ability = nil, modifier_name = "modifier_phantom_ranger_soul_echo", duration = duration })
         local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", caster:GetAbsOrigin(), true, nil, nil, caster:GetTeamNumber())
-        phantom:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = phantom
+        modifierTable.caster = phantom
+        modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
         local wearables = GetWearables(caster)
         AddWearables(phantom, wearables)
-        phantom:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom_status_effect", { Duration = -1 })
+        modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = phantom
+        modifierTable.caster = phantom
+        modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
         ForEachWearable(phantom,
                 function(wearable)
-                    wearable:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom_status_effect", { Duration = -1 })
+                    modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = wearable
+                    modifierTable.caster = phantom
+                    modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+                    modifierTable.duration = -1
+                    GameMode:ApplyBuff(modifierTable)
                 end)
         local casterHealth = caster:GetHealth()
         local phantomHealth = casterHealth * phantomHealthAmplify
@@ -492,156 +510,6 @@ function phantom_ranger_void_disciple:OnUpgrade()
     end
 end
 
--- phantom_ranger_phantom_arrow
-phantom_ranger_phantom_arrow = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_phantom_arrow"
-    end,
-})
-
-function phantom_ranger_phantom_arrow:OnSpellStart(unit, special_cast)
-
-end
-
--- phantom_ranger_remnant_arrow
-phantom_ranger_remnant_arrow = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_remnant_arrow"
-    end,
-})
-
-function phantom_ranger_remnant_arrow:OnSpellStart(unit, special_cast)
-
-end
-
--- phantom_ranger_barrage
-phantom_ranger_barrage = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_barrage"
-    end,
-})
-
-function phantom_ranger_barrage:OnSpellStart(unit, special_cast)
-
-end
--- phantom_ranger_hunter_focus modifiers
-phantom_ranger_hunter_focus_mark = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return phantom_ranger_hunter_focus:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/phantom_ranger/test/void_disciple/void_disciple_smoke_2.vpcf"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_START }
-    end
-})
-
-function phantom_ranger_hunter_focus_mark:OnAttackStart(keys)
-    if not IsServer() then
-        return
-    end
-    local caster = self:GetCaster()
-    if (keys.target == self:GetParent() and keys.attacker:GetTeamNumber() == caster:GetTeamNumber() and keys.attacker == caster) then
-        keys.attacker:AddNewModifier(caster, self:GetAbility(), "phantom_ranger_hunter_focus_as_buff", { duration = 2 })
-    end
-end
-
-phantom_ranger_hunter_focus_as_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT, MODIFIER_EVENT_ON_ATTACK_START }
-    end
-})
-
-function phantom_ranger_hunter_focus_as_buff:OnAttackStart(keys)
-    if not IsServer() then
-        return
-    end
-    local caster = self:GetCaster()
-    if (keys.attacker == caster and keys.target ~= nil and not keys.target:IsNull() and not keys.target:HasModifier("phantom_ranger_hunter_focus_mark")) then
-        self:Destroy()
-    end
-end
-
-function phantom_ranger_hunter_focus_as_buff:OnCreated()
-    local ability = self:GetAbility()
-    self.bonus_attack_speed = ability:GetSpecialValueFor("attack_speed")
-end
-
-function phantom_ranger_hunter_focus_as_buff:GetModifierAttackSpeedBonus_Constant()
-    return self.bonus_attack_speed or 0
-end
-
-LinkedModifiers["phantom_ranger_hunter_focus_mark"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["phantom_ranger_hunter_focus_as_buff"] = LUA_MODIFIER_MOTION_NONE
-
--- phantom_ranger_hunter_focus
-phantom_ranger_hunter_focus = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_hunter_focus"
-    end,
-})
-
-function phantom_ranger_hunter_focus:OnSpellStart(unit, special_cast)
-    if not IsServer() then
-        return
-    end
-    local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
-    target:AddNewModifier(caster, self, "phantom_ranger_hunter_focus_mark", { duration = self:GetSpecialValueFor("duration") })
-end
-
--- phantom_ranger_huntress
-phantom_ranger_huntress = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_huntress"
-    end,
-})
-
-function phantom_ranger_huntress:OnSpellStart(unit, special_cast)
-
-end
-
--- phantom_ranger_intimidation
-phantom_ranger_intimidation = class({
-    GetAbilityTextureName = function(self)
-        return "phantom_ranger_intimidation"
-    end,
-})
-
-function phantom_ranger_intimidation:OnSpellStart(unit, special_cast)
-
-end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_phantom_ranger", MotionController)
