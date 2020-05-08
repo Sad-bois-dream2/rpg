@@ -8,23 +8,6 @@ lycan_call = class({
 
 })
 
---set wolf parameter
-function lycan_call:SummonWolf(args)
-    if (args == nil) then
-        return nil
-    end
-    local caster = args.caster
-    local summon = args.unit
-    local position = args.position
-    local ability = args.ability
-    if (args.casterTeam == nil or caster == nil or summon == nil or position == nil or ability == nil) then
-        return nil
-    end
-    summon = CreateUnitByName(summon, position, true, caster, caster, args.casterTeam)
-    summon:AddNewModifier(caster, self, "modifier_kill", { duration = self.duration })
-    return summon
-end
-
 function lycan_call:OnUpgrade()
     if (not IsServer()) then
     end
@@ -52,8 +35,8 @@ function lycan_call:OnSpellStart()
         local summon_point = enemy:GetAbsOrigin() + 100 * enemy:GetForwardVector()
         for i = 0, self.number - 1, 1 do
             summon_point = enemy:GetAbsOrigin() + 50 * enemy:GetForwardVector() * i
-            local summon_damage = Units:GetAttackDamage(caster) * 0.1
-            self:SummonWolf({ caster = caster, casterTeam = casterTeam, unit = "npc_boss_lycan_call_wolf", position = summon_point, damage = summon_damage, ability = self })
+            local wolf = CreateUnitByName("npc_boss_lycan_call_wolf", summon_point, true, caster, caster, casterTeam)
+            wolf:AddNewModifier(caster, self, "modifier_kill", { duration = 5 })
         end
     end
 end
@@ -108,7 +91,7 @@ function modifier_lycan_companion:OnCreated()
         return
     end
     self.parent = self:GetParent()
-    self.parentTeam = self.parent:GetTeam()
+    self.parentTeam = self.parent:GetTeamNumber()
     self.ability = self:GetAbility()
 end
 
@@ -201,6 +184,7 @@ function modifier_lycan_wound_debuff:OnCreated(keys)
     self.caster = self:GetCaster()
     self.target = self:GetParent()
     self.dot = keys.dot
+    self:StartIntervalThink(1.0)
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink()
@@ -332,12 +316,7 @@ modifier_lycan_transform = modifier_lycan_transform or class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function()
-        return { MODIFIER_PROPERTY_MODEL_CHANGE }
-    end,
-    GetModifierModelChange = function()
-        return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
-    end
+
 })
 
 function modifier_lycan_transform:OnCreated()
@@ -348,15 +327,29 @@ function modifier_lycan_transform:OnCreated()
     self.bat = self.ability:GetSpecialValueFor("bat")
     self.crit_factor = self.ability:GetSpecialValueFor("crit_factor") / 100
     self.crit_chance = self.ability:GetSpecialValueFor("crit_chance")
-    self.ms_bonus = self.ability:GetSpecialValueFor("ms_bonus") / 100
-end
-
-function modifier_lycan_transform:GetMoveSpeedPercentBonus()
-    return self.ms_bonus
+    self.ms_absolute = self.ability:GetSpecialValueFor("ms_absolute")
 end
 
 function modifier_lycan_transform:GetBaseAttackTime()
     return self.bat
+end
+
+function modifier_lycan_transform:DeclareFunctions()
+    return {
+        MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN,
+        MODIFIER_PROPERTY_MODEL_CHANGE,
+    }
+end
+
+function modifier_lycan_transform:CheckState()
+    return {[MODIFIER_STATE_NO_UNIT_COLLISION] = true}
+end
+function modifier_lycan_transform:GetModifierModelChange()
+    return "models/items/lycan/ultimate/hunter_kings_trueform/hunter_kings_trueform.vmdl"
+end
+
+function modifier_lycan_transform:GetModifierMoveSpeed_AbsoluteMin()
+    return self.ms_absolute
 end
 
 ---@param damageTable DAMAGE_TABLE
@@ -376,10 +369,6 @@ function modifier_lycan_transform:OnTakeDamage(damageTable)
         damageTable.crit = modifier.crit_factor
         return damageTable
     end
-end
-
-if (IsServer()) then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
 end
 
 LinkLuaModifier("modifier_lycan_transform", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -549,6 +538,10 @@ function lycan_howl_aura:OnSpellStart()
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 0, casterPosition)
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 1, casterPosition)
         ParticleManager:SetParticleControl(particle_lycan_howl_fx, 2, casterPosition)
+        Timers:CreateTimer(duration, function()
+            ParticleManager:DestroyParticle(particle_lycan_howl_fx, false)
+            ParticleManager:ReleaseParticleIndex(particle_lycan_howl_fx)
+        end)
         self.caster:EmitSound("Hero_Lycan.Howl")
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 casterPosition,
@@ -580,7 +573,7 @@ lycan_agility = class({
     end,
 })
 
-function lycan_agility:FindTargetForBlink(caster)
+function lycan_agility:FindTargetForBlink(caster) --random with already hit removal
     if IsServer() then
         local radius = self:GetSpecialValueFor("jump_range")
         -- Find all nearby enemies
@@ -612,16 +605,15 @@ function lycan_agility:Blink(target, caster)
     if (target == nil) then
         return
     end
-    --self:GetCaster():EmitSound("Hero_Spirit_Breaker.NetherStrike.End")
+
     local start_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf", PATTACH_ABSORIGIN, caster)
 
     local targetPosition = target:GetAbsOrigin()
     local vector = (targetPosition - caster:GetAbsOrigin())
     local direction = vector:Normalized()
-    -- "Nether Strike instantly moves Spirit Breaker on the opposite side of the target, 54 range away from it."
+    -- move to 54 range on the back of target
     FindClearSpaceForUnit(self:GetCaster(), target:GetAbsOrigin() + ((target:GetAbsOrigin() - caster:GetAbsOrigin()):Normalized() * (54)), false)
 
-    -- IMBAfication: Warp Beast
     ProjectileManager:ProjectileDodge(caster)
     ParticleManager:SetParticleControl(start_particle, 2, caster:GetAbsOrigin())
     ParticleManager:ReleaseParticleIndex(start_particle)
@@ -993,3 +985,7 @@ end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
+if (IsServer() and not GameMode.ZONE1_BOSS_LYCAN) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_LYCAN = true
+end

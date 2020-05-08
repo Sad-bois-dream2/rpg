@@ -9,7 +9,7 @@
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
         "UnitLabel"         "healing_ward"
-
+        "ModelScale" 				"1"
         // Abilities
         //----------------------------------------------------------------
 
@@ -21,7 +21,6 @@
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-
 
         // Armor
         //----------------------------------------------------------------
@@ -36,7 +35,7 @@
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1.7"     // Speed of attack.
         "AttackAnimationPoint"    "0.4"   // Normalized time in animation cycle to attack.
-        "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
+        "AttackAcquisitionRange"  "1500"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
@@ -70,7 +69,7 @@
 
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"        "10000"     // Base health.
+        "StatusHealth"        "1000"     // Base health.
         "StatusHealthRegen"     "0"     // Health regeneration rate.
         "StatusMana"        "99999999"     // Base mana.
         "StatusManaRegen"     "0"     // Mana regeneration rate.
@@ -97,10 +96,10 @@
         {
         "AttachWearables"
                     {
-                        "1" { "ItemDef" "8392" }
-                        "2" { "ItemDef" "8395" }
-                        "3" { "ItemDef" "8397" }
-                        "4" { "ItemDef" "8399" }
+                        "1" { "ItemDef" "9424" }
+                        "2" { "ItemDef" "9425" }
+                        "3" { "ItemDef" "9426" }
+                        "4" { "ItemDef" "9427" }
 
                     }
 
