@@ -361,22 +361,23 @@ function modifier_phantom_ranger_phantom_harmonic_stacks:OnCreated()
     self.caster = self:GetParent()
     self.stacks = 0
     self.talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
-    self.talent48PercentAdPerStack, self.talent48PercentSpellDmgPerStack, self.talent48PercentArmorPerStack, self.talent48ResistsPerStack = 3, 3, 3, 3
+    self.talent48PercentAdPerStack, self.talent48PercentArmorPerStack, self.talent48ResistsPerStack = 3, 3, 3
+    -- self.talent48PercentSpellDmgPerStack = 3
 
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:OnRefresh()
+    if not IsServer() then return end
     self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
-    print (self.talent48Level)
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetAttackDamagePercentBonus()
     if (self.talent48Level > 0) then return self.stacks * self.talent48PercentAdPerStack / 100 end
 end
 
-function modifier_phantom_ranger_phantom_harmonic_stacks:GetSpellDamageBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentSpellDmgPerStack / 100 end
-end
+-- function modifier_phantom_ranger_phantom_harmonic_stacks:GetSpellDamageBonus()
+--     if (self.talent48Level > 0) then return self.stacks * self.talent48PercentSpellDmgPerStack / 100 end
+-- end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetArmorPercentBonus()
    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentArmorPerStack / 100 end
@@ -463,7 +464,7 @@ function phantom_ranger_phantom_harmonic:OnProjectileHit_ExtraData(target, vLoca
         local enemies = self.projectiles[index].targets
         self.projectiles[index].reachedTargets = self.projectiles[index].reachedTargets or {}
         local damage = self.proc_damage * Units:GetAttackDamage(caster)
-        GameMode:DamageUnit({ caster = caster, target = target, damage = damage, voiddmg = true })
+        GameMode:DamageUnit({ caster = caster, target = target, damage = damage, voiddmg = true, ability = self })
         table.insert(self.projectiles[index].reachedTargets, target)
         while #enemies > 0 do
             local potentialJumpTarget = enemies[1]
