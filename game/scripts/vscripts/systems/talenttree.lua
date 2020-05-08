@@ -327,7 +327,13 @@ function TalentTree:SetHeroTalentLevel(hero, talentId, level)
                         modifier_name = modifier_name .. "_" .. heroName .. "_"
                     end
                     modifier_name = modifier_name .. "talent_" .. tostring(talentId)
-                    hero.talents.modifiers[talentId] = hero:AddNewModifier(hero, nil, modifier_name, { duration = -1 })
+                    local modifierTable = {}
+                    modifierTable.ability = nil
+                    modifierTable.target = hero
+                    modifierTable.caster = hero
+                    modifierTable.modifier_name = modifier_name
+                    modifierTable.duration = -1
+                    hero.talents.modifiers[talentId] = GameMode:ApplyBuff(modifierTable)
                 end
             end
         end
