@@ -33,7 +33,7 @@ end
 ---@field public elementsDamage UNIT_STATS_ELEMENTS_TABLE
 
 function Units:Init()
-    Units.STATS_CALCULATE_INTERVAL = 1
+    Units.STATS_CALCULATE_INTERVAL = -1
 end
 
 function Units:ForceStatsCalculation(unit)
@@ -575,21 +575,25 @@ function modifier_stats_system:OnCreated(event)
 end
 
 function modifier_stats_system:OnIntervalThink()
-    if IsServer() then
-        local unit = self.unit
-        local statsTable = unit.stats
-        statsTable = Units:CalculateStats(unit, statsTable)
-        -- save calculated stats to entity
-        unit.stats = statsTable
-        if (unit:IsRealHero()) then
-            local playerID = unit:GetPlayerID()
-            -- send data to clients
-            local dataTable = {
-                player_id = playerID,
-                statsTable = statsTable
-            }
-            CustomGameEventManager:Send_ServerToAllClients("rpg_update_hero_stats", { data = json.encode(dataTable) })
-        end
+    if (not IsServer()) then
+        return
+    end
+    local unit = self.unit
+    if(not unit or unit:IsNull()) then
+        return
+    end
+    local statsTable = unit.stats
+    statsTable = Units:CalculateStats(unit, statsTable)
+    -- save calculated stats to entity
+    unit.stats = statsTable
+    if (unit:IsRealHero()) then
+        local playerID = unit:GetPlayerID()
+        -- send data to clients
+        local dataTable = {
+            player_id = playerID,
+            statsTable = statsTable
+        }
+        CustomGameEventManager:Send_ServerToAllClients("rpg_update_hero_stats", { data = json.encode(dataTable) })
     end
 end
 

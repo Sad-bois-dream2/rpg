@@ -234,9 +234,7 @@ if (IsServer()) then
                 if (fireEvent == nil) then
                     fireEvent = true
                 end
-                if (modifier ~= nil and fireEvent == true) then
-                    args.stacks = 0
-                    args.max_stacks = 0
+                if (modifier ~= nil) then
                     if (modifier.OnDestroy and not modifier.OnDestroy2) then
                         modifier.OnDestroy2 = modifier.OnDestroy
                         modifier.OnDestroy = function(keys)
@@ -244,15 +242,22 @@ if (IsServer()) then
                             modifier.BaseClass.OnDestroy(modifier, keys)
                         end
                     end
-                    if (modifier.OnStackCountChanged and not modifier.OnStackCountChanged2) then
-                        modifier.OnStackCountChanged2 = modifier.OnStackCountChanged
-                        modifier.OnStackCountChanged = function(keys)
-                            modifier.OnStackCountChanged2(modifier, keys)
-                            modifier.BaseClass.OnStackCountChanged(modifier, keys)
+                    if (not modifier.SetStackCountChanged) then
+                        modifier.SetStackCount2 = modifier.SetStackCount
+                        modifier.SetStackCount = function(context, count)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                            modifier.SetStackCount2(context, count)
                         end
+                        modifier.SetStackCountChanged = true
                     end
-                    for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
-                        GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                    if(fireEvent == true) then
+                        args.stacks = 0
+                        args.max_stacks = 0
+                        for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                            GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                        end
                     end
                 end
                 return modifier
@@ -320,9 +325,7 @@ if (IsServer()) then
                 if (fireEvent == nil) then
                     fireEvent = true
                 end
-                if (modifier ~= nil and fireEvent == true) then
-                    args.stacks = 0
-                    args.max_stacks = 0
+                if (modifier ~= nil) then
                     if (modifier.OnDestroy and not modifier.OnDestroy2) then
                         modifier.OnDestroy2 = modifier.OnDestroy
                         modifier.OnDestroy = function(keys)
@@ -330,15 +333,22 @@ if (IsServer()) then
                             modifier.BaseClass.OnDestroy(modifier, keys)
                         end
                     end
-                    if (modifier.OnStackCountChanged and not modifier.OnStackCountChanged2) then
-                        modifier.OnStackCountChanged2 = modifier.OnStackCountChanged
-                        modifier.OnStackCountChanged = function(keys)
-                            modifier.OnStackCountChanged2(modifier, keys)
-                            modifier.BaseClass.OnStackCountChanged(modifier, keys)
+                    if (not modifier.SetStackCountChanged) then
+                        modifier.SetStackCount2 = modifier.SetStackCount
+                        modifier.SetStackCount = function(context, count)
+                            if (IsServer()) then
+                                Units:ForceStatsCalculation(context:GetParent())
+                            end
+                            modifier.SetStackCount2(context, count)
                         end
+                        modifier.SetStackCountChanged = true
                     end
-                    for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
-                        GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                    if(fireEvent == true) then
+                        args.stacks = 0
+                        args.max_stacks = 0
+                        for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                            GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                        end
                     end
                 end
                 return modifier
@@ -695,14 +705,8 @@ if (IsServer()) then
         end
     end
 
-    function CDOTA_Modifier_Lua:OnStackCountChanged(keys)
-        if (self) then
-            Units:ForceStatsCalculation(self:GetParent())
-        end
-    end
-
     function CDOTA_Modifier_Lua:OnDestroy(keys)
-        if (self) then
+        if (self and IsServer()) then
             Units:ForceStatsCalculation(self:GetParent())
         end
     end
