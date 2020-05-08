@@ -2,7 +2,7 @@ if Summons == nil then
     _G.Summons = class({})
 end
 
-modifier_summon = modifier_summon or class({
+modifier_summon = class({
     IsDebuff = function(self)
         return false
     end,
@@ -20,7 +20,7 @@ modifier_summon = modifier_summon or class({
     end,
 })
 
-modifier_summon_owner_aa_fix = modifier_summon_owner_aa_fix or class({
+modifier_summon_owner_aa_fix = class({
     IsDebuff = function(self)
         return false
     end,

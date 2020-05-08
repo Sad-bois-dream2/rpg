@@ -8,7 +8,7 @@
         "Model"           "models/heroes/luna/luna.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "30"
-        "UnitLabel"         "healing_ward"
+        "UnitLabel"         "boss"
 
         // Abilities
         //----------------------------------------------------------------

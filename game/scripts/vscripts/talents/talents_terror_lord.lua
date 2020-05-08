@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- terror_lord_flame_of_menace modifiers
-modifier_terror_lord_flame_of_menace = modifier_terror_lord_flame_of_menace or class({
+modifier_terror_lord_flame_of_menace = class({
     IsDebuff = function(self)
         return false
     end,
@@ -140,7 +140,7 @@ function terror_lord_flame_of_menace:OnSpellStart(unit, special_cast)
 end
 
 -- terror_lord_immolation modifiers
-modifier_terror_lord_immolation = modifier_terror_lord_immolation or class({
+modifier_terror_lord_immolation = class({
     IsDebuff = function(self)
         return false
     end,
@@ -264,7 +264,7 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
 end
 
 -- terror_lord_inferno_impulse modifiers
-modifier_terror_lord_inferno_impulse = modifier_terror_lord_inferno_impulse or class({
+modifier_terror_lord_inferno_impulse = class({
     IsDebuff = function(self)
         return false
     end,
@@ -319,7 +319,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_inferno_impulse"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_inferno_impulse_debuff = modifier_terror_lord_inferno_impulse_debuff or class({
+modifier_terror_lord_inferno_impulse_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -410,7 +410,7 @@ function terror_lord_inferno_impulse:OnSpellStart(unit, special_cast)
     end)
 end
 -- terror_lord_pit_of_seals modifiers
-modifier_terror_lord_pit_of_seals_thinker_aura = modifier_terror_lord_pit_of_seals_thinker_aura or class({
+modifier_terror_lord_pit_of_seals_thinker_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -497,7 +497,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_pit_of_seals_thinker_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_pit_of_seals_thinker_aura_debuff = modifier_terror_lord_pit_of_seals_thinker_aura_debuff or class({
+modifier_terror_lord_pit_of_seals_thinker_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -562,7 +562,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_pit_of_seals_thinker_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_pit_of_seals_root = modifier_terror_lord_pit_of_seals_root or class({
+modifier_terror_lord_pit_of_seals_root = class({
     IsDebuff = function(self)
         return true
     end,
@@ -582,7 +582,7 @@ modifier_terror_lord_pit_of_seals_root = modifier_terror_lord_pit_of_seals_root 
         return terror_lord_pit_of_seals:GetAbilityTextureName()
     end,
     CheckState = function(self)
-        return { MODIFIER_STATE_ROOTED }
+        return { [MODIFIER_STATE_ROOTED] = true }
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/heroes_underlord/abyssal_underlord_pitofmalice_stun.vpcf"
@@ -591,7 +591,7 @@ modifier_terror_lord_pit_of_seals_root = modifier_terror_lord_pit_of_seals_root 
 
 LinkedModifiers["modifier_terror_lord_pit_of_seals_root"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_pit_of_seals_root_cd = modifier_terror_lord_pit_of_seals_root_cd or class({
+modifier_terror_lord_pit_of_seals_root_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -679,7 +679,7 @@ function terror_lord_pit_of_seals:OnSpellStart(unit, special_cast)
     end
 end
 -- terror_lord_aura_of_seals modifiers
-modifier_terror_lord_aura_of_seals = modifier_terror_lord_aura_of_seals or class({
+modifier_terror_lord_aura_of_seals = class({
     IsDebuff = function(self)
         return false
     end,
@@ -738,7 +738,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_aura_of_seals"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_aura_of_seals_ally_aura = modifier_terror_lord_aura_of_seals_ally_aura or class({
+modifier_terror_lord_aura_of_seals_ally_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -782,7 +782,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_aura_of_seals_ally_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_aura_of_seals_ally_aura_buff = modifier_terror_lord_aura_of_seals_ally_aura_buff or class({
+modifier_terror_lord_aura_of_seals_ally_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -824,7 +824,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_aura_of_seals_ally_aura_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_aura_of_seals_enemy_aura = modifier_terror_lord_aura_of_seals_enemy_aura or class({
+modifier_terror_lord_aura_of_seals_enemy_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -868,7 +868,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_aura_of_seals_enemy_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_aura_of_seals_enemy_aura_debuff = modifier_terror_lord_aura_of_seals_enemy_aura_debuff or class({
+modifier_terror_lord_aura_of_seals_enemy_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -936,15 +936,15 @@ function terror_lord_aura_of_seals:OnUpgrade()
 end
 
 -- terror_lord_ruthless_predator modifiers
-modifier_terror_lord_ruthless_predator_aura = modifier_terror_lord_ruthless_predator_aura or class({
+modifier_terror_lord_ruthless_predator_aura = class({
     IsHidden = function(self)
-        return true
+        return false
     end,
     IsAuraActiveOnDeath = function(self)
         return false
     end,
     GetAuraRadius = function(self)
-        return self.radius or 0
+        return self.ability.radius or 0
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
@@ -969,7 +969,7 @@ function modifier_terror_lord_ruthless_predator_aura:OnCreated()
     end
     self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    local tick = self.ability:GetLevelSpecialValueFor("tick", 0)
+    local tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(tick)
 end
 
@@ -977,13 +977,13 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    if (not self.reg_modifier) then
+    if (not self.ability.reg_modifier) then
         return
     end
     local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             self.caster:GetAbsOrigin(),
             nil,
-            self.radius,
+            self.ability.radius,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,
@@ -1003,12 +1003,12 @@ function modifier_terror_lord_ruthless_predator_aura:OnIntervalThink()
     if (talentLevel > 0) then
         stackCount = math.max(stackCount, math.min(talentLevel, 5))
     end
-    self.reg_modifier:SetStackCount(stackCount)
+    self.ability.reg_modifier:SetStackCount(stackCount)
 end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_ruthless_predator_aura_debuff = modifier_terror_lord_ruthless_predator_aura_debuff or class({
+modifier_terror_lord_ruthless_predator_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1035,16 +1035,14 @@ function modifier_terror_lord_ruthless_predator_aura_debuff:OnCreated()
     end
     local auraOwner = self:GetAuraOwner()
     self.ability = auraOwner:FindAbilityByName("terror_lord_ruthless_predator")
-    self.ms_slow = self.ability:GetSpecialValueFor("ms_slow")
-    self.regeneration_debuff = self.ability:GetSpecialValueFor("regeneration_debuff") * -0.01
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetMoveSpeedBonus()
-    return -self.ms_slow
+    return -self.ability.ms_slow
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetHealthRegenerationPercentBonus()
-    return self.regeneration_debuff or 0
+    return self.ability.regeneration_debuff or 0
 end
 
 function modifier_terror_lord_ruthless_predator_aura_debuff:GetManaRegenerationPercentBonus()
@@ -1053,7 +1051,7 @@ end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_terror_lord_ruthless_predator = modifier_terror_lord_ruthless_predator or class({
+modifier_terror_lord_ruthless_predator = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1079,6 +1077,7 @@ function modifier_terror_lord_ruthless_predator:OnCreated()
         return
     end
     self.caster = self:GetParent()
+    self.ability = self:GetAbility()
     self:StartIntervalThink(1.0)
 end
 
@@ -1089,13 +1088,15 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
     if (not ability) then
         local auraModifier = self.caster:FindModifierByName(terror_lord_ruthless_predator:GetIntrinsicModifierName())
+        if(auraModifier) then
+            auraModifier.reg_modifier = nil
+        end
         self:Destroy()
-        auraModifier.reg_modifier = nil
     end
 end
 
 function modifier_terror_lord_ruthless_predator:GetHealthRegenerationBonus()
-    return math.min(self:GetStackCount() * self.regeration_bonus, self.regeneration_cap) * self.caster:GetMaxHealth()
+    return math.min(self:GetStackCount() * self.ability.regeration_bonus, self.ability.regeneration_cap) * self.caster:GetMaxHealth()
 end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator"] = LUA_MODIFIER_MOTION_NONE
@@ -1114,18 +1115,19 @@ function terror_lord_ruthless_predator:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
-    modifier.radius = self:GetSpecialValueFor("radius")
-    if (not modifier.reg_modifier) then
-        modifier.reg_modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_ruthless_predator", { Duration = -1 })
+    self.radius = self:GetSpecialValueFor("radius")
+    self.regeration_bonus = self:GetSpecialValueFor("regeneration_buff") / 100
+    self.regeneration_cap = self:GetSpecialValueFor("regeneration_cap_buff") / 100
+    self.ms_slow = self:GetSpecialValueFor("ms_slow")
+    self.regeneration_debuff = self:GetSpecialValueFor("regeneration_debuff") * -0.01
+    if(self:GetLevel() == 1) then
+        local caster = self:GetCaster()
+        self.reg_modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_ruthless_predator", { Duration = -1 })
     end
-    modifier.reg_modifier.regeration_bonus = self:GetSpecialValueFor("regeneration_buff") / 100
-    modifier.reg_modifier.regeneration_cap = self:GetSpecialValueFor("regeneration_cap_buff") / 100
 end
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation (Scorched Immolation)]
-modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation = modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1155,6 +1157,7 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:
     end
     self.caster = self:GetParent()
 end
+
 function modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation:GetMoveSpeedPercentBonus()
     return math.min(0.05 + (0.05 * TalentTree:GetHeroTalentLevel(self.caster, 35)), 0.3)
 end
@@ -1162,7 +1165,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_35_scorched_immolation"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_36 (Hallow Berserker)]
-modifier_npc_dota_hero_abyssal_underlord_talent_36 = modifier_npc_dota_hero_abyssal_underlord_talent_36 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_36 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1204,7 +1207,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_36"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1246,7 +1249,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_40 (Impulse Sanity)
-modifier_npc_dota_hero_abyssal_underlord_talent_40 = modifier_npc_dota_hero_abyssal_underlord_talent_40 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_40 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1302,7 +1305,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_40"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity = modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1341,7 +1344,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_41 (Will of Fire)
-modifier_npc_dota_hero_abyssal_underlord_talent_41 = modifier_npc_dota_hero_abyssal_underlord_talent_41 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_41 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1383,7 +1386,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_41"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_42 (Inferno Reserves)
-modifier_npc_dota_hero_abyssal_underlord_talent_42 = modifier_npc_dota_hero_abyssal_underlord_talent_42 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_42 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1427,7 +1430,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_42"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves = modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1473,7 +1476,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_42_inferno_reserves"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_42_cd = modifier_npc_dota_hero_abyssal_underlord_talent_42_cd or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_42_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1497,7 +1500,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_42_cd = modifier_npc_dota_hero_a
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_42_cd"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_43_cd (Vengeance)
-modifier_npc_dota_hero_abyssal_underlord_talent_43 = modifier_npc_dota_hero_abyssal_underlord_talent_43 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_43 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1552,7 +1555,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_43"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_43_cd = modifier_npc_dota_hero_abyssal_underlord_talent_43_cd or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_43_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1575,7 +1578,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_43_cd = modifier_npc_dota_hero_a
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_43_cd"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff = modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1605,7 +1608,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff = modifier_npc_dota_he
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_43_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_44 (Sticky Pit)
-modifier_npc_dota_hero_abyssal_underlord_talent_44 = modifier_npc_dota_hero_abyssal_underlord_talent_44 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_44 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1657,7 +1660,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_44"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_44_thinker = modifier_npc_dota_hero_abyssal_underlord_talent_44_thinker or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_44_thinker = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1726,7 +1729,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_44_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky = modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1769,7 +1772,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_44_sticky"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_45 (Aura of Destruction)
-modifier_npc_dota_hero_abyssal_underlord_talent_45 = modifier_npc_dota_hero_abyssal_underlord_talent_45 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_45 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1813,7 +1816,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_45 = modifier_npc_dota_hero_abys
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_45"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff = modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1873,7 +1876,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_45_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_46 (Nova Terror)
-modifier_npc_dota_hero_abyssal_underlord_talent_46 = modifier_npc_dota_hero_abyssal_underlord_talent_46 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_46 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1908,7 +1911,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_46"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_47 (Ashes of Terror)
-modifier_npc_dota_hero_abyssal_underlord_talent_47 = modifier_npc_dota_hero_abyssal_underlord_talent_47 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_47 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1971,7 +1974,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_47"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_abyssal_underlord_talent_47_cd = modifier_npc_dota_hero_abyssal_underlord_talent_47_cd or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_47_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1995,7 +1998,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_47_cd = modifier_npc_dota_hero_a
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_47_cd"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_48 (Remnants of Corruption)
-modifier_npc_dota_hero_abyssal_underlord_talent_48 = modifier_npc_dota_hero_abyssal_underlord_talent_48 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_48 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -2023,7 +2026,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_48"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_48 (Behemoth)
-modifier_npc_dota_hero_abyssal_underlord_talent_49 = modifier_npc_dota_hero_abyssal_underlord_talent_49 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_49 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -2060,7 +2063,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_49"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_50 (Inferno Meteor)
-modifier_npc_dota_hero_abyssal_underlord_talent_50 = modifier_npc_dota_hero_abyssal_underlord_talent_50 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_50 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -2137,7 +2140,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_abyssal_underlord_talent_50"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_abyssal_underlord_talent_51 (Inferno Meteor)
-modifier_npc_dota_hero_abyssal_underlord_talent_51 = modifier_npc_dota_hero_abyssal_underlord_talent_51 or class({
+modifier_npc_dota_hero_abyssal_underlord_talent_51 = class({
     IsDebuff = function(self)
         return false
     end,

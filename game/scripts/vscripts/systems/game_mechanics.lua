@@ -278,6 +278,30 @@ if (IsServer()) then
                     args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
+                local isTargetCasting = false
+                local abilitiesCount = args.target:GetAbilityCount() - 1
+                local ability = nil
+                for i = 0, abilitiesCount do
+                    ability = args.target:GetAbilityByIndex(i)
+                    if (ability and ability:IsInAbilityPhase()) then
+                        isTargetCasting = true
+                        break
+                    end
+                end
+                if (isTargetCasting == true) then
+                    local isModifierWillPreventCasting = false
+                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                    if (crowdControlModifier) then
+                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
+                    else
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                            isModifierWillPreventCasting = true
+                        end
+                    end
+                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                        return nil
+                    end
+                end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (fireEvent == nil) then
                     fireEvent = true
@@ -642,9 +666,24 @@ if (IsServer()) then
             Units:ForceStatsCalculation(modifierTable.target)
         end
     end
+
+    function GameMode:BuildCrowdControlModifiersList()
+        Timers:CreateTimer(2.0, function()
+            for k, v in pairs(_G) do
+                if (type(v) == "table" and v.CheckState) then
+                    local stateTable = v.CheckState(nil)
+                    local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
+                    local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
+                    local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
+                    local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
+                    GameMode.CrowdControlModifiersTable[k] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
+                end
+            end
+        end)
+    end
 end
 
-modifier_cooldown_reduction_custom = modifier_cooldown_reduction_custom or class({
+modifier_cooldown_reduction_custom = class({
     IsDebuff = function(self)
         return false
     end,
@@ -702,7 +741,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-modifier_out_of_combat = modifier_out_of_combat or class({
+modifier_out_of_combat = class({
     IsDebuff = function(self)
         return false
     end,
@@ -749,36 +788,39 @@ end
 function modifier_out_of_combat:OnPostTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier:SetStackCount(0)
-        modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat_buff")
-        if (modifier) then
-            modifier:Destroy()
-        end
+        modifier_out_of_combat:ResetTimer(damageTable.victim)
     end
     modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
     if (modifier) then
-        modifier:SetStackCount(0)
-        modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat_buff")
-        if (modifier) then
-            modifier:Destroy()
-        end
+        modifier_out_of_combat:ResetTimer(damageTable.attacker)
     end
 end
 
 function modifier_out_of_combat:OnPostHeal(healTable)
     local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
     if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
+        modifier_out_of_combat:ResetTimer(healTable.caster)
+    end
+end
+
+function modifier_out_of_combat:ResetTimer(unit)
+    if (not unit or unit:IsNull()) then
+        return
+    end
+    local buff = unit:FindModifierByName("modifier_out_of_combat_buff")
+    if (buff) then
+        buff:Destroy()
+    end
+    local modifier = unit:FindModifierByName("modifier_out_of_combat")
+    if (modifier) then
         modifier:SetStackCount(0)
-        modifier = healTable.caster:FindModifierByName("modifier_out_of_combat_buff")
-        if (modifier) then
-            modifier:Destroy()
-        end
+        modifier.buff = nil
     end
 end
 
 LinkLuaModifier("modifier_out_of_combat", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
 
-modifier_out_of_combat_buff = modifier_out_of_combat_buff or class({
+modifier_out_of_combat_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -829,15 +871,6 @@ function modifier_out_of_combat_buff:OnIntervalThink()
     GameMode:HealUnitMana(healTable)
 end
 
-function modifier_out_of_combat_buff:OnDestroy()
-    if (not IsServer()) then
-        return
-    end
-    local modifier = self.caster:FindModifierByName("modifier_out_of_combat")
-    modifier:SetStackCount(0)
-    modifier.buff = nil
-end
-
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
 
 ListenToGameEvent("npc_spawned", function(keys)
@@ -862,8 +895,10 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PreHealManaEventHandlersTable = {}
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.CrowdControlModifiersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+    GameMode:BuildCrowdControlModifiersList()
     GameMode.GAME_MECHANICS_INIT = true
 end
