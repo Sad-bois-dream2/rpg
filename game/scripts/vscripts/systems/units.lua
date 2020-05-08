@@ -41,6 +41,8 @@ function Units:ForceStatsCalculation(unit)
         return
     end
     unit.stats = Units:CalculateStats(unit, unit.stats)
+    local modifier = unit:FindModifierByName("modifier_stats_system")
+    modifier:OnIntervalThink()
 end
 
 ---@param unit CDOTA_BaseNPC
