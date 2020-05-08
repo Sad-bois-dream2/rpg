@@ -414,19 +414,19 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_slark/slark_dark_pact_pulses_projected.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_slark/slark_dark_pact_pulses_puddle.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_slark/slark_dark_pact_pulses_ring.vpcf"
-		},
-		{
 			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_flux/flux_pulses_edge_ringspread.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_flux/flux_pulses_flash.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_flux/flux_pulses_ring.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_flux/flux_pulses_projected.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_flux/flux_puddle.vpcf"
 		},
 	]
 	m_flCullRadius = 1.0

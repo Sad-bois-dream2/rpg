@@ -1118,6 +1118,8 @@ function treant_beam:OnSpellStart()
         Timers:CreateTimer(1.0, function()
             local gather_fx = "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_channel_ti6.vpcf"
             local charge = ParticleManager:CreateParticle(gather_fx,PATTACH_ABSORIGIN, caster)
+            ParticleManager:SetParticleControlEnt(charge, 0, self:GetCaster(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetCaster():GetAbsOrigin(), true)
+            ParticleManager:SetParticleControlEnt(charge, 1, self:GetCaster(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetCaster():GetAbsOrigin(), true)
             Timers:CreateTimer(1.0, function()
                 ParticleManager:DestroyParticle(charge, false)
                 ParticleManager:ReleaseParticleIndex(charge)
