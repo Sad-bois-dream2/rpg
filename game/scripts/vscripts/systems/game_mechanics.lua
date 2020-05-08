@@ -169,6 +169,23 @@ if (IsServer()) then
         table.insert(GameMode.CritHealManaEventHandlersTable, handler)
     end
 
+    ---@param modifier string
+    function GameMode:RegisterMarkedAura(modifier)
+        if (modifier == nil) then
+            DebugPrint("[GAME MECHANICS] Someone passed nil to RegisterMarkedAura()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        if (type(modifier) ~= "string") then
+            DebugPrint("[GAME MECHANICS] Someone passed " .. tostring(modifier) .. " instead of string to RegisterMarkedAura()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        table.insert(GameMode.MarkedAurasTable, modifier)
+    end
+
     --- handle every dmg instance in game. true = allow damage event, false = cancel damage event (damage itself, numbers still showed on client side)
     function GameMode:DamageFilter(args)
         if not IsServer() then
@@ -235,7 +252,7 @@ if (IsServer()) then
                     fireEvent = true
                 end
                 if (modifier ~= nil) then
-                    GameMode:ChangeModifier(modifier)
+                    GameMode:MarkModifier(modifier)
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -310,7 +327,7 @@ if (IsServer()) then
                     fireEvent = true
                 end
                 if (modifier ~= nil) then
-                    GameMode:ChangeModifier(modifier)
+                    GameMode:MarkModifier(modifier)
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -669,9 +686,30 @@ if (IsServer()) then
     ---@param modifierTable MODIFIER_TABLE
     function GameMode:OnModifierApplied(modifierTable)
         if (modifierTable.target) then
-            print("Modifier added ", modifierTable.modifier_name)
             Units:ForceStatsCalculation(modifierTable.target)
         end
+    end
+
+    function GameMode:PrintAurasWarning()
+        Timers:CreateTimer(2.0, function()
+            DebugPrint("[GAME MECHANICS] List of unknown auras with their buffs/debuffs")
+            for name, class in pairs(_G) do
+                if (type(class) == "table" and class.IsAura and name:find("modifier_") and not TableContains(GameMode.MarkedAurasTable, name)) then
+                    DebugPrint("[GAME MECHANICS] Aura: " .. name .. ", modifier: " .. tostring(class.GetModifierAura(nil)))
+                end
+            end
+        end)
+    end
+
+    function GameMode:PrintAurasWarning()
+        Timers:CreateTimer(2.0, function()
+            DebugPrint("[GAME MECHANICS] List of unknown auras with their buffs/debuffs")
+            for name, class in pairs(_G) do
+                if (type(class) == "table" and class.IsAura and name:find("modifier_") and not TableContains(GameMode.MarkedAurasTable, name)) then
+                    DebugPrint("[GAME MECHANICS] Aura: " .. name .. ", modifier: " .. tostring(class.GetModifierAura(nil)))
+                end
+            end
+        end)
     end
 
     function GameMode:BuildCrowdControlModifiersList()
@@ -689,7 +727,7 @@ if (IsServer()) then
         end)
     end
 
-    function GameMode:ChangeModifier(modifier)
+    function GameMode:MarkModifier(modifier)
         if (modifier.OnDestroy and not modifier.OnDestroy2) then
             modifier.OnDestroy2 = modifier.OnDestroy
             modifier.OnDestroy = function(context)
@@ -942,9 +980,11 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
     GameMode.CrowdControlModifiersTable = {}
+    GameMode.MarkedAurasTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
     GameMode:BuildCrowdControlModifiersList()
+    GameMode:PrintAurasWarning()
     GameMode.GAME_MECHANICS_INIT = true
 end
