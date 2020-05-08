@@ -434,7 +434,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_bonus"			        "10 20 30"
+   				"ms_bonus"			        "10 25 40"
    			}
             "03"
     		{
@@ -444,7 +444,7 @@
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"ms_slow"			        "10 15 20 "
+    			"ms_slow"			        "10 25 40 "
     		}
             "05"
     		{
@@ -502,7 +502,7 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"as_bonus"		            "3 6 9"
+				"as_bonus"		            "4 8 12"
 			}
 			"03"
 			{

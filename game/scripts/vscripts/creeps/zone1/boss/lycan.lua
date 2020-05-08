@@ -199,14 +199,16 @@ function modifier_lycan_wound_debuff:OnIntervalThink()
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end
-
+--heal negate
 function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
-    --heal negate
-    return -1 --that boi can never regain hp again
+    return -1
+end
+
+function modifier_lycan_wound_debuff:GetHealingReceivedPercentBonus()
+    return -1
 end
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
 
 ---------------------
 --lycan wolf form
@@ -977,6 +979,10 @@ function modifier_lycan_bleeding_heal_reduced:OnRefresh()
 end
 
 function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus()
+    return self.heal_reduced
+end
+
+function modifier_lycan_bleeding_heal_reduced:GetHealingReceivedPercentBonus()
     return self.heal_reduced
 end
 

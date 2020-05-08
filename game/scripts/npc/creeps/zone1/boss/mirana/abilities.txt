@@ -1,4 +1,4 @@
 "DOTAAbilities"
 {
-
+blessing particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf
 }

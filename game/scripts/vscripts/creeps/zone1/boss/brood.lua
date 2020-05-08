@@ -553,7 +553,7 @@ function brood_comes:OnSpellStart()
                 false)
         for _, charger in pairs(alltrash) do
             --spider horde charge!
-            if IsSpiderling(charger) then
+            if IsSpiderling(charger) == true then
                 modifierTable = {}
                 modifierTable.ability = self
                 modifierTable.target = charger
@@ -1453,7 +1453,7 @@ function modifier_brood_web_aura:GetAuraEntityReject(hTarget)
         return
     end
 
-    if hTarget == self:GetCaster() or IsSpiderling(hTarget) then
+    if hTarget == self:GetCaster() or IsSpiderling(hTarget) == true then
         return false
     end
 
@@ -1506,6 +1506,7 @@ modifier_brood_web = class({
 })
 
 function modifier_brood_web:OnCreated()
+    self.ability = self:GetAbility()
     if IsServer() then
         if not self:GetAbility() then
             self:Destroy()
@@ -1514,7 +1515,6 @@ function modifier_brood_web:OnCreated()
 
     -- Ability properties
     self.caster = self:GetCaster()
-    self.ability = self:GetAbility()
     self.parent = self:GetParent()
 
     -- Ability specials
@@ -1538,6 +1538,8 @@ LinkLuaModifier("modifier_brood_web", "creeps/zone1/boss/brood.lua", LUA_MODIFIE
 modifier_brood_web_aura_enemy = class({})
 
 function modifier_brood_web_aura_enemy:OnCreated()
+    self.ability = self:GetAbility()
+
     if IsServer() then
         if not self:GetAbility() then
             self:Destroy()
@@ -1546,7 +1548,6 @@ function modifier_brood_web_aura_enemy:OnCreated()
 
     -- Ability properties
     self.caster = self:GetCaster()
-    self.ability = self:GetAbility()
 
     -- Ability specials
     self.radius = self.ability:GetSpecialValueFor("radius")
@@ -1606,7 +1607,7 @@ modifier_brood_web_enemy = class({
 })
 
 function modifier_brood_web_enemy:OnCreated()
-    self.ability = self:GetAbility()
+
     if (not IsServer()) then
         return
     end
@@ -1615,6 +1616,7 @@ function modifier_brood_web_enemy:OnCreated()
         self:Destroy()
     end
     -- Ability properties
+    self.ability = self:GetAbility()
     self.caster = self:GetCaster()
     self.parent = self:GetParent()
     self.caster = self.ability:GetCaster()
@@ -1751,74 +1753,125 @@ end
 --------------
 --brood angry
 ----------------
-brood_angry = class({
-    GetAbilityTextureName = function(self)
-        return "brood_angry"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_brood_angry"
-    end,
-})
 
-modifier_brood_angry = modifier_brood_angry or class({
-    IsAuraActiveOnDeath = function(self)
-        return false
-    end,
-    GetAuraRadius = function(self)
-        return self.radius or 0
-    end,
-    GetAuraSearchFlags = function(self)
-        return DOTA_UNIT_TARGET_FLAG_INVULNERABLE + DOTA_UNIT_TARGET_FLAG_OUT_OF_WORLD
-    end,
-    GetAuraSearchTeam = function(self)
-        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
-    end,
-    IsAura = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    GetAuraSearchType = function(self)
-        return DOTA_UNIT_TARGET_BASIC
-    end,
-    GetModifierAura = function(self)
-        return "modifier_brood_angry_buff" --  The name of the secondary modifier that will be applied by this modifier (if it is an aura).
-    end,
-    GetTexture = function(self)
-        return brood_angry:GetAbilityTextureName()
-    end
-})
+brood_angry = class({})
+
+LinkLuaModifier("modifier_brood_angry", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_brood_angry_buff", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_brood_angry_stack", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 
-function brood_angry:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
-    self.duration = self:GetSpecialValueFor("duration")
-    self.max_stacks = self:GetSpecialValueFor("max_stacks")
-    self.damage = self:GetSpecialValueFor("self_damage")
-    self.cd_reduce = self:GetSpecialValueFor("cd_reduce")
-    self.radius = self:GetSpecialValueFor("radius")
+
+function brood_angry:GetAbilityTextureName()
+    return "brood_angry"
 end
 
-function modifier_brood_angry:OnAttackLanded(keys)
+function brood_angry:GetIntrinsicModifierName()
+    return "modifier_brood_angry"
+end
+
+
+-- Aura modifier
+modifier_brood_angry = class({})
+
+function modifier_brood_angry:OnCreated()
+    -- Ability properties
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+
+    -- Ability specials
+    self.radius = self.ability:GetSpecialValueFor("radius")
+end
+
+function modifier_brood_angry:AllowIllusionDuplicate() return false end
+function modifier_brood_angry:IsHidden() return false end
+function modifier_brood_angry:IsPurgable() return false end
+function modifier_brood_angry:IsDebuff() return false end
+
+function modifier_brood_angry:GetAuraRadius()
+    return 3000 --self.radius  --doesnt work self.radius cant get the value but real value like 3000 work ==
+end
+
+function modifier_brood_angry:GetAuraSearchFlags()
+    return DOTA_UNIT_TARGET_FLAG_INVULNERABLE
+end
+
+function modifier_brood_angry:GetAuraSearchTeam()
+    return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+end
+
+function modifier_brood_angry:GetAuraSearchType()
+    return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+end
+
+function modifier_brood_angry:GetAuraEntityReject(hTarget)
+    if IsMother(hTarget) == true or IsSpiderling(hTarget) == true then
+        return false
+    else
+        return true
+    end
+end
+
+function modifier_brood_angry:GetModifierAura()
+    return "modifier_brood_angry_buff"
+end
+
+function modifier_brood_angry:IsHidden() return true end
+
+function modifier_brood_angry:IsAura()
+    return true
+end
+
+
+-- Aura buff modifier
+modifier_brood_angry_buff = class({})
+
+function modifier_brood_angry_buff:OnCreated()
+    -- Ability properties
+    self.caster = self:GetAuraOwner()
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    -- Ability specials
+    self.radius = self.ability:GetSpecialValueFor("radius")
+    self.duration = self.ability:GetSpecialValueFor("duration")
+    self.max_stacks = self.ability:GetSpecialValueFor("max_stacks")
+    self.damage = self.ability:GetSpecialValueFor("self_damage")
+    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus")
+    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction")
+end
+
+function modifier_brood_angry_buff:OnRefresh()
+    self:OnCreated()
+end
+
+function modifier_brood_angry_buff:IsHidden() return false end
+function modifier_brood_angry_buff:IsPurgable() return false end
+function modifier_brood_angry_buff:IsDebuff() return false end
+
+function modifier_brood_angry_buff:DeclareFunctions()
+    return {
+        MODIFIER_EVENT_ON_ATTACK_LANDED,
+        MODIFIER_EVENT_ON_DEATH
+    }
+end
+
+function modifier_brood_angry_buff:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
     self.ability = self:GetAbility()
-    if (keys.attacker:HasModifier("modifier_brood_angry") and keys.attacker:HasModifier("modifier_brood_comes_mother"))then
+    if (keys.attacker:HasModifier("modifier_brood_comes_mother") and keys.attacker == self:GetAuraOwner())then --doesnt work (expect: 1 stack) (reality: spiderling number+1 stacks) and get too many stacks
         local modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.target = keys.attacker
         modifierTable.caster = keys.attacker
         modifierTable.modifier_name = "modifier_brood_angry_stack"
-        modifierTable.duration = self.ability.duration
+        modifierTable.duration = self.duration
         modifierTable.stacks = 1
-        modifierTable.max_stacks = self.ability.max_stacks
+        modifierTable.max_stacks = self.max_stacks
         GameMode:ApplyStackingBuff(modifierTable)
         local Health = keys.attacker:GetHealth()
-        local damage = Health * self.ability.damage *0.01
+        local damage = Health * self.damage *0.01
         local damageTable = {}
         damageTable.caster = keys.attacker
         damageTable.target = keys.attacker
@@ -1827,54 +1880,29 @@ function modifier_brood_angry:OnAttackLanded(keys)
         damageTable.puredmg = true
         GameMode:DamageUnit(damageTable)
         GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_comes", reduction = self.ability.cd_reduce, isflat = true })
-        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_cocoon", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_cocoons", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_kiss", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_spit", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_hunger", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = keys.attacker, ability = "brood_web", reduction = self.ability.cd_reduce, isflat = true })
+        if RollPercentage(8) then
+            keys.attacker:EmitSound("broodmother_broo_attack_11")
+        end
     end
 end
 
-LinkLuaModifier("modifier_brood_angry", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
-
-modifier_brood_angry_buff = modifier_brood_angry_buff or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_DEATH}
-    end
-})
-
-function modifier_brood_angry_buff:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self.parent = self:GetParent()
-    self.ability = self:GetAbility()
-end
-
-function modifier_brood_angry_buff:OnDeath(params)
-    if (params.victim == self.parent) and IsSpiderling(self.parent) then
+function modifier_brood_angry_buff:OnDeath(params) --doesnt work
+    if (params.victim == self.parent) then
         local brood = self:GetAuraOwner()
         local modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.target = brood
         modifierTable.caster = brood
         modifierTable.modifier_name = "modifier_brood_angry_stack"
-        modifierTable.duration = self.ability.duration
+        modifierTable.duration = self.duration
         modifierTable.stacks = 1
-        modifierTable.max_stacks = self.ability.max_stacks
+        modifierTable.max_stacks = self.max_stacks
         GameMode:ApplyStackingBuff(modifierTable)
         local Health = brood:GetHealth()
         local damage = Health * self.ability.damage *0.01
@@ -1886,7 +1914,7 @@ function modifier_brood_angry_buff:OnDeath(params)
         damageTable.puredmg = true
         GameMode:DamageUnit(damageTable)
         GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_comes", reduction = self.ability.cd_reduce, isflat = true })
-        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_cocoon", reduction = self.ability.cd_reduce, isflat = true })
+        GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_cocoons", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_kiss", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_spit", reduction = self.ability.cd_reduce, isflat = true })
         GameMode:ReduceAbilityCooldown({ target = brood, ability = "brood_hunger", reduction = self.ability.cd_reduce, isflat = true })
@@ -1899,10 +1927,7 @@ function modifier_brood_angry_buff:OnDeath(params)
     end
 end
 
---spiderling dead buff mother
-LinkLuaModifier("modifier_brood_angry_buff", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
-
-modifier_brood_angry_stack = modifier_brood_angry_stack or class({
+modifier_brood_angry_stack = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1920,8 +1945,11 @@ function modifier_brood_angry_stack:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01 * self:GetStackCount()
-    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * self:GetStackCount()
+    local modifier = self.parent:FindModifierByName("modifier_brood_angry_buff")
+    if (modifier) then
+        self.as_bonus = modifier:GetAbility():GetSpecialValueFor("as_bonus") * 0.01 * self:GetStackCount() --doesnt work cant refer to the value
+        self.dmg_reduction = modifier:GetAbility():GetSpecialValueFor("dmg_reduction") * 0.01 * self:GetStackCount() --doesnt work cant refer to the value
+    end
 end
 
 function modifier_brood_angry_stack:GetAttackSpeedPercentBonus()
@@ -1932,7 +1960,6 @@ function modifier_brood_angry_stack:GetDamageReductionBonus()
     return self.dmg_reduction
 end
 
-LinkLuaModifier("modifier_brood_angry_stack", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 --internal stuff
 if (IsServer() and not GameMode.ZONE1_BOSS_BROOD) then

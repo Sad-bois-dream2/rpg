@@ -14,13 +14,13 @@
         //----------------------------------------------------------------
 
           "Ability1"          "treant_hook"     // Ability 1.
-          "Ability2"          "treant_seed"     // Ability 2.
-          "Ability3"          "treant_growth"      // Ability 3.
-          "Ability4"          "treant_bash"      // Ability 4.
-          "Ability5"          "treant_ingrain"     // Ability 5.
-          "Ability6"          "treant_fertilize"      // Ability 6 - Extra.
-          "Ability7"          ""      // Ability 7 - Extra.
-          "Ability8"          ""      // Ability 8 - Extra.
+          "Ability2"          "treant_flux"     // Ability 2.
+          "Ability3"          "treant_storm"      // Ability 3.
+          "Ability4"          "treant_seed"      // Ability 4.
+          "Ability5"          "treant_one"     // Ability 5.
+          "Ability6"          "treant_ingrain"      // Ability 6 - Extra.
+          "Ability7"          "treant_regrowth"      // Ability 7 - Extra.
+          "Ability8"          "treant_beam"      // Ability 8 - Extra.
 
 
         // Armor

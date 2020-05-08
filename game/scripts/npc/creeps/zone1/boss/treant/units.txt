@@ -8,12 +8,12 @@
 		"Model"						"models/items/furion/treant/abyssal_prophet_abyssal_prophet_treant/abyssal_prophet_abyssal_prophet_treant.vmdl"	// Model.
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"Hero_Furion.TreantSpawn"
-		"Level"						"0"
+		"Level"						"5"
 		"ModelScale" 				"1"
 		"IsNeutralUnitType"			"0"
 		// Abilities
 		//----------------------------------------------------------------
-		"Ability1"					""			// Ability 1
+		"Ability1"					"treant_root"			// Ability 1
 		"Ability2"					""			// Ability 2
 		"Ability3"					""			// Ability 3
 		"Ability4"					""			// Ability 4

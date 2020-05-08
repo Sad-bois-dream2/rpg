@@ -78,17 +78,17 @@
             "01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_range"				"1000"
+				"dash_range"				"800 1000 1200"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_speed"				"800"
+				"dash_speed"				"600 750 900"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"base_damage"				"500 1500 5000"
+				"base_damage"				"1000 3000 10000"
 			}
 			"04"
 			{
@@ -106,8 +106,8 @@
 		{
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_earthshaker.vsndevts"
 			"soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
-			"particle"  "particles/units/heroes/hero_ember_spirit/ember_spirit_remnant_dash.vpcf"
-			"particle"  "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+			"particle"  "particles/units/npc_boss_ursa/ursa_dash/ursa_dash.vpcf"
+
 		}
 	}
     //=================================================================================================================
@@ -184,7 +184,7 @@
         "AnimationIgnoresModelScale"    "1"
         "AnimationPlaybackRate"         "0.33"
         "AbilityCastPoint"				"1"
-        "AbilityCastRange"				"600"
+        "AbilityCastRange"				"900"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
@@ -473,7 +473,7 @@
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
         "AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"0.1"
+        "AbilityCastPoint"				"0.3"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -492,21 +492,26 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"channel_time"			"5"
+				"channel_time"			"5.0"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"tick"				    "0.1"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"health_heal_pct"		"20 30 40"
+			}
 
    		}
-   				"precache"
-                		{
-                			"soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
-                			"particle"  "particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf"
+   		"precache"
+            {
+                "soundfile" "soundevents/voscripts/game_sounds_vo_ursa.vsndevts"
+                "particle"  "particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf"
 
-                		}
+            }
     }
 
 

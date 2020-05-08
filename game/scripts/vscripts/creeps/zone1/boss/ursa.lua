@@ -143,12 +143,12 @@ end
 LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 ---------
---ursa dash --ursa_ursa_overpower_01
+--ursa dash
 ---------
 
 -- ursa_dash modifiers
 
-modifier_ursa_dash_motion = modifier_ursa_dash_motion or class({
+modifier_ursa_dash_motion = class({
     IsDebuff = function(self)
         return false
     end,
@@ -170,9 +170,6 @@ modifier_ursa_dash_motion = modifier_ursa_dash_motion or class({
     GetMotionControllerPriority = function(self)
         return DOTA_MOTION_CONTROLLER_PRIORITY_MEDIUM
     end,
-    GetEffectName = function(self)
-        return "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
-    end
 })
 
 function modifier_ursa_dash_motion:CheckState()
@@ -204,7 +201,7 @@ end
 function modifier_ursa_dash_motion:OnDestroy()
     if IsServer() then
         self.caster:RemoveHorizontalMotionController(self)
-        self.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_2)
+        self.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_4)
         ParticleManager:DestroyParticle(self.ability.particle, false)
         ParticleManager:ReleaseParticleIndex(self.ability.particle)
     end
@@ -303,17 +300,19 @@ function ursa_dash:OnSpellStart(unit, special_cast)
         Timers:CreateTimer(0, function()
             if counter < number then
                 enemy = self:FindTargetForDash(caster)
+                --if can go to enemy
+                if enemy ~= nil then
+                    location = caster:GetAbsOrigin()
+                    vector = (enemy:GetAbsOrigin() - location):Normalized()
+                else
                 --if cant find dash randomly
-                if enemy == nil then
                     local angleLeft = QAngle(0, (math.floor(360 / math.random(6))), 0)
+                    location = caster:GetAbsOrigin()
                     vector = caster:GetForwardVector()
                     vector = RotatePosition(vector, angleLeft, caster:GetAbsOrigin())
-                else
-                --if can go to enemy
-                    vector = (enemy:GetAbsOrigin() - location):Normalized()
                 end
                 caster:SetForwardVector(vector)
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_2)
+                caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
                 self.particle = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_dash/ursa_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
                 ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
@@ -388,7 +387,8 @@ function modifier_ursa_fury:CheckState()
     --phase and haste
     return {
         [MODIFIER_STATE_UNSLOWABLE] = true,
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+        [MODIFIER_STATE_SILENCED] = true,
     }
 end
 
@@ -469,14 +469,6 @@ function ursa_roar:OnSpellStart()
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            -- Apply the stun
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_stunned"
-            modifierTable.duration = stun_duration
-            GameMode:ApplyDebuff(modifierTable)
             --particle
             self.roar_particle = "particles/units/npc_boss_ursa/ursa_roar/ursa_roar.vpcf"
             local enemy_loc = enemy:GetAbsOrigin()
@@ -1024,7 +1016,7 @@ end
 --ursa jelly    --
 -----------
 -- ursa_jelly modifiers
-modifier_ursa_jelly_channel = modifier_ursa_jelly_channel or class({
+modifier_ursa_jelly_channel = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1049,9 +1041,27 @@ function modifier_ursa_jelly_channel:OnCreated(keys)
     self.ability = self:GetAbility()
     if self.ability then
         self.caster = self:GetParent()
-        self.duration = self.ability:GetSpecialValueFor("duration")
+        --self.duration = self.ability:GetSpecialValueFor("duration")
         self.channel_time = self.ability:GetSpecialValueFor("channel_time")
+        self.health_heal_pct = self.ability:GetSpecialValueFor("health_heal_pct") * 0.01
         self.tick = self.ability:GetSpecialValueFor("tick")
+        self.max_stacks = math.floor(self.channel_time/ self.tick) + 1 --i print have found self.channel_time/ self.tick = 49.999999254942
+        --first stack instantly it seems got to 49 if no instant
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_ursa_jelly_buff"
+        modifierTable.duration = -1 --self.duration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.max_stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.caster
+        healTable.ability = self.ability
+        healTable.heal = self.caster:GetMaxHealth() * self.health_heal_pct /self.max_stacks
+        GameMode:HealUnit(healTable)
         self:StartIntervalThink(self.tick)
     else
         self:Destroy()
@@ -1063,6 +1073,17 @@ function modifier_ursa_jelly_channel:OnIntervalThink()
     if not IsServer() then
         return
     end
+    local healTable = {}
+    healTable.caster = self.caster
+    healTable.target = self.caster
+    healTable.ability = self.ability
+    healTable.heal = self.caster:GetMaxHealth() * self.health_heal_pct /self.max_stacks
+    GameMode:HealUnit(healTable)
+    local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, self.caster)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(healFX, false)
+        ParticleManager:ReleaseParticleIndex(healFX)
+    end)
     local modifierTable = {}
     modifierTable.ability = self.ability
     modifierTable.target = self.caster
@@ -1070,21 +1091,21 @@ function modifier_ursa_jelly_channel:OnIntervalThink()
     modifierTable.modifier_name = "modifier_ursa_jelly_buff"
     modifierTable.duration = -1 --self.duration
     modifierTable.stacks = 1
-    modifierTable.max_stacks = 50 --(self.channel_time / self.tick) + 1 -- +1 to make it 50 idk why its 49 from 5/0.1 and still 49 after +1
+    modifierTable.max_stacks = self.max_stacks-- +1 to make it 50 idk why its 49 from 5/0.1 and still 49 after +1
     GameMode:ApplyStackingBuff(modifierTable)
 end
 
 function modifier_ursa_jelly_channel:OnDestroy()
     if IsServer() then
         local caster = self:GetParent()
-        caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_2)
+        caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_4)
     end
 end
 
 LinkLuaModifier("modifier_ursa_jelly_channel", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
 
-modifier_ursa_jelly_buff = modifier_ursa_jelly_buff or class({
+modifier_ursa_jelly_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1114,8 +1135,8 @@ function modifier_ursa_jelly_buff:OnCreated(keys)
     local max_health = self:GetParent():GetMaxHealth()
     local tick = self.ability:GetSpecialValueFor("tick")
     self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * (self:GetStackCount()) * tick /(channel_time)
-    self.regen = self.ability:GetSpecialValueFor("regen") * 0.01 * (self:GetStackCount())* tick /(channel_time) * max_health
-end -- not sure which one need +1 but lycan stack skill seems off by 1
+    self.regen = (self.ability:GetSpecialValueFor("regen") * 0.01 * (self:GetStackCount())* tick /(channel_time) * max_health) + 1
+end -- not sure which one need +1 but like lycan stack final value seems off by 1
 
 function modifier_ursa_jelly_buff:OnRefresh(keys)
     if not IsServer() then
@@ -1125,7 +1146,7 @@ function modifier_ursa_jelly_buff:OnRefresh(keys)
 end
 
 function modifier_ursa_jelly_buff:GetDamageReductionBonus()
-    return self.dmg_reduction or 0
+    return self.dmg_reduction --or 0
 end
 
 function modifier_ursa_jelly_buff:GetHealthRegenerationBonus()
@@ -1153,10 +1174,10 @@ function ursa_jelly:OnSpellStart(unit, special_cast)
     if IsServer() then
         local caster = self:GetCaster()
         caster.ursa_jelly_modifier = caster:AddNewModifier(caster, self, "modifier_ursa_jelly_channel", { Duration = -1 })
-        caster:StartGesture(ACT_DOTA_CAST_ABILITY_2)
+        caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
         Timers:CreateTimer(0.9, function()
             if (caster:HasModifier("modifier_ursa_jelly_channel")) then
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_2)
+                caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
                 local pidx = ParticleManager:CreateParticle("particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 Timers:CreateTimer(2.0, function()
                     ParticleManager:DestroyParticle(pidx, false)
