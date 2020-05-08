@@ -690,9 +690,8 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
         modifierTable.caster = self.caster
         modifierTable.target = self.caster
         modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction"
-        modifierTable.duration = 1
+        modifierTable.duration = -1
         local modifier = GameMode:ApplyBuff(modifierTable)
-        modifier:SetDuration(1.0, false)
         for _, particleInfo in pairs(particlesTable) do
             ParticleManager:DestroyParticle(particleInfo.id, true)
             ParticleManager:ReleaseParticleIndex(particleInfo.id)
