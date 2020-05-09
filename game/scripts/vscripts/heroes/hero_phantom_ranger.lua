@@ -382,35 +382,35 @@ end
 -- end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetArmorPercentBonus()
-   if (self.talent48Level > 0) then return self.stacks * self.talent48PercentArmorPerStack / 100 end
+   if (self.talent48Level > 0) then return self.stacks * self.talent48PercentArmorPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetFireProtectionBonus()
-   if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+   if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetFrostProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetEarthProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetVoidProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetHolyProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetNatureProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetInfernoProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
 end
 
 -- phantom_ranger_phantom_harmonic
