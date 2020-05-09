@@ -679,6 +679,7 @@ function modifier_luminous_samurai_blade_dance_motion:OnCreated()
     self.slashPositions = {
         { Vector(31, 65, 71), Vector(15, -111, 52) },
         { Vector(-43, 65, 71), Vector(62, -111, 52) },
+        { Vector(126, -20, 71), Vector(-73, -22, 52) }
     }
     self.startLocation = self.caster:GetAbsOrigin()
     self.caster:StartGesture(ACT_DOTA_ATTACK)
@@ -790,6 +791,7 @@ function luminous_samurai_blade_dance:OnSpellStart()
     caster:SetForwardVector(distanceVector:Normalized())
     caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
 end
+
 -- luminous_samurai_light_iai_giri modifiers
 modifier_luminous_samurai_light_iai_giri = class({
     IsDebuff = function(self)
@@ -812,6 +814,30 @@ modifier_luminous_samurai_light_iai_giri = class({
     end
 })
 
+function modifier_luminous_samurai_light_iai_giri:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
+    if (modifier) then
+        local stacks = modifier:GetStackCount() + 1
+        modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
+    end
+end
+
+GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
+
+function modifier_luminous_samurai_light_iai_giri:JuggTest(damageTable)
+    print("lel?")
+    damageTable.crit = 5.0
+    return damageTable
+end
+
 LinkedModifiers["modifier_luminous_samurai_light_iai_giri"] = LUA_MODIFIER_MOTION_NONE
 
 -- luminous_samurai_light_iai_giri
@@ -831,18 +857,11 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
 
 end
 
-function luminous_samurai_light_iai_giri:CastFilterResultTarget( hTarget )
-    if self:GetCaster() == hTarget then
-        return UF_FAIL_CUSTOM
+function luminous_samurai_light_iai_giri:OnUpgrade()
+    if (not IsServer()) then
+        return
     end
-    return UF_FAIL_CUSTOM
-end
-
-function luminous_samurai_light_iai_giri:GetCustomCastErrorTarget( hTarget )
-    if self:GetCaster() == hTarget then
-        return "#dota_hud_error_cant_cast_on_self"
-    end
-    return "What you even did to cause that?"
+    self.maxStacks = self:GetSpecialValueFor("proc_stacks")
 end
 
 -- Internal stuff
@@ -852,5 +871,6 @@ end
 
 if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
