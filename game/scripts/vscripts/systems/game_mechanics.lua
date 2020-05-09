@@ -451,91 +451,99 @@ if (IsServer()) then
                 end
             end
         end
+        if (damageCanceled == true) then
+            return
+        end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
         local totalReduction = 1
         local totalBlock = 0
-        local IsPureDamage = (args.puredmg == true)
-        local IsPhysicalDamage = (args.physdmg == true)
-        local IsFireDamage = (args.firedmg == true)
-        local IsFrostDamage = (args.frostdmg == true)
-        local IsEarthDamage = (args.earthdmg == true)
-        local IsNatureDamage = (args.naturedmg == true)
-        local IsVoidDamage = (args.voiddmg == true)
-        local IsInfernoDamage = (args.infernodmg == true)
-        local IsHolyDamage = (args.holydmg == true)
-        local typesCount = 0
+        local IsPureDamage = (damageTable.puredmg == true)
+        local IsPhysicalDamage = (damageTable.physdmg == true)
+        local IsFireDamage = (damageTable.firedmg == true)
+        local IsFrostDamage = (damageTable.frostdmg == true)
+        local IsEarthDamage = (damageTable.earthdmg == true)
+        local IsNatureDamage = (damageTable.naturedmg == true)
+        local IsVoidDamage = (damageTable.voiddmg == true)
+        local IsInfernoDamage = (damageTable.infernodmg == true)
+        local IsHolyDamage = (damageTable.holydmg == true)
         if (IsPureDamage == false) then
-            totalReduction = 0
-            if (IsPhysicalDamage) then
+            local typesCount = 0
+            local elementalReduction = 0
+            if (IsPhysicalDamage == true) then
                 -- armor formula gl hf, 999999999 armor = 100% phys resistance, 2000 armor = 99,1% phys resistance
-                local targetArmor = Units:GetArmor(args.target)
+                local targetArmor = Units:GetArmor(damageTable.victim)
                 local physReduction = (targetArmor * 0.06) / (1 + targetArmor * 0.06)
                 physReduction = 1 - physReduction
                 typesCount = typesCount + 1
-                totalReduction = totalReduction + physReduction
+                elementalReduction = elementalReduction + physReduction
             end
-            if (IsFireDamage) then
-                totalReduction = totalReduction + Units:GetFireProtection(args.target)
+            if (IsFireDamage == true) then
+                elementalReduction = elementalReduction + Units:GetFireProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsFrostDamage) then
-                totalReduction = totalReduction + Units:GetFrostProtection(args.target)
+            if (IsFrostDamage == true) then
+                elementalReduction = elementalReduction + Units:GetFrostProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsEarthDamage) then
-                totalReduction = totalReduction + Units:GetEarthProtection(args.target)
+            if (IsEarthDamage == true) then
+                elementalReduction = elementalReduction + Units:GetEarthProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsNatureDamage) then
-                totalReduction = totalReduction + Units:GetNatureProtection(args.target)
+            if (IsNatureDamage == true) then
+                elementalReduction = elementalReduction + Units:GetNatureProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsVoidDamage) then
-                totalReduction = totalReduction + Units:GetVoidProtection(args.target)
+            if (IsVoidDamage == true) then
+                elementalReduction = elementalReduction + Units:GetVoidProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsInfernoDamage) then
-                totalReduction = totalReduction + Units:GetInfernoProtection(args.target)
+            if (IsInfernoDamage == true) then
+                elementalReduction = elementalReduction + Units:GetInfernoProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            if (IsHolyDamage) then
-                totalReduction = totalReduction + Units:GetHolyProtection(args.target)
+            if (IsHolyDamage == true) then
+                elementalReduction = elementalReduction + Units:GetHolyProtection(damageTable.victim)
                 typesCount = typesCount + 1
             end
-            totalReduction = totalReduction / typesCount
+            if (typesCount == 0) then
+                elementalReduction = 1
+            else
+                elementalReduction = elementalReduction / typesCount
+            end
+            totalReduction = elementalReduction
         end
         -- post reduction effects
-        if (IsPhysicalDamage) then
-            totalBlock = totalBlock + Units:GetBlock(args.target)
+        if (IsPhysicalDamage == true) then
+            totalBlock = totalBlock + Units:GetBlock(damageTable.victim)
         end
         if (args.ability) then
-            totalBlock = totalBlock + Units:GetMagicBlock(args.target)
-            damageTable.damage = damageTable.damage * (1 + Units:GetSpellDamage(args.caster))
+            totalBlock = totalBlock + Units:GetMagicBlock(damageTable.victim)
+            damageTable.damage = damageTable.damage * (1 + Units:GetSpellDamage(damageTable.attacker))
         end
-        local totalAmplification = 0
-        if (IsFireDamage) then
-            totalAmplification = totalAmplification + Units:GetFireDamage(args.caster)
+        local totalAmplification = 1
+        if (IsFireDamage == true) then
+            totalAmplification = totalAmplification + Units:GetFireDamage(damageTable.attacker) - 1
         end
-        if (IsFrostDamage) then
-            totalAmplification = totalAmplification + Units:GetFrostDamage(args.caster)
+        if (IsFrostDamage == true) then
+            totalAmplification = totalAmplification + Units:GetFrostDamage(damageTable.attacker) - 1
         end
-        if (IsEarthDamage) then
-            totalAmplification = totalAmplification + Units:GetEarthDamage(args.caster)
+        if (IsEarthDamage == true) then
+            totalAmplification = totalAmplification + Units:GetEarthDamage(damageTable.attacker) - 1
         end
-        if (IsNatureDamage) then
-            totalAmplification = totalAmplification + Units:GetNatureDamage(args.caster)
+        if (IsNatureDamage == true) then
+            totalAmplification = totalAmplification + Units:GetNatureDamage(damageTable.attacker) - 1
         end
-        if (IsVoidDamage) then
-            totalAmplification = totalAmplification + Units:GetVoidDamage(args.caster)
+        if (IsVoidDamage == true) then
+            totalAmplification = totalAmplification + Units:GetVoidDamage(damageTable.attacker) - 1
         end
-        if (IsInfernoDamage) then
-            totalAmplification = totalAmplification + Units:GetInfernoDamage(args.caster)
+        if (IsInfernoDamage == true) then
+            totalAmplification = totalAmplification + Units:GetInfernoDamage(damageTable.attacker) - 1
         end
-        if (IsHolyDamage) then
-            totalAmplification = totalAmplification + Units:GetHolyDamage(args.caster)
+        if (IsHolyDamage == true) then
+            totalAmplification = totalAmplification + Units:GetHolyDamage(damageTable.attacker) - 1
         end
         -- Damage reduction reduce even pure dmg
-        totalReduction = totalReduction * Units:GetDamageReduction(args.target)
+        totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
         -- well, let them suffer
         if (totalReduction < 0.01) then
             totalReduction = 0.01
@@ -552,7 +560,7 @@ if (IsServer()) then
                 end
                 preDamageHandlerResultTable = GameMode.PreDamageAfterResistancesEventHandlersTable[i](nil, damageTable)
                 if (preDamageHandlerResultTable ~= nil) then
-                    if (not damageCanceled) then
+                    if (damageCanceled == false) then
                         damageCanceled = (preDamageHandlerResultTable.damage <= 0)
                     end
                     local latestCrit = damageTable.crit
@@ -562,7 +570,7 @@ if (IsServer()) then
                     end
                 end
             end
-            if (not damageCanceled) then
+            if (damageCanceled == false) then
                 if (damageTable.crit > 1.0) then
                     damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
