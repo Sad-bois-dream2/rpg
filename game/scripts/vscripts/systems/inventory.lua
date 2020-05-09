@@ -132,8 +132,13 @@ function Inventory:SetItemInSlot(hero, item, is_equipped, slot)
                     hero.inventory.equipped_modifiers[slot]:Destroy()
                 end
                 if (item ~= "") then
-                    local modifier = hero:AddNewModifier(hero, nil, "modifier_inventory_" .. item, { Duration = -1 })
-                    hero.inventory.equipped_modifiers[slot] = modifier
+                    local modifierTable = {}
+                    modifierTable.ability = nil
+                    modifierTable.target = hero
+                    modifierTable.caster = hero
+                    modifierTable.modifier_name = "modifier_inventory_" .. item
+                    modifierTable.duration = -1
+                    hero.inventory.equipped_modifiers[slot] = GameMode:ApplyBuff(modifierTable)
                 end
                 hero.inventory.equipped_items[slot] = item
             else

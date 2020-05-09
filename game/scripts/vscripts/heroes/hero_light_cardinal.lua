@@ -392,7 +392,15 @@ function modifier_light_cardinal_salvation_aura_buff:OnTakeDamage(damageTable)
             local health_after_dmg = damageTable.victim:GetHealth() - damageTable.damage
             if (health_after_dmg < 1) then
                 local auraAbility = modifier:GetAbility()
-                damageTable.victim:AddNewModifier(damageTable.victim, self, "modifier_light_cardinal_salvation_aura_cd", { duration = auraAbility:GetSpecialValueFor("respawn_cd") })
+                local modifierTable = {}
+                modifierTable.ability = auraAbility
+                modifierTable.target = damageTable.victim
+                modifierTable.caster = damageTable.victim
+                modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura_cd"
+                modifierTable.duration = auraAbility:GetSpecialValueFor("respawn_cd")
+                local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
+                -- Just to be sure
+                cooldownModifier:SetDuration(modifierTable.duration, true)
                 local healTable = {}
                 healTable.caster = auraAbility:GetCaster()
                 healTable.target = damageTable.victim
@@ -463,7 +471,13 @@ function light_cardinal_salvation:OnUpgrade()
         local level = self:GetLevel()
         if (level > 3) then
             local caster = self:GetCaster()
-            local modifier = caster:AddNewModifier(caster, self, "modifier_light_cardinal_salvation_aura", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura"
+            modifierTable.duration = -1
+            local modifier = GameMode:ApplyBuff(modifierTable)
             modifier.aura_radius = self:GetSpecialValueFor("aura_radius")
         end
     end

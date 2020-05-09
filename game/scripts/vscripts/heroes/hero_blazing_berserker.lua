@@ -281,7 +281,13 @@ function blazing_berserker_battle_hunger:OnToggle(unit, special_cast)
     local caster = self:GetCaster()
     caster.blazing_berserker_battle_hunger = caster.blazing_berserker_battle_hunger or {}
     if (self:GetToggleState()) then
-        caster.blazing_berserker_battle_hunger.modifier = caster:AddNewModifier(caster, self, "modifier_blazing_berserker_battle_hunger", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_blazing_berserker_battle_hunger"
+        modifierTable.duration = -1
+        caster.blazing_berserker_battle_hunger.modifier = GameMode:ApplyBuff(modifierTable)
         self:EndCooldown()
         self:StartCooldown(self:GetCooldown(1))
         EmitSoundOn("Hero_Axe.Berserkers_Call", caster)

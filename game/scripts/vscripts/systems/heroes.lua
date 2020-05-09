@@ -12,6 +12,16 @@ function Heroes:OnHeroCreation(hero)
     end
 end
 
+function Heroes:OnHeroLevelUp(event)
+    if (not IsServer()) then
+        return
+    end
+    local hero = EntIndexToHScript(event.hero_entindex)
+    if (hero) then
+        Units:ForceStatsCalculation(hero)
+    end
+end
+
 modifier_hero = class({
     IsDebuff = function(self)
         return false

@@ -350,11 +350,11 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
-		debuffAmplification = debuffAmplification - 1;
+		debuffAmplification = debuffAmplification;
 		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
 		debuffResistance = 1 - debuffResistance;
 		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
-		buffAmplification = buffAmplification - 1;
+		buffAmplification = buffAmplification;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
