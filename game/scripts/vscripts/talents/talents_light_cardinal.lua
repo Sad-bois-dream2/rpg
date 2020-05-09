@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- light_cardinal_harmony modifiers
-modifier_light_cardinal_harmony = modifier_light_cardinal_harmony or class({
+modifier_light_cardinal_harmony = class({
     IsDebuff = function(self)
         return false
     end,
@@ -74,7 +74,13 @@ function light_cardinal_harmony:OnUpgrade()
         caster.light_cardinal_harmony.armor_bonus = self:GetSpecialValueFor("armor_bonus") / 100
         caster.light_cardinal_harmony.int_bonus = self:GetSpecialValueFor("int_bonus") / 100
         if (not caster:HasModifier("modifier_light_cardinal_harmony")) then
-            caster:AddNewModifier(caster, self, "modifier_light_cardinal_harmony", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_harmony"
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
         end
     end
 end
@@ -238,7 +244,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_34_embrace"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_35 (Possession)
-modifier_npc_dota_hero_silencer_talent_35 = modifier_npc_dota_hero_silencer_talent_35 or class({
+modifier_npc_dota_hero_silencer_talent_35 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -301,7 +307,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_35"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_40 (Divine Cloak)
-modifier_npc_dota_hero_silencer_talent_40 = modifier_npc_dota_hero_silencer_talent_40 or class({
+modifier_npc_dota_hero_silencer_talent_40 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -338,7 +344,13 @@ function modifier_npc_dota_hero_silencer_talent_40:OnIntervalThink()
     self.timer = self.timer + 1
     if (self.timer > 5) then
         self.timer = 0
-        local cloak = self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_silencer_talent_40_divine_cloak", { duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_40_divine_cloak"
+        modifierTable.duration = -1
+        local cloak = GameMode:ApplyBuff(modifierTable)
         cloak:SetStackCount(math.min(2 + TalentTree:GetHeroTalentLevel(self.caster, 40), 7))
     end
 end
@@ -376,7 +388,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_40"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_silencer_talent_40_divine_cloak = modifier_npc_dota_hero_silencer_talent_40_divine_cloak or class({
+modifier_npc_dota_hero_silencer_talent_40_divine_cloak = class({
     IsDebuff = function(self)
         return false
     end,
@@ -403,7 +415,7 @@ modifier_npc_dota_hero_silencer_talent_40_divine_cloak = modifier_npc_dota_hero_
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_40_divine_cloak"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_41 (Divine Aid)
-modifier_npc_dota_hero_silencer_talent_41 = modifier_npc_dota_hero_silencer_talent_41 or class({
+modifier_npc_dota_hero_silencer_talent_41 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -435,7 +447,7 @@ function modifier_npc_dota_hero_silencer_talent_41:OnPreHeal(healTable)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_46 (Priesthood)
-modifier_npc_dota_hero_silencer_talent_46 = modifier_npc_dota_hero_silencer_talent_46 or class({
+modifier_npc_dota_hero_silencer_talent_46 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -492,7 +504,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_46"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_47 (HOLY CRUSADER)
-modifier_npc_dota_hero_silencer_talent_47 = modifier_npc_dota_hero_silencer_talent_47 or class({
+modifier_npc_dota_hero_silencer_talent_47 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -579,7 +591,7 @@ function light_cardinal_desecration:OnSpellStart(unit, special_cast)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_36 (Sacrilege)
-modifier_npc_dota_hero_silencer_talent_36 = modifier_npc_dota_hero_silencer_talent_36 or class({
+modifier_npc_dota_hero_silencer_talent_36 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -615,13 +627,19 @@ function modifier_npc_dota_hero_silencer_talent_36:OnAbilityFullyCast(keys)
         return
     end
     if keys.unit == self.caster and keys.ability:GetName() == "light_cardinal_desecration" then
-        self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_silencer_talent_36_sacrilege", { duration = 5 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_36_sacrilege"
+        modifierTable.duration = 5
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_36"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_silencer_talent_36_sacrilege = modifier_npc_dota_hero_silencer_talent_36_sacrilege or class({
+modifier_npc_dota_hero_silencer_talent_36_sacrilege = class({
     IsDebuff = function(self)
         return false
     end,
@@ -656,7 +674,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_36_sacrilege"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifiers light_cardinal_consecration
-modifier_light_cardinal_consecration = modifier_light_cardinal_consecration or class({
+modifier_light_cardinal_consecration = class({
     IsDebuff = function(self)
         return false
     end,
@@ -760,7 +778,13 @@ function light_cardinal_consecration:OnToggle(unit, special_cast)
         local caster = self:GetCaster()
         caster.light_cardinal_consecration = caster.light_cardinal_consecration or {}
         if (self:GetToggleState()) then
-            caster.light_cardinal_consecration.modifier = caster:AddNewModifier(caster, self, "modifier_light_cardinal_consecration", { Duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_consecration"
+            modifierTable.duration = -1
+            caster.light_cardinal_consecration.modifier = GameMode:ApplyBuff(modifierTable)
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
         else
@@ -772,7 +796,7 @@ function light_cardinal_consecration:OnToggle(unit, special_cast)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_37 (Anointed Grounds)
-modifier_npc_dota_hero_silencer_talent_37_anointed_grounds = modifier_npc_dota_hero_silencer_talent_37_anointed_grounds or class({
+modifier_npc_dota_hero_silencer_talent_37_anointed_grounds = class({
     IsDebuff = function(self)
         return true
     end,
@@ -866,7 +890,7 @@ function light_cardinal_smite:OnSpellStart(unit, special_cast)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_42 (Clarity)
-modifier_npc_dota_hero_silencer_talent_42 = modifier_npc_dota_hero_silencer_talent_42 or class({
+modifier_npc_dota_hero_silencer_talent_42 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -914,7 +938,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_42"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_43 (Mana Tide)
-modifier_npc_dota_hero_silencer_talent_43 = modifier_npc_dota_hero_silencer_talent_43 or class({
+modifier_npc_dota_hero_silencer_talent_43 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -949,7 +973,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_43"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_48 (Mana Shield)
-modifier_npc_dota_hero_silencer_talent_48 = modifier_npc_dota_hero_silencer_talent_48 or class({
+modifier_npc_dota_hero_silencer_talent_48 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -994,6 +1018,7 @@ function modifier_npc_dota_hero_silencer_talent_48:OnTakeDamage(damageTable)
                 damageTable.victim:SetMana(casterMana - damageTable.damage)
                 damageTable.damage = 0
             end
+            modifier_out_of_combat:ResetTimer(damageTable.victim)
             return damageTable
         end
     end
@@ -1006,7 +1031,7 @@ function modifier_npc_dota_hero_silencer_talent_48:OnPostTakeDamage(damageTable)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_49 (ASCENDANCY)
-modifier_npc_dota_hero_silencer_talent_49 = modifier_npc_dota_hero_silencer_talent_49 or class({
+modifier_npc_dota_hero_silencer_talent_49 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1058,7 +1083,7 @@ function modifier_npc_dota_hero_silencer_talent_49:OnAbilityFullyCast(keys)
     end
 end
 -- light_cardinal_patronage modifiers
-modifier_light_cardinal_patronage = modifier_light_cardinal_patronage or class({
+modifier_light_cardinal_patronage = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1128,7 +1153,7 @@ end
 
 LinkedModifiers["modifier_light_cardinal_patronage"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_light_cardinal_patronage_debuff = modifier_light_cardinal_patronage_debuff or class({
+modifier_light_cardinal_patronage_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1192,7 +1217,7 @@ function light_cardinal_patronage:OnSpellStart(unit, special_cast)
 end
 
 -- modifier_npc_dota_hero_silencer_talent_38 (Misery)
-modifier_npc_dota_hero_silencer_talent_38_misery = modifier_npc_dota_hero_silencer_talent_38_misery or class({
+modifier_npc_dota_hero_silencer_talent_38_misery = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1218,7 +1243,7 @@ modifier_npc_dota_hero_silencer_talent_38_misery = modifier_npc_dota_hero_silenc
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_38_misery"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_silencer_talent_38 = modifier_npc_dota_hero_silencer_talent_38 or class({
+modifier_npc_dota_hero_silencer_talent_38 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1253,7 +1278,13 @@ function modifier_npc_dota_hero_silencer_talent_38:OnAbilityFullyCast(keys)
     local target = keys.ability:GetCursorTarget()
     local modifier = caster:FindModifierByName("modifier_npc_dota_hero_silencer_talent_38_misery")
     if (not modifier) then
-        modifier = caster:AddNewModifier(caster, nil, "modifier_npc_dota_hero_silencer_talent_38_misery", { duration = 5 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_38_misery"
+        modifierTable.duration = 5
+        modifier = GameMode:ApplyBuff(modifierTable)
         modifier.target = target
     end
     modifier:ForceRefresh()
@@ -1267,7 +1298,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_38"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_44 (Combustion)
-modifier_npc_dota_hero_silencer_talent_44 = modifier_npc_dota_hero_silencer_talent_44 or class({
+modifier_npc_dota_hero_silencer_talent_44 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1308,7 +1339,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_44"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_45 (Divine Swiftness)
-modifier_npc_dota_hero_silencer_talent_45 = modifier_npc_dota_hero_silencer_talent_45 or class({
+modifier_npc_dota_hero_silencer_talent_45 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1350,7 +1381,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_45"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_50 (Nullification)
-modifier_npc_dota_hero_silencer_talent_50_nullification_cd = modifier_npc_dota_hero_silencer_talent_50_nullification_cd or class({
+modifier_npc_dota_hero_silencer_talent_50_nullification_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1373,7 +1404,7 @@ modifier_npc_dota_hero_silencer_talent_50_nullification_cd = modifier_npc_dota_h
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_50_nullification_cd"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_silencer_talent_50_nullification = modifier_npc_dota_hero_silencer_talent_50_nullification or class({
+modifier_npc_dota_hero_silencer_talent_50_nullification = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1406,7 +1437,7 @@ end
 
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_50_nullification"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_npc_dota_hero_silencer_talent_50 = modifier_npc_dota_hero_silencer_talent_50 or class({
+modifier_npc_dota_hero_silencer_talent_50 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1445,9 +1476,23 @@ function modifier_npc_dota_hero_silencer_talent_50:OnTakeDamage(damageTable)
         local cap = damageTable.victim:GetMaxHealth() * 0.05
         if ((casterHealth - damageTable.damage) <= cap and not damageTable.victim:HasModifier("modifier_npc_dota_hero_silencer_talent_50_nullification_cd")) then
             local talentLevel = TalentTree:GetHeroTalentLevel(damageTable.victim, 50)
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification_cd", { duration = math.min(90, 125 - talentLevel) })
+            local duration = math.min(90, 125 - talentLevel)
+            local modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = damageTable.victim
+            modifierTable.caster = damageTable.victim
+            modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_50_nullification_cd"
+            modifierTable.duration = duration
+            local cooldownModifier = GameMode:ApplyBuff(modifierTable)
+            cooldownModifier:SetDuration(duration, true)
             local shieldAmount = (damageTable.victim:GetMaxHealth() - casterHealth) * (0.60 + (0.15 * talentLevel))
-            local shield = damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_silencer_talent_50_nullification", { duration = -1 })
+            modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = damageTable.victim
+            modifierTable.caster = damageTable.victim
+            modifierTable.modifier_name = "modifier_npc_dota_hero_silencer_talent_50_nullification"
+            modifierTable.duration = -1
+            local shield = GameMode:ApplyBuff(modifierTable)
             shield:SetStackCount(math.floor(shieldAmount))
             damageTable.damage = 0
             return damageTable
@@ -1458,7 +1503,7 @@ end
 LinkedModifiers["modifier_npc_dota_hero_silencer_talent_50"] = LUA_MODIFIER_MOTION_NONE
 
 -- modifier_npc_dota_hero_silencer_talent_51 (ENLIGHTENMENT)
-modifier_npc_dota_hero_silencer_talent_51 = modifier_npc_dota_hero_silencer_talent_51 or class({
+modifier_npc_dota_hero_silencer_talent_51 = class({
     IsDebuff = function()
         return false
     end,

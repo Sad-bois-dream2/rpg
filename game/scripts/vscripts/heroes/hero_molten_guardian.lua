@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- molten_guardian_scorching_clash modifiers
-modifier_molten_guardian_scorching_clash_dot = modifier_molten_guardian_scorching_clash_dot or class({
+modifier_molten_guardian_scorching_clash_dot = class({
     IsDebuff = function(self)
         return true
     end,
@@ -53,7 +53,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_scorching_clash_dot"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_scorching_clash_stun = modifier_molten_guardian_scorching_clash_stun or class({
+modifier_molten_guardian_scorching_clash_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -97,7 +97,7 @@ modifier_molten_guardian_scorching_clash_stun = modifier_molten_guardian_scorchi
 
 LinkedModifiers["modifier_molten_guardian_scorching_clash_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_scorching_clash_motion = modifier_molten_guardian_scorching_clash_motion or class({
+modifier_molten_guardian_scorching_clash_motion = class({
     IsDebuff = function(self)
         return false
     end,
@@ -243,7 +243,7 @@ end
 LinkedModifiers["modifier_molten_guardian_scorching_clash_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
 
 -- molten_guardian_scorching_clash
-molten_guardian_scorching_clash = molten_guardian_scorching_clash or class({
+molten_guardian_scorching_clash = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_scorching_clash"
     end,
@@ -260,12 +260,18 @@ function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
         self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_ember_spirit/ember_spirit_remnant_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
         ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
         ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
-        caster:AddNewModifier(caster, self, "modifier_molten_guardian_scorching_clash_motion", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_motion"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
 -- molten_guardian_lava_skin modifiers
-modifier_molten_guardian_lava_skin_toggle = modifier_molten_guardian_lava_skin_toggle or class({
+modifier_molten_guardian_lava_skin_toggle = class({
     IsDebuff = function(self)
         return false
     end,
@@ -357,7 +363,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_lava_skin_toggle"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_lava_skin_slow = modifier_molten_guardian_lava_skin_slow or class({
+modifier_molten_guardian_lava_skin_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -393,7 +399,7 @@ end
 LinkedModifiers["modifier_molten_guardian_lava_skin_slow"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_lava_skin
-molten_guardian_lava_skin = molten_guardian_lava_skin or class({
+molten_guardian_lava_skin = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_lava_skin"
     end,
@@ -404,7 +410,13 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
         local caster = self:GetCaster()
         caster.molten_guardian_lava_skin = caster.molten_guardian_lava_skin or {}
         if (self:GetToggleState()) then
-            caster.molten_guardian_lava_skin.modifier = caster:AddNewModifier(caster, self, "modifier_molten_guardian_lava_skin_toggle", { Duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_toggle"
+            modifierTable.duration = -1
+            caster.molten_guardian_lava_skin.modifier = GameMode:ApplyBuff(modifierTable)
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
         else
@@ -416,7 +428,7 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
     end
 end
 -- molten_guardian_volcanic_blow modifiers
-modifier_molten_guardian_volcanic_blow_block = modifier_molten_guardian_volcanic_blow_block or class({
+modifier_molten_guardian_volcanic_blow_block = class({
     IsDebuff = function(self)
         return false
     end,
@@ -456,7 +468,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_block"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_volcanic_blow_stun = modifier_molten_guardian_volcanic_blow_stun or class({
+modifier_molten_guardian_volcanic_blow_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -501,7 +513,7 @@ modifier_molten_guardian_volcanic_blow_stun = modifier_molten_guardian_volcanic_
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_stun"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_volcanic_blow
-molten_guardian_volcanic_blow = molten_guardian_volcanic_blow or class({
+molten_guardian_volcanic_blow = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_volcanic_blow"
     end,
@@ -549,7 +561,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
 end
 
 -- molten_guardian_molten_fortress modifiers
-modifier_molten_guardian_molten_fortress_helper = modifier_molten_guardian_molten_fortress_helper or class({
+modifier_molten_guardian_molten_fortress_helper = class({
     IsDebuff = function(self)
         return false
     end,
@@ -597,7 +609,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_helper"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_thinker = modifier_molten_guardian_molten_fortress_thinker or class({
+modifier_molten_guardian_molten_fortress_thinker = class({
     IsHidden = function(self)
         return true
     end,
@@ -666,7 +678,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_thinker_buff = modifier_molten_guardian_molten_fortress_thinker_buff or class({
+modifier_molten_guardian_molten_fortress_thinker_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -714,7 +726,7 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_aggro = modifier_molten_guardian_molten_fortress_aggro or class({
+modifier_molten_guardian_molten_fortress_aggro = class({
     IsDebuff = function(self)
         return true
     end,
@@ -751,7 +763,13 @@ if (IsServer()) then
         if (event ~= nil) then
             local entity = EntIndexToHScript(event.entindex)
             if entity:IsRealHero() and entity:HasAbility("mars_arena_of_blood") then
-                entity:AddNewModifier(entity, nil, "modifier_molten_guardian_molten_fortress_helper", { Duration = -1 })
+                local modifierTable = {}
+                modifierTable.ability = nil
+                modifierTable.target = entity
+                modifierTable.caster = entity
+                modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_helper"
+                modifierTable.duration = -1
+                GameMode:ApplyBuff(modifierTable)
             end
         end
     end, nil)

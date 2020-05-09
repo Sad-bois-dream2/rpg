@@ -19,7 +19,7 @@ function ursa_rend:OnUpgrade()
     self.armor_reduction_duration = self:GetSpecialValueFor("duration")
 end
 
-modifier_ursa_rend = modifier_ursa_rend or class({
+modifier_ursa_rend = class({
     IsDebuff = function(self)
         return false
     end,
@@ -89,7 +89,7 @@ function ursa_rend:ApplyRend(target, parent)
 
 end
 
-modifier_ursa_rend_armor = modifier_ursa_rend_armor or class({
+modifier_ursa_rend_armor = class({
     IsDebuff = function(self)
         return true
     end,
@@ -131,7 +131,7 @@ LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/boss/ursa.lua", LUA_MO
 -- ursa fury modifier
 ---------------------
 
-modifier_ursa_fury = modifier_ursa_fury or class({
+modifier_ursa_fury = class({
     IsDebuff = function(self)
         return false
     end,
@@ -291,7 +291,7 @@ function ursa_swift:OnUpgrade()
 end
 
 -- modifiers
-modifier_ursa_swift = modifier_ursa_swift or class({
+modifier_ursa_swift = class({
     IsDebuff = function(self)
         return false
     end,
@@ -342,7 +342,7 @@ end
 
 LinkLuaModifier("modifier_ursa_swift", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
---modifier_ursa_swift_phase = modifier_ursa_swift_phase or class({
+--modifier_ursa_swift_phase = class({
 -- IsDebuff = function(self)
 --     return false
 -- end,
@@ -548,7 +548,7 @@ end
 
 
 -- Slow modifier
-modifier_ursa_slam_slow = modifier_ursa_slam_slow or class({
+modifier_ursa_slam_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -601,7 +601,7 @@ LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MOD
 -- ursa hunting prey
 ---------------------
 -- modifiers
-modifier_ursa_hunt_buff_stats = modifier_ursa_hunt_buff_stats or class({
+modifier_ursa_hunt_buff_stats = class({
     IsDebuff = function(self)
         return false
     end,
@@ -659,7 +659,7 @@ end
 
 LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
-modifier_ursa_hunt_random_taunt = modifier_ursa_hunt_random_taunt or class({
+modifier_ursa_hunt_random_taunt = class({
     IsDebuff = function(self)
         return true
     end,

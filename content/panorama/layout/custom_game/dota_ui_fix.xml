@@ -1,0 +1,6 @@
+<root>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/dota_ui_fix.js" />
+    </scripts>
+    <Panel hittest="false" />
+</root>

@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 --priestess_of_sacred_forest_herbaceous_essence modifiers
 -- priestess_of_sacred_forest_herbaceous_essence
-priestess_of_sacred_forest_herbaceous_essence = priestess_of_sacred_forest_herbaceous_essence or class({
+priestess_of_sacred_forest_herbaceous_essence = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_herbaceous_essence"
     end
@@ -34,7 +34,7 @@ function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, specia
     end
 end
 -- priestess_of_sacred_forest_thorny_protection modifiers
-modifier_priestess_of_sacred_forest_thorny_protection_slow = modifier_priestess_of_sacred_forest_thorny_protection_slow or class({
+modifier_priestess_of_sacred_forest_thorny_protection_slow = class({
     IsDebuff = function(self)
         return true
     end,
@@ -78,7 +78,7 @@ end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_slow"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_priestess_of_sacred_forest_thorny_protection_thinker = modifier_priestess_of_sacred_forest_thorny_protection_buff or class({
+modifier_priestess_of_sacred_forest_thorny_protection_thinker = class({
     IsHidden = function(self)
         return true
     end,
@@ -135,7 +135,7 @@ end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_priestess_of_sacred_forest_thorny_protection_buff = modifier_priestess_of_sacred_forest_thorny_protection_buff or class({
+modifier_priestess_of_sacred_forest_thorny_protection_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -204,7 +204,7 @@ end
 LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_buff"] = LUA_MODIFIER_MOTION_NONE
 
 -- priestess_of_sacred_forest_thorny_protection
-priestess_of_sacred_forest_thorny_protection = priestess_of_sacred_forest_thorny_protection or class({
+priestess_of_sacred_forest_thorny_protection = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_thorny_protection"
     end,
@@ -240,7 +240,7 @@ function priestess_of_sacred_forest_thorny_protection:OnSpellStart(unit, special
 end
 
 -- priestess_of_sacred_forest_twilight_breeze modifiers
-modifier_priestess_of_sacred_forest_twilight_breeze_airy = modifier_priestess_of_sacred_forest_twilight_breeze_airy or class({
+modifier_priestess_of_sacred_forest_twilight_breeze_airy = class({
     IsDebuff = function(self)
         return false
     end,
@@ -284,7 +284,7 @@ end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_airy"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_priestess_of_sacred_forest_twilight_breeze_hot = modifier_priestess_of_sacred_forest_twilight_breeze_hot or class({
+modifier_priestess_of_sacred_forest_twilight_breeze_hot = class({
     IsDebuff = function(self)
         return false
     end,
@@ -329,7 +329,7 @@ end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_hot"] = LUA_MODIFIER_MOTION_NONE
 -- priestess_of_sacred_forest_twilight_breeze
-priestess_of_sacred_forest_twilight_breeze = priestess_of_sacred_forest_twilight_breeze or class({
+priestess_of_sacred_forest_twilight_breeze = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_twilight_breeze"
     end,
@@ -361,7 +361,7 @@ function priestess_of_sacred_forest_twilight_breeze:OnSpellStart(unit, special_c
     end
 end
 -- priestess_of_sacred_forest_tranquility modifiers
-modifier_priestess_of_sacred_forest_tranquility_thinker = modifier_priestess_of_sacred_forest_tranquility_thinker or class({
+modifier_priestess_of_sacred_forest_tranquility_thinker = class({
     IsHidden = function(self)
         return true
     end,
@@ -444,7 +444,7 @@ end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_priestess_of_sacred_forest_tranquility_buff = modifier_priestess_of_sacred_forest_tranquility_buff or class({
+modifier_priestess_of_sacred_forest_tranquility_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -496,7 +496,13 @@ end
 function priestess_of_sacred_forest_tranquility:OnSpellStart(unit, special_cast)
     if IsServer() then
         local caster = self:GetCaster()
-        caster.priestess_of_sacred_forest_tranquility_modifier = caster:AddNewModifier(caster, self, "modifier_priestess_of_sacred_forest_tranquility_thinker", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_thinker"
+        modifierTable.duration = -1
+        caster.priestess_of_sacred_forest_tranquility_modifier = GameMode:ApplyBuff(modifierTable)
         caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
         Timers:CreateTimer(0.9, function()
             if (caster:HasModifier("modifier_priestess_of_sacred_forest_tranquility_thinker")) then

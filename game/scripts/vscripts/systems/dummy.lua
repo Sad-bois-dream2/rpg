@@ -1,4 +1,4 @@
-modifier_dps_dummy = modifier_dps_dummy or class({
+modifier_dps_dummy = class({
     IsDebuff = function(self)
         return false
     end,
@@ -114,7 +114,7 @@ end
 
 LinkLuaModifier("modifier_dps_dummy", "systems/dummy", LUA_MODIFIER_MOTION_NONE)
 
-modifier_dps_dummy_counter = modifier_dps_dummy_counter or class({
+modifier_dps_dummy_counter = class({
     IsDebuff = function(self)
         return false
     end,

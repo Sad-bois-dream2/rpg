@@ -56,7 +56,8 @@ require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
 require('systems/dummy')
-
+require('heroes/require')
+require('creeps/require')
 --[[
   This function should be used to set up Async precache calls at the beginning of the gameplay.
 
@@ -74,6 +75,7 @@ require('systems/dummy')
 ]]
 function GameMode:PostLoadPrecache()
     DebugPrint("[BAREBONES] Performing Post-Load precache")
+    GameMode:PerformGameMechanicsPostInit()
     --PrecacheItemByNameAsync("item_example_item", function(...) end)
     --PrecacheItemByNameAsync("example_ability", function(...) end)
 

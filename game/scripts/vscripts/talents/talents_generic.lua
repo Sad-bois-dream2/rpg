@@ -15,7 +15,7 @@ modifier_name = modifier_name.."talent_"..tostring(talentId)
 -- Examples of modifier names for hero specific talents: modifier_npc_dota_hero_silencer_talent_45, modifier_npc_dota_hero_silencer_talent_46
 local LinkedModifiers = {}
 
-modifier_generic_talent_1 = modifier_generic_talent_1 or class({
+modifier_generic_talent_1 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -50,7 +50,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_1"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_2 = modifier_generic_talent_2 or class({
+modifier_generic_talent_2 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -85,7 +85,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_2"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_3 = modifier_generic_talent_3 or class({
+modifier_generic_talent_3 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -120,7 +120,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_3"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_4 = modifier_generic_talent_4 or class({
+modifier_generic_talent_4 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -155,7 +155,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_4"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_5 = modifier_generic_talent_5 or class({
+modifier_generic_talent_5 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -190,7 +190,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_5"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_6 = modifier_generic_talent_6 or class({
+modifier_generic_talent_6 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -225,7 +225,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_6"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_7 = modifier_generic_talent_7 or class({
+modifier_generic_talent_7 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -260,7 +260,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_7"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_8 = modifier_generic_talent_8 or class({
+modifier_generic_talent_8 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -295,7 +295,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_8"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_9 = modifier_generic_talent_9 or class({
+modifier_generic_talent_9 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -330,7 +330,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_9"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_10 = modifier_generic_talent_10 or class({
+modifier_generic_talent_10 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -365,7 +365,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_10"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_11 = modifier_generic_talent_11 or class({
+modifier_generic_talent_11 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -400,7 +400,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_11"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_12 = modifier_generic_talent_12 or class({
+modifier_generic_talent_12 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -432,7 +432,7 @@ end
 --]]
 LinkedModifiers["modifier_generic_talent_12"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_13 = modifier_generic_talent_13 or class({
+modifier_generic_talent_13 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -466,7 +466,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_13"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_14 = modifier_generic_talent_14 or class({
+modifier_generic_talent_14 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -501,7 +501,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_14"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_15 = modifier_generic_talent_15 or class({
+modifier_generic_talent_15 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -536,7 +536,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_15"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_16 = modifier_generic_talent_16 or class({
+modifier_generic_talent_16 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -571,7 +571,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_16"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_17 = modifier_generic_talent_17 or class({
+modifier_generic_talent_17 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -606,7 +606,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_17"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_18 = modifier_generic_talent_18 or class({
+modifier_generic_talent_18 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -641,7 +641,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_18"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_25 = modifier_generic_talent_25 or class({
+modifier_generic_talent_25 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -706,7 +706,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_25"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_26 = modifier_generic_talent_26 or class({
+modifier_generic_talent_26 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -741,7 +741,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_26"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_27 = modifier_generic_talent_27 or class({
+modifier_generic_talent_27 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -776,7 +776,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_27"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_28 = modifier_generic_talent_28 or class({
+modifier_generic_talent_28 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -811,7 +811,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_28"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_29 = modifier_generic_talent_29 or class({
+modifier_generic_talent_29 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -846,7 +846,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_29"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_30 = modifier_generic_talent_30 or class({
+modifier_generic_talent_30 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -881,7 +881,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_30"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_31 = modifier_generic_talent_31 or class({
+modifier_generic_talent_31 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -916,7 +916,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_31"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_32 = modifier_generic_talent_32 or class({
+modifier_generic_talent_32 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,
@@ -951,7 +951,7 @@ end
 
 LinkedModifiers["modifier_generic_talent_32"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_generic_talent_33 = modifier_generic_talent_33 or class({
+modifier_generic_talent_33 = class({
     IsDebuff = function(self)
         return false -- prevent some weird shit
     end,

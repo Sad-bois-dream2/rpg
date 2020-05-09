@@ -69,9 +69,11 @@ function UpdateSelection() {
         var lastLegitIndex = 0;
         for (var i = 0; i < abiltiesCount; i++) {
             var ability = Entities.GetAbility(selectedCreep, i);
-            var IsValidAbility = (Abilities.GetLevel(ability) > 0 && Abilities.GetMaxLevel(ability) > 0 && Abilities.GetManaCost(ability) > -1 && !Abilities.IsHidden(ability));
+            var abilityLevel = Abilities.GetLevel(ability);
+            var IsValidAbility = (abilityLevel > 0 && Abilities.GetMaxLevel(ability) > 0 && Abilities.GetManaCost(ability) > -1 && !Abilities.IsHidden(ability));
             if (IsValidAbility) {
                 bossAbilties[lastLegitIndex].Data().abilityPanel.abilityname = Abilities.GetAbilityName(ability);
+                bossAbilties[lastLegitIndex].Data().abilityPanel.abilitylevel = abilityLevel;
                 bossAbilties[lastLegitIndex].Data().abilityIndex = i;
                 bossAbilties[lastLegitIndex].Data().ability = ability;
                 bossAbilties[lastLegitIndex].Data().ready = true;

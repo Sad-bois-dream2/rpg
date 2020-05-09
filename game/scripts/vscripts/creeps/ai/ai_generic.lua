@@ -18,7 +18,7 @@ function Think()
     end
     local aggroTarget = Aggro:GetUnitCurrentTarget(thisEntity)
     if (aggroTarget and thisEntity:IsAlive()) then
-        if (not (thisEntity.ai.castedAbility and thisEntity.ai.castedAbility:IsInAbilityPhase())) then
+        if (not (thisEntity.ai.castedAbility and (thisEntity.ai.castedAbility:IsInAbilityPhase() or thisEntity.ai.castedAbility:IsChanneling()))) then
             thisEntity.ai.castedAbility = nil
         else
             return GENERIC_AI_THINK_INTERVAL

@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- blazing_berserker_molten_strike modifiers
-modifier_blazing_berserker_molten_strike = modifier_blazing_berserker_molten_strike or class({
+modifier_blazing_berserker_molten_strike = class({
     IsDebuff = function(self)
         return false
     end,
@@ -100,7 +100,7 @@ function blazing_berserker_molten_strike:OnSpellStart(unit, special_cast)
     GameMode:ApplyBuff(modifierTable)
 end
 -- blazing_berserker_incinerating_souls modifiers
-modifier_blazing_berserker_incinerating_souls = modifier_blazing_berserker_incinerating_souls or class({
+modifier_blazing_berserker_incinerating_souls = class({
     IsDebuff = function(self)
         return true
     end,
@@ -180,7 +180,7 @@ function blazing_berserker_incinerating_souls:OnSpellStart(unit, special_cast)
 end
 
 -- blazing_berserker_battle_hunger modifiers
-modifier_blazing_berserker_battle_hunger = modifier_blazing_berserker_battle_hunger or class({
+modifier_blazing_berserker_battle_hunger = class({
     IsDebuff = function(self)
         return false
     end,
@@ -281,7 +281,13 @@ function blazing_berserker_battle_hunger:OnToggle(unit, special_cast)
     local caster = self:GetCaster()
     caster.blazing_berserker_battle_hunger = caster.blazing_berserker_battle_hunger or {}
     if (self:GetToggleState()) then
-        caster.blazing_berserker_battle_hunger.modifier = caster:AddNewModifier(caster, self, "modifier_blazing_berserker_battle_hunger", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_blazing_berserker_battle_hunger"
+        modifierTable.duration = -1
+        caster.blazing_berserker_battle_hunger.modifier = GameMode:ApplyBuff(modifierTable)
         self:EndCooldown()
         self:StartCooldown(self:GetCooldown(1))
         EmitSoundOn("Hero_Axe.Berserkers_Call", caster)
@@ -292,7 +298,7 @@ function blazing_berserker_battle_hunger:OnToggle(unit, special_cast)
     end
 end
 -- blazing_berserker_rage_eruption modifiers
-modiifer_blazing_berserker_rage_eruption_buff = modiifer_blazing_berserker_rage_eruption_buff or class({
+modiifer_blazing_berserker_rage_eruption_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -326,7 +332,7 @@ end
 
 LinkedModifiers["modiifer_blazing_berserker_rage_eruption_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modiifer_blazing_berserker_rage_eruption = modiifer_blazing_berserker_rage_eruption or class({
+modiifer_blazing_berserker_rage_eruption = class({
     IsDebuff = function(self)
         return false
     end,
@@ -395,7 +401,7 @@ blazing_berserker_rage_eruption = class({
 })
 
 -- blazing_berserker_rage_eruption modifiers
-modifier_blazing_berserker_furious_stance = modifier_blazing_berserker_furious_stance or class({
+modifier_blazing_berserker_furious_stance = class({
     IsDebuff = function(self)
         return false
     end,

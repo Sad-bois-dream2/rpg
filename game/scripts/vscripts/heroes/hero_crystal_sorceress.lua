@@ -108,7 +108,7 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Cast", self.caster)
 end
 -- crystal_sorceress_sheer_cold modifiers
-modifier_crystal_sorceress_sheer_cold_aura = modifier_crystal_sorceress_sheer_cold_aura or class({
+modifier_crystal_sorceress_sheer_cold_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -166,7 +166,7 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
 end
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff = modifier_crystal_sorceress_sheer_cold_aura_debuff or class({
+modifier_crystal_sorceress_sheer_cold_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -232,7 +232,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks or class({
+modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = class({
     IsDebuff = function(self)
         return true
     end,
@@ -317,7 +317,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun = modifier_crystal_sorceress_sheer_cold_stun or class({
+modifier_crystal_sorceress_sheer_cold_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -352,7 +352,7 @@ modifier_crystal_sorceress_sheer_cold_stun = modifier_crystal_sorceress_sheer_co
 
 LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun_cd = modifier_crystal_sorceress_sheer_cold_stun_cd or class({
+modifier_crystal_sorceress_sheer_cold_stun_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -389,7 +389,13 @@ function crystal_sorceress_sheer_cold:OnToggle()
     local caster = self:GetCaster()
     caster.crystal_sorceress_sheer_cold = caster.crystal_sorceress_sheer_cold or {}
     if (self:GetToggleState()) then
-        caster.crystal_sorceress_sheer_cold.modifier = caster:AddNewModifier(caster, self, "modifier_crystal_sorceress_sheer_cold_aura", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_aura"
+        modifierTable.duration = -1
+        caster.crystal_sorceress_sheer_cold.modifier = GameMode:ApplyBuff(modifierTable)
         self:EndCooldown()
         self:StartCooldown(self:GetCooldown(1))
         EmitSoundOn("Hero_Ancient_Apparition.IceVortexCast", caster)
@@ -400,7 +406,7 @@ function crystal_sorceress_sheer_cold:OnToggle()
     end
 end
 -- crystal_sorceress_glacier_rush modifiers
-modifier_crystal_sorceress_glacier_rush = modifier_crystal_sorceress_glacier_rush or class({
+modifier_crystal_sorceress_glacier_rush = class({
     IsDebuff = function(self)
         return false
     end,
@@ -439,7 +445,7 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_glacier_rush_stun = modifier_crystal_sorceress_glacier_rush_stun or class({
+modifier_crystal_sorceress_glacier_rush_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -544,7 +550,7 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     GameMode:ApplyStackingBuff(modifierTable)
 end
 
-modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceress_freezing_destruction_stun or class({
+modifier_crystal_sorceress_freezing_destruction_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -579,7 +585,7 @@ modifier_crystal_sorceress_freezing_destruction_stun = modifier_crystal_sorceres
 
 LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_freezing_destruction = modifier_crystal_sorceress_freezing_destruction or class({
+modifier_crystal_sorceress_freezing_destruction = class({
     IsDebuff = function(self)
         return false
     end,
@@ -690,9 +696,8 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
         modifierTable.caster = self.caster
         modifierTable.target = self.caster
         modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction"
-        modifierTable.duration = 1
+        modifierTable.duration = -1
         local modifier = GameMode:ApplyBuff(modifierTable)
-        modifier:SetDuration(1.0, false)
         for _, particleInfo in pairs(particlesTable) do
             ParticleManager:DestroyParticle(particleInfo.id, true)
             ParticleManager:ReleaseParticleIndex(particleInfo.id)

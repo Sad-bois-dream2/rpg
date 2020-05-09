@@ -21,7 +21,6 @@ function Precache(context)
     -- Terror Lord talents
     PrecacheResource("particle_folder", "particles/units/terror_lord/talents/vengeance", context)
     PrecacheResource("particle_folder", "particles/units/terror_lord/talents/ashes_of_terror", context)
-    PrecacheResource("particle", "particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf", context)
     -- Phantom Ranger talents
     PrecacheResource("particle", "particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", context)
     PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_queenofpain.vsndevts", context)
@@ -32,6 +31,8 @@ function Precache(context)
     PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_ogre_magi.vsndevts", context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
+    -- Boss healing mechanic particle
+    PrecacheResource("particle", "particles/units/boss/boss_healing.vpcf", context)
     -- All enemy abilities
     for _, ability in pairs(Enemies.enemyAbilities) do
         PrecacheItemByNameSync(ability.name, context)

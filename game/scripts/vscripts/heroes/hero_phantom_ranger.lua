@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- phantom_ranger_soul_echo modifiers
-modifier_phantom_ranger_soul_echo = modifier_phantom_ranger_soul_echo or class({
+modifier_phantom_ranger_soul_echo = class({
     IsDebuff = function(self)
         return false
     end,
@@ -22,32 +22,20 @@ modifier_phantom_ranger_soul_echo = modifier_phantom_ranger_soul_echo or class({
     end,
 })
 
-function modifier_phantom_ranger_soul_echo:DeclareFunctions()
-    local funcs = {
-        MODIFIER_EVENT_ON_TAKEDAMAGE,
-    }
-    return funcs
-end
-
-function modifier_phantom_ranger_soul_echo:OnTakeDamage(kv)
-    if IsServer() then
-        local attacker = kv.attacker
-        local target = kv.unit
-        if (attacker ~= target) then
-            if (target.phantom_ranger_soul_echo ~= nil) then
-                local phantom = target.phantom_ranger_soul_echo.phantom
-                if (phantom ~= nil and phantom:IsAlive() and phantom.dmg_transfer ~= nil) then
-                    local recievedDamage = kv.damage
-                    local phantomDamage = phantom.dmg_transfer * recievedDamage
-                    local phantomHealth = phantom:GetHealth() - phantomDamage
-                    if (phantomHealth < 1) then
-                        phantom_ranger_soul_echo:DestroyPhantom(phantom)
-                        target.phantom_ranger_soul_echo.phantom = nil
-                    else
-                        target:Heal(phantomDamage, phantom)
-                        phantom:SetHealth(phantomHealth)
-                    end
-                end
+function modifier_phantom_ranger_soul_echo:OnTakeDamage(damageTable)
+    if (damageTable.victim.phantom_ranger_soul_echo) then
+        local modifier = damageTable.victim:FindModifierByName("modifier_phantom_ranger_soul_echo")
+        local phantom = damageTable.victim.phantom_ranger_soul_echo.phantom
+        if (damageTable.damage > 0 and modifier and phantom and not phantom:IsNull() and phantom:IsAlive()) then
+            local phantomDamage = phantom.damageTransfer * damageTable.damage
+            local phantomHealth = phantom:GetHealth() - phantomDamage
+            if (phantomHealth < 1) then
+                phantom_ranger_soul_echo:DestroyPhantom(phantom)
+                damageTable.victim.phantom_ranger_soul_echo.phantom = nil
+            else
+                damageTable.damage = damageTable.damage - phantomDamage
+                phantom:SetHealth(phantomHealth)
+                return damageTable
             end
         end
     end
@@ -55,7 +43,7 @@ end
 
 LinkedModifiers["modifier_phantom_ranger_soul_echo"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_phantom_ranger_soul_echo_phantom = modifier_phantom_ranger_soul_echo_phantom or class({
+modifier_phantom_ranger_soul_echo_phantom = class({
     IsDebuff = function(self)
         return false
     end,
@@ -77,51 +65,37 @@ modifier_phantom_ranger_soul_echo_phantom = modifier_phantom_ranger_soul_echo_ph
     GetEffectAttachType = function(self)
         return PATTACH_ABSORIGIN_FOLLOW
     end,
-})
-
-function modifier_phantom_ranger_soul_echo_phantom:CheckState()
-    local state = {
-        [MODIFIER_STATE_ROOTED] = true,
-        [MODIFIER_STATE_DISARMED] = true,
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-        [MODIFIER_STATE_NOT_ON_MINIMAP] = true,
-        [MODIFIER_STATE_UNSELECTABLE] = true,
-        [MODIFIER_STATE_MAGIC_IMMUNE] = true,
-        [MODIFIER_STATE_ATTACK_IMMUNE] = true,
-        [MODIFIER_STATE_OUT_OF_GAME] = true,
-    }
-    return state
-end
-
-modifier_phantom_ranger_soul_echo_phantom_status_effect = modifier_phantom_ranger_soul_echo_phantom_status_effect or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     GetStatusEffectName = function(self)
         return "particles/status_fx/status_effect_maledict.vpcf"
     end,
     StatusEffectPriority = function(self)
         return 15
     end,
+    CheckState = function(self)
+        return
+        {
+            [MODIFIER_STATE_ROOTED] = true,
+            [MODIFIER_STATE_DISARMED] = true,
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+            [MODIFIER_STATE_NOT_ON_MINIMAP] = true,
+            [MODIFIER_STATE_UNSELECTABLE] = true,
+            [MODIFIER_STATE_OUT_OF_GAME] = true,
+        }
+    end
 })
 
+function modifier_phantom_ranger_soul_echo_phantom:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_phantom_ranger_soul_echo_phantom")
+    if (modifier) then
+        damageTable.damage = 0
+        return damageTable
+    end
+end
+
 LinkedModifiers["modifier_phantom_ranger_soul_echo_phantom"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["modifier_phantom_ranger_soul_echo_phantom_status_effect"] = LUA_MODIFIER_MOTION_NONE
 
 -- phantom_ranger_soul_echo
-phantom_ranger_soul_echo = phantom_ranger_soul_echo or class({
+phantom_ranger_soul_echo = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_soul_echo"
     end,
@@ -129,47 +103,66 @@ phantom_ranger_soul_echo = phantom_ranger_soul_echo or class({
 
 function phantom_ranger_soul_echo:DestroyPhantom(phantom)
     if (phantom ~= nil and phantom:IsAlive()) then
-        DestroyWearables(phantom,
-                function()
-                    phantom:Destroy()
-                end)
+        DestroyWearables(phantom, function()
+            phantom:Destroy()
+        end)
     end
+end
+
+function phantom_ranger_soul_echo:CreatePhantom()
+    local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", self.caster:GetAbsOrigin(), true, self.caster, self.caster, self.caster:GetTeamNumber())
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = phantom
+    modifierTable.caster = phantom
+    modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
+    local wearables = GetWearables(self.caster)
+    AddWearables(phantom, wearables)
+    ForEachWearable(phantom,
+            function(wearable)
+                modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = wearable
+                modifierTable.caster = phantom
+                modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom"
+                modifierTable.duration = -1
+                GameMode:ApplyBuff(modifierTable)
+            end)
+    local casterHealth = self.caster:GetHealth()
+    local phantomHealth = casterHealth * self.phantomHealth
+    phantom:SetMaxHealth(phantomHealth)
+    phantom:SetHealth(phantomHealth)
+    phantom.damageTransfer = self.phantomDamageTransfer
+    self.caster.phantom_ranger_soul_echo = self.caster.phantom_ranger_soul_echo or {}
+    self.caster.phantom_ranger_soul_echo.phantom = phantom
+    Timers:CreateTimer(self.duration, function()
+        phantom_ranger_soul_echo:DestroyPhantom(phantom)
+    end)
 end
 
 function phantom_ranger_soul_echo:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local ability_level = self:GetLevel() - 1
-        local duration = self:GetLevelSpecialValueFor("duration", ability_level)
-        local phantomHealthAmplify = self:GetLevelSpecialValueFor("phantom_health", ability_level) / 100
-        local phantomDamageTransfer = self:GetLevelSpecialValueFor("damage_reduction", ability_level) / 100
-        EmitSoundOn("Hero_VoidSpirit.Pulse.Cast", caster)
-        GameMode:ApplyBuff({ caster = caster, target = caster, ability = nil, modifier_name = "modifier_phantom_ranger_soul_echo", duration = duration })
-        local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", caster:GetAbsOrigin(), true, nil, nil, caster:GetTeamNumber())
-        phantom:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom", { Duration = -1 })
-        local wearables = GetWearables(caster)
-        AddWearables(phantom, wearables)
-        phantom:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom_status_effect", { Duration = -1 })
-        ForEachWearable(phantom,
-                function(wearable)
-                    wearable:AddNewModifier(phantom, nil, "modifier_phantom_ranger_soul_echo_phantom_status_effect", { Duration = -1 })
-                end)
-        local casterHealth = caster:GetHealth()
-        local phantomHealth = casterHealth * phantomHealthAmplify
-        phantom:SetMaxHealth(phantomHealth)
-        phantom:SetHealth(phantomHealth)
-        phantom.dmg_transfer = phantomDamageTransfer
-        caster.phantom_ranger_soul_echo = caster.phantom_ranger_soul_echo or {}
-        caster.phantom_ranger_soul_echo.phantom = phantom
-        Timers:CreateTimer(duration,
-                function()
-                    phantom_ranger_soul_echo:DestroyPhantom(phantom)
-                end)
+    if (not IsServer()) then
+        return
     end
+    self.caster = self:GetCaster()
+    self.duration = self:GetSpecialValueFor("duration")
+    self.phantomHealth = self:GetSpecialValueFor("phantom_health") / 100
+    self.phantomDamageTransfer = self:GetSpecialValueFor("damage_reduction") / 100
+    EmitSoundOn("Hero_VoidSpirit.Pulse.Cast", self.caster)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    self:CreatePhantom()
 end
 
 -- phantom_ranger_shadow_waves modifiers
-modifier_phantom_ranger_shadow_waves_debuff = modifier_phantom_ranger_shadow_waves_debuff or class({
+modifier_phantom_ranger_shadow_waves_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -196,72 +189,79 @@ modifier_phantom_ranger_shadow_waves_debuff = modifier_phantom_ranger_shadow_wav
     end,
 })
 
+function modifier_phantom_ranger_shadow_waves_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
 function modifier_phantom_ranger_shadow_waves_debuff:GetSpellHasteBonus()
-    return self:GetAbility().sph_slow
+    return self.ability.sphSlow
 end
 
 function modifier_phantom_ranger_shadow_waves_debuff:GetMoveSpeedPercentBonus()
-    return self:GetAbility().ms_slow
+    return self.ability.msSlow
 end
 
 function modifier_phantom_ranger_shadow_waves_debuff:GetAttackSpeedPercentBonus()
-    return self:GetAbility().as_slow
+    return self.ability.asSlow
 end
 
 LinkedModifiers["modifier_phantom_ranger_shadow_waves_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 -- phantom_ranger_shadow_waves
-phantom_ranger_shadow_waves = phantom_ranger_shadow_waves or class({
+phantom_ranger_shadow_waves = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_shadow_waves"
     end,
 })
 
 function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local ability_level = self:GetLevel() - 1
-        EmitSoundOn("Hero_DrowRanger.Silence", caster)
-        self.silence_duration = self:GetLevelSpecialValueFor("silence_duration", ability_level)
-        self.duration = self:GetLevelSpecialValueFor("duration", ability_level)
-        self.ms_slow = self:GetLevelSpecialValueFor("ms_slow", ability_level) / 100
-        self.as_slow = self:GetLevelSpecialValueFor("as_slow", ability_level) / 100
-        self.sph_slow = self:GetLevelSpecialValueFor("sph_slow", ability_level) / 100
-        local info = {
-            Ability = self,
-            EffectName = "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf",
-            vSpawnOrigin = caster:GetAbsOrigin(),
-            fDistance = 800,
-            fStartRadius = 400,
-            fEndRadius = 400,
-            Source = caster,
-            bHasFrontalCone = false,
-            bReplaceExisting = false,
-            iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
-            iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
-            iUnitTargetType = DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-            fExpireTime = GameRules:GetGameTime() + 10.0,
-            bDeleteOnHit = true,
-            vVelocity = caster:GetForwardVector() * 1800,
-            bProvidesVision = true,
-            iVisionRadius = 500,
-            iVisionTeamNumber = caster:GetTeamNumber()
-        }
-        ProjectileManager:CreateLinearProjectile(info)
+    if (not IsServer()) then
+        return
     end
+    self.caster = self:GetCaster()
+    EmitSoundOn("Hero_DrowRanger.Silence", self.caster)
+    self.silenceDuration = self:GetSpecialValueFor("silence_duration")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.msSlow = self:GetSpecialValueFor("ms_slow") / 100
+    self.asSlow = self:GetSpecialValueFor("as_slow") / 100
+    self.sphSlow = self:GetSpecialValueFor("sph_slow") / 100
+    local info = {
+        Ability = self,
+        EffectName = "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf",
+        vSpawnOrigin = self.caster:GetAbsOrigin(),
+        fDistance = 800,
+        fStartRadius = 400,
+        fEndRadius = 400,
+        Source = self.caster,
+        bHasFrontalCone = false,
+        bReplaceExisting = false,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+        iUnitTargetType = DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+        fExpireTime = GameRules:GetGameTime() + 10.0,
+        bDeleteOnHit = true,
+        vVelocity = self.caster:GetForwardVector() * 1800,
+        bProvidesVision = true,
+        iVisionRadius = 500,
+        iVisionTeamNumber = self.caster:GetTeamNumber()
+    }
+    ProjectileManager:CreateLinearProjectile(info)
+    print("Launch projectile")
 end
 
 function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
     if (target ~= nil) then
-        local caster = self:GetCaster()
-        GameMode:ApplyDebuff({ caster = caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_shadow_waves_debuff", duration = self.duration })
-        GameMode:ApplyDebuff({ caster = caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silence_duration })
+        GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_shadow_waves_debuff", duration = self.duration })
+        GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })
     end
     return false
 end
 
 -- phantom_ranger_phantom_harmonic modifiers
-modifier_phantom_ranger_phantom_harmonic = modifier_phantom_ranger_phantom_harmonic or class({
+modifier_phantom_ranger_phantom_harmonic = class({
     IsDebuff = function(self)
         return false
     end,
@@ -283,10 +283,12 @@ modifier_phantom_ranger_phantom_harmonic = modifier_phantom_ranger_phantom_harmo
 })
 
 function modifier_phantom_ranger_phantom_harmonic:OnCreated(kv)
-    if (IsServer()) then
-        self.owner = self:GetParent()
-        self.ability = self:GetAbility()
+    if (not IsServer()) then
+        return
     end
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeam()
+    self.ability = self:GetAbility()
 end
 
 function modifier_phantom_ranger_phantom_harmonic:DeclareFunctions()
@@ -300,18 +302,19 @@ function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
     if IsServer() then
         local attacker = kv.attacker
         local target = kv.target
-        if (attacker ~= nil and target ~= nil and attacker ~= target and attacker == self.owner) then
+
+            if (attacker and target and not target:IsNull() and attacker == self.caster) then
             -- acoount for Deadly Vibration (talent 48) increased chance to proc
             local talent48Level = TalentTree:GetHeroTalentLevel(self.owner, 48)
             local talent48ChanceIncreasePerLevel = 10
             local bonusProcChance = 0
             if (talent48Level > 0) then bonusProcChance = 10 + talent48ChanceIncreasePerLevel * talent48Level end 
-            local IsProc = RollPercentage(self.ability.proc_chance + bonusProcChance)
-            if (not IsProc) then
+            if (not RollPercentage(self.ability.proc_chance + bonusProcChance)) then
+
                 return
             end
             local targetPosition = target:GetAbsOrigin()
-            local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+            local enemies = FindUnitsInRadius(self.casterTeam,
                     targetPosition,
                     nil,
                     600,
@@ -320,16 +323,16 @@ function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
                     DOTA_UNIT_TARGET_FLAG_NONE,
                     FIND_ANY_ORDER,
                     false)
-            if (#enemies > 0) then
-                local index = self.ability:GetUniqueInt()
-                self.ability.projectiles[index] = { targets = enemies }
-                phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, target, { index = index }, self.ability)
-            end
+            local index = self.ability:GetUniqueInt()
+            self.ability.projectiles[index] = { targets = enemies }
+            phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, target, { index = index }, self.ability)
         end
     end
 end
 
-modifier_phantom_ranger_phantom_harmonic_stacks = modifier_phantom_ranger_phantom_harmonic_stacks or class({
+LinkedModifiers["modifier_phantom_ranger_phantom_harmonic"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_phantom_ranger_phantom_harmonic_stacks = class({
     IsDebuff = function(self)
         return false
     end,
@@ -350,7 +353,6 @@ modifier_phantom_ranger_phantom_harmonic_stacks = modifier_phantom_ranger_phanto
     end,
 })
 
-LinkedModifiers["modifier_phantom_ranger_phantom_harmonic"] = LUA_MODIFIER_MOTION_NONE
 LinkedModifiers["modifier_phantom_ranger_phantom_harmonic_stacks"] = LUA_MODIFIER_MOTION_NONE
 
 -- Deadly Vibration (talent 48) logic
@@ -412,7 +414,7 @@ function modifier_phantom_ranger_phantom_harmonic_stacks:GetInfernoProtectionBon
 end
 
 -- phantom_ranger_phantom_harmonic
-phantom_ranger_phantom_harmonic = phantom_ranger_phantom_harmonic or class({
+phantom_ranger_phantom_harmonic = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_phantom_harmonic"
     end,
@@ -425,6 +427,7 @@ phantom_ranger_phantom_harmonic.projectiles = {}
 phantom_ranger_phantom_harmonic.unique = {}
 phantom_ranger_phantom_harmonic.i = 0
 phantom_ranger_phantom_harmonic.max = 65536
+
 function phantom_ranger_phantom_harmonic:GetUniqueInt()
     while self.unique[self.i] do
         self.i = self.i + 1
@@ -436,51 +439,67 @@ function phantom_ranger_phantom_harmonic:GetUniqueInt()
     self.unique[self.i] = true
     return self.i
 end
+
 function phantom_ranger_phantom_harmonic:DelUniqueInt(i)
     self.unique[i] = nil
 end
 
 function phantom_ranger_phantom_harmonic:OnUpgrade()
-    if IsServer() then
-        local ability_level = self:GetLevel() - 1
-        self.max_stacks = self:GetLevelSpecialValueFor("max_stacks", ability_level)
-        self.proc_damage = self:GetLevelSpecialValueFor("proc_damage", ability_level) / 100
-        self.duration = self:GetLevelSpecialValueFor("duration", ability_level)
-        self.proc_chance = self:GetLevelSpecialValueFor("proc_chance", ability_level)
+    if (not IsServer()) then
+        return
     end
+    self.caster = self:GetCaster()
+    self.max_stacks = self:GetSpecialValueFor("max_stacks")
+    self.proc_damage = self:GetSpecialValueFor("proc_damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.proc_chance = self:GetSpecialValueFor("proc_chance")
 end
 
 function phantom_ranger_phantom_harmonic:OnProjectileHit_ExtraData(target, vLocation, ExtraData)
-    if (IsServer() and target ~= nil and ExtraData ~= nil) then
-        local caster = self:GetCaster()
-        local index = ExtraData.index
-        if (target == caster) then
-            GameMode:ApplyStackingBuff({ caster = caster, target = caster, ability = self, modifier_name = "modifier_phantom_ranger_phantom_harmonic_stacks", duration = self.duration, stacks = #self.projectiles[index].reachedTargets, max_stacks = self.max_stacks })
-            self.projectiles[index] = nil
-            self:DelUniqueInt(index)
-            return true
-        end
-        local jumpTarget
-        local enemies = self.projectiles[index].targets
-        self.projectiles[index].reachedTargets = self.projectiles[index].reachedTargets or {}
-        local damage = self.proc_damage * Units:GetAttackDamage(caster)
-        GameMode:DamageUnit({ caster = caster, target = target, damage = damage, voiddmg = true, ability = self })
-        table.insert(self.projectiles[index].reachedTargets, target)
-        while #enemies > 0 do
-            local potentialJumpTarget = enemies[1]
-            if potentialJumpTarget == nil or potentialJumpTarget:IsNull() or TableContains(self.projectiles[index].reachedTargets, potentialJumpTarget) then
-                table.remove(enemies, 1)
-            else
-                jumpTarget = potentialJumpTarget
-                break
-            end
-        end
-        self.projectiles[index].targets = enemies
-        if (#enemies == 0) then
-            phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, caster, ExtraData, self)
+
+    if (not IsServer() or not target or not ExtraData) then
+        return
+    end
+    if (target == self.caster) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_phantom_ranger_phantom_harmonic_stacks"
+        modifierTable.duration = self.duration
+        modifierTable.stacks = #self.projectiles[ExtraData.index].reachedTargets
+        modifierTable.max_stacks = self.max_stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+        self.projectiles[ExtraData.index] = nil
+        self:DelUniqueInt(ExtraData.index)
+        return true
+    end
+    local jumpTarget
+    local enemies = self.projectiles[ExtraData.index].targets
+    self.projectiles[ExtraData.index].reachedTargets = self.projectiles[ExtraData.index].reachedTargets or {}
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = target
+    damageTable.ability = self
+    damageTable.damage = self.proc_damage * Units:GetAttackDamage(self.caster)
+    damageTable.voiddmg = true
+    GameMode:DamageUnit(damageTable)
+    table.insert(self.projectiles[ExtraData.index].reachedTargets, target)
+    while #enemies > 0 do
+        local potentialJumpTarget = enemies[1]
+        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget)) then
+            table.remove(enemies, 1)
+
         else
-            phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, jumpTarget, ExtraData, self)
+            jumpTarget = potentialJumpTarget
+            break
         end
+    end
+    self.projectiles[ExtraData.index].targets = enemies
+    if (#enemies == 0) then
+        phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, self.caster, ExtraData, self)
+    else
+        phantom_ranger_phantom_harmonic:CreateBounceProjectile(target, jumpTarget, ExtraData, self)
     end
     return false
 end
@@ -498,64 +517,81 @@ function phantom_ranger_phantom_harmonic:CreateBounceProjectile(source, target, 
     }
     ProjectileManager:CreateTrackingProjectile(projectile)
 end
+
 -- phantom_ranger_void_disciple
-phantom_ranger_void_disciple = phantom_ranger_void_disciple or class({
+phantom_ranger_void_disciple = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_void_disciple"
     end,
 })
 
 function phantom_ranger_void_disciple:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local position = caster:GetAbsOrigin()
-        local harmonic_stacks = caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
-        local harmonic_ability = caster:FindAbilityByName("phantom_ranger_phantom_harmonic")
-        if (harmonic_stacks > 0 and harmonic_ability ~= nil) then
-            local harmonic_ability_level = harmonic_ability:GetLevel()
-            if (harmonic_ability_level > 0) then
-                local cdr_per_stack = harmonic_ability:GetLevelSpecialValueFor("cdr_per_stack", harmonic_ability_level - 1)
-                local reducedCooldown = harmonic_stacks * cdr_per_stack
-                GameMode:ReduceAbilityCooldown({ target = caster, ability = "phantom_ranger_void_disciple", reduction = reducedCooldown, isflat = true })
-            end
-        end
-        caster.phantom_ranger_void_disciple = caster.phantom_ranger_void_disciple or {}
-        caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids or 0
-        if (caster.phantom_ranger_void_disciple.current_voids == self.max_voids) then
-            return
-        end
-        caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids + 1
-        local summon_damage = Units:GetAttackDamage(caster) * self.void_damage
-        local summon = Summons:SummonUnit({ caster = caster, unit = "npc_dota_phantom_ranger_void_disciple", position = position, damage = summon_damage, ability = self })
-        if (summon == nil) then
-            return
-        end
-        EmitSoundOn("Hero_VoidSpirit.Pulse.Cast", summon)
-        Summons:SetSummonHaveVoidDamageType(summon, true)
-        Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster) * self.void_aa_speed)
-        Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
-        local particle = ParticleManager:CreateParticle("particles/units/phantom_ranger/test/void_disciple/void_disciple_effect.vpcf", PATTACH_ABSORIGIN_FOLLOW, summon)
-        ParticleManager:SetParticleControl(particle, 0, summon:GetAbsOrigin())
-        Timers:CreateTimer(self.duration,
-                function()
-                    summon:Destroy()
-                    caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids - 1
-                    ParticleManager:DestroyParticle(particle, false)
-                end)
+    if (not IsServer()) then
+        return
     end
+    local caster = self:GetCaster()
+    local casterPosition = caster:GetAbsOrigin()
+    local harmonicStacks = caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
+    local harmonicAbility = caster:FindAbilityByName("phantom_ranger_phantom_harmonic")
+    if (harmonicStacks > 0 and harmonicAbility and harmonicAbility:GetLevel() > 0) then
+        local cdrPerStacks = harmonicAbility:GetSpecialValueFor("cdr_per_stack")
+        local reducedCooldown = harmonicStacks * cdrPerStacks
+        local cooldownTable = {
+            target = caster,
+            ability = "phantom_ranger_void_disciple",
+            reduction = reducedCooldown,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+    end
+    caster.phantom_ranger_void_disciple = caster.phantom_ranger_void_disciple or {}
+    caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids or 0
+    if (caster.phantom_ranger_void_disciple.current_voids == self.max_voids) then
+        return
+    end
+    caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids + 1
+    local summonTable = {
+        caster = caster,
+        unit = "npc_dota_phantom_ranger_void_disciple",
+        position = casterPosition,
+        damage = Units:GetAttackDamage(caster) * self.void_damage,
+        ability = self
+    }
+    local summon = Summons:SummonUnit(summonTable)
+    if (not summon) then
+        return
+    end
+    EmitSoundOn("Hero_VoidSpirit.Pulse.Cast", summon)
+    Summons:SetSummonHaveVoidDamageType(summon, true)
+    Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster) * self.void_aa_speed)
+    Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
+    local particle = ParticleManager:CreateParticle("particles/units/phantom_ranger/test/void_disciple/void_disciple_effect.vpcf", PATTACH_ABSORIGIN_FOLLOW, summon)
+    ParticleManager:SetParticleControl(particle, 0, summon:GetAbsOrigin())
+    Timers:CreateTimer(self.duration, function()
+        summon:Destroy()
+        caster.phantom_ranger_void_disciple.current_voids = caster.phantom_ranger_void_disciple.current_voids - 1
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 function phantom_ranger_void_disciple:OnUpgrade()
-    if IsServer() then
-        local ability_level = self:GetLevel() - 1
-        self.max_voids = self:GetLevelSpecialValueFor("max_voids", ability_level)
-        self.void_damage = self:GetLevelSpecialValueFor("void_damage", ability_level) / 100
-        self.duration = self:GetLevelSpecialValueFor("duration", ability_level)
-        self.void_aa_speed = self:GetLevelSpecialValueFor("void_aa_speed", ability_level) / 100
+    if (not IsServer()) then
+
     end
+    self.max_voids = self:GetSpecialValueFor("max_voids")
+    self.void_damage = self:GetSpecialValueFor("void_damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.void_aa_speed = self:GetSpecialValueFor("void_aa_speed") / 100
 end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_phantom_ranger", MotionController)
+end
+
+if (IsServer() and not GameMode.PHANTOM_RANGER_INIT) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_soul_echo, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_soul_echo_phantom, 'OnTakeDamage'))
+    GameMode.PHANTOM_RANGER_INIT = true
 end

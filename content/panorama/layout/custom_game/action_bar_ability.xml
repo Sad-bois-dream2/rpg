@@ -38,6 +38,7 @@
 						<!--<Label id="ManaCost" /> -->
 					</Button>
 				</Panel>
+				<DOTAScenePanel id="AutoCastBorder" map="scenes/hud/autocasting" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
 			</Panel>
 			<Panel hittest="false" id="AbilityLevelContainer"/>
 		</Panel>

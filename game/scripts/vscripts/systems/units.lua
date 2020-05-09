@@ -32,18 +32,13 @@ end
 ---@field public elementsProtection UNIT_STATS_ELEMENTS_TABLE
 ---@field public elementsDamage UNIT_STATS_ELEMENTS_TABLE
 
-function Units:Init()
-    Units.STATS_CALCULATE_INTERVAL = 1
-end
-
 function Units:ForceStatsCalculation(unit)
-    if (not unit or unit:IsNull()) then
+    if (not unit or unit:IsNull() or not unit.stats) then
         return
     end
-    local stats = unit:FindModifierByName("modifier_stats_system")
-    if (stats) then
-        stats:OnIntervalThink()
-    end
+    unit.stats = Units:CalculateStats(unit, unit.stats)
+    local modifier = unit:FindModifierByName("modifier_stats_system")
+    modifier:OnIntervalThink()
 end
 
 ---@param unit CDOTA_BaseNPC
@@ -443,7 +438,7 @@ function Units:OnCreation(unit)
     end
 end
 
-modifier_stats_system = modifier_stats_system or class({
+modifier_stats_system = class({
     IsDebuff = function(self)
         return false
     end,
@@ -472,9 +467,26 @@ function modifier_stats_system:DeclareFunctions()
         MODIFIER_PROPERTY_STATS_INTELLECT_BONUS,
         MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT,
         MODIFIER_PROPERTY_MANA_REGEN_CONSTANT,
-        MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT
+        MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT,
+        MODIFIER_EVENT_ON_MODIFIER_ADDED
     }
     return funcs
+end
+
+function modifier_stats_system:OnModifierAdded(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.unit) then
+        for _, name in pairs(GameMode.AuraModifiersTable) do
+            local auraModifier = self.unit:FindModifierByName(name)
+            if (auraModifier and not auraModifier.IsMarkedByGameMechanics) then
+                GameMode:OverwriteModifierFunctions(auraModifier)
+                Units:ForceStatsCalculation(self.unit)
+                auraModifier.IsMarkedByGameMechanics = true
+            end
+        end
+    end
 end
 
 function modifier_stats_system:GetModifierConstantManaRegen()
@@ -570,30 +582,27 @@ function modifier_stats_system:OnCreated(event)
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
             self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
         end
-        self:StartIntervalThink(Units.STATS_CALCULATE_INTERVAL)
+        Units:ForceStatsCalculation(self.unit)
+        self:StartIntervalThink(1)
     end
 end
 
 function modifier_stats_system:OnIntervalThink()
-    if IsServer() then
-        local unit = self.unit
-        local statsTable = unit.stats
-        statsTable = Units:CalculateStats(unit, statsTable)
-        -- save calculated stats to entity
-        unit.stats = statsTable
-        if (unit:IsRealHero()) then
-            local playerID = unit:GetPlayerID()
-            -- send data to clients
-            local dataTable = {
-                player_id = playerID,
-                statsTable = statsTable
-            }
-            CustomGameEventManager:Send_ServerToAllClients("rpg_update_hero_stats", { data = json.encode(dataTable) })
-        end
+    if (not IsServer()) then
+        return
+    end
+    if (self.unit:IsRealHero()) then
+        local playerID = self.unit:GetPlayerID()
+        -- send data to clients
+        local dataTable = {
+            player_id = playerID,
+            statsTable = self.unit.stats
+        }
+        CustomGameEventManager:Send_ServerToAllClients("rpg_update_hero_stats", { data = json.encode(dataTable) })
     end
 end
 
-modifier_stats_system_aaspeed = modifier_stats_system_aaspeed or class({
+modifier_stats_system_aaspeed = class({
     IsDebuff = function(self)
         return false
     end,
@@ -620,7 +629,7 @@ modifier_stats_system_aaspeed = modifier_stats_system_aaspeed or class({
     end
 })
 
-modifier_stats_system_aarange = modifier_stats_system_aarange or class({
+modifier_stats_system_aarange = class({
     IsDebuff = function(self)
         return false
     end,
@@ -647,7 +656,7 @@ modifier_stats_system_aarange = modifier_stats_system_aarange or class({
     end
 })
 
-modifier_stats_system_castrange = modifier_stats_system_castrange or class({
+modifier_stats_system_castrange = class({
     IsDebuff = function(self)
         return false
     end,
@@ -674,7 +683,7 @@ modifier_stats_system_castrange = modifier_stats_system_castrange or class({
     end
 })
 
-modifier_stats_system_movespeed = modifier_stats_system_movespeed or class({
+modifier_stats_system_movespeed = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1222,8 +1231,3 @@ LinkLuaModifier("modifier_stats_system_maxhp", "systems/units", LUA_MODIFIER_MOT
 LinkLuaModifier("modifier_stats_system_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_enemies_maxhp", "systems/units", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_stats_system_enemies_maxmp", "systems/units", LUA_MODIFIER_MOTION_NONE)
-
-if not Units.initialized then
-    Units:Init()
-    Units.initialized = true
-end

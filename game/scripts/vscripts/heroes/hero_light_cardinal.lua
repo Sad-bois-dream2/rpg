@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 -- light_cardinal_piety modifiers
-modifier_light_cardinal_piety_hot = modifier_light_cardinal_piety_hot or class({
+modifier_light_cardinal_piety_hot = class({
     IsDebuff = function(self)
         return false
     end,
@@ -51,7 +51,7 @@ end
 
 LinkedModifiers["modifier_light_cardinal_piety_hot"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_light_cardinal_piety_debuff = modifier_light_cardinal_piety_debuff or class({
+modifier_light_cardinal_piety_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -157,7 +157,7 @@ function light_cardinal_piety:OnSpellStart(unit, special_cast)
 end
 
 -- light_cardinal_purification modifiers
-modifier_light_cardinal_purification = modifier_light_cardinal_purification or class({
+modifier_light_cardinal_purification = class({
     IsDebuff = function(self)
         return false
     end,
@@ -257,7 +257,7 @@ function light_cardinal_purification:OnSpellStart(unit, special_cast)
 end
 
 -- light_cardinal_sublimation modifiers
-modifier_light_cardinal_sublimation = modifier_light_cardinal_sublimation or class({
+modifier_light_cardinal_sublimation = class({
     IsDebuff = function(self)
         return false
     end,
@@ -328,7 +328,7 @@ function light_cardinal_sublimation:OnSpellStart(unit, special_cast)
     end
 end
 -- light_cardinal_salvation modifiers
-modifier_light_cardinal_salvation_aura = modifier_light_cardinal_salvation_aura or class({
+modifier_light_cardinal_salvation_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -363,7 +363,7 @@ modifier_light_cardinal_salvation_aura = modifier_light_cardinal_salvation_aura 
 
 LinkedModifiers["modifier_light_cardinal_salvation_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_light_cardinal_salvation_aura_buff = modifier_light_cardinal_salvation_aura_buff or class({
+modifier_light_cardinal_salvation_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -392,7 +392,15 @@ function modifier_light_cardinal_salvation_aura_buff:OnTakeDamage(damageTable)
             local health_after_dmg = damageTable.victim:GetHealth() - damageTable.damage
             if (health_after_dmg < 1) then
                 local auraAbility = modifier:GetAbility()
-                damageTable.victim:AddNewModifier(damageTable.victim, self, "modifier_light_cardinal_salvation_aura_cd", { duration = auraAbility:GetSpecialValueFor("respawn_cd") })
+                local modifierTable = {}
+                modifierTable.ability = auraAbility
+                modifierTable.target = damageTable.victim
+                modifierTable.caster = damageTable.victim
+                modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura_cd"
+                modifierTable.duration = auraAbility:GetSpecialValueFor("respawn_cd")
+                local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
+                -- Just to be sure
+                cooldownModifier:SetDuration(modifierTable.duration, true)
                 local healTable = {}
                 healTable.caster = auraAbility:GetCaster()
                 healTable.target = damageTable.victim
@@ -414,7 +422,7 @@ end
 
 LinkedModifiers["modifier_light_cardinal_salvation_aura_buff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_light_cardinal_salvation_aura_cd = modifier_light_cardinal_salvation_aura_cd or class({
+modifier_light_cardinal_salvation_aura_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -463,7 +471,13 @@ function light_cardinal_salvation:OnUpgrade()
         local level = self:GetLevel()
         if (level > 3) then
             local caster = self:GetCaster()
-            local modifier = caster:AddNewModifier(caster, self, "modifier_light_cardinal_salvation_aura", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura"
+            modifierTable.duration = -1
+            local modifier = GameMode:ApplyBuff(modifierTable)
             modifier.aura_radius = self:GetSpecialValueFor("aura_radius")
         end
     end
