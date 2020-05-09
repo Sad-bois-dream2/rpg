@@ -332,7 +332,7 @@
 		}
 		"precache"
 		{
-
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff.vpcf"
 		}
 	}
 }
