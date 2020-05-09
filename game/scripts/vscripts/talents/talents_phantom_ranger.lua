@@ -625,7 +625,7 @@ if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_43, 'OnTakeDamage'))
-	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_49, 'OnTakeDamage'))
+	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_49, 'OnTakeDamage'), true)
 	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
 
 end
