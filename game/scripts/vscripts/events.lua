@@ -127,6 +127,7 @@ function GameMode:OnPlayerLevelUp(keys)
 
     local player = PlayerResource:GetPlayer(keys.player_id)
     local level = keys.level--]]
+    Heroes:OnHeroLevelUp(keys)
 end
 
 -- A player last hit a creep, a tower, or a hero

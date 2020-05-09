@@ -75,6 +75,7 @@ require('creeps/require')
 ]]
 function GameMode:PostLoadPrecache()
     DebugPrint("[BAREBONES] Performing Post-Load precache")
+    GameMode:PerformGameMechanicsPostInit()
     --PrecacheItemByNameAsync("item_example_item", function(...) end)
     --PrecacheItemByNameAsync("example_ability", function(...) end)
 

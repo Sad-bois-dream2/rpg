@@ -222,7 +222,13 @@ function terror_lord_immolation:OnToggle(unit, special_cast)
         local caster = self:GetCaster()
         caster.terror_lord_immolation = caster.terror_lord_immolation or {}
         if (self:GetToggleState()) then
-            caster.terror_lord_immolation.modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_immolation", { Duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_terror_lord_immolation"
+            modifierTable.duration = -1
+            caster.terror_lord_immolation.modifier = GameMode:ApplyBuff(modifierTable)
             self:EndCooldown()
             self:StartCooldown(self:GetCooldown(1))
             local talentLevel = TalentTree:GetHeroTalentLevel(caster, 35)
@@ -706,7 +712,14 @@ function modifier_terror_lord_aura_of_seals:OnCreated()
     end
     self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    self.enemy_aura = self.caster:AddNewModifier(self.caster, self.ability, "modifier_terror_lord_aura_of_seals_enemy_aura", { abilityentindex = self.ability:entindex(), duration = -1 })
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_terror_lord_aura_of_seals_enemy_aura"
+    modifierTable.modifier_params = { abilityentindex = self.ability:entindex() }
+    modifierTable.duration = -1
+    self.enemy_aura = GameMode:ApplyBuff(modifierTable)
     self:StartIntervalThink(1.0)
 end
 
@@ -716,7 +729,14 @@ function modifier_terror_lord_aura_of_seals:OnIntervalThink()
     end
     if (TalentTree:GetHeroTalentLevel(self.caster, 39) > 0) then
         if (not self.ally_aura) then
-            self.ally_aura = self.caster:AddNewModifier(self.caster, self.ability, "modifier_terror_lord_aura_of_seals_ally_aura", { abilityentindex = self.ability:entindex(), duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_terror_lord_aura_of_seals_ally_aura"
+            modifierTable.modifier_params = { abilityentindex = self.ability:entindex() }
+            modifierTable.duration = -1
+            self.ally_aura = GameMode:ApplyBuff(modifierTable)
         end
     else
         if (self.ally_aura) then
@@ -1088,7 +1108,7 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
     local ability = self.caster:FindAbilityByName("terror_lord_ruthless_predator")
     if (not ability) then
         local auraModifier = self.caster:FindModifierByName(terror_lord_ruthless_predator:GetIntrinsicModifierName())
-        if(auraModifier) then
+        if (auraModifier) then
             auraModifier.reg_modifier = nil
         end
         self:Destroy()
@@ -1120,9 +1140,15 @@ function terror_lord_ruthless_predator:OnUpgrade()
     self.regeneration_cap = self:GetSpecialValueFor("regeneration_cap_buff") / 100
     self.ms_slow = self:GetSpecialValueFor("ms_slow")
     self.regeneration_debuff = self:GetSpecialValueFor("regeneration_debuff") * -0.01
-    if(self:GetLevel() == 1) then
+    if (self:GetLevel() == 1) then
         local caster = self:GetCaster()
-        self.reg_modifier = caster:AddNewModifier(caster, self, "modifier_terror_lord_ruthless_predator", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_terror_lord_ruthless_predator"
+        modifierTable.duration = -1
+        self.reg_modifier = GameMode:ApplyBuff(modifierTable)
     end
 end
 
@@ -1201,7 +1227,13 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_36:OnAbilityFullyCast(k
         return
     end
     if keys.unit == self.caster and keys.ability:GetName() == "terror_lord_inferno_impulse" then
-        self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker", { duration = 10 })
+        local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_36_hallow_berserker"
+        modifierTable.duration = 10
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
@@ -1276,7 +1308,13 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_40:OnCreated()
     end
     self.caster = self:GetParent()
     self.casterTeam = self.caster:GetTeam()
-    self.modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity", { Duration = -1 })
+    local modifierTable = {}
+    modifierTable.ability = nil
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_40_impulse_sanity"
+    modifierTable.duration = -1
+    self.modifier = GameMode:ApplyBuff(modifierTable)
     self:StartIntervalThink(1.0)
 end
 
@@ -1365,7 +1403,7 @@ modifier_npc_dota_hero_abyssal_underlord_talent_41 = class({
     end
 })
 
-function modifier_npc_dota_hero_abyssal_underlord_talent_41:GetFireDamageBonus()
+function modifier_npc_dota_hero_abyssal_underlord_talent_41:OnCreated()
     if (not IsServer()) then
         return
     end
@@ -1410,15 +1448,22 @@ modifier_npc_dota_hero_abyssal_underlord_talent_42 = class({
 ---@param damageTable DAMAGE_TABLE
 function modifier_npc_dota_hero_abyssal_underlord_talent_42:OnPostTakeDamage(damageTable)
     if (not damageTable.ability and damageTable.physdmg and not damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_42_cd") and damageTable.attacker:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_42")) then
-        damageTable.attacker:AddNewModifier(damageTable.attacker, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_42_cd", { Duration = 20 })
         local modifierTable = {}
+        modifierTable.ability = nil
+        modifierTable.target = damageTable.attacker
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_42_cd"
+        modifierTable.duration = 20
+        local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
+        cooldownModifier:SetDuration(20, true)
+        modifierTable = {}
         modifierTable.ability = nil
         modifierTable.target = damageTable.victim
         modifierTable.caster = damageTable.attacker
         modifierTable.modifier_name = "modifier_stunned"
         modifierTable.duration = 1
         GameMode:ApplyDebuff(modifierTable)
-        local modifierTable = {}
+        modifierTable = {}
         modifierTable.ability = nil
         modifierTable.target = damageTable.victim
         modifierTable.caster = damageTable.attacker
@@ -1530,7 +1575,15 @@ function modifier_npc_dota_hero_abyssal_underlord_talent_43:OnPostTakeDamage(dam
                 ParticleManager:DestroyParticle(pidx, false)
                 ParticleManager:ReleaseParticleIndex(pidx)
             end)
-            damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_43_cd", { Duration = math.max(30, 65 - (5 * TalentTree:GetHeroTalentLevel(damageTable.victim, 43))) })
+            local duration = math.max(30, 65 - (5 * TalentTree:GetHeroTalentLevel(damageTable.victim, 43)))
+            local modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = damageTable.victim
+            modifierTable.caster = damageTable.victim
+            modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_43_cd"
+            modifierTable.duration = duration
+            local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
+            cooldownModifier:SetDuration(duration, true)
             local enemies = FindUnitsInRadius(damageTable.victim:GetTeam(),
                     damageTable.victim:GetAbsOrigin(),
                     nil,
@@ -1942,7 +1995,14 @@ end
 function modifier_npc_dota_hero_abyssal_underlord_talent_47:OnTakeDamage(damageTable)
     local casterHealth = damageTable.victim:GetHealth() - damageTable.damage
     if (damageTable.damage > 0 and casterHealth < 1 and damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47") and not damageTable.victim:HasModifier("modifier_npc_dota_hero_abyssal_underlord_talent_47_cd")) then
-        damageTable.victim:AddNewModifier(damageTable.victim, nil, "modifier_npc_dota_hero_abyssal_underlord_talent_47_cd", { Duration = 120 })
+        local modifierTable = {}
+        modifierTable.ability = mil
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.victim
+        modifierTable.modifier_name = "modifier_npc_dota_hero_abyssal_underlord_talent_47_cd"
+        modifierTable.duration = 120
+        local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
+        cooldownModifier:SetDuration(120, true)
         damageTable.damage = 0
         local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/talents/ashes_of_terror/ashes_of_terror.vpcf", PATTACH_ABSORIGIN, damageTable.victim)
         Timers:CreateTimer(2, function()

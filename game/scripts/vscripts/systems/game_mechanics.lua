@@ -17,7 +17,7 @@ if (IsServer()) then
     end
 
     ---@param handler function
-    function GameMode:RegisterPreDamageEventHandler(handler)
+    function GameMode:RegisterPreDamageEventHandler(handler, calculateBeforeResistances)
         if (handler == nil) then
             DebugPrint("[GAME MECHANICS] Someone passed nil to RegisterPreDamageEventHandler()")
             DebugPrint("[GAME MECHANICS] Source of that shit:")
@@ -30,7 +30,11 @@ if (IsServer()) then
             DebugPrintTable(debug.getinfo(2))
             return
         end
-        table.insert(GameMode.PreDamageEventHandlersTable, handler)
+        if (calculateBeforeResistances == true) then
+            table.insert(GameMode.PreDamageBeforeResistancesEventHandlersTable, handler)
+        else
+            table.insert(GameMode.PreDamageAfterResistancesEventHandlersTable, handler)
+        end
     end
 
     ---@param handler function
@@ -234,11 +238,14 @@ if (IsServer()) then
                 if (fireEvent == nil) then
                     fireEvent = true
                 end
-                if (modifier ~= nil and fireEvent == true) then
-                    args.stacks = 0
-                    args.max_stacks = 0
-                    for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
-                        GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                if (modifier ~= nil) then
+                    GameMode:OverwriteModifierFunctions(modifier)
+                    if (fireEvent == true) then
+                        args.stacks = 0
+                        args.max_stacks = 0
+                        for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                            GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                        end
                     end
                 end
                 return modifier
@@ -306,11 +313,14 @@ if (IsServer()) then
                 if (fireEvent == nil) then
                     fireEvent = true
                 end
-                if (modifier ~= nil and fireEvent == true) then
-                    args.stacks = 0
-                    args.max_stacks = 0
-                    for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
-                        GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                if (modifier ~= nil) then
+                    GameMode:OverwriteModifierFunctions(modifier)
+                    if (fireEvent == true) then
+                        args.stacks = 0
+                        args.max_stacks = 0
+                        for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                            GameMode.PostApplyModifierEventHandlersTable[i](modifier, args)
+                        end
                     end
                 end
                 return modifier
@@ -399,124 +409,148 @@ if (IsServer()) then
 
     ---@param args DAMAGE_TABLE
     function GameMode:DamageUnit(args)
-        if (args == nil) then
+        if (not args) then
             return
         end
-        local caster = args.caster
-        local target = args.target
-        local damage = tonumber(args.damage)
-        if (caster == nil or target == nil or damage == nil) then
+        if (args.caster == nil or args.target == nil or args.damage == nil) then
             return
         end
-        local ability = args.ability
+        local damageTable = {
+            victim = args.target,
+            attacker = args.caster,
+            damage = args.damage,
+            damage_type = DAMAGE_TYPE_PURE,
+            ability = args.ability,
+            physdmg = args.physdmg,
+            firedmg = args.firedmg,
+            frostdmg = args.frostdmg,
+            earthdmg = args.earthdmg,
+            naturedmg = args.naturedmg,
+            voiddmg = args.voiddmg,
+            infernodmg = args.infernodmg,
+            holydmg = args.holydmg,
+            puredmg = args.puredmg,
+            fromsummon = args.fromsummon,
+            crit = 1.0
+        }
+        local damageCanceled = false
+        local preDamageBeforeResistancesHandlerResultTable
+        for i = 1, #GameMode.PreDamageBeforeResistancesEventHandlersTable do
+            if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
+                break
+            end
+            preDamageBeforeResistancesHandlerResultTable = GameMode.PreDamageBeforeResistancesEventHandlersTable[i](nil, damageTable)
+            if (preDamageBeforeResistancesHandlerResultTable ~= nil) then
+                if (not damageCanceled) then
+                    damageCanceled = (preDamageBeforeResistancesHandlerResultTable.damage <= 0)
+                end
+                local latestCrit = damageTable.crit
+                damageTable = preDamageBeforeResistancesHandlerResultTable
+                if (latestCrit > damageTable.crit) then
+                    damageTable.crit = latestCrit
+                end
+            end
+        end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
         local totalReduction = 1
         local totalBlock = 0
-        if (not args.puredmg) then
-            local instanceHasPhysDmg = args.physdmg
-            local instanceHasSpellDmg = false
-            if (instanceHasPhysDmg) then
+        local IsPureDamage = (args.puredmg == true)
+        local IsPhysicalDamage = (args.physdmg == true)
+        local IsFireDamage = (args.firedmg == true)
+        local IsFrostDamage = (args.frostdmg == true)
+        local IsEarthDamage = (args.earthdmg == true)
+        local IsNatureDamage = (args.naturedmg == true)
+        local IsVoidDamage = (args.voiddmg == true)
+        local IsInfernoDamage = (args.infernodmg == true)
+        local IsHolyDamage = (args.holydmg == true)
+        local typesCount = 0
+        if (IsPureDamage == false) then
+            totalReduction = 0
+            if (IsPhysicalDamage) then
                 -- armor formula gl hf, 999999999 armor = 100% phys resistance, 2000 armor = 99,1% phys resistance
-                local targetArmor = Units:GetArmor(target)
+                local targetArmor = Units:GetArmor(args.target)
                 local physReduction = (targetArmor * 0.06) / (1 + targetArmor * 0.06)
-                totalReduction = totalReduction * (1 - physReduction)
+                physReduction = 1 - physReduction
+                typesCount = typesCount + 1
+                totalReduction = totalReduction + physReduction
             end
-            if (args.firedmg) then
-                totalReduction = totalReduction * Units:GetFireProtection(target)
-                instanceHasSpellDmg = true
+            if (IsFireDamage) then
+                totalReduction = totalReduction + Units:GetFireProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.frostdmg) then
-                totalReduction = totalReduction * Units:GetFrostProtection(target)
-                instanceHasSpellDmg = true
+            if (IsFrostDamage) then
+                totalReduction = totalReduction + Units:GetFrostProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.earthdmg) then
-                totalReduction = totalReduction * Units:GetEarthProtection(target)
-                instanceHasSpellDmg = true
+            if (IsEarthDamage) then
+                totalReduction = totalReduction + Units:GetEarthProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.naturedmg) then
-                totalReduction = totalReduction * Units:GetNatureProtection(target)
-                instanceHasSpellDmg = true
+            if (IsNatureDamage) then
+                totalReduction = totalReduction + Units:GetNatureProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.voiddmg) then
-                totalReduction = totalReduction * Units:GetVoidProtection(target)
-                instanceHasSpellDmg = true
+            if (IsVoidDamage) then
+                totalReduction = totalReduction + Units:GetVoidProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.infernodmg) then
-                totalReduction = totalReduction * Units:GetInfernoProtection(target)
-                instanceHasSpellDmg = true
+            if (IsInfernoDamage) then
+                totalReduction = totalReduction + Units:GetInfernoProtection(args.target)
+                typesCount = typesCount + 1
             end
-            if (args.holydmg) then
-                totalReduction = totalReduction * Units:GetHolyProtection(target)
-                instanceHasSpellDmg = true
+            if (IsHolyDamage) then
+                totalReduction = totalReduction + Units:GetHolyProtection(args.target)
+                typesCount = typesCount + 1
             end
-            -- post reduction effects
-            if (instanceHasPhysDmg) then
-                totalBlock = totalBlock + Units:GetBlock(target)
-            end
-            if (instanceHasSpellDmg) then
-                totalBlock = totalBlock + Units:GetMagicBlock(target)
-            end
+            totalReduction = totalReduction / typesCount
         end
-        if (args.firedmg) then
-            totalReduction = totalReduction * Units:GetFireDamage(caster)
+        -- post reduction effects
+        if (IsPhysicalDamage) then
+            totalBlock = totalBlock + Units:GetBlock(args.target)
         end
-        if (args.frostdmg) then
-            totalReduction = totalReduction * Units:GetFrostDamage(caster)
+        if (args.ability) then
+            totalBlock = totalBlock + Units:GetMagicBlock(args.target)
+            damageTable.damage = damageTable.damage * (1 + Units:GetSpellDamage(args.caster))
         end
-        if (args.earthdmg) then
-            totalReduction = totalReduction * Units:GetEarthDamage(caster)
+        local totalAmplification = 0
+        if (IsFireDamage) then
+            totalAmplification = totalAmplification + Units:GetFireDamage(args.caster)
         end
-        if (args.naturedmg) then
-            totalReduction = totalReduction * Units:GetNatureDamage(caster)
+        if (IsFrostDamage) then
+            totalAmplification = totalAmplification + Units:GetFrostDamage(args.caster)
         end
-        if (args.voiddmg) then
-            totalReduction = totalReduction * Units:GetVoidDamage(caster)
+        if (IsEarthDamage) then
+            totalAmplification = totalAmplification + Units:GetEarthDamage(args.caster)
         end
-        if (args.infernodmg) then
-            totalReduction = totalReduction * Units:GetInfernoDamage(caster)
+        if (IsNatureDamage) then
+            totalAmplification = totalAmplification + Units:GetNatureDamage(args.caster)
         end
-        if (args.holydmg) then
-            totalReduction = totalReduction * Units:GetHolyDamage(caster)
+        if (IsVoidDamage) then
+            totalAmplification = totalAmplification + Units:GetVoidDamage(args.caster)
+        end
+        if (IsInfernoDamage) then
+            totalAmplification = totalAmplification + Units:GetInfernoDamage(args.caster)
+        end
+        if (IsHolyDamage) then
+            totalAmplification = totalAmplification + Units:GetHolyDamage(args.caster)
         end
         -- Damage reduction reduce even pure dmg
-        totalReduction = totalReduction * Units:GetDamageReduction(target)
-        if (ability ~= nil) then
-            damage = damage * (1 + Units:GetSpellDamage(caster))
-        end
+        totalReduction = totalReduction * Units:GetDamageReduction(args.target)
         -- well, let them suffer
         if (totalReduction < 0.01) then
             totalReduction = 0.01
         end
         -- final damage
-        damage = (damage * totalReduction) - totalBlock
+        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification) - totalBlock
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
-        if (damage > 0) then
-            local damageTable = {
-                victim = target,
-                attacker = caster,
-                damage = damage,
-                damage_type = DAMAGE_TYPE_PURE,
-                ability = ability,
-                physdmg = args.physdmg,
-                firedmg = args.firedmg,
-                frostdmg = args.frostdmg,
-                earthdmg = args.earthdmg,
-                naturedmg = args.naturedmg,
-                voiddmg = args.voiddmg,
-                infernodmg = args.infernodmg,
-                holydmg = args.holydmg,
-                puredmg = args.puredmg,
-                fromsummon = args.fromsummon,
-                crit = 1.0
-            }
+        if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc
             local preDamageHandlerResultTable
-            local damageCanceled = false
-            for i = 1, #GameMode.PreDamageEventHandlersTable do
+            for i = 1, #GameMode.PreDamageAfterResistancesEventHandlersTable do
                 if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                     break
                 end
-                preDamageHandlerResultTable = GameMode.PreDamageEventHandlersTable[i](nil, damageTable)
+                preDamageHandlerResultTable = GameMode.PreDamageAfterResistancesEventHandlersTable[i](nil, damageTable)
                 if (preDamageHandlerResultTable ~= nil) then
                     if (not damageCanceled) then
                         damageCanceled = (preDamageHandlerResultTable.damage <= 0)
@@ -537,7 +571,7 @@ if (IsServer()) then
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
-                    PopupCriticalDamage(target, damageTable.damage)
+                    PopupCriticalDamage(damageTable.victim, damageTable.damage)
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
@@ -667,19 +701,83 @@ if (IsServer()) then
         end
     end
 
-    function GameMode:BuildCrowdControlModifiersList()
-        Timers:CreateTimer(2.0, function()
-            for k, v in pairs(_G) do
-                if (type(v) == "table" and v.CheckState) then
-                    local stateTable = v.CheckState(nil)
-                    local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
-                    local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
-                    local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
-                    local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
-                    GameMode.CrowdControlModifiersTable[k] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
+    function GameMode:PerformGameMechanicsPostInit()
+        if (not IsServer()) then
+            return
+        end
+        local modifiersList = {}
+        for name, class in pairs(_G) do
+            if (type(class) == "table" and name:find("modifier_")) then
+                modifiersList[name] = class
+            end
+        end
+        GameMode:BuildAuraModifiersList(modifiersList)
+        GameMode:BuildCrowdControlModifiersList(modifiersList)
+    end
+
+    function GameMode:BuildAuraModifiersList(modifiersList)
+        for name, class in pairs(modifiersList) do
+            if (class.IsAura) then
+                local auraModifier = class.GetModifierAura(nil)
+                if (type(auraModifier) == "string") then
+                    table.insert(GameMode.AuraModifiersTable, auraModifier)
+                else
+                    DebugPrint("[GAME MECHANICS] There are problems during loading aura modifiers. Expected aura modifier name (string) from GetModifierAura(), but got something else. Aura with problem: " .. tostring(name))
                 end
             end
-        end)
+        end
+    end
+
+    function GameMode:BuildCrowdControlModifiersList(modifiersList)
+        for name, class in pairs(modifiersList) do
+            if (class.CheckState) then
+                local stateTable = class.CheckState(nil)
+                local isRoot = (stateTable[MODIFIER_STATE_ROOTED] == true)
+                local isStun = (stateTable[MODIFIER_STATE_STUNNED] == true)
+                local isSilence = (stateTable[MODIFIER_STATE_SILENCED] == true)
+                local isHex = (stateTable[MODIFIER_STATE_HEXED] == true)
+                GameMode.CrowdControlModifiersTable[name] = { root = isRoot, stun = isStun, silence = isSilence, hex = isHex }
+            end
+        end
+    end
+
+    function GameMode:OverwriteModifierFunctions(modifier)
+        if (modifier.OnDestroy and not modifier.OnDestroy2) then
+            modifier.OnDestroy2 = modifier.OnDestroy
+            modifier.OnDestroy = function(context)
+                context.OnDestroy2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.SetStackCount2) then
+            modifier.SetStackCount2 = modifier.SetStackCount
+            modifier.SetStackCount = function(context, count)
+                context.SetStackCount2(context, count)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.IncrementStackCount2) then
+            modifier.IncrementStackCount2 = modifier.IncrementStackCount
+            modifier.IncrementStackCount = function(context)
+                context.IncrementStackCount2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.DecrementStackCount2) then
+            modifier.DecrementStackCount2 = modifier.DecrementStackCount
+            modifier.DecrementStackCount = function(context)
+                context.DecrementStackCount2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
     end
 end
 
@@ -779,7 +877,13 @@ function modifier_out_of_combat:OnIntervalThink()
     if (stacks > self.delay) then
         stacks = self.delay
         if (not self.buff) then
-            self.buff = self.caster:AddNewModifier(self.caster, nil, "modifier_out_of_combat_buff", { duration = -1 })
+            local modifierTable = {}
+            modifierTable.ability = nil
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_out_of_combat_buff"
+            modifierTable.duration = -1
+            self.buff = GameMode:ApplyBuff(modifierTable)
         end
     end
     self:SetStackCount(stacks)
@@ -885,7 +989,8 @@ ListenToGameEvent("npc_spawned", function(keys)
 end, nil)
 
 if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
-    GameMode.PreDamageEventHandlersTable = {}
+    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+    GameMode.PreDamageAfterResistancesEventHandlersTable = {}
     GameMode.PostDamageEventHandlersTable = {}
     GameMode.CritDamageEventHandlersTable = {}
     GameMode.PostApplyModifierEventHandlersTable = {}
@@ -896,9 +1001,9 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
     GameMode.CrowdControlModifiersTable = {}
+    GameMode.AuraModifiersTable = {}
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
     GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
-    GameMode:BuildCrowdControlModifiersList()
     GameMode.GAME_MECHANICS_INIT = true
 end
