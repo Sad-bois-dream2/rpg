@@ -73,6 +73,7 @@ function modifier_dps_dummy:OnCreated()
                 if (eliteModifier) then
                     eliteModifier:Destroy()
                 end
+                Units:ForceStatsCalculation(self.parent)
             end, self)
         else
             return 0.25
@@ -263,6 +264,7 @@ function Dummy:OnDummyUpdateStatsRequest(event)
     event.dummy.bonusStats.voiddmg = event.voiddmg
     event.dummy.bonusStats.infernodmg = event.infernodmg
     event.dummy.bonusStats.holydmg = event.holydmg
+    Units:ForceStatsCalculation(event.dummy)
 end
 
 function Dummy:CalculateDPS(dummy)
@@ -345,7 +347,7 @@ function Dummy:OnNPCSpawned(keys)
     end
     local dummy = EntIndexToHScript(keys.entindex)
     if (dummy and dummy:GetUnitName() == "npc_dummy_dps_unit" and not dummy:HasModifier("modifier_dps_dummy") and dummy:GetTeam() ~= DOTA_TEAM_GOODGUYS) then
-        dummy:AddNewModifier(hero, nil, "modifier_dps_dummy", { Duration = -1 })
+        dummy:AddNewModifier(dummy, nil, "modifier_dps_dummy", { Duration = -1 })
     end
 end
 
