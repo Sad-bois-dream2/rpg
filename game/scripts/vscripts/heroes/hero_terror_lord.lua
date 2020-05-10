@@ -471,7 +471,13 @@ function modifier_terror_lord_horror_genesis_thinker:OnIntervalThink()
             self.aura_modifier:Destroy()
         end
     else
-        self.aura_modifier = self.hero:AddNewModifier(self.hero, self.ability, "modifier_terror_lord_horror_genesis_thinker_buff", { Duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.hero
+        modifierTable.caster = self.hero
+        modifierTable.modifier_name = "modifier_terror_lord_horror_genesis_thinker_buff"
+        modifierTable.duration = -1
+        self.aura_modifier = GameMode:ApplyBuff(modifierTable)
     end
 end
 

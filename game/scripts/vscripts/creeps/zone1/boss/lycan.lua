@@ -820,14 +820,6 @@ function modifier_lycan_double_strike_quick:OnCreated()
     self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus")
 end
 
-function modifier_lycan_double_strike_quick:OnDestroy()
-    if (not IsServer()) then
-        return
-    end
-    -- Don't try at home. To be sure that he will do exactly max_hits attacks with max as.
-    Units:ForceStatsCalculation(self.parent)
-end
-
 function modifier_lycan_double_strike_quick:GetAttackSpeedBonus()
     return self.as_bonus
 end

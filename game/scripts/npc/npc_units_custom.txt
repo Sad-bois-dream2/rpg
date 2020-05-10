@@ -8,6 +8,7 @@
 #base heroes/blazing_berserker/units.txt
 #base heroes/chosen_invoker/units.txt
 #base heroes/crystal_sorceress/units.txt
+#base heroes/luminous_samurai/units.txt
 #base creeps/zone1/boss/ursa/boss.txt
 #base creeps/zone1/boss/ursa/units.txt
 #base creeps/zone1/boss/lycan/boss.txt

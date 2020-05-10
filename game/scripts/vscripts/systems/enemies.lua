@@ -329,7 +329,7 @@ function modifier_creep_scaling:OnCreated()
     Timers:CreateTimer(0, function()
         local stats = self.creep:FindModifierByName("modifier_stats_system")
         if (stats) then
-            stats:OnIntervalThink()
+            Units:ForceStatsCalculation(self.creep)
             self.creep:SetHealth(self.creep:GetMaxHealth())
             self.creep:SetMana(self.creep:GetMaxMana())
         else

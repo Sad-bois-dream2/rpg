@@ -110,28 +110,28 @@ function TalentTree:Init()
     self.tempAbilities = { "empty5", "antimage_blink" }
     self.talent_abilities = {
         ["npc_dota_hero_drow_ranger"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_juggernaut"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "luminous_samurai_blade_dance",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_phantom_assassin"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_abyssal_underlord"] = {
             "terror_lord_flame_of_menace",
@@ -142,36 +142,36 @@ function TalentTree:Init()
             "terror_lord_aura_of_seals"
         },
         ["npc_dota_hero_mars"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_axe"] = {
             "blazing_berserker_rage_eruption",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_crystal_maiden"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_invoker"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_silencer"] = {
             "light_cardinal_spirit_shield",
@@ -182,28 +182,28 @@ function TalentTree:Init()
             "light_cardinal_patronage"
         },
         ["npc_dota_hero_enchantress"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_doom_bringer"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_dark_willow"] = {
-            "phantom_ranger_phantom_arrow",
-            "phantom_ranger_remnant_arrow",
-            "phantom_ranger_barrage",
-            "phantom_ranger_hunter_focus",
-            "phantom_ranger_huntress",
-            "phantom_ranger_intimidation"
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         }
     }
     TalentTree:InitPanaromaEvents()
@@ -327,7 +327,13 @@ function TalentTree:SetHeroTalentLevel(hero, talentId, level)
                         modifier_name = modifier_name .. "_" .. heroName .. "_"
                     end
                     modifier_name = modifier_name .. "talent_" .. tostring(talentId)
-                    hero.talents.modifiers[talentId] = hero:AddNewModifier(hero, nil, modifier_name, { duration = -1 })
+                    local modifierTable = {}
+                    modifierTable.ability = nil
+                    modifierTable.target = hero
+                    modifierTable.caster = hero
+                    modifierTable.modifier_name = modifier_name
+                    modifierTable.duration = -1
+                    hero.talents.modifiers[talentId] = GameMode:ApplyBuff(modifierTable)
                 end
             end
         end
