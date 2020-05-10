@@ -9,11 +9,7 @@
 		<include src="file://{resources}/scripts/windows/basic_window.js" />
 	</scripts>
 	<Panel class="Root" hittest="false">
-		<Panel id="MainWindow" class="Window" style="width: 800px; height: 770px; visibility: collapse;">
-			<!--<Panel class="WindowHeader" style="horizontal-align: left;">
-					<Image class="WindowIcon" src="file://{images}/custom_game/hud/inventory.png" />
-					<Label class="WindowName" text="Inventory" />
-			</Panel> -->
+		<Panel id="MainWindow" class="Window" style="width: 854px; height: 770px; visibility: collapse;">
 			<Panel class="WindowContent">
 				<Panel class="HeroContainer">
 					<Panel class="HeroItems">
