@@ -885,6 +885,32 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
     local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
     if (modifier:GetStackCount() == self.maxStacks) then
         modifier:SetStackCount(0)
+        local casterPosition = caster:GetAbsOrigin()
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(pidx, 1, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
+        local enemies = FindUnitsInRadius(caster:GetTeam(),
+                casterPosition,
+                nil,
+                self:GetSpecialValueFor("proc_radius"),
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = self:GetSpecialValueFor("proc_damage") * Units:GetAttackDamage(caster) * 0.01
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.holydmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
     end
 end
 

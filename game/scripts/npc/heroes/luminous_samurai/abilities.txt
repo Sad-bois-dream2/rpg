@@ -155,6 +155,7 @@
 		// Casting
  		"AbilityCastAnimation"			"ACT_DOTA_VICTORY"
         "AbilityCastPoint"				"2"
+        "AbilityCastRange"  "900"
 		//-------------------------------------------------------------------------------------------------------------
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -235,6 +236,8 @@
      		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
      		// Casting
      		//-------------------------------------------------------------------------------------------------------------
+     		"AbilityCastRange"		"450"
+     		"AbilityCastRangeBuffer"		"600"
      		// Time
      		//-------------------------------------------------------------------------------------------------------------
      		"AbilityCooldown"				"1.5"
@@ -308,6 +311,7 @@
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "300"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"1"
@@ -322,12 +326,17 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"75 100 125 150"
+				"proc_damage"				"75 100 125 150"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"proc_stacks"				"3"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_radius"				"300"
 			}
 		}
 		"precache"

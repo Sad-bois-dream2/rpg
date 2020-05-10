@@ -43,6 +43,15 @@
 			m_ColorFade = [ 255, 211, 99, 255 ]
 			m_flFadeStartTime = 0.25
 		},
+		{
+			_class = "C_OP_MovementPlaceOnGround"
+			m_flOffset = 60.0
+			m_flMaxTraceLength = 1024.0
+			m_CollisionGroupName = "DEBRIS"
+			m_bIncludeWater = true
+			m_bSetNormal = true
+			m_bDisableOperator = true
+		},
 	]
 	m_Initializers = 
 	[
@@ -58,11 +67,13 @@
 			m_flInitialRadius = 100.0
 			m_flInitialSpeedMin = 2000.0
 			m_flInitialSpeedMax = -400.0
+			m_nControlPointNumber = 1
 		},
 		{
 			_class = "C_INIT_RemapInitialDirectionToCPToVector"
 			m_nFieldOutput = "21"
 			m_bNormalize = true
+			m_nCP = 1
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -76,6 +87,7 @@
 			_class = "C_INIT_PositionWarp"
 			m_vecWarpMin = [ 1.0, 1.0, 0.65 ]
 			m_vecWarpMax = [ 1.0, 1.0, 0.65 ]
+			m_nControlPointNumber = 1
 		},
 		{
 			_class = "C_INIT_RandomColor"
@@ -120,15 +132,7 @@
 	[
 		{
 			m_name = "preview"
-			m_drivers = 
-			[
-				{
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
-					m_entityName = "self"
-				},
-			]
+			m_drivers = [  ]
 		},
 	]
 	m_Constraints = 
@@ -136,6 +140,7 @@
 		{
 			_class = "C_OP_ConstrainDistance"
 			m_fMaxDistance = 350.0
+			m_nControlPointNumber = 1
 		},
 	]
 	m_nBehaviorVersion = 10
