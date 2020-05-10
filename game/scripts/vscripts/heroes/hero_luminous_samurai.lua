@@ -818,22 +818,49 @@ function modifier_luminous_samurai_light_iai_giri:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.ability = self.caster:FindAbilityByName("luminous_samurai_light_iai_giri")
+    self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+end
+
+function modifier_luminous_samurai_light_iai_giri:OnStackCountChanged()
+    if (not IsServer()) then
+        return
+    end
+    local stacks = self:GetStackCount()
+    if (stacks > 0) then
+        for i = 1, stacks do
+            ParticleManager:SetParticleControl(self.pidx, 5 - i, Vector(255, 0, 0))
+        end
+    else
+        for i = 2, (2 + self.ability.maxStacks) do
+            ParticleManager:SetParticleControl(self.pidx, i, Vector(0, 0, 0))
+        end
+    end
+end
+
+function modifier_luminous_samurai_light_iai_giri:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
 function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
-    if (modifier) then
+    if (modifier and modifier.ability:GetLevel() > 0) then
         local stacks = modifier:GetStackCount() + 1
         modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
     end
 end
 
-GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
-GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
+if (IsServer()) then
+    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
+end
 
 function modifier_luminous_samurai_light_iai_giri:JuggTest(damageTable)
-    print("lel?")
     damageTable.crit = 5.0
     return damageTable
 end
@@ -854,7 +881,11 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
     if (not IsServer()) then
         return
     end
-
+    local caster = self:GetCaster()
+    local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
+    if (modifier:GetStackCount() == self.maxStacks) then
+        modifier:SetStackCount(0)
+    end
 end
 
 function luminous_samurai_light_iai_giri:OnUpgrade()

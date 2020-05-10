@@ -36,15 +36,10 @@
 			m_flRadiusMax = 20.0
 		},
 		{
-			_class = "C_INIT_CreateInEpitrochoid"
-			m_flParticleDensity = 2.0
-			m_flRadius1 = 70.0
-			m_bUseCount = true
-		},
-		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, 60.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 60.0 ]
+			_class = "C_INIT_RingWave"
+			m_flParticlesPerOrbit = 3.0
+			m_flInitialRadius = 100.0
+			m_bEvenDistribution = true
 		},
 	]
 	m_Emitters = 
@@ -77,21 +72,21 @@
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 255.0, 0.0, 0.0 ]
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 255.0, 0.0, 0.0 ]
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 4
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 255.0, 0.0, 0.0 ]
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -115,6 +110,13 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_c.vpcf"
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_bDisableOperator = true
 		},
 	]
 }
