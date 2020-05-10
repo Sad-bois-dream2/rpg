@@ -886,6 +886,7 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
     if (modifier:GetStackCount() == self.maxStacks) then
         modifier:SetStackCount(0)
         local casterPosition = caster:GetAbsOrigin()
+        EmitSoundOn("Hero_Juggernaut.OmniSlash", caster)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
         ParticleManager:SetParticleControlEnt(pidx, 1, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
         local enemies = FindUnitsInRadius(caster:GetTeam(),
@@ -907,7 +908,7 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
             damageTable.holydmg = true
             GameMode:DamageUnit(damageTable)
         end
-        Timers:CreateTimer(2.0, function()
+        Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
