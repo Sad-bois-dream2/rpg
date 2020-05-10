@@ -56,7 +56,7 @@
 				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
 				m_flLiteralValue = 0.0
-				m_nControlPoint = 2
+				m_nControlPoint = 5
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
 				m_nVectorComponent = 0
@@ -146,13 +146,6 @@
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 2
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 255.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},

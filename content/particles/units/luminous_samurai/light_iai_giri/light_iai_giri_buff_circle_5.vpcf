@@ -1,0 +1,132 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 5
+	m_flConstantRadius = 50.0
+	m_flConstantLifespan = 2.0
+	m_ConstantColor = [ 255, 211, 99, 255 ]
+	m_nGroupID = 1
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_BasicMovement"
+		},
+		{
+			_class = "C_OP_MovementRotateParticleAroundAxis"
+			m_bLocalSpace = true
+		},
+		{
+			_class = "C_OP_SetPerChildControlPoint"
+			m_nFirstControlPoint = 1
+			m_nNumControlPoints = 6
+		},
+		{
+			_class = "C_OP_PositionLock"
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 20.0
+			m_flRadiusMax = 20.0
+		},
+		{
+			_class = "C_INIT_RingWave"
+			m_flParticlesPerOrbit = 5.0
+			m_flInitialRadius = 75.0
+			m_bEvenDistribution = true
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_ContinuousEmitter"
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 3
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 1
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 2
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/juggernaut/juggernaut.vmdl"
+				m_nModSpecificData = 6
+				m_sequenceName = "idle"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_a.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_c.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_d.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_e.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_sphere_f.vpcf"
+			m_bDisableChild = true
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_bDisableOperator = true
+		},
+	]
+}
