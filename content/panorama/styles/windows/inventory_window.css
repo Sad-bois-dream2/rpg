@@ -7,7 +7,7 @@
 .InventoryRow 
 {
 	flow-children: right;
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: fit-children;
 }
 
@@ -110,22 +110,22 @@
 
 .HeroContainer 
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 60%;
 	flow-children: right;
 }
 
 .HeroItems 
 {
-	border: 1px solid grey;
-	width: 399px;
+	/* border: 1px solid grey; */
+	width: fill-parent-flow(1.0);
 	height: 100%;
 }
 
 .HeroStats 
 {
-	border: 1px solid grey;
-	width: 401px;
+	/* border: 1px solid grey; */
+	width: fill-parent-flow(1.0);
 	height: 100%;
 	flow-children: down;
 	padding: 5px;
@@ -134,7 +134,7 @@
 .HeroStatsPage 
 {
 	flow-children: down;
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	overflow: squish scroll;
 }
 
