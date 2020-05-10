@@ -849,20 +849,14 @@ end
 
 function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
-    if (modifier and modifier.ability:GetLevel() > 0) then
+    if (modifier and modifier.ability:GetLevel() > 0 and not damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd) then
         local stacks = modifier:GetStackCount() + 1
         modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
+        damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd = true
+        Timers:CreateTimer(modifier.ability.stackCooldown, function()
+            damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd = nil
+        end)
     end
-end
-
-if (IsServer()) then
-    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
-end
-
-function modifier_luminous_samurai_light_iai_giri:JuggTest(damageTable)
-    damageTable.crit = 5.0
-    return damageTable
 end
 
 LinkedModifiers["modifier_luminous_samurai_light_iai_giri"] = LUA_MODIFIER_MOTION_NONE
@@ -883,8 +877,9 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
     end
     local caster = self:GetCaster()
     local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
-    if (modifier:GetStackCount() == self.maxStacks) then
-        modifier:SetStackCount(0)
+    local stacks = modifier:GetStackCount()
+    if (stacks >= self.procStacks) then
+        modifier:SetStackCount(stacks - self.procStacks)
         local casterPosition = caster:GetAbsOrigin()
         EmitSoundOn("Hero_Juggernaut.OmniSlash", caster)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
@@ -919,7 +914,9 @@ function luminous_samurai_light_iai_giri:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    self.maxStacks = self:GetSpecialValueFor("proc_stacks")
+    self.procStacks = self:GetSpecialValueFor("proc_stacks")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.stackCooldown = self:GetSpecialValueFor("stack_cd")
 end
 
 -- Internal stuff
