@@ -7,17 +7,17 @@
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/luna/luna.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "30"
+        "Level"           "0"
         "UnitLabel"         "boss"
 
         // Abilities
         //----------------------------------------------------------------
 
-          "Ability1"          "luna_void_glaive"     // Ability 1.
-          "Ability2"          "luna_curse"     // Ability 2.
-          "Ability3"          "luna_bound"      // Ability 3.
-          "Ability4"          "luna_wave"      // Ability 4.
-          "Ability5"          "luna_cruel"     // Ability 5.
+          "Ability1"          ""     // Ability 1.
+          "Ability2"          ""     // Ability 2.
+          "Ability3"          ""      // Ability 3.
+          "Ability4"          ""      // Ability 4.
+          "Ability5"          ""     // Ability 5.
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.

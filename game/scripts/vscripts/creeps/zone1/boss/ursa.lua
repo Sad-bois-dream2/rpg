@@ -345,6 +345,9 @@ modifier_ursa_fury = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    GetTexture = function(self)
+        return ursa_fury:GetAbilityTextureName()
+    end,
 })
 
 function modifier_ursa_fury:GetEffectAttachType()
@@ -827,8 +830,8 @@ modifier_ursa_slam_slow = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTextureName = function(self)
-        return "ursa_slam"
+    GetTexture = function(self)
+        return ursa_slam:GetAbilityTextureName()
     end,
 })
 
@@ -944,7 +947,10 @@ modifier_ursa_hunt_random_taunt = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end
+    end,
+    GetTexture = function(self)
+        return ursa_hunt:GetAbilityTextureName()
+    end,
 })
 
 function modifier_ursa_hunt_random_taunt:IsTaunt()

@@ -137,5 +137,11 @@
 		{
 			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_storm/leaves_storm.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_storm/leaves_storm_half.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_treant/treant_storm/leaves_storm_threefourth.vpcf"
+		},
 	]
 }

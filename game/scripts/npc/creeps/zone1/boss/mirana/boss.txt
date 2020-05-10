@@ -7,19 +7,20 @@
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/mirana/mirana.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "30"
+        "Level"           "0"
         "UnitLabel"         "boss"
 
         // Abilities
         //----------------------------------------------------------------
 
-          "Ability1"          "mirana_moonshard_arrow"     // Ability 1.
-          "Ability2"          "mirana_blessing"     // Ability 2.
-          "Ability3"          "mirana_bound"      // Ability 3.
-          "Ability4"          "mirana_holy_arrow"      // Ability 4.
-          "Ability5"          "mirana_strategic"     // Ability 5.
+          "Ability1"          ""     // Ability 1.
+          "Ability2"          ""     // Ability 2.
+          "Ability3"          ""      // Ability 3.
+          "Ability4"          ""      // Ability 4.
+          "Ability5"          ""     // Ability 5.
+          "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
-          "Ability8"          ""      // Ability 8 - Extra.
+          "Ability8"          ""      // Ability 8 - Extra..
 
 
         // Armor

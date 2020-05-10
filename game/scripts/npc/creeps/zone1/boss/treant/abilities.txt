@@ -312,10 +312,6 @@
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
 
-   		// Time
-   		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"5 1 0"
-
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
@@ -328,17 +324,17 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"chance"			        "20 30 100"
+   				"chance"			        "15 20 25"
    			}
             "03"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"dot"			            "100 400 1000"
+    			"dot"			            "100 300 1000"
     		}
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"duration"			        "3"
+    			"duration"			        "1 2 3"
     		}
             "05"
     		{
@@ -406,7 +402,7 @@
         "ScriptFile"					"creeps/zone1/boss/treant"
         "AbilityTextureName"			"treant_regrowth"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELED"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELLED"
    		"MaxLevel"						"3"
 
    		// Time
@@ -443,7 +439,6 @@
    		"precache"
         {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
-            "particle"  "particles/econ/items/leshrac/leshrac_tormented_staff_retro/leshrac_split_retro_groundflash_lines_tormented.vpcf"
         }
 	}
     //=================================================================================================================

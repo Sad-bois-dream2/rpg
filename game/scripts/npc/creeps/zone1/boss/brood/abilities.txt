@@ -108,12 +108,43 @@
                 "var_type"                  "FIELD_FLOAT"
                 "duration"                  "5 7 10"
              }
+            "06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"cd_reduce"				    "0.33 0.66 1"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"as_bonus"		            "4 8 12"
+			}
+			"08"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"dmg_reduction"		         "0.5 1 1.5"
+			}
+			"09"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"self_damage"				"0.3 0.15 0"
+			}
+			"010"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"max_stacks"				"66"
+			}
+			"011"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stack_duration"				    "30"
+			}
 
    		}
 		"precache"
 		{
 			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
 			"particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
+			"particle"  ""particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf""
 		}
 	}
     //=================================================================================================================
@@ -533,6 +564,7 @@
 				"precache"
         		{
                     "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+                    "particle"  ""particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf""
         		}
 	}
 }

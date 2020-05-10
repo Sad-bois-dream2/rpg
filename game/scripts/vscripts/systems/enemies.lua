@@ -46,6 +46,36 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_treant", "treant_regrowth", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_treant", "treant_beam", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_treant_lesser_treant", "treant_root", Enemies.ABILITY_TYPE_INNATE)
+    --mirana boss
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_shard", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_sky", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_blessing", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_holy", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_under", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_aligned", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_guile", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_bound", Enemies.ABILITY_TYPE_INNATE)
+    --luna boss
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_sky", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_curse", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_wave", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_cruelty", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_orb", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_wax_wane", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_bound", Enemies.ABILITY_TYPE_INNATE)
+    --venge boss
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_missile", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_sky", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_side", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fall", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_tide", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_moonify", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_umbra", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_guardian", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_storm", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fel", Enemies.ABILITY_TYPE_INNATE)
+
 end
 
 -- Internal stuff

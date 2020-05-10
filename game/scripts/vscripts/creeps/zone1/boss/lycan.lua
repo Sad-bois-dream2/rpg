@@ -657,7 +657,7 @@ function modifier_lycan_agility_buff:OnCreated(keys)
     if (not keys or keys.target) then
         self:Destroy()
     end
-    self.target = keys.target
+    self.target = EntIndexToHScript(keys.target)
 end
 
 function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
@@ -679,7 +679,7 @@ function lycan_agility:OnSpellStart()
     modifierTable.target = caster
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_lycan_agility_buff"
-    modifierTable.modifier_params = { target = target }
+    modifierTable.modifier_params = { target = target:GetEntityIndex() }
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
     --set table for already hit
@@ -693,6 +693,14 @@ function lycan_agility:OnSpellStart()
         if target ~= nil then
             self:Blink(target, caster)
             target = self:FindTargetForBlink(caster)
+            if target ~= nil then
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_lycan_agility_buff"
+            modifierTable.modifier_params = { target = target:GetEntityIndex() }
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable) end
             return 1.5
         end
     end)

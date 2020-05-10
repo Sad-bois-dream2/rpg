@@ -209,8 +209,8 @@ function treant_hook:OnProjectileHit(target)
         damageTable.ability = self
         damageTable.caster = caster
         damageTable.target = target
-        damageTable.damage = damage*0.02 --nerf damage for testing
-        damageTable.firedmg = true
+        damageTable.damage = damage
+        damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
         target:SetForwardVector(vector)
         local modifierTable = {}
@@ -256,7 +256,7 @@ function modifier_treant_flux_eye:OnCreated()
     self.ability = self:GetAbility()
     self.damage = self.ability:GetSpecialValueFor("damage")
     self.radius = self.ability:GetSpecialValueFor("radius")
-    self.slow = self.ability:GetSpecialValueFor("self_ms_slow")
+    self.slow = self.ability:GetSpecialValueFor("self_ms_slow") * -0.01
     --gather particle
     Timers:CreateTimer(2.5, function()
         self.parent:EmitSound("Hero_Oracle.FortunesEnd.Channel")
@@ -294,7 +294,7 @@ function modifier_treant_flux_eye:OnIntervalThink()
             damageTable.caster = self.parent
             damageTable.target = enemy
             damageTable.ability = self.ability
-            damageTable.damage = self.damage*0.02 --nerf
+            damageTable.damage = self.damage
             damageTable.puredmg = true
             GameMode:DamageUnit(damageTable)
             end
@@ -393,10 +393,10 @@ function modifier_treant_flux_eye_enemy:OnCreated(keys)
                 --flux wont damage flux source
                 if ally ~= self.parent then
                     local damageTable = {}
-                    damageTable.caster = self.parent
+                    damageTable.caster = keys.attacker
                     damageTable.target = ally
                     damageTable.ability = self.ability
-                    damageTable.damage = self.damage*0.02 --nerf
+                    damageTable.damage = self.damage
                     damageTable.puredmg = true
                     GameMode:DamageUnit(damageTable)
                 end
@@ -508,7 +508,7 @@ function modifier_treant_storm_eye:OnIntervalThink()
         damageTable.caster = self.parent
         damageTable.target = enemy
         damageTable.ability = self.ability
-        damageTable.damage = damage*0.02 --nerf
+        damageTable.damage = damage
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
         --particle on hit
@@ -604,7 +604,7 @@ function modifier_treant_seed:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.parent
     damageTable.ability = self.ability
-    damageTable.damage = self.damage*0.02 --nerf
+    damageTable.damage = self.damage
     damageTable.naturedmg = true
     GameMode:DamageUnit(damageTable)
     self.parent:EmitSound("Hero_Treant.LeechSeed.Tick ")
@@ -707,7 +707,7 @@ function treant_seed:OnSpellStart()
 end
 
 ---------------------
--- treant_one
+-- treant one
 ---------------------
 treant_one = class({
     GetAbilityTextureName = function(self)
@@ -722,11 +722,8 @@ function treant_one:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    self.duration = self:GetSpecialValueFor("duration")
     self.chance = self:GetSpecialValueFor("chance")
-    self.range = self:GetSpecialValueFor("range")
-    self.dot = self:GetSpecialValueFor("dot")
-    self.tick = self:GetSpecialValueFor("tick")
+    self.duration = self:GetSpecialValueFor("duration")
 end
 
 modifier_treant_one = class({
@@ -739,8 +736,14 @@ modifier_treant_one = class({
     IsPurgable = function(self)
         return false
     end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKEDAMAGE }
+        return { MODIFIER_EVENT_ON_TAKE_DAMAGE }
     end
 })
 
@@ -752,55 +755,51 @@ function modifier_treant_one:OnCreated()
     self.ability = self:GetAbility()
 end
 
--- treant has chance to root upon taking damage
+-- root retaliation
 ---@param damageTable DAMAGE_TABLE
 function modifier_treant_one:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_treant_one") --treant is the victim
-    if (damageTable.damage > 0 and modifier ) then
-        local rootmod = damageTable.attacker:FindModifierByName("modifier_treant_one_root")
-        --if attacker no root, priortizes rooting attacker
-        if (rootmod == nil and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+    local modifier = damageTable.victim:FindModifierByName("modifier_treant_one")
+    local rootmod = damageTable.attacker:FindModifierByName("modifier_treant_one_root")
+    if (damageTable.damage > 0 and rootmod == nil and modifier and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+        local modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.attacker
+        modifierTable.caster = damageTable.victim
+        modifierTable.modifier_name = "modifier_treant_one_root"
+        modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
+        modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
+        GameMode:ApplyDebuff(modifierTable)
+    elseif (damageTable.damage > 0 and modifier and rootmod ~= nil and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+        -- Find all nearby enemies
+        local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
+                damageTable.victim:GetAbsOrigin(),
+                nil,
+                modifier:GetAbility():GetSpecialValueFor("range"),
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local keys = {}
+        for k in pairs(enemies) do
+            table.insert(keys, k)
+        end
+        if (#enemies > 0) then
+            local rootTarget = enemies[keys[math.random(#keys)]]
             local modifierTable = {}
             modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = damageTable.attacker
+            modifierTable.target = rootTarget
             modifierTable.caster = damageTable.victim
             modifierTable.modifier_name = "modifier_treant_one_root"
             modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
-            modifierTable.modifier_params = {sadboi = damageTable.victim:GetEntityIndex() } --kv
+            modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
             GameMode:ApplyDebuff(modifierTable)
-        --if attacker rooted, try to root someone else small chance to root same target but fuck it
-        elseif rootmod  ~= nil and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance")) then
-            -- Find all nearby enemies
-            local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
-                    damageTable.victim:GetAbsOrigin(),
-                    nil,
-                    modifier:GetAbility():GetSpecialValueFor("radius"),
-                    DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    DOTA_UNIT_TARGET_HERO,
-                    DOTA_UNIT_TARGET_FLAG_NONE,
-                    FIND_ANY_ORDER,
-                    false)
-            local keys = {}
-            for k in pairs(enemies) do
-                table.insert(keys, k)
-            end
-            if (#enemies > 0) then
-                self.rootTarget = enemies[keys[math.random(#keys)]]
-            end
-            local modifierTable = {}
-            modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = self.rootTarget
-            modifierTable.caster = damageTable.victim
-            modifierTable.modifier_name = "modifier_treant_one_root"
-            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
-            modifierTable.modifier_params = {sadboi = damageTable.victim:GetEntityIndex() } --kv
-            GameMode:ApplyDebuff(modifierTable)
+        else return
         end
     end
 end
 
-LinkLuaModifier("modifier_modifier_treant_one", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
-
+LinkLuaModifier("modifier_treant_one", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_treant_one_root = class({
     IsDebuff = function(self)
@@ -820,31 +819,24 @@ modifier_treant_one_root = class({
     end,
     GetStatusEffectName = function(self)
         return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
-    end
+    end,
 })
 
 function modifier_treant_one_root:OnCreated(keys)
     if not IsServer() then
         return
     end
-    if (not keys or not keys.sadboi) then
+    if (not keys or not keys.caster) then
         self:Destroy()
     end
-    self.caster = EntIndexToHScript(keys.sadboi)
-    self.target = self:GetParent()
-    local modifier = self.caster:FindModifierByName("modifier_treant_one")
-    self.ability = modifier:GetAbility()
-    self.damage = self.ability:GetSpecialValueFor("dot")
-    local tick = self.ability:GetSpecialValueFor("tick")
+    self.caster = EntIndexToHScript(keys.caster)
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    self.dot = self:GetAbility():GetSpecialValueFor("dot")
+    self.tick = self:GetAbility():GetSpecialValueFor("tick")
+    self:StartIntervalThink(self.tick)
     --local vine = "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
-    --local vine_fx = ParticleManager:CreateParticle(vine,PATTACH_ABSORIGIN, self.parent)
-    --Timers:CreateTimer(self.duration, function()
-        --ParticleManager:DestroyParticle(vine_fx, false)
-        --ParticleManager:ReleaseParticleIndex(vine_fx)
-   --end)
-    self:StartIntervalThink(tick)
-    self.caster:EmitSound("Hero_Treant.Overgrowth.Cast")
-    self.target:EmitSound("Hero_Treant.Overgrowth.Target")
+    --self.pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, self.parent)
 end
 
 function modifier_treant_one_root:CheckState()
@@ -855,25 +847,67 @@ function modifier_treant_one_root:CheckState()
 end
 
 function modifier_treant_one_root:OnIntervalThink()
-    if IsServer() then
-        --damage
-        local damageTable= {}
-        damageTable.caster = self.caster
-        damageTable.target = self.parent
-        damageTable.ability = self.ability
-        damageTable.damage = self.damage
-        damageTable.naturedmg = true
-        GameMode:DamageUnit(damageTable)
-        --spawn lesser treant
-        local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
-        local lesser_treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
-        lesser_treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
-        lesser_treant:EmitSound("Hero_Furion.TreantSpawn")
+    if (not IsServer()) then
+        return
     end
+    local damageTable = {}
+    damageTable.ability = self.ability
+    damageTable.caster = self.caster
+    damageTable.target = self.parent
+    damageTable.damage = self.dot
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+    local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
+    local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
+    treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
+    treant:AddNewModifier(self.caster, self.ability, "modifier_treant_one_ignore_aggro_buff", { duration = -1, target = self.parent:GetEntityIndex()})
+    treant:EmitSound("Hero_Furion.TreantSpawn")
 end
+
+--function modifier_treant_one_root:OnDestroy()
+    --if (not IsServer()) then
+        --return
+    --end
+    --ParticleManager:DestroyParticle(self.pidx, false)
+    --ParticleManager:ReleaseParticleIndex(self.pidx)
+--end
 
 LinkLuaModifier("modifier_treant_one_root", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 
+
+modifier_treant_one_ignore_aggro_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_treant_one_ignore_aggro_buff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    if (not keys or keys.target) then
+        self:Destroy()
+    end
+    self.target = EntIndexToHScript(keys.target)
+end
+
+function modifier_treant_one_ignore_aggro_buff:GetIgnoreAggroTarget()
+    return self.target
+end
+
+LinkLuaModifier("modifier_treant_one_ignore_aggro_buff", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 ---------------------
 -- treant ingrain
 ---------------------
@@ -892,7 +926,7 @@ function treant_ingrain:OnUpgrade()
     end
     self.dmg_reduction = self:GetSpecialValueFor("dmg_reduction")
     self.regen = self:GetSpecialValueFor("regen")
-    self.as_reduce = self:GetSpecialValueFor("as_reduce")*-0.01
+    self.as_reduce = self:GetSpecialValueFor("as_reduce")
 end
 
 modifier_treant_ingrain = class({
@@ -918,7 +952,9 @@ function modifier_treant_ingrain:OnCreated()
     self.ability = self:GetAbility()
     self.parent_loc_old = self:GetParent():GetAbsOrigin()
     local Max_Health = self.parent:GetMaxHealth()
-    self.regen_final = Max_Health * self.ability:GetSpecialValueFor("regen") * 0.01
+    self.regen_final = Max_Health * self.ability:GetSpecialValueFor("regen") * 0.01  + 1 --idk why need +1 when +1 print get +6 but on ui+5 = correct for 0.5%*1000
+    self.dmg_reduction_final = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01
+    self.as_reduce_final = self.ability:GetSpecialValueFor("as_reduce") * -0.01
     self.active = true
     self:StartIntervalThink(0.1)
 
@@ -936,8 +972,8 @@ function modifier_treant_ingrain:OnIntervalThink()
         --tried to set particle that get destroyed every 0.1s but it stacks up and looks ugly
         local armor = "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
         local healFX = ParticleManager:CreateParticle(armor, PATTACH_ABSORIGIN_FOLLOW, self.parent)
-        ParticleManager:SetParticleControlEnt(healFX, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
-        ParticleManager:SetParticleControlEnt(healFX, 1, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(healFX, 1, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
+        self:AddParticle(healFX, false, false, -1, false, false)
         Timers:CreateTimer(0.1, function()
             ParticleManager:DestroyParticle(healFX, false)
             ParticleManager:ReleaseParticleIndex(healFX)
@@ -951,7 +987,7 @@ end
 function modifier_treant_ingrain:GetDamageReductionBonus()
     if IsServer() then
     if self.active == true then
-    return self.ability.dmg_reduction
+    return self.dmg_reduction_final
     else return 0
     end end
 end
@@ -967,7 +1003,7 @@ end
 function modifier_treant_ingrain:GetAttackSpeedPercentBonus()
     if IsServer() then
     if self.active == true then
-        return self.ability.as_reduce
+        return self.as_final
     else return 0
     end end
 end
@@ -1031,11 +1067,6 @@ function modifier_treant_regrowth_channel:OnIntervalThink()
     healTable.ability = self.ability
     healTable.heal = self.caster:GetMaxHealth() * self.health_heal_pct /self.max_stacks
     GameMode:HealUnit(healTable)
-    local healFX = ParticleManager:CreateParticle("particles/econ/items/leshrac/leshrac_tormented_staff_retro/leshrac_split_retro_groundflash_lines_tormented.vpcf", PATTACH_POINT_FOLLOW, self.parent)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(healFX, false)
-        ParticleManager:ReleaseParticleIndex(healFX)
-    end)
 end
 
 function modifier_treant_regrowth_channel:OnDestroy()
@@ -1186,7 +1217,7 @@ function treant_beam:OnProjectileHit_ExtraData(target)
         damageTable.caster = caster
         damageTable.target = target
         damageTable.ability = self
-        damageTable.damage = damage*0.02 --nerf damage for testing
+        damageTable.damage = damage
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
     end
@@ -1256,17 +1287,24 @@ modifier_treant_root_debuff = class({
     GetEffectName = function(self)
         return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
     end,
-    GetEffectAttachType = function(self)
-        return PATTACH_ABSORIGIN_FOLLOW
-    end
 })
 
-function modifier_treant_root:OnCreated()
+function modifier_treant_root_debuff:OnCreated()
     if not IsServer() then
         return
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
+    --local vine = "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+    --local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    --Timers:CreateTimer(4.0, function()
+        --ParticleManager:DestroyParticle(pidx, false)
+        --ParticleManager:ReleaseParticleIndex(pidx)
+    --end)
+end
+
+function modifier_treant_root_debuff:OnRefresh()
+    self:OnCreated()
 end
 
 function modifier_treant_root_debuff:CheckState()
