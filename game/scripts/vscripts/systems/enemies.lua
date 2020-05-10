@@ -198,6 +198,37 @@ function Enemies:ResetDamageForHero(unit, hero)
     unit.bossHealing.damage[hero:GetEntityIndex()] = nil
 end
 
+function Enemies:OverwriteAbilityFunctions(ability)
+    if (not ability or ability:IsNull()) then
+        return
+    end
+    local IsCastbarRequired = false
+    local IsInterruptible = true
+    if (ability.IsRequireCastbar) then
+        IsCastbarRequired = ability:IsRequireCastbar()
+    end
+    if (IsCastbarRequired == false) then
+        return
+    end
+    if (ability.IsInterruptible) then
+        IsInterruptible = ability:IsInterruptible()
+    end
+    if (IsInterruptible == false) then
+        return
+    end
+    if (not ability.OnAbilityPhaseInterrupted2) then
+        ability.OnAbilityPhaseInterrupted2 = ability.OnAbilityPhaseInterrupted
+        ability.OnAbilityPhaseInterrupted = function(context)
+            local abilityLevel = context:GetLevel()
+            context:EndCooldown()
+            context:StartCooldown(context:GetCooldown(abilityLevel - 1))
+            if(context.OnAbilityPhaseInterrupted2) then
+                context.OnAbilityPhaseInterrupted2(context)
+            end
+        end
+    end
+end
+
 modifier_creep_scaling = class({
     IsDebuff = function(self)
         return false
@@ -251,10 +282,13 @@ function modifier_creep_scaling:OnCreated()
         if (not self.creep:HasAbility(ability)) then
             local addedAbility = self.creep:AddAbility(ability)
             addedAbility:SetLevel(abilitiesLevel)
+            print("AddedAbility=",addedAbility:GetAbilityName())
             abilitiesAdded = abilitiesAdded + 1
             if (addedAbility.IsRequireCastbar and not castbarRequired) then
                 castbarRequired = addedAbility:IsRequireCastbar()
             end
+            print("Passing that to OverwriteAbilityFunctions")
+            Enemies:OverwriteAbilityFunctions(addedAbility)
         end
     end
     local missAbilities = Enemies.MAX_ABILITIES - abilitiesAdded
@@ -274,6 +308,7 @@ function modifier_creep_scaling:OnCreated()
             if (addedAbility.IsRequireCastbar and not castbarRequired) then
                 castbarRequired = addedAbility:IsRequireCastbar()
             end
+            Enemies:OverwriteAbilityFunctions(addedAbility)
         end
     end
     if (castbarRequired == true) then
