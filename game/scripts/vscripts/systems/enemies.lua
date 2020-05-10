@@ -282,12 +282,10 @@ function modifier_creep_scaling:OnCreated()
         if (not self.creep:HasAbility(ability)) then
             local addedAbility = self.creep:AddAbility(ability)
             addedAbility:SetLevel(abilitiesLevel)
-            print("AddedAbility=",addedAbility:GetAbilityName())
             abilitiesAdded = abilitiesAdded + 1
             if (addedAbility.IsRequireCastbar and not castbarRequired) then
                 castbarRequired = addedAbility:IsRequireCastbar()
             end
-            print("Passing that to OverwriteAbilityFunctions")
             Enemies:OverwriteAbilityFunctions(addedAbility)
         end
     end
