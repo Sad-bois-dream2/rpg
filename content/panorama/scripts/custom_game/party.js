@@ -191,7 +191,6 @@ function Init() {
     var root = $.GetContextPanel();
 	var localPlayerId = Players.GetLocalPlayer();
 	var IsFirstTime = true;
-	Heroes = [];
     for (var i = 0; i < MAX_PLAYERS; i++) {
         var isValidPlayer = Players.IsValidPlayerID(i) && !Players.IsSpectator(i);
         if (isValidPlayer && localPlayerId != i) {
@@ -202,32 +201,29 @@ function Init() {
 			heroPanel.Data().OnMPBarClick = OnMPBarClick;
 			heroPanel.Data().OnExpBarClick = OnExpBarClick;
 			heroPanel.Data().OnPortraitClick = OnPortraitClick;
-			if(IsFirstTime) {
-				var changeSizeBtn = heroPanel.FindChildTraverse("ChangePanelSizeButton");
-				if(changeSizeBtn != null) {
-					changeSizeBtn.style.visibility = "visible";
-				}
-				IsFirstTime = false;
-			}
             var heroEntityIndex = Players.GetPlayerHeroEntityIndex(i);
-            var hero = heroPanel.GetChild(0);
-			var heroOwnerName = hero.GetChild(0);
-            var hpBarPanel = hero.GetChild(1);
-            var hpBar = hpBarPanel.GetChild(0);
-            var hpBarCurrentValue = hpBarPanel.GetChild(1);
-            var hpBarRegValue = hpBarPanel.GetChild(2);
-            var mpBarPanel = hero.GetChild(2);
-            var mpBar = mpBarPanel.GetChild(0);
-            var mpBarCurrentValue = mpBarPanel.GetChild(1);
-            var mpBarRegValue = mpBarPanel.GetChild(2);
-            var expBarPanel = hero.GetChild(3);
-            var expBar = expBarPanel.GetChild(0);
-            var expBarCurrentValue = expBarPanel.GetChild(1);
-            var heroPortrait = hero.GetChild(4);
-            var levelBarPanel = hero.GetChild(5);
-            var levelBarValue = levelBarPanel.GetChild(0);
+            var hero = heroPanel.FindChildTraverse("HeroPortraitPanel");
+			var heroOwnerName = heroPanel.FindChildTraverse("HeroOwnerName");
+            var hpBar = heroPanel.FindChildTraverse("HeroHpBar");
+            var hpBarCurrentValue = heroPanel.FindChildTraverse("HeroHpBarValue");
+            var hpBarRegValue = heroPanel.FindChildTraverse("HeroHpBarRegValue");
+            var mpBar = heroPanel.FindChildTraverse("HeroMpBar");
+            var mpBarCurrentValue = heroPanel.FindChildTraverse("HeroMpBarValue");
+            var mpBarRegValue = heroPanel.FindChildTraverse("HeroMpBarRegValue");
+            var expBar = heroPanel.FindChildTraverse("HeroExpBar");
+            var expBarCurrentValue = heroPanel.FindChildTraverse("HeroExpBarValue");
+            var heroPortrait = heroPanel.FindChildTraverse("HeroPortrait");
+            var levelBarPanel = heroPanel.FindChildTraverse("LevelBar");
+            var levelBarValue = heroPanel.FindChildTraverse("LevelBarValue");
 			var playerPortraitFixed = false;
-			var deathTimer = hero.GetChild(7).GetChild(0);
+			var deathTimer = heroPanel.FindChildTraverse("HeroDeathTimer");
+			if(IsFirstTime) {
+			    var changeSizeBtn = heroPanel.FindChildTraverse("ChangePanelSizeButton");
+			    if(changeSizeBtn != null) {
+			        changeSizeBtn.style.visibility = "visible";
+			    }
+			    IsFirstTime = false;
+			}
             Heroes.push([hpBar, hpBarCurrentValue, hpBarRegValue, mpBar, mpBarCurrentValue, mpBarRegValue, expBar, expBarCurrentValue, levelBarValue, heroEntityIndex, heroPortrait, hero, i, playerPortraitFixed, deathTimer, heroOwnerName]);
         }
     }
