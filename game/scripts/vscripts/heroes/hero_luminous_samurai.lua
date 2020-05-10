@@ -820,7 +820,6 @@ function modifier_luminous_samurai_light_iai_giri:OnCreated()
     end
     self.caster = self:GetParent()
     self.ability = self.caster:FindAbilityByName("luminous_samurai_light_iai_giri")
-    self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
 end
 
 function modifier_luminous_samurai_light_iai_giri:OnStackCountChanged()
@@ -829,13 +828,18 @@ function modifier_luminous_samurai_light_iai_giri:OnStackCountChanged()
     end
     local stacks = self:GetStackCount()
     if (stacks > 0) then
-        for i = 1, stacks do
-            ParticleManager:SetParticleControl(self.pidx, 5 - i, Vector(255, 0, 0))
+        if(stacks ~= self.lastStacks) then
+            if (self.pidx) then
+                ParticleManager:DestroyParticle(self.pidx, false)
+                ParticleManager:ReleaseParticleIndex(self.pidx)
+            end
+            self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_" .. tostring(stacks) .. ".vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+            self.lastStacks = stacks
         end
     else
-        for i = 2, (2 + self.ability.maxStacks) do
-            ParticleManager:SetParticleControl(self.pidx, i, Vector(0, 0, 0))
-        end
+        ParticleManager:DestroyParticle(self.pidx, false)
+        ParticleManager:ReleaseParticleIndex(self.pidx)
+        self.pidx = nil
     end
 end
 
@@ -846,6 +850,17 @@ function modifier_luminous_samurai_light_iai_giri:OnDestroy()
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
 end
+
+if (IsServer()) then
+    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
+end
+
+function modifier_luminous_samurai_light_iai_giri:JuggTest(damageTable)
+    damageTable.crit = 5.0
+    return damageTable
+end
+
 
 function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
@@ -876,10 +891,9 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local modifier = caster:FindModifierByName(self:GetIntrinsicModifierName())
-    local stacks = modifier:GetStackCount()
+    local stacks = self.modifier:GetStackCount()
     if (stacks >= self.procStacks) then
-        modifier:SetStackCount(stacks - self.procStacks)
+        self.modifier:SetStackCount(stacks - self.procStacks)
         local casterPosition = caster:GetAbsOrigin()
         EmitSoundOn("Hero_Juggernaut.OmniSlash", caster)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
@@ -913,6 +927,9 @@ end
 function luminous_samurai_light_iai_giri:OnUpgrade()
     if (not IsServer()) then
         return
+    end
+    if (not self.modifier) then
+        self.modifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
     end
     self.procStacks = self:GetSpecialValueFor("proc_stacks")
     self.maxStacks = self:GetSpecialValueFor("max_stacks")

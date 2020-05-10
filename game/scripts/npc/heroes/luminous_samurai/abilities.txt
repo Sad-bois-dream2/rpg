@@ -351,7 +351,13 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_1.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_2.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_3.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_4.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_5.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_6.vpcf"
+            "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf"
 		}
 	}
 }
