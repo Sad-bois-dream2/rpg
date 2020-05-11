@@ -1,0 +1,133 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 32
+	m_flConstantRadius = -80.0
+	m_ConstantColor = [ 185, 177, 110, 64 ]
+	m_bShouldSort = false
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderRopes"
+			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
+			m_bAdditive = true
+			m_nOrientationType = 3
+			m_flOverbrightFactor = 6.0
+			m_flAddSelfAmount = 2.0
+			m_bSaturateColorPreAlphaBlend = false
+			m_hTexture = resource:"materials/particle/electrical_arc2/electrical_arc_white_2_05.vtex"
+			m_nScaleCP1 = 0
+			m_nScaleCP2 = 1
+			m_flRadiusScale = 0.5
+			m_flTextureVWorldSize = 132.978729
+			m_flTextureVOffset = 0.259724
+			m_flTextureVScrollRate = 132.978729
+			m_nMaxTesselation = 3
+			m_nMinTesselation = 3
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_Decay"
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flEndScale = 0.0
+			m_flBias = 0.59
+		},
+		{
+			_class = "C_OP_VectorNoise"
+			m_bOffset = true
+			m_bAdditive = true
+			m_vecOutputMax = [ 64.0, 64.0, 64.0 ]
+			m_vecOutputMin = [ -64.0, -64.0, -64.0 ]
+			m_nFieldOutput = "0"
+			m_fl4NoiseScale = 0.3
+			m_flOpEndFadeInTime = 0.2
+			m_flOpStartFadeOutTime = 0.2
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_OP_OscillateVector"
+			m_FrequencyMax = [ 9.0, 9.0, 9.0 ]
+			m_FrequencyMin = [ 3.0, 3.0, 3.0 ]
+			m_RateMax = [ 44.0, 44.0, 44.0 ]
+			m_RateMin = [ -44.0, -44.0, -44.0 ]
+			m_bOffset = true
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_OP_LockToBone"
+			m_HitboxSetName = "weapon"
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 1.0
+			m_fLifetimeMax = 1.0
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMax = 95.0
+			m_flRadiusMin = -75.0
+		},
+		{
+			_class = "C_INIT_RemapParticleCountToScalar"
+			m_bActiveRange = true
+			m_nFieldOutput = "7"
+			m_nInputMax = 1
+			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_RemapParticleCountToScalar"
+			m_bActiveRange = true
+			m_flOutputMax = 0.0
+			m_flOutputMin = 1.0
+			m_nFieldOutput = "7"
+			m_nInputMax = 31
+			m_nInputMin = 30
+			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_CreateOnModel"
+			m_flHitBoxScale = 0.99
+			m_HitboxSetName = "weapon"
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_ContinuousEmitter"
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 3
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/juggernaut/juggernaut.vmdl"
+				m_nModSpecificData = 6
+				m_sequenceName = "attack01_fast"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+}

@@ -156,7 +156,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primary"				"50 100 150 200"
+				"primary"				"25 50 75 100"
 			}
 			"02"
 			{
@@ -293,12 +293,12 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aadamage"				"400 600 800 1000"
+				"aadamage"				"25 50 75 100"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aaspeed"				"100 150 200 250"
+				"aaspeed"				"25 50 75 100"
 			}
 			"06"
 			{

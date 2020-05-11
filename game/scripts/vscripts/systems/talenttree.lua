@@ -118,7 +118,7 @@ function TalentTree:Init()
             "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_juggernaut"] = {
-            "terror_lord_ruthless_predator",
+            "luminous_samurai_blade_dance",
             "terror_lord_ruthless_predator",
             "terror_lord_ruthless_predator",
             "terror_lord_ruthless_predator",
