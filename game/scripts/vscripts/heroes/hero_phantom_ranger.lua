@@ -250,6 +250,15 @@ function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
     }
     ProjectileManager:CreateLinearProjectile(info)
     print("Launch projectile")
+    -- Cloak of Shadows (talent 45) logic
+    local talent45Level = TalentTree:GetHeroTalentLevel(self.caster, 45)
+    if (talent45Level > 0) then
+
+        local talent45StealthDurationPerLevel = 1
+        local talent45StealthDuration = 2 + talent45Level * talent45StealthDurationPerLevel
+        GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = talent45StealthDuration }) 
+
+    end
 end
 
 function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
@@ -361,7 +370,7 @@ function modifier_phantom_ranger_phantom_harmonic_stacks:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
-    self.stacks = 0
+    self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
     self.talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
     self.talent48PercentAdPerStack, self.talent48PercentArmorPerStack, self.talent48ResistsPerStack = 3, 3, 3
     -- self.talent48PercentSpellDmgPerStack = 3
@@ -371,11 +380,10 @@ end
 function modifier_phantom_ranger_phantom_harmonic_stacks:OnRefresh()
     if not IsServer() then return end
     self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
-        print (self.caster.stats.unitBonusPercentAttackSpeed)
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetAttackDamagePercentBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentAdPerStack / 100 end
+    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentAdPerStack / 100 else return 0 end
 end
 
 -- function modifier_phantom_ranger_phantom_harmonic_stacks:GetSpellDamageBonus()
