@@ -134,7 +134,7 @@ function lycan_wound:ApplyDamageAndDebuff(target, caster)
     damageTable.caster = caster
     damageTable.target = target
     damageTable.ability = self
-    damageTable.damage = damage
+    damageTable.damage = damage*0.03 --nerf
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
     --heal negate
@@ -202,7 +202,7 @@ function modifier_lycan_wound_debuff:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
-    damageTable.damage = self.dot * self.target:GetMaxHealth()
+    damageTable.damage = self.dot * self.target:GetMaxHealth() *0.03 --nerf
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -393,7 +393,7 @@ lycan_howl_aura = class({
     end
 })
 
-modifier_lycan_howl_aura = modifier_lycan_howl_aura or class({
+modifier_lycan_howl_aura = class({
     IsAuraActiveOnDeath = function(self)
         return false
     end,
@@ -673,7 +673,7 @@ function lycan_agility:OnSpellStart()
 
     local target = self:GetCursorTarget()
     local caster = self:GetCaster()
-    --apply ignore aggro, is it working kekw
+    --apply ignore aggro
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = caster
@@ -691,8 +691,11 @@ function lycan_agility:OnSpellStart()
     Timers:CreateTimer(1.5, function()
         --other targets 1.5 s delay from first and 1.5s delay on every target after
         if target ~= nil then
+            --remove ignore aggro
+            caster:RemoveModifierByName("modifier_lycan_agility_buff")
             self:Blink(target, caster)
             target = self:FindTargetForBlink(caster)
+            --add new ignore aggro
             if target ~= nil then
             modifierTable.ability = self
             modifierTable.target = caster
@@ -947,7 +950,7 @@ function modifier_lycan_bleeding_dot:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
-    damageTable.damage = damage
+    damageTable.damage = damage * 0.03 --nerf
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end

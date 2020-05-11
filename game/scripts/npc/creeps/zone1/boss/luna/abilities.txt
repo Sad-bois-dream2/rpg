@@ -1,4 +1,396 @@
 "DOTAAbilities"
 {
+    //=================================================================================================================
+    // Luna : Void Glaive
+    //=================================================================================================================
+    "luna_void"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_void"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
 
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ad_bonus"				    "50 100 200"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"lifesteal"			        "12 25 50"
+   			}
+
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/units/heroes/hero_antimage/antimage_manavoid.vpcf"
+    	}
+    }
+
+    //=================================================================================================================
+    // Luna : Eclipsed Sky
+    //=================================================================================================================
+    "luna_sky"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_sky"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"999"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"fix_vision"				"500 350 200"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Luna : Selemene's Curse
+    //=================================================================================================================
+    "luna_curse"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_curse"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_amp"				    "100 300 600"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_reduction"				"30 60 90"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				         "5 7 9"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Luna : Lunar Wave
+    //=================================================================================================================
+    "luna_wave"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_wave"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2
+        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"		    "1500"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "800 2400 7200"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "260"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Luna : Huntress' Cruelty
+    //=================================================================================================================
+    "luna_cruelty"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_cruelty"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"take"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"deal"				    "100 300 600"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				"30 60 90"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Luna : Moon Orbs
+    //=================================================================================================================
+    "luna_orbs"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_orbs"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "1500"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"bounce"				"600 750 900"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "500 1500 4500"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"				         "2"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Luna : Wax and Wane
+    //=================================================================================================================
+    "luna_wax_wane"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_wax_wane"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"as_bonus"				    "200 500 800"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ms_bonus"			        "100 150 200"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_reduction"			    "50 100 150"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"as_reduce"				    "75 55 35"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ms_reduce"			        "75 50 25"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_amp"			        "100 67 33"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "5"
+   			}
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/units/heroes/hero_antimage/antimage_manavoid.vpcf"
+    	}
+    }
+
+    //=================================================================================================================
+    // Luna : Moon Bound
+    //=================================================================================================================
+    "luna_bound"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/luna"
+        "AbilityTextureName"			"luna_bound"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ad_bonus"				    "50 100 200"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"lifesteal"			        "12 25 50"
+   			}
+
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
 }

@@ -30,7 +30,7 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_toxin", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_comes", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_cocoons", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_kiss", Enemies.ABILITY_TYPE_INNATE)
+    --Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_kiss", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_spit", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_hunger", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_brood", "brood_web", Enemies.ABILITY_TYPE_INNATE)
@@ -61,7 +61,7 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_curse", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_wave", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_cruelty", Enemies.ABILITY_TYPE_INNATE)
-    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_orb", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_orbs", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_wax_wane", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_bound", Enemies.ABILITY_TYPE_INNATE)
     --venge boss
@@ -75,7 +75,10 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_guardian", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_storm", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fel", Enemies.ABILITY_TYPE_INNATE)
-
+    --spirit of mirana
+    Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_shard", Enemies.ABILITY_TYPE_INNATE)
+    --spirit of luna
+    Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
 -- Internal stuff

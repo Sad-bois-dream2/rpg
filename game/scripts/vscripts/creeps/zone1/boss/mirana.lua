@@ -1,4 +1,26 @@
 --------------
+--mirana shard
+---------------
+target:EmitSound("Hero_Antimage.ManaBreak")
+local fx = "particles/generic_gameplay/generic_manaburn.vpcf"
+--------------
+--mirana sky
+---------------
+local darkness = "Hero_Nightstalker.Darkness.Team"
+local desolate =  "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+--------------
+--mirana blessing
+---------------
+
+--------------
+--mirana holy
+---------------
+
+--------------
+--mirana under
+---------------
+local fx = "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+--------------
 --mirana aligned
 ---------------
 
@@ -21,3 +43,9 @@ function StarsAlignFX(target)
     end)
 end
 
+--------------
+--mirana guile
+---------------
+--------------
+--mirana bound
+---------------

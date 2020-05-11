@@ -1,3 +1,13 @@
+-------------
+--luna void
+------------
+self:GetCaster():EmitSound("Hero_Antimage.ManaVoidCast")
+local void_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_antimage/antimage_manavoid.vpcf", PATTACH_POINT_FOLLOW, target)
+ParticleManager:SetParticleControlEnt(void_pfx, 0, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetOrigin(), true)
+ParticleManager:SetParticleControl(void_pfx, 1, Vector(radius,0,0))
+ParticleManager:ReleaseParticleIndex(void_pfx)
+target:EmitSound("Hero_Antimage.ManaVoid")
+
 ---------
 --luna wax
 --------

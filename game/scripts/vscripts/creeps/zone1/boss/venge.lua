@@ -65,3 +65,8 @@ function FXStarfall(caster, target_point, offset, time, aoe, shadowfx)
         end
     end)
 end
+--------
+--venge umbra
+----------
+local particle = "particles/units/heroes/hero_nyx_assassin/nyx_assassin_mana_burn.vpcf"
+local sound_cast ="Hero_NyxAssassin.ManaBurn.Target"

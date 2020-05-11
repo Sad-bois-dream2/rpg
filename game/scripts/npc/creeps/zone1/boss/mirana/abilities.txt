@@ -1,4 +1,396 @@
 "DOTAAbilities"
 {
-blessing particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf
+    //=================================================================================================================
+    // Mirana : Moonshard arrow
+    //=================================================================================================================
+    "mirana_shard"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_shard"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"mana_burn"				    "3 7 15"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"void_per_burn"			    "60"
+   			}
+
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Eclipsed Sky
+    //=================================================================================================================
+    "mirana_sky"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_sky"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"999"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"fix_vision"				"500 350 200"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Selemene's Blessing
+    //=================================================================================================================
+    "mirana_blessing"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_blessing"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"as_bonus"				    "25 50 100"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_reduction"			    "10 50 90"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"mute_distance"			    "2000"
+   			}
+   		}
+	    "precache"
+        {
+
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Holy Arrow
+    //=================================================================================================================
+    "mirana_holy"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_holy"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2
+        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "3000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"				    "2 4 6"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "1000 5000 10000"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "125"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"800 1200 1600"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Under the Moonlight
+    //=================================================================================================================
+    "mirana_holy"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_holy"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2
+        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "3000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"				    "2 4 6"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "1000 5000 10000"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "125"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"800 1200 1600"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
+    	    "particle" "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Star Aligned
+    //=================================================================================================================
+    "mirana_aligned"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_aligned"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET| DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+   		// Casting
+        //-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"0.1
+        "AbilityCastRange"				"1500"
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"base_damage"		    "200 600 1800"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"expo"			        "2 3 4"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"channel_time"			"5.0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				    "0.1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"total damage"		    "6400 145800 614400"
+			}
+
+   		}
+   		"precache"
+            {
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_luna.vsndevts"
+                "particle"  "particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf"
+
+            }
+    }
+    //=================================================================================================================
+    // Mirana : Princess' Guile
+    //=================================================================================================================
+    "mirana_guile"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_guile"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AnimationIgnoresModelScale"    "1"
+        "AbilityCastPoint"				"2
+        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"root"			            "3 4 5"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
+    	    "particle" "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Mirana : Moon Bound
+    //=================================================================================================================
+    "mirana_bound"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/mirana"
+        "AbilityTextureName"			"mirana_bound"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ad_bonus"				    "50 100 200"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"lifesteal"			        "12 25 50"
+   			}
+
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
 }

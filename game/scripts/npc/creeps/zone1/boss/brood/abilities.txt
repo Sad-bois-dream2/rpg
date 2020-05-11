@@ -49,8 +49,11 @@
 		}
 				"precache"
         		{
+        		    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+        		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+                    "particle"  "particles/econ/items/terrorblade/terrorblade_horns_arcana/terrorblade_arcana_enemy_death.vpcf"
                     "particle"  "particles/status_fx/status_effect_poison_venomancer.vpcf"
-                    "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
+                    "particle"  "particles/generic_gameplay/generic_stunned.vpcf"
                     "particle"  "particles/units/npc_boss_brood/brood_toxin/brood_toxin.vpcf"
         		}
 	}
@@ -108,32 +111,17 @@
                 "var_type"                  "FIELD_FLOAT"
                 "duration"                  "5 7 10"
              }
-            "06"
-			{
-				"var_type"					"FIELD_FLOAT"
-				"cd_reduce"				    "0.33 0.66 1"
-			}
-			"07"
-			{
-				"var_type"					"FIELD_FLOAT"
-				"as_bonus"		            "4 8 12"
-			}
-			"08"
-			{
-				"var_type"					"FIELD_FLOAT"
-				"dmg_reduction"		         "0.5 1 1.5"
-			}
-			"09"
+			"06"
 			{
 				"var_type"					"FIELD_FLOAT"
 				"self_damage"				"0.3 0.15 0"
 			}
-			"010"
+			"07"
 			{
 				"var_type"					"FIELD_FLOAT"
 				"max_stacks"				"66"
 			}
-			"011"
+			"08"
 			{
 				"var_type"					"FIELD_FLOAT"
 				"stack_duration"				    "30"
@@ -144,7 +132,8 @@
 		{
 			"soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
 			"particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
-			"particle"  ""particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf""
+			"particle"  "particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf"
+			"particle"  "particles/units/heroes/hero_weaver/weaver_shukuchi.vpcf"
 		}
 	}
     //=================================================================================================================
@@ -528,7 +517,7 @@
 			"01"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"cd_reduce"				    "0.33 0.66 1"
+				"cd_reduce"				    "0.5 1 1.5"
 			}
 			"02"
 			{
