@@ -176,7 +176,7 @@ end
 --------------------------------------------------------------------------------
 -- Talent 36 - Power Addiction 
 
-modifier_npc_dota_hero_drow_ranger_talent_36 = modifier_npc_dota_hero_drow_ranger_talent_36 or class({
+modifier_npc_dota_hero_drow_ranger_talent_36 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -242,7 +242,7 @@ end
 -- Talent 42 - Phantom Wail
 
 
-modifier_phantom_ranger_phantom_wail_shield = modifier_phantom_ranger_phantom_wail_shield or class({
+modifier_phantom_ranger_phantom_wail_shield = class({
     IsDebuff = function(self)
         return false
     end,
@@ -279,7 +279,7 @@ end
 
 --------------------------------------------------------------------------------
 
-modifier_npc_dota_hero_drow_ranger_talent_42 = modifier_npc_dota_hero_drow_ranger_talent_42 or class({
+modifier_npc_dota_hero_drow_ranger_talent_42 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -376,7 +376,7 @@ end
 
 --------------------------------------------------------------------------------
 
-modifier_phantom_ranger_phantom_wail_cd = modifier_phantom_ranger_phantom_wail_cd or class({
+modifier_phantom_ranger_phantom_wail_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -426,7 +426,7 @@ end
 --------------------------------------------------------------------------------
 -- Talent 43 - Hunter's Guile 
 
-modifier_npc_dota_hero_drow_ranger_talent_43 = modifier_npc_dota_hero_drow_ranger_talent_43 or class({
+modifier_npc_dota_hero_drow_ranger_talent_43 = class({
     IsDebuff = function(self)
         return false
     end,
@@ -492,13 +492,52 @@ function modifier_npc_dota_hero_drow_ranger_talent_43:OnTakeDamage(damageTable)
 end
 
 --------------------------------------------------------------------------------
+-- Talent 44 - Herald of the Void
+
+modifier_npc_dota_hero_drow_ranger_talent_44 = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+    	return MODIFIER_ATTRIBUTE_PERMANENT 
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_44"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_44:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+
+end
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
 -- Talent 48 - Deadly Vibration 
 -- logic is in hero_phantom_ranger.lua -> modifier_phantom_ranger_phantom_harmonic(_stacks)
 
 --------------------------------------------------------------------------------
 -- Talent 49 - Master of the Cold Void 
 
-modifier_npc_dota_hero_drow_ranger_talent_49 = modifier_npc_dota_hero_drow_ranger_talent_49 or class({
+modifier_npc_dota_hero_drow_ranger_talent_49 = class({
     IsDebuff = function(self)
         return false
     end,

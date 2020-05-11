@@ -371,6 +371,7 @@ end
 function modifier_phantom_ranger_phantom_harmonic_stacks:OnRefresh()
     if not IsServer() then return end
     self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
+        print (self.caster.stats.unitBonusPercentAttackSpeed)
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetAttackDamagePercentBonus()
