@@ -240,7 +240,7 @@ function modifier_blazing_berserker_battle_hunger:OnCreated()
     end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
-    self.primary = self.ability:GetSpecialValueFor("primary")
+    self.primary = self.ability:GetSpecialValueFor("primary") / 100
     self.stun_chance = self.ability:GetSpecialValueFor("stun_chance")
     self.stun_bonusdmg = self.ability:GetSpecialValueFor("stun_bonusdmg") / 100
     self.stun_duration = self.ability:GetSpecialValueFor("stun_duration")
@@ -261,7 +261,7 @@ function modifier_blazing_berserker_battle_hunger:OnIntervalThink()
     self.caster:SetMana(math.max(0, mana))
 end
 
-function modifier_blazing_berserker_battle_hunger:GetPrimaryAttributeBonus()
+function modifier_blazing_berserker_battle_hunger:GetPrimaryAttributePercentBonus()
     return self.primary or 0
 end
 
@@ -434,8 +434,8 @@ function modifier_blazing_berserker_furious_stance:OnCreated()
     self.damage = self.ability:GetSpecialValueFor("damage") / 100
     self.armor_reduction = self.ability:GetSpecialValueFor("armor_reduction") * -0.01
     self.elemental_reduction = self.ability:GetSpecialValueFor("elemental_reduction") * -0.01
-    self.aadamage = self.ability:GetSpecialValueFor("aadamage")
-    self.aaspeed = self.ability:GetSpecialValueFor("aaspeed")
+    self.aadamage = self.ability:GetSpecialValueFor("aadamage") / 100
+    self.aaspeed = self.ability:GetSpecialValueFor("aaspeed") / 100
     self.firedmg = self.ability:GetSpecialValueFor("firedmg") / 100
     local tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(tick)
@@ -452,11 +452,11 @@ function modifier_blazing_berserker_furious_stance:OnIntervalThink()
     self.caster:SetHealth(casterHealth)
 end
 
-function modifier_blazing_berserker_furious_stance:GetAttackDamageBonus()
+function modifier_blazing_berserker_furious_stance:GetAttackDamagePercentBonus()
     return self.aadamage or 0
 end
 
-function modifier_blazing_berserker_furious_stance:GetAttackSpeedBonus()
+function modifier_blazing_berserker_furious_stance:GetAttackSpeedPercentBonus()
     return self.aaspeed or 0
 end
 

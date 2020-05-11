@@ -40,8 +40,8 @@
 		}
 	</script>
 	<Panel class="RootMemberPanel">
-			<Panel class="HeroPortraitPanel">
-				<Label class="HeroOwnerName" text="Player Name" />
+			<Panel id="HeroPortraitPanel" class="HeroPortraitPanel">
+				<Label id="HeroOwnerName" class="HeroOwnerName" text="Player Name" />
 				<Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
 					<Panel id="HeroHpBar" class="HeroHpBar" style="width: 86%;">
 						<DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
@@ -53,8 +53,8 @@
 					<Panel id="HeroMpBar" class="HeroMpBar" style="width: 91%;">
 						<DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
 					</Panel>
-					<Label id="HeroHpBarValue" class="HeroHpMpBarValue" text="13454 / 14678" />
-					<Label id="HeroHpBarRegValue" class="HeroHpMpBarRegValue" text="+2049" />
+					<Label id="HeroMpBarValue" class="HeroHpMpBarValue" text="13454 / 14678" />
+					<Label id="HeroMpBarRegValue" class="HeroHpMpBarRegValue" text="+2049" />
 				</Panel>
 				<Panel class="HeroExpBarPanel" onactivate="OnExpBarClick()">
 					<Panel id="HeroExpBar" class="HeroExpBar" style="width: 78.4%;">
@@ -69,8 +69,8 @@
 				<Panel class="HeroDeathTimer">
 					<Label id="HeroDeathTimer" text="20" />
 				</Panel>
-				<Panel id="ChangePanelSizeButton" class="ButtonBackground" style="margin-left: 10px; visibility: collapse;" onactivate="ChangePanelSize()">
-					<Image class="ButtonImage ResizeButton" src="s2r://panorama/images/control_icons/gear_png.vtex" scaling="stretch-to-fit-preserve-aspect" />
+				<Panel id="ChangePanelSizeButton" class="ResizeButton ButtonBackground" onactivate="ChangePanelSize()">
+					<Image class="ResizeButtonImage" src="file://{resources}/images/custom_game/hud/resize_button.png" scaling="stretch-to-fit-preserve-aspect" />
 				</Panel>
 			</Panel>
 	</Panel>

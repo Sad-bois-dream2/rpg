@@ -851,17 +851,6 @@ function modifier_luminous_samurai_light_iai_giri:OnDestroy()
     ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
-if (IsServer()) then
-    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'JuggTest'))
-end
-
-function modifier_luminous_samurai_light_iai_giri:JuggTest(damageTable)
-    damageTable.crit = 5.0
-    return damageTable
-end
-
-
 function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
     if (modifier and modifier.ability:GetLevel() > 0 and not damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd) then

@@ -236,8 +236,6 @@
      		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
      		// Casting
      		//-------------------------------------------------------------------------------------------------------------
-     		"AbilityCastRange"		"450"
-     		"AbilityCastRangeBuffer"		"600"
      		// Time
      		//-------------------------------------------------------------------------------------------------------------
      		"AbilityCooldown"				"1.5"
