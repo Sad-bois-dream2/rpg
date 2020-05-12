@@ -445,7 +445,7 @@
         			"soundfile"	"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
         			"particle"	"particles/status_fx/status_effect_bloodrage.vpcf"
         			"particle"	"particles/generic_gameplay/generic_lifesteal.vpcf"
-        			"particle"  ""particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf""
+        			"particle"  "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
         		    "particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
         		    "particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner.vpcf"
         		}

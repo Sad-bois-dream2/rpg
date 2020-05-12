@@ -553,7 +553,7 @@
 				"precache"
         		{
                     "soundfile" "soundevents/voscripts/game_sounds_vo_broodmother.vsndevts"
-                    "particle"  ""particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf""
+                    "particle"  "particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf"
         		}
 	}
 }

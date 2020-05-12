@@ -20,7 +20,7 @@
           "Ability5"          ""     // Ability 5.
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
-          "Ability8"          ""      // Ability 8 - Extra..
+          "Ability8"          ""      // Ability 8 - Extra.
 
 
         // Armor
@@ -38,7 +38,7 @@
         "AttackAnimationPoint"    "0.35"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
         "AttackRange"       "450"   // Range within a target can be attacked.
-        "ProjectileModel"     "particles/econ/items/drow/drow_bow_monarch/drow_frost_arrow_monarch.vpcf" // Particle system model for projectile.
+        "ProjectileModel"     "particles/units/heroes/hero_drow/drow_frost_arrow.vpcf" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
 
         // Attributes

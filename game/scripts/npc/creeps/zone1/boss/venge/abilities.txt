@@ -81,7 +81,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"fix_vision"				"500 350 200"
+   				"fixed_vision"				"500 350 200"
    			}
 
    		}
@@ -500,7 +500,7 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "8 16 24
+   				"duration"				    "8 16 24"
    			}
 
    		}

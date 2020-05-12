@@ -454,7 +454,6 @@ function ursa_roar:OnSpellStart()
         local caster_loc = caster:GetAbsOrigin()
         -- Ability specials
         local travel_distance = self:GetSpecialValueFor("travel_distance")
-        local stun_duration = self:GetSpecialValueFor("stun")
         local start_radius = self:GetSpecialValueFor("start_radius")
         local end_radius = self:GetSpecialValueFor("end_radius")
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
@@ -833,6 +832,7 @@ modifier_ursa_slam_slow = class({
     GetTexture = function(self)
         return ursa_slam:GetAbilityTextureName()
     end,
+
 })
 
 function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
@@ -857,8 +857,12 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
 end
 
-function modifier_ursa_slam_slow:GetStatusEffectName()
+function modifier_ursa_slam_slow:GetEffectName()
     return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+end
+
+function modifier_ursa_slam_slow:GetEffectAttachType()
+    return PATTACH_ABSORIGIN_FOLLOW
 end
 
 LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)

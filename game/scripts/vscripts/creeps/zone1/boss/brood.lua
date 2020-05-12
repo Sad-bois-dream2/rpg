@@ -1023,7 +1023,7 @@ modifier_brood_spit = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -1033,9 +1033,6 @@ modifier_brood_spit = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return brood_spit:GetAbilityTextureName()
     end,
 })
 
@@ -1912,6 +1909,9 @@ modifier_brood_angry_stack = class({
     GetTexture = function(self)
         return brood_angry:GetAbilityTextureName()
     end,
+    DeclareFunctions = function(self)
+        return {MODIFIER_PROPERTY_MODEL_SCALE}
+    end
 })
 
 function modifier_brood_angry_stack:OnCreated()
@@ -1968,6 +1968,10 @@ function modifier_brood_angry_stack:OnRefresh()
     self:OnCreated()
 end
 
+-- "Each angry buff of brood size by 1%. This has no impact on her collision size."
+function modifier_brood_angry_stack:GetModifierModelScale()
+    return 1
+end
 
 function modifier_brood_angry_stack:GetAttackSpeedPercentBonus()
     return self.as_bonus

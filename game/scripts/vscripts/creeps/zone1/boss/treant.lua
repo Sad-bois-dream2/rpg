@@ -731,7 +731,7 @@ modifier_treant_one = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -920,14 +920,14 @@ treant_ingrain = class({
     end,
 })
 
-function treant_ingrain:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
-    self.dmg_reduction = self:GetSpecialValueFor("dmg_reduction")
-    self.regen = self:GetSpecialValueFor("regen")
-    self.as_reduce = self:GetSpecialValueFor("as_reduce")
-end
+--function treant_ingrain:OnUpgrade()
+    --if (not IsServer()) then
+        --return
+    --end
+    --self.dmg_reduction = self:GetSpecialValueFor("dmg_reduction")
+    --self.regen = self:GetSpecialValueFor("regen")
+    --self.as_reduce = self:GetSpecialValueFor("as_reduce")
+--end
 
 modifier_treant_ingrain = class({
     IsDebuff = function(self)
@@ -1003,7 +1003,7 @@ end
 function modifier_treant_ingrain:GetAttackSpeedPercentBonus()
     if IsServer() then
     if self.active == true then
-        return self.as_final
+        return self.as_reduce_final
     else return 0
     end end
 end

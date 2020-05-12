@@ -53,8 +53,8 @@
    		"MaxLevel"						"3"
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.1"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.2"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"fix_vision"				"500 350 200"
+   				"fixed_vision"				"500 350 200"
    			}
 
    		}
@@ -136,8 +136,8 @@
     	//-------------------------------------------------------------------------------------------------------------
     	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
     	"AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"2
-        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.1"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -171,26 +171,31 @@
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"			"800 1200 1600"
+   				"projectile_speed"			"800 1000 1200"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"			            "0.3"
    			}
 
    		}
 	    "precache"
         {
-    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_mirana.vsndevts"
+    	    "particle" "models/items/mirana/crescent_arrow/crescent_arrow.vmdl"
     	}
     }
     //=================================================================================================================
     // Mirana : Under the Moonlight
     //=================================================================================================================
-    "mirana_holy"
+    "mirana_under"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
         "ScriptFile"					"creeps/zone1/boss/mirana"
-        "AbilityTextureName"			"mirana_holy"
+        "AbilityTextureName"			"mirana_under"
        	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
     	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
     	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
@@ -200,8 +205,7 @@
     	//-------------------------------------------------------------------------------------------------------------
     	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
     	"AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"2
-        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastPoint"				"0.1"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -212,37 +216,43 @@
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
-   			"01"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"range"				        "3000"
-   			}
-   			"02"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"number"				    "2 4 6"
-   			}
-   			"03"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"damage"				    "1000 5000 10000"
-   			}
-   			"04"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "125"
-   			}
-   			"05"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"			"800 1200 1600"
-   			}
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"range"		            "1500"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"number_targets"		"1 2 3"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"number_instances"		"2 3 4"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"interval"			    "4"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"silence"				"3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"seal_duration"		    "7 11 15"
+			}
 
    		}
 	    "precache"
         {
-    	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
-    	    "particle" "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_skywrath_mage.vsndevts"
+    	    "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+    	    "particle"  "particles/units/heroes/hero_skywrath_mage/skywrath_mage_ancient_seal_debuff.vpcf"
     	}
     }
     //=================================================================================================================
@@ -257,6 +267,8 @@
         "AbilityTextureName"			"mirana_aligned"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET| DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
    		// Time
@@ -266,44 +278,48 @@
    		// Casting
         //-------------------------------------------------------------------------------------------------------------
     	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-    	"AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"0.1
-        "AbilityCastRange"				"1500"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"2500"
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
-			"01"
+            "01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"base_damage"		    "200 600 1800"
+				"range"		            "3000"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"expo"			        "2 3 4"
+				"base_damage"		    "200 600 1800"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"channel_time"			"5.0"
+				"expo"		            "2 3 4"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				    "0.1"
+				"total_damage"			"6400 145800 1843200"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"total damage"		    "6400 145800 614400"
+				"channel_time"			"5"
 			}
-
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"			        "0.1"
+			}
    		}
    		"precache"
             {
+                "soundfile" "soundevents/voscripts/game_sounds_vo_mirana.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_luna.vsndevts"
-                "particle"  "particles/econ/wards/smeevil/smeevil_ward/smeevil_ward_yellow_ambient.vpcf"
+                "particle"  "particles/econ/items/wisp/wisp_death_ti7_model.vpcf"
 
             }
     }
@@ -324,10 +340,9 @@
 
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
     	"AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"2
-        "AnimationPlaybackRate"         "0.2""
+        "AbilityCastPoint"				"0.3"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -353,7 +368,7 @@
 	    "precache"
         {
     	    "soundfile" "sounds/weapons/hero/nightstalker/darkness.vsnd"
-    	    "particle" "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
+    	    "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_maiden_of_icewrack/cm_arcana_pup_lvlup_godray.vpcf"
     	}
     }
     //=================================================================================================================
@@ -390,7 +405,7 @@
 	    "precache"
         {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
-            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+            "particle"  "particles/generic_gameplay/generic_manaburn.vpcf"
     	}
     }
 }
