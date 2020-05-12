@@ -289,6 +289,9 @@ modifier_phantom_ranger_phantom_harmonic = class({
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
 function modifier_phantom_ranger_phantom_harmonic:OnCreated(kv)
@@ -300,13 +303,6 @@ function modifier_phantom_ranger_phantom_harmonic:OnCreated(kv)
     self.ability = self:GetAbility()
 end
 
-function modifier_phantom_ranger_phantom_harmonic:DeclareFunctions()
-    local funcs = {
-        MODIFIER_EVENT_ON_ATTACK_LANDED,
-    }
-    return funcs
-end
-
 function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
     if IsServer() then
         local attacker = kv.attacker
@@ -314,7 +310,7 @@ function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
 
             if (attacker and target and not target:IsNull() and attacker == self.caster) then
             -- acoount for Deadly Vibration (talent 48) increased chance to proc
-            local talent48Level = TalentTree:GetHeroTalentLevel(self.owner, 48)
+            local talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
             local talent48ChanceIncreasePerLevel = 10
             local bonusProcChance = 0
             if (talent48Level > 0) then bonusProcChance = 10 + talent48ChanceIncreasePerLevel * talent48Level end 

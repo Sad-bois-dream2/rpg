@@ -65,7 +65,7 @@
 		"DOTA_Tooltip_Ability_phantom_ranger_void_arrows_void_damage" "BONUS VOID DAMAGE:"
 		"DOTA_Tooltip_Ability_phantom_ranger_hunters_focus"		"Hunter's Focus"
 		"DOTA_Tooltip_Ability_phantom_ranger_hunters_focus_Description"		"Gain maximum attack speed and increased attack damage for 20 seconds."
-		"DOTA_Tooltip_Ability_phantom_ranger_hunters_focus_attack_speed"    "ATTACK SPEED:"
+		"DOTA_Tooltip_Ability_phantom_ranger_hunters_focus_attack_speed"    "BONUS ATTACK SPEED:"
 		"DOTA_Tooltip_Ability_phantom_ranger_hunters_focus_attack_damage"   "%BONUS ATTACK DAMAGE:"
 		"DOTA_Tooltip_modifier_phantom_ranger_hunters_focus_buff"			"Hunter's focus"
 		"DOTA_Tooltip_modifier_phantom_ranger_hunters_focus_buff_Description"		"Maximum attack speed and increased attack damage."
