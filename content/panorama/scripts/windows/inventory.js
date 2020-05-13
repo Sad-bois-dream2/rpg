@@ -122,7 +122,7 @@ function OnInventoryEquippedSlotDragStart( panelId, dragCallbacks ) {
 	displayPanel.itemname = inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname;
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
-    dragCallbacks.offsetY = 0; 
+    dragCallbacks.offsetY = 0;
 } 
 
 function OnInventoryEquippedSlotDragEnd( panelId, draggedPanel ) {
@@ -599,8 +599,8 @@ function GetInventoryItemSlot(itemname) {
 
 var modelUpdated = false;
 
-function OninventoryItemsDataInfo(event) {
-	inventoryItemsData = JSON.parse(event.items_data);
+function OnInventoryItemsDataRequest(event) {
+	inventoryItemsData = inventoryItemsData.concat(JSON.parse(event.items_data));
 	if(!modelUpdated) {
 	    UpdateHeroModelAndIcon();
 	    modelUpdated = true;
@@ -633,7 +633,7 @@ function OninventoryItemsDataInfo(event) {
 	GameEvents.Subscribe("rpg_inventory_update_all_slots", OnUpdateAllInventorySlotsRequest);
 	GameEvents.Subscribe("rpg_inventory_update_slot", OnUpdateInventorySlotRequest);
 	GameEvents.Subscribe("rpg_inventory_start_item_replace_dialog_from_server", OnStartItemReplaceDialogRequest);
-	GameEvents.Subscribe("rpg_inventory_item_slots", OninventoryItemsDataInfo);
+	GameEvents.Subscribe("rpg_inventory_items_data", OnInventoryItemsDataRequest);
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
     AutoUpdateValues();
 })();

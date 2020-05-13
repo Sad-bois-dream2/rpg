@@ -12,6 +12,7 @@ end
 
 function Inventory:Init()
     self.items_data = {}
+    self.maxItemsPerRequest = 2
     -- slots count, change here require same changes in client side inventory.js
     self.max_stored_items = 14 * 7
     -- slot types
@@ -260,11 +261,17 @@ function Inventory:InitPanaromaEvents()
 end
 
 function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
-    local itemsData = {}
-    for _, value in pairs(Inventory.items_data) do
-        table.insert(itemsData, { item = value.item, slot = value.slot, rarity = value.rarity })
+    local itemsDataLength = #Inventory.items_data
+    local currentItem = 1
+    while currentItem <= itemsDataLength do
+        local itemsData = {}
+        local maxItemId = math.min(currentItem + self.maxItemsPerRequest, itemsDataLength)
+        for i = currentItem, maxItemId do
+            table.insert(itemsData, { item = Inventory.items_data[i].item, slot = Inventory.items_data[i].slot, rarity = Inventory.items_data[i].rarity })
+        end
+        currentItem = currentItem + self.maxItemsPerRequest + 1
+        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_items_data", { items_data = json.encode(itemsData) })
     end
-    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_item_slots", { items_data = json.encode(itemsData) })
 end
 
 function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
