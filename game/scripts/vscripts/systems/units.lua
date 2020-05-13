@@ -342,7 +342,7 @@ function Units:CalculateStats(unit, statsTable)
         -- spell damage
         statsTable.spellDamage = unitBonusSpellDamage
         -- spell haste
-        statsTable.spellHaste = unitBonusSpellHaste
+        statsTable.spellHaste = math.max(0.01, unitBonusSpellHaste)
         -- attack range
         local baseAttackRange = unit:GetBaseAttackRange()
         statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange) - baseAttackRange)
@@ -914,7 +914,7 @@ end
 ---@return number
 function Units:GetSpellHaste(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.spellHaste or 1
+        return unit.stats.spellHaste
     end
     return 1
 end
