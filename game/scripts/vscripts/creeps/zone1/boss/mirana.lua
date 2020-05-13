@@ -199,8 +199,6 @@ function mirana_sky:OnSpellStart()
     end
 end
 
-
-
 --------------
 --mirana blessing
 ---------------
@@ -212,25 +210,6 @@ mirana_blessing = class({
         return "modifier_mirana_blessing"
     end,
 })
-
-function mirana_blessing:FindLuna(parent)
-    local allies = FindUnitsInRadius(parent:GetTeamNumber(),
-            parent:GetAbsOrigin(),
-            nil,
-            2000,
-            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-            DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, ally in pairs(allies) do
-        if IsLuna(ally) == true then
-            local Luna = ally
-            return Luna
-        else return nil
-        end
-    end
-end
 
 modifier_mirana_blessing = class({
     IsDebuff = function(self)
@@ -256,11 +235,30 @@ function modifier_mirana_blessing:OnCreated()
     self:StartIntervalThink(0.5)
 end
 
+function mirana_blessing:FindLuna(parent, range)
+    local allies = FindUnitsInRadius(parent:GetTeamNumber(),
+            parent:GetAbsOrigin(),
+            nil,
+            range,
+            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+            DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, ally in pairs(allies) do
+        if IsLuna(ally) == true then
+            local Luna = ally
+            return Luna
+        else return nil
+        end
+    end
+end
+
 function modifier_mirana_blessing:OnIntervalThink()
     if not IsServer() then
         return
     end
-    self.luna = self.ability:FindLuna(self.parent)
+    self.luna = self.ability:FindLuna(self.parent, 2000)
     if self.luna == nil then
         return
     else
@@ -357,6 +355,7 @@ function modifier_mirana_holy:OnCreated()
     local caster_position = self:GetCaster():GetAbsOrigin()
     local counter = 0
     local number = self:GetAbility():GetSpecialValueFor("number")
+    caster:EmitSound("mirana_mir_attack_0"..math.random(2,4))
     Timers:CreateTimer(0.2, function()
         if counter < number and self ~= nil then
             caster:StartGestureWithPlaybackRate	(ACT_DOTA_ATTACK, 0.85)
@@ -382,7 +381,8 @@ end
 function modifier_mirana_holy:CheckState()
     local state = {
         [MODIFIER_STATE_DISARMED] = true,
-        [MODIFIER_STATE_ROOTED] = true
+        [MODIFIER_STATE_ROOTED] = true,
+        [MODIFIER_STATE_SILENCED] = true
     }
     return state
 end
@@ -403,6 +403,52 @@ function mirana_holy:IsInterruptible()
     return false
 end
 
+function mirana_holy:ShootSet(range, caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed)
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            range,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        --particle
+        self.arrow_particle = "particles/econ/items/mirana/mirana_crescent_arrow/mirana_spell_crescent_arrow.vpcf"
+        local enemy_loc = enemy:GetAbsOrigin()
+        local distance = enemy_loc - caster_loc
+        local direction = distance:Normalized()
+        local projectile =
+        {
+            Ability				= self,
+            EffectName			= self.arrow_particle,
+            vSpawnOrigin		= caster:GetAbsOrigin(),
+            fDistance			= travel_distance,
+            fStartRadius		= start_radius,
+            fEndRadius			= end_radius,
+            Source				= caster,
+            bHasFrontalCone		= false,
+            bReplaceExisting	= false,
+            iUnitTargetTeam		= self:GetAbilityTargetTeam(),
+            iUnitTargetFlags	= nil,
+            iUnitTargetType		= self:GetAbilityTargetType(),
+            fExpireTime 		= GameRules:GetGameTime() + 10.0,
+            bDeleteOnHit		= true,
+            vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
+            bProvidesVision		= false,
+            --ExtraData			= {damage = damage, stun = stun}
+        }
+        ProjectileManager:CreateLinearProjectile(projectile)
+        -- Play cast sound
+        caster:EmitSound("Hero_Mirana.ArrowCast")
+    end
+end
+
+
 function mirana_holy:OnSpellStart()
     if IsServer() then
         -- Ability properties
@@ -413,7 +459,7 @@ function mirana_holy:OnSpellStart()
         local start_radius = self:GetSpecialValueFor("radius")
         local end_radius = self:GetSpecialValueFor("radius")
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
-        local radius = self:GetSpecialValueFor("range")
+        local range = self:GetSpecialValueFor("range")
         local number = self:GetSpecialValueFor("number")
         local counter = 0
         --root and disarm
@@ -428,45 +474,7 @@ function mirana_holy:OnSpellStart()
         Timers:CreateTimer(0, function()
             --add counter each set of arrows
             if counter < number and caster:HasModifier("modifier_mirana_holy") then
-                local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                        caster:GetAbsOrigin(),
-                        nil,
-                        radius,
-                        DOTA_UNIT_TARGET_TEAM_ENEMY,
-                        DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-                        DOTA_UNIT_TARGET_FLAG_NONE,
-                        FIND_ANY_ORDER,
-                        false)
-                for _, enemy in pairs(enemies) do
-                    --particle
-                    self.arrow_particle = "particles/econ/items/mirana/mirana_crescent_arrow/mirana_spell_crescent_arrow.vpcf"
-                    local enemy_loc = enemy:GetAbsOrigin()
-                    local distance = enemy_loc - caster_loc
-                    local direction = distance:Normalized()
-                    local projectile =
-                    {
-                        Ability				= self,
-                        EffectName			= self.arrow_particle,
-                        vSpawnOrigin		= caster:GetAbsOrigin(),
-                        fDistance			= travel_distance,
-                        fStartRadius		= start_radius,
-                        fEndRadius			= end_radius,
-                        Source				= caster,
-                        bHasFrontalCone		= false,
-                        bReplaceExisting	= false,
-                        iUnitTargetTeam		= self:GetAbilityTargetTeam(),
-                        iUnitTargetFlags	= nil,
-                        iUnitTargetType		= self:GetAbilityTargetType(),
-                        fExpireTime 		= GameRules:GetGameTime() + 10.0,
-                        bDeleteOnHit		= true,
-                        vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
-                        bProvidesVision		= false,
-                        --ExtraData			= {damage = damage, stun = stun}
-                    }
-                    ProjectileManager:CreateLinearProjectile(projectile)
-                    -- Play cast sound
-                    caster:EmitSound("Hero_Mirana.ArrowCast")
-                end
+                self:ShootSet(range, caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed)
                 counter = counter + 1
                 return 1
             end
@@ -762,7 +770,7 @@ modifier_mirana_aligned_buff = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -836,38 +844,42 @@ function mirana_aligned:StarsAlignFX(target)
     ParticleManager:SetParticleControl(particle_starfall_fx, 0, target:GetAbsOrigin())
     ParticleManager:SetParticleControl(particle_starfall_fx, 1, target:GetAbsOrigin())
     ParticleManager:SetParticleControl(particle_starfall_fx, 3, target:GetAbsOrigin())
-    ParticleManager:ReleaseParticleIndex(particle_starfall_fx)
-    EmitSoundOn("Hero_Luna.Eclipse.Cast", target)
-    Timers:CreateTimer(0.25,function()
-        local particle = ParticleManager:CreateParticle("particles/econ/items/wisp/wisp_death_ti7_model.vpcf", PATTACH_WORLDORIGIN, target)
-        ParticleManager:SetParticleControl(particle, 1, target:GetAbsOrigin() + Vector(0,0,0))
-        ParticleManager:ReleaseParticleIndex(particle)
+    Timers:CreateTimer(2.0, function()
+        ParticleManager:DestroyParticle(particle_starfall_fx, false)
+        ParticleManager:ReleaseParticleIndex(particle_starfall_fx)
     end)
+    EmitSoundOn("Hero_Luna.Eclipse.Cast", target)
+    Timers:CreateTimer(0.57,function()
+        local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
+        local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_ABSORIGIN_FOLLOW, target )
+        ParticleManager:SetParticleControl( effect_cast, 1, Vector( 300, 300, 300 ) )
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(effect_cast, false)
+            ParticleManager:ReleaseParticleIndex(effect_cast)
+        end)
+    end)
+
 end
 
 function mirana_aligned:OnSpellStart(unit, special_cast)
     if IsServer() then
         local caster = self:GetCaster()
         local caster_position = self:GetCaster():GetAbsOrigin()
-        local particle_circle = "particles/units/heroes/hero_mirana/mirana_starfall_circle.vpcf"
+
         local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
         caster:EmitSound("mirana_mir_attack_05")
         caster.mirana_aligned_modifier = caster:AddNewModifier(caster, self, "modifier_mirana_aligned_channel", { Duration = -1 })
         Timers:CreateTimer(0.2, function()
-            if (caster:HasModifier("modifier_mirana_aligned_channel")) then
-                caster:StartGestureWithPlaybackRate	(ACT_DOTA_CAST_ABILITY_1, 0.2)
+            --if (caster:HasModifier("modifier_mirana_aligned_channel")) then
+                caster:StartGestureWithPlaybackRate	(ACT_DOTA_CAST_ABILITY_1, 0.15)
                 local particle_moon_fx = ParticleManager:CreateParticle(particle_moon, PATTACH_ABSORIGIN, self:GetCaster())
                 ParticleManager:SetParticleControl(particle_moon_fx, 0, Vector(caster_position.x, caster_position.y, caster_position.z + 400))
-                local particle_circle_fx = ParticleManager:CreateParticle(particle_circle, PATTACH_ABSORIGIN, self:GetCaster())
-                ParticleManager:SetParticleControl(particle_circle_fx, 0, caster_position)
                 Timers:CreateTimer(5.0, function()
                     ParticleManager:DestroyParticle(particle_moon_fx, false)
                     ParticleManager:ReleaseParticleIndex(particle_moon_fx)
-                    ParticleManager:DestroyParticle(particle_circle_fx, false)
-                    ParticleManager:ReleaseParticleIndex(particle_circle_fx)
                 end)
-                return 5
-            end
+                --return 5
+            --end
         end)
     end
 end
@@ -882,26 +894,44 @@ function mirana_aligned:OnChannelFinish()
     end
     --sound star falling
     local target = self:FindAlignedTarget(caster)
-    caster:EmitSound("mirana_mir_ability_star_0"..math.random(1,3))
     local expo_power = (caster:FindModifierByName("modifier_mirana_aligned_buff"):GetStackCount())/10
+    caster:EmitSound("mirana_mir_ability_star_0"..math.random(1,3))
     local expo = self:GetSpecialValueFor("expo")
     local base_damage = self:GetSpecialValueFor("base_damage")
     local damage = base_damage * math.pow(expo, expo_power)
+    local radius = self:GetSpecialValueFor("radius")
     self:StarsAlignFX(target)
-    Timers:CreateTimer(0.25,function()
-        local damageTable = {}
-        damageTable.caster = caster
-        damageTable.target = target
-        damageTable.ability = self
-        damageTable.damage = damage*0.001 --nerf
-        damageTable.naturedmg = true
-        damageTable.voiddmg = true
-        GameMode:DamageUnit(damageTable)
+    -- Find all nearby enemies
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            target:GetAbsOrigin(),
+            nil,
+            radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        --Damage nearby enemies
+        Timers:CreateTimer(0.25,function()
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage*0.2 --nerf
+            damageTable.naturedmg = true
+            damageTable.voiddmg = true
+            GameMode:DamageUnit(damageTable)
+        end)
+    end
+    --taunting if max charge
+    Timers:CreateTimer(1, function()
+        if expo_power == 5 then
+            caster:EmitSound("mirana_mir_kill_0"..math.random(1,11))
+        end
     end)
     caster:RemoveModifierByName("modifier_mirana_aligned_buff")
 end
-
-
 
 
 --------------
@@ -1005,12 +1035,12 @@ function  mirana_guile:OnSpellStart()
     self.already_hit ={}
     self:ApplyChains(target, caster)
     target:AddNewModifier(caster, self, "modifier_stunned", {duration = 0.1})
-    target:EmitSound("Hero_VengefulSpirit.NetherSwap")
     table.insert(self.already_hit, target)
     local target2 = self:FindTargetForRoot(caster)
     if target2 == nil then
         return
     else
+        target:EmitSound("Hero_VengefulSpirit.NetherSwap")
         self:ApplyChains(target2, caster)
         target2:AddNewModifier(caster, self, "modifier_stunned", {duration = 0.1})
         target2:EmitSound("Hero_VengefulSpirit.NetherSwap")
@@ -1035,6 +1065,7 @@ function  mirana_guile:OnSpellStart()
         Aggro:Reset(caster)
         Aggro:Add(target, caster, random_aggro)
         Aggro:Add(target2, caster, high_aggro)
+        caster:FindModifierByName("modifier_mirana_bound")
     end
 end
 
@@ -1061,7 +1092,7 @@ modifier_mirana_bound = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -1090,17 +1121,24 @@ function modifier_mirana_bound:OnCreated()
     self.luna = nil
     Timers:CreateTimer(0, function()
         if self.luna == nil then
-            self.luna = self.ability:FindLuna(self.parent)
+            self.luna = self.ability:FindLuna(self.parent, 25000)
             return 0.1
         end
     end)
+    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
+    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(bound_fx, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(bound_fx, false)
+        ParticleManager:ReleaseParticleIndex(bound_fx)
+    end)
 end
 
-function mirana_bound:FindLuna(parent)
+function mirana_bound:FindLuna(parent, range)
     local allies = FindUnitsInRadius(parent:GetTeamNumber(),
             parent:GetAbsOrigin(),
             nil,
-            25000,
+            range,
             DOTA_UNIT_TARGET_TEAM_FRIENDLY,
             DOTA_UNIT_TARGET_BASIC,
             DOTA_UNIT_TARGET_FLAG_NONE,
@@ -1116,10 +1154,18 @@ function mirana_bound:FindLuna(parent)
 end
 
 function modifier_mirana_bound:OnDeath(params)
-    if (params.unit == self.parent) then
+    local stack = self.parent:FindModifierByName("modifier_mirana_bound_buff"):GetStackCount()
+    if (params.unit == self.parent and stack == 1 ) then
         if self.luna ~= nil then
-        self.luna:FindModifierByName("modifier_luna_bound_buff"):SetStackCount(2)
+            self.luna:FindModifierByName("modifier_luna_bound_buff"):SetStackCount(2)
         end
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
+        local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, self.parent)
+        ParticleManager:SetParticleControlEnt(bound_fx, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(bound_fx, false)
+            ParticleManager:ReleaseParticleIndex(bound_fx)
+        end)
     end
 end
 
@@ -1153,15 +1199,7 @@ function modifier_mirana_bound_buff:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self.active = false
-    self.ad_bonus = self:GetAbility():GetSpecialValueFor("ad_bonus")*0.01
     self.lifesteal = self:GetAbility():GetSpecialValueFor("lifesteal")
-end
-
-function modifier_mirana_bound_buff:GetAttackDamagePercentBonus()
-    if self:GetStackCount() == 2 then
-    return self.ad_bonus
-    else return 0
-    end
 end
 
 ---@param damageTable DAMAGE_TABLE
@@ -1172,17 +1210,51 @@ function modifier_mirana_bound_buff:OnTakeDamage(damageTable)
         stack = modifier:GetStackCount()
     end
     if (damageTable.damage > 0 and stack >1 and not damageTable.ability and damageTable.physdmg ) then
-    local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
-    Timers:CreateTimer(1.0, function()
-    ParticleManager:DestroyParticle(healFX, false)
-    ParticleManager:ReleaseParticleIndex(healFX)
-    end)
-    local healTable = {}
-    healTable.caster = damageTable.attacker
-    healTable.target = damageTable.attacker
-    healTable.ability = modifier:GetAbility()
-    healTable.heal = damageTable.damage * modifier:GetAbility():GetSpecialValueFor("lifesteal") * 0.01
-    GameMode:HealUnit(healTable)
+        --lifesteal
+        local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(healFX, false)
+            ParticleManager:ReleaseParticleIndex(healFX)
+        end)
+        local healTable = {}
+        healTable.caster = damageTable.attacker
+        healTable.target = damageTable.attacker
+        healTable.ability = modifier:GetAbility()
+        healTable.heal = damageTable.damage * modifier:GetAbility():GetSpecialValueFor("lifesteal") * 0.01
+        GameMode:HealUnit(healTable)
+        --void glaive
+        Timers:CreateTimer(0.1, function()
+            local radius = modifier:GetAbility():GetSpecialValueFor("radius")
+            local Max_mana = damageTable.victim:GetMaxMana()
+            local Mana = damageTable.victim:GetMana()
+            local damage = modifier:GetAbility():GetSpecialValueFor("explode_per_mana") * (Max_mana - Mana)
+            local void_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/antimage_manavoid_ti_5.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
+            ParticleManager:SetParticleControlEnt(void_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", damageTable.victim:GetOrigin(), true)
+            ParticleManager:SetParticleControl(void_pfx, 1, Vector(radius,0,0))
+            ParticleManager:ReleaseParticleIndex(void_pfx)
+            damageTable.attacker:EmitSoundParams("Hero_Antimage.ManaVoidCast", 1.0, 0.2, 0) --name pitch volume(81 for base) delay
+            damageTable.victim:EmitSoundParams("Hero_Antimage.ManaVoid", 1.0, 0.2, 0)
+
+            -- Find all nearby enemies
+            local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
+                    damageTable.victim:GetAbsOrigin(),
+                    nil,
+                    radius,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                local damageTable= {}
+                damageTable.caster = modifier:GetParent()
+                damageTable.target = enemy
+                damageTable.ability = modifier:GetAbility()
+                damageTable.damage = damage*0.001
+                damageTable.voiddmg = true
+                GameMode:DamageUnit(damageTable)
+            end
+        end)
     end
 end
 

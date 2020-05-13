@@ -377,18 +377,23 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ad_bonus"				    "50 100 200"
+   				"lifesteal"			        "50 100 200"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"lifesteal"			        "12 25 50"
+   				"mana_burn"				    "3 7 15"
    			}
-
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"void_per_burn"			    "60"
+   			}
    		}
 	    "precache"
         {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle"  "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
             "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
     	}
     }
