@@ -229,13 +229,6 @@ function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
     self.msSlow = self:GetSpecialValueFor("ms_slow") / 100
     self.asSlow = self:GetSpecialValueFor("as_slow") / 100
     self.sphSlow = self:GetSpecialValueFor("sph_slow") / 100
-    local talent51CastTime = 2
-    local normalCastTime = 0.25
-    if (TalentTree:GetHeroTalentLevel(self.caster, 51) > 0) then
-        self.originalCastPoint = talent51CastTime
-    else
-        self.originalCastPoint = normalCastTime
-    end
     local info = {
         Ability = self,
         EffectName = "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf",
@@ -279,6 +272,15 @@ function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
 end
 
 -- Shadowcaster (talent 51) cast point stuff
+
+function phantom_ranger_shadow_waves:GetCastPoint()
+    local talent51CastTime = 2
+    if (TalentTree:GetHeroTalentLevel(self.caster, 51) > 0) then
+        return talent51CastTime
+    else
+        return self.BaseClass.GetCastPoint(self)
+    end
+end
 
 function phantom_ranger_shadow_waves:IsRequireCastbar()
     if not IsServer() then return end
