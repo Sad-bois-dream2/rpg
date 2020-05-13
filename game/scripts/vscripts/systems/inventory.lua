@@ -12,7 +12,7 @@ end
 
 function Inventory:Init()
     self.items_data = {}
-    self.maxItemsPerRequest = 2
+    self.maxItemsPerRequest = 10
     -- slots count, change here require same changes in client side inventory.js
     self.max_stored_items = 14 * 7
     -- slot types
