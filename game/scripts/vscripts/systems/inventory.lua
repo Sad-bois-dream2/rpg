@@ -525,7 +525,6 @@ function Inventory:OnInventoryEquipItemRequest(event, args)
 end
 
 function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, itemSlot)
-    print(hero, itemName, is_equipped, itemSlot)
     if (hero ~= nil and itemName ~= nil and is_equipped ~= nil and itemSlot ~= nil) then
         local player = hero:GetPlayerOwner()
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot })
