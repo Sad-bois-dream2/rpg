@@ -62,7 +62,7 @@ function Inventory:AddItem(hero, item)
             return Inventory.slot.invalid
         end
         for i = 0, Inventory.max_stored_items do
-            if (Inventory:GetItemInSlot(hero, false, i) == "") then
+            if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
                 Inventory:SetItemInSlot(hero, item, false, i)
                 return i
             end
@@ -108,9 +108,9 @@ function Inventory:GetItemInSlot(hero, is_equipped, slot)
     if (hero ~= nil and slot ~= nil and is_equipped ~= nil) then
         if (Inventory:IsHeroHaveInventory(hero) and Inventory:IsSlotValid(slot, is_equipped)) then
             if (is_equipped) then
-                return hero.inventory.equipped_items[slot]
+                return hero.inventory.equipped_items[slot].name
             else
-                return hero.inventory.items[slot]
+                return hero.inventory.items[slot].name
             end
         end
     end
@@ -128,24 +128,24 @@ function Inventory:SetItemInSlot(hero, item, is_equipped, slot)
     if (hero ~= nil and item ~= nil and is_equipped ~= nil and slot ~= nil) then
         if (Inventory:IsHeroHaveInventory(hero) and Inventory:IsSlotValid(slot, is_equipped)) then
             if (is_equipped) then
-                if (hero.inventory.equipped_modifiers[slot] ~= nil and not hero.inventory.equipped_modifiers[slot]:IsNull()) then
-                    hero.inventory.equipped_modifiers[slot]:Destroy()
+                if (hero.inventory.equipped_items[slot].modifier ~= nil and not hero.inventory.equipped_items[slot].modifier:IsNull()) then
+                    hero.inventory.equipped_items[slot].modifier:Destroy()
                 end
-                if (item ~= "") then
+                if (Inventory:IsItemNotEmpty(item)) then
                     local modifierTable = {}
                     modifierTable.ability = nil
                     modifierTable.target = hero
                     modifierTable.caster = hero
                     modifierTable.modifier_name = "modifier_inventory_" .. item
                     modifierTable.duration = -1
-                    hero.inventory.equipped_modifiers[slot] = GameMode:ApplyBuff(modifierTable)
+                    hero.inventory.equipped_items[slot].modifier = GameMode:ApplyBuff(modifierTable)
                 end
-                hero.inventory.equipped_items[slot] = item
+                hero.inventory.equipped_items[slot].name = item
             else
-                hero.inventory.items[slot] = item
+                hero.inventory.items[slot].name = item
             end
+            Inventory:SendUpdateInventorySlotRequest(hero, item, is_equipped, slot)
         end
-        Inventory:SendUpdateInventorySlotRequest(hero, item, is_equipped, slot)
     end
 end
 
@@ -161,6 +161,15 @@ function Inventory:GetValidSlotForItem(item)
         end
     end
     return Inventory.slot.invalid
+end
+
+---@param item string
+---@return boolean
+function Inventory:IsItemNotEmpty(item)
+    if (type(item) == "string") then
+        return string.len(item) > 0
+    end
+    return false
 end
 
 ---@param item string
@@ -187,12 +196,13 @@ function Inventory:SetupForHero(hero)
         hero.inventory = {}
         hero.inventory.items = {}
         hero.inventory.equipped_items = {}
-        hero.inventory.equipped_modifiers = {}
         for i = 0, Inventory.max_stored_items do
-            hero.inventory.items[i] = ""
+            hero.inventory.items[i] = {}
+            hero.inventory.items[i].name = ""
         end
         for i = 0, Inventory.slot.last do
-            hero.inventory.equipped_items[i] = ""
+            hero.inventory.equipped_items[i] = {}
+            hero.inventory.equipped_items[i].name = ""
         end
         Inventory:AddItem(hero, "item_claymore")
         Inventory:AddItem(hero, "item_claymore")
@@ -231,12 +241,9 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
         table.insert(Inventory.items_data, { item = itemName, slot = itemSlot, rarity = itemRarity })
     else
         DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)");
-        DebugPrint("itemName");
-        DebugPrint(itemName);
-        DebugPrint("itemRarity");
-        DebugPrint(itemRarity);
-        DebugPrint("itemSlot");
-        DebugPrint(itemSlot);
+        DebugPrint("itemName", itemName);
+        DebugPrint("itemRarity", itemRarity);
+        DebugPrint("itemSlot", itemSlot);
     end
 end
 
@@ -253,7 +260,6 @@ function Inventory:InitPanaromaEvents()
 end
 
 function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
-    --local abilitySpecial = ability:GetAbilityKeyValues()["AbilitySpecial"]
     local itemsData = {}
     for _, value in pairs(Inventory.items_data) do
         table.insert(itemsData, { item = value.item, slot = value.slot, rarity = value.rarity })
@@ -281,14 +287,14 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
                 Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
                 for i = 0, Inventory.max_stored_items do
                     local itemInInventorySlot = Inventory:GetItemInSlot(hero, false, i)
-                    if (itemInInventorySlot ~= "") then
+                    if (Inventory:IsItemNotEmpty(itemInInventorySlot)) then
                         Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot, false, i)
                     end
                 end
                 for i = 0, Inventory.slot.last do
                     local itemInInventoryEquippedSlot = Inventory:GetItemInSlot(hero, true, i)
-                    if (itemInInventoryEquippedSlot ~= "") then
-                        Inventory:SendUpdateInventorySlotRequest(hero, hero.inventory.equipped_items[i], true, i)
+                    if (Inventory:IsItemNotEmpty(itemInInventoryEquippedSlot)) then
+                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventoryEquippedSlot, true, i)
                     end
                 end
             end)
@@ -382,7 +388,7 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
         --local desiredItemSlotForFromItem = Inventory:GetValidSlotForItem(itemFromSlot)
         --local desiredItemSlotForInItem = Inventory:GetValidSlotForItem(itemInSlot)
         -- swap equipped item with empty bottom slot
-        if (itemInSlot == "") then
+        if (not Inventory:IsItemNotEmpty(itemInSlot)) then
             Inventory:SetItemInSlot(hero, "", true, event.fromslot)
             Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot)
         else
@@ -427,7 +433,7 @@ function Inventory:OnInventoryEquippedItemRightClick(event, args)
     if (Inventory:GetItemInSlot(hero, true, event.fromslot) ~= event.item) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, false, event.inslot) == "") then
+    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, event.inslot))) then
         Inventory:SetItemInSlot(hero, "", true, event.fromslot)
         Inventory:SetItemInSlot(hero, event.item, false, event.inslot)
     end
@@ -463,7 +469,7 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
     if (Inventory:GetItemInSlot(hero, false, event.fromslot) ~= event.item) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, true, desiredItemSlot) == "") then
+    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, true, desiredItemSlot))) then
         Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot)
         Inventory:SetItemInSlot(hero, "", false, event.fromslot)
     else
@@ -519,6 +525,7 @@ function Inventory:OnInventoryEquipItemRequest(event, args)
 end
 
 function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, itemSlot)
+    print(hero, itemName, is_equipped, itemSlot)
     if (hero ~= nil and itemName ~= nil and is_equipped ~= nil and itemSlot ~= nil) then
         local player = hero:GetPlayerOwner()
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot })

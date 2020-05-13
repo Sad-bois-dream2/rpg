@@ -370,6 +370,7 @@ function UpdateHeroModelAndIcon() {
 	heroModelContainer.BCreateChildren('<DOTAScenePanel renderdeferred="false" class="HeroModel OverviewHeroRender" unit="' + heroName + '" drawbackground="1" allowrotation="true" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>');
 	heroModelContainer.GetChild(0).style.visibility = "visible";
 }
+
 var dataRequestSended = false;
 
 function UpdateValues() {
@@ -596,9 +597,14 @@ function GetInventoryItemSlot(itemname) {
 	return -1;
 }
 
+var modelUpdated = false;
+
 function OninventoryItemsDataInfo(event) {
 	inventoryItemsData = JSON.parse(event.items_data);
-	UpdateHeroModelAndIcon();
+	if(!modelUpdated) {
+	    UpdateHeroModelAndIcon();
+	    modelUpdated = true;
+	}
 }
 
 (function () {
