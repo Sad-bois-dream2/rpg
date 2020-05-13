@@ -31,7 +31,7 @@ function modifier_castbar:OnAbilityStart(keys)
         return
     end
     local ability = keys.ability
-    if (ability.IsRequireCastbar and keys.unit == self.hero) then
+    if (ability.IsRequireCastbar and ability.IsRequireCastbar(ability) == true and keys.unit == self.hero) then
         local abilityIndex = ability:GetEntityIndex()
         local channelTime = ability:GetChannelTime()
         local IsChannelAbility = (channelTime > 0)

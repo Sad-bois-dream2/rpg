@@ -31,15 +31,17 @@ end
 
 --------------------------------------------------------------------------------
 
-function phantom_ranger_void_arrows:OnOrbFire(params)
-
+function phantom_ranger_void_arrows:GetManaCost(level)
+	local manaCost = self.BaseClass.GetManaCost(self, level)
+	if not IsServer() then return manaCost end
 	local caster = self:GetCaster()
-	local manaCost = self:GetManaCost(self:GetLevel() - 1)
-	-- accounting for Power Addiction (talent 36) mana increase
 	local talent36Level = TalentTree:GetHeroTalentLevel(caster, 36)
-	local talent36PercentManaIncreasePerLevel = 100
-	if costIncrease ~= 0 then caster:SpendMana(manaCost * talent36Level * talent36PercentManaIncreasePerLevel / 100, self) end	
-
+	local talent36PercentManaIncreasePerLevel = 100 
+	if (talent36Level > 0) then
+		return manaCost * (100 + talent36Level * talent36PercentManaIncreasePerLevel) / 100
+	else 
+		return manaCost
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -282,6 +284,69 @@ function modifier_npc_dota_hero_drow_ranger_talent_40:OnAbilityFullyCast()
     local talent40Level = TalentTree:GetHeroTalentLevel(self.caster, 40)
     local talent40PercentHealPerLevel = 1
     GameMode:HealUnit({ caster = self.caster, target = self.caster, ability = nil, heal = self.caster:GetMaxHealth() * talent40Level * talent40PercentHealPerLevel / 100 })
+end
+
+--------------------------------------------------------------------------------
+-- Talent 41 - Assassination
+modifier_npc_dota_hero_drow_ranger_talent_41 = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_41"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_41:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_41:OnAttackLanded(keys)
+
+    if not IsServer() then return end
+   -- if not (Enemies:IsElite(keys.target) or Enemies:IsBoss(keys.target)) then return end
+    local talent41Level = TalentTree:GetHeroTalentLevel(self.caster, 41)
+    local talent41CdrPerLevel = 0.05
+    for i = 0, 5 do
+
+        local ability = self.caster:GetAbilityByIndex(i)
+        if (ability) then
+
+            local cooldownTable = {}
+            cooldownTable.reduction = math.min(talent41Level * talent41CdrPerLevel, 0.5)
+            cooldownTable.ability = ability:GetAbilityName()
+            cooldownTable.isflat = true
+            cooldownTable.target = self.caster
+            GameMode:ReduceAbilityCooldown(cooldownTable)
+
+        end
+
+    end
+
 end
 
 --------------------------------------------------------------------------------
@@ -592,7 +657,8 @@ function modifier_npc_dota_hero_drow_ranger_talent_44:GetCriticalDamageBonus()
 end
 
 --------------------------------------------------------------------------------
--- Talent 45 - Cloak of Shadows (rest of logic is in hero_phantom_ranger.lua -> phantom_ranger_shadow_waves)
+-- Talent 45 - Cloak of Shadows 
+-- rest of logic is in hero_phantom_ranger.lua -> phantom_ranger_shadow_waves
 
 modifier_npc_dota_hero_drow_ranger_talent_45 = class({
     IsDebuff = function(self)
@@ -767,6 +833,51 @@ function modifier_npc_dota_hero_drow_ranger_talent_50:OnTakeDamage(damageTable)
 		return damageTable
 
 	end
+
+end
+
+--------------------------------------------------------------------------------
+-- Talent 51 - Shadowcaster  
+-- rest of logic is in hero_phantom_ranger.lua -> phantom_ranger_shadow_waves
+
+modifier_npc_dota_hero_drow_ranger_talent_51 = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+    	return MODIFIER_ATTRIBUTE_PERMANENT 
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_51"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_51:OnCreated()
+
+	if not IsServer() then return end
+	self.hero = self:GetParent()
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_51:GetSpellHasteBonus()
+	
+	local talent51AtkSpeedToSpellHaste = 1 / 3
+	return Units:GetAttackSpeed(self.hero) * talent51AtkSpeedToSpellHaste / 100
 
 end
 
