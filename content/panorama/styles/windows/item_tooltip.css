@@ -50,13 +50,13 @@
 
 .ItemTooltipInfoContainer
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	flow-children: right;
 }
 
 .ItemTooltipRarityLabel
 {
-	max-width: 190px;
+	width: fill-parent-flow(1.0);
 	overflow: clip squish;
 	height: 20px;
 	color: grey;
@@ -64,21 +64,25 @@
 	font-family: platformfont;
 	vertical-align: center;
 	horizontal-align: left;
+	text-align: left;
 	margin-top: 1px;
 }
 
 .ItemTooltipTypeLabel 
 {
+	width: fill-parent-flow(1.0);
 	color: grey;
 	font-size: 16px;
 	font-family: platformfont;
 	vertical-align: center;
 	horizontal-align: right;
+	text-align: right;
 	margin-right: 2px;
 }
 
 .ItemTooltipLabel 
 {
+	width: fill-parent-flow(1.0);
 	color: white;
 	font-size: 14px;
 	font-family: platformfont;

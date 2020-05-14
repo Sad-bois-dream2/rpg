@@ -506,6 +506,11 @@ function CreateItemTooltip(icon, name, rarity, type, description, x, y) {
 		tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 		tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
 		tooltip[TOOLTIP_TYPE_LABEL].text = type;
+        if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
+            tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
+        } else {
+            tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
+        }
 		tooltip[TOOLTIP_DESCRIPTION_LABEL].text = description;
 		tooltip[TOOLTIP_PANEL].style.marginLeft = (x+40) + "px";
 		tooltip[TOOLTIP_PANEL].style.marginTop = (y-50) + "px";
