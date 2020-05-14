@@ -1,17 +1,26 @@
 if Inventory == nil then
     _G.Inventory = class({})
 end
+-- for test only, remove later pls
+if (IsServer()) then
+    ListenToGameEvent("player_chat", function(event)
+        if (event.text == "-additem") then
+            local player = PlayerResource:GetPlayer(event.playerid)
+            local hero = player:GetAssignedHero()
+            Inventory:AddItem(hero, "item_claymore_custom")
+        end
+    end, nil)
+end
 
 -- items database
 function Inventory:SetupItems()
-    Inventory:RegisterItemSlot("item_claymore", self.rarity.common, self.slot.mainhand)
+    Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand)
     Inventory:RegisterItemSlot("item_broadsword", self.rarity.cursed, self.slot.offhand)
     Inventory:RegisterItemSlot("item_chainmail", self.rarity.rare, self.slot.body)
     Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring1)
 end
 
 function Inventory:Init()
-    self.items_data = {}
     self.maxItemsPerRequest = 10
     -- slots count, change here require same changes in client side inventory.js
     self.max_stored_items = 14 * 7
@@ -40,6 +49,8 @@ function Inventory:Init()
     self.rarity.cursed = 2
     -- latest rarity id for internal stuff
     self.rarity.max = 2
+    self.items_data = {}
+    self.items_kv = LoadKeyValues("scripts/npc/npc_items_custom.txt")
     Inventory:SetupItems()
     Inventory:InitPanaromaEvents()
 end
@@ -205,8 +216,8 @@ function Inventory:SetupForHero(hero)
             hero.inventory.equipped_items[i] = {}
             hero.inventory.equipped_items[i].name = ""
         end
-        Inventory:AddItem(hero, "item_claymore")
-        Inventory:AddItem(hero, "item_claymore")
+        Inventory:AddItem(hero, "item_claymore_custom")
+        Inventory:AddItem(hero, "item_claymore_custom")
         Inventory:AddItem(hero, "item_broadsword")
         Inventory:AddItem(hero, "item_broadsword")
         Inventory:AddItem(hero, "item_chainmail")
@@ -239,13 +250,79 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
             DebugPrint("[INVENTORY] Bad attempt to add item \"" .. itemName .. "\" for slot " .. itemSlot .. " with rarity " .. itemRarity .. " (unknown rarity).")
             return
         end
-        table.insert(Inventory.items_data, { item = itemName, slot = itemSlot, rarity = itemRarity })
+        local itemStats = {}
+        if (Inventory.items_kv[itemName] and Inventory.items_kv[itemName]["AbilitySpecial"]) then
+            local itemStatsNames = Inventory:GetItemStats(Inventory.items_kv[itemName]["AbilitySpecial"], itemName)
+            for _, stat in pairs(itemStatsNames) do
+                local statEntry = Inventory:GenerateItemStatsEntry(Inventory.items_kv[itemName]["AbilitySpecial"], stat)
+                if (statEntry and stat.type) then
+                    statEntry.type = stat.type
+                    table.insert(itemStats, statEntry)
+                else
+                    DebugPrint("[INVENTORY] Can't find min and max values or type for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
+                end
+            end
+        end
+        table.insert(Inventory.items_data, { item = itemName, slot = itemSlot, rarity = itemRarity, stats = itemStats })
     else
         DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)");
         DebugPrint("itemName", itemName);
         DebugPrint("itemRarity", itemRarity);
         DebugPrint("itemSlot", itemSlot);
     end
+end
+
+function Inventory:GenerateItemStatsEntry(statsTable, stat)
+    local result
+    local min
+    local max
+    for _, statEntry in pairs(statsTable) do
+        for k, v in pairs(statEntry) do
+            if (k == (tostring(stat.name) .. "_min")) then
+                min = v
+            end
+            if (k == (tostring(stat.name) .. "_max")) then
+                max = v
+            end
+        end
+    end
+    if (min and max) then
+        result = { name = stat.name, min = min, max = max }
+    end
+    return result
+end
+
+function Inventory:GetItemStats(statsTable, itemName)
+    local result = {}
+    for _, statEntry in pairs(statsTable) do
+        local entrySize = Inventory:GetTableSize(statEntry)
+        if (entrySize == 2) then
+            local entryType
+            local entry
+            for k, v in pairs(statEntry) do
+                if (k == "var_type") then
+                    entryType = v
+                elseif (string.match(k, "_min")) then
+                    entry = string.gsub(k, "_min", "")
+                end
+            end
+            if (entry and entryType) then
+                table.insert(result, { name = entry, type = entryType })
+            end
+        else
+            DebugPrint("[INVENTORY] Expected two key-value pairs from ability special for item " .. tostring(itemName) .. ", but received " .. tostring(entrySize) .. ". Ignoring.")
+            DebugPrintTable(statEntry)
+        end
+    end
+    return result
+end
+
+function Inventory:GetTableSize(kv)
+    local count = 0
+    for _, __ in pairs(kv) do
+        count = count + 1
+    end
+    return count
 end
 
 -- Panaroma related stuff
@@ -537,6 +614,8 @@ function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, i
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot })
     end
 end
+
+Inventory.initialized = nil
 
 if not Inventory.initialized then
     Inventory:Init()
