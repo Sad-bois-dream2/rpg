@@ -44,7 +44,7 @@ end
 ---@param unit CDOTA_BaseNPC
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
-function Units:CalculateStats(unit, statsTable)
+function Units:CalculateStats(unit, statsTable, secondCalc)
     if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
@@ -107,6 +107,9 @@ function Units:CalculateStats(unit, statsTable)
         local unitCriticalDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
+        table.sort(unitModifiers, function(a, b)
+            return (a:GetCreationTime() > b:GetCreationTime())
+        end)
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetStrengthBonus) then
                 unitBonusStr = unitBonusStr + (tonumber(unitModifiers[i].GetStrengthBonus(unitModifiers[i])) or 0)
@@ -423,6 +426,9 @@ function Units:CalculateStats(unit, statsTable)
         statsTable.display.maxmana = unit:GetMaxMana()
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
+        end
+        if(secondCalc == false or not secondCalc) then
+            statsTable = Units:CalculateStats(unit, statsTable, true)
         end
     end
     return statsTable
