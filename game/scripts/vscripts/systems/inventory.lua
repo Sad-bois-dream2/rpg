@@ -1,8 +1,9 @@
 if Inventory == nil then
     _G.Inventory = class({})
 end
+
 -- for test only, remove later pls
-if (IsServer()) then
+if (IsServer() and not Inventory.initialized) then
     ListenToGameEvent("player_chat", function(event)
         if (event.text == "-additem") then
             local player = PlayerResource:GetPlayer(event.playerid)
@@ -695,8 +696,6 @@ function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, i
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot })
     end
 end
-
-Inventory.initialized = nil
 
 if not Inventory.initialized then
     Inventory:Init()
