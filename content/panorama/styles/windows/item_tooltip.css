@@ -54,6 +54,26 @@
 	flow-children: right;
 }
 
+.ItemTooltipStatsContainer
+{
+	width: fill-parent-flow(1.0);
+	flow-children: down;
+	margin-top: 10px;
+}
+
+.ItemTooltipStatsContainer Label
+{
+	width: fill-parent-flow(1.0);
+	text-align: left;
+	vertical-align: center;
+	horizontal-align: left;
+	overflow: clip squish;
+	height: 20px;
+	color: white;
+	font-size: 15px;
+	font-family: platformfont;
+}
+
 .ItemTooltipRarityLabel
 {
 	width: fill-parent-flow(1.0);
