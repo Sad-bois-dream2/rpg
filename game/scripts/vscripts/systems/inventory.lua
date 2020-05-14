@@ -501,7 +501,7 @@ function Inventory:OnInventoryDropItemRequest(event, args)
         return
     end
     local hero = player:GetAssignedHero()
-    if (hero == nil) then
+    if (hero == nil or not hero:IsAlive()) then
         return
     end
     if (not Inventory:IsHeroHaveInventory(hero)) then
@@ -539,7 +539,7 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
         return
     end
     local hero = player:GetAssignedHero()
-    if (hero == nil) then
+    if (hero == nil or not hero:IsAlive()) then
         return
     end
     if (not Inventory:IsHeroHaveInventory(hero)) then
@@ -592,7 +592,7 @@ function Inventory:OnInventoryEquippedItemRightClick(event, args)
         return
     end
     local hero = player:GetAssignedHero()
-    if (hero == nil) then
+    if (hero == nil or not hero:IsAlive()) then
         return
     end
     if (not Inventory:IsHeroHaveInventory(hero)) then
@@ -622,7 +622,7 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
         return
     end
     local hero = player:GetAssignedHero()
-    if (hero == nil) then
+    if (hero == nil or not hero:IsAlive()) then
         return
     end
     if (not Inventory:IsHeroHaveInventory(hero)) then
@@ -678,7 +678,7 @@ function Inventory:OnInventoryEquipItemRequest(event, args)
         return
     end
     local hero = player:GetAssignedHero()
-    if (hero == nil) then
+    if (hero == nil or not hero:IsAlive()) then
         return
     end
     if (not Inventory:IsHeroHaveInventory(hero)) then
