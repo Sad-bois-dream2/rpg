@@ -47,6 +47,7 @@ function modifier_castbar:OnAbilityStart(keys)
             castTime = channelTime
         else
             castTime = ability:GetCastPoint() * Units:GetSpellHaste(self.hero)
+            if (castTime < 0.20) then castTime = 0.20 end
         end
         local event = {
             casttime = castTime,

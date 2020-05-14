@@ -274,6 +274,7 @@ end
 -- Shadowcaster (talent 51) cast point stuff
 
 function phantom_ranger_shadow_waves:GetCastPoint()
+    if not IsServer() then return self.BaseClass.GetCastPoint(self) end
     local talent51CastTime = 2
     if (TalentTree:GetHeroTalentLevel(self.caster, 51) > 0) then
         return talent51CastTime
