@@ -22,16 +22,23 @@ modifier_castbar = class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ABILITY_START }
+        return {
+            MODIFIER_EVENT_ON_ABILITY_START,
+            MODIFIER_PROPERTY_CASTTIME_PERCENTAGE
+        }
     end,
 })
+
+function modifier_castbar:GetModifierPercentageCasttime()
+    return (Units:GetSpellHaste(self.hero) - 1) * -100
+end
 
 function modifier_castbar:OnAbilityStart(keys)
     if (not IsServer()) then
         return
     end
     local ability = keys.ability
-    if (ability.IsRequireCastbar and keys.unit == self.hero) then
+    if (ability.IsRequireCastbar and ability.IsRequireCastbar(ability) == true and keys.unit == self.hero) then
         local abilityIndex = ability:GetEntityIndex()
         local channelTime = ability:GetChannelTime()
         local IsChannelAbility = (channelTime > 0)
@@ -39,14 +46,7 @@ function modifier_castbar:OnAbilityStart(keys)
         if (IsChannelAbility) then
             castTime = channelTime
         else
-            if (not ability.originalCastPoint) then
-                ability.originalCastPoint = ability:GetCastPoint()
-            end
-            castTime = ability.originalCastPoint * Units:GetSpellHaste(self.hero)
-            if (castTime < 0.25) then
-                castTime = 0.25
-            end
-            ability:SetOverrideCastPoint(castTime)
+            castTime = ability:GetCastPoint() * Units:GetSpellHaste(self.hero)
         end
         local event = {
             casttime = castTime,

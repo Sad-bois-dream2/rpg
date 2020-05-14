@@ -44,7 +44,7 @@ end
 ---@param unit CDOTA_BaseNPC
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
-function Units:CalculateStats(unit, statsTable)
+function Units:CalculateStats(unit, statsTable, secondCalc)
     if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
@@ -107,6 +107,9 @@ function Units:CalculateStats(unit, statsTable)
         local unitCriticalDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
+        table.sort(unitModifiers, function(a, b)
+            return (a:GetCreationTime() > b:GetCreationTime())
+        end)
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetStrengthBonus) then
                 unitBonusStr = unitBonusStr + (tonumber(unitModifiers[i].GetStrengthBonus(unitModifiers[i])) or 0)
@@ -342,7 +345,7 @@ function Units:CalculateStats(unit, statsTable)
         -- spell damage
         statsTable.spellDamage = unitBonusSpellDamage
         -- spell haste
-        statsTable.spellHaste = unitBonusSpellHaste
+        statsTable.spellHaste = math.max(0.01, unitBonusSpellHaste)
         -- attack range
         local baseAttackRange = unit:GetBaseAttackRange()
         statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange) - baseAttackRange)
@@ -423,6 +426,9 @@ function Units:CalculateStats(unit, statsTable)
         statsTable.display.maxmana = unit:GetMaxMana()
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
+        end
+        if(secondCalc == false or not secondCalc) then
+            statsTable = Units:CalculateStats(unit, statsTable, true)
         end
     end
     return statsTable
@@ -914,7 +920,7 @@ end
 ---@return number
 function Units:GetSpellHaste(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.spellHaste or 1
+        return unit.stats.spellHaste
     end
     return 1
 end
@@ -1001,135 +1007,135 @@ end
 ---@return number
 function Units:GetDamageReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.damageReduction or 0
+        return unit.stats.damageReduction or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetFireDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.fire or 0
+        return unit.stats.elementsDamage.fire or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetFrostDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.frost or 0
+        return unit.stats.elementsDamage.frost or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetEarthDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.earth or 0
+        return unit.stats.elementsDamage.earth or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetVoidDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.void or 0
+        return unit.stats.elementsDamage.void or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetHolyDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.holy or 0
+        return unit.stats.elementsDamage.holy or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetNatureDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.nature or 0
+        return unit.stats.elementsDamage.nature or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetInfernoDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsDamage.inferno or 0
+        return unit.stats.elementsDamage.inferno or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetFireProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.fire or 0
+        return unit.stats.elementsProtection.fire or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetFrostProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.frost or 0
+        return unit.stats.elementsProtection.frost or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetEarthProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.earth or 0
+        return unit.stats.elementsProtection.earth or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetVoidProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.void or 0
+        return unit.stats.elementsProtection.void or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetHolyProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.holy or 0
+        return unit.stats.elementsProtection.holy or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetNatureProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.nature or 0
+        return unit.stats.elementsProtection.nature or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
 function Units:GetInfernoProtection(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.elementsProtection.inferno or 0
+        return unit.stats.elementsProtection.inferno or 1
     end
-    return 0
+    return 1
 end
 
 ---@param unit CDOTA_BaseNPC
