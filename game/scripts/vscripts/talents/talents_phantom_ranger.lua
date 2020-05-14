@@ -876,8 +876,7 @@ end
 
 function modifier_npc_dota_hero_drow_ranger_talent_51:GetSpellHasteBonus()
 	
-	local talent51AtkSpeedToSpellHaste = 1 / 10
-	return Units:GetAttackSpeed(self.hero) * talent51AtkSpeedToSpellHaste / 100
+	return 1 - (100 / Units:GetAttackSpeed(self.hero))
 
 end
 

@@ -1053,6 +1053,8 @@ modifier_npc_dota_hero_silencer_talent_49 = class({
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
     end
+
+    LinkedModifiers["modifier_npc_dota_hero_silencer_talent_49"] = LUA_MODIFIER_MOTION_NONE
 })
 
 function modifier_npc_dota_hero_silencer_talent_49:OnAbilityFullyCast()
