@@ -278,7 +278,9 @@
 							<Label id="ItemTooltipRarityLabel1" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
 							<Label id="ItemTooltipTypeLabel1" html="true" class="ItemTooltipTypeLabel" text="Item type" />
 						</Panel>
+						<Label id="ItemTooltipQualityLabel1" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
 						<Label id="ItemTooltipLabel1" class="ItemTooltipLabel" html="true" text="Item description" />
+						<Panel id="ItemTooltipStatsContainer1" class="ItemTooltipStatsContainer" />
 					</Panel>
 				</Panel>
 				<Panel class="Item">
@@ -295,7 +297,9 @@
 							<Label id="ItemTooltipRarityLabel2" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
 							<Label id="ItemTooltipTypeLabel2" html="true" class="ItemTooltipTypeLabel" text="Item type" />
 						</Panel>
+						<Label id="ItemTooltipQualityLabel2" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
 						<Label id="ItemTooltipLabel2" class="ItemTooltipLabel" html="true" text="Item description" />
+						<Panel id="ItemTooltipStatsContainer2" class="ItemTooltipStatsContainer" />
 					</Panel>
 				</Panel>
 			</Panel>

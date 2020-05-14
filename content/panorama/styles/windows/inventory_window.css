@@ -325,8 +325,7 @@
 
 #ConflictDialogPanel 
 {
-	width: 620px; 
-	min-height: 350px;
+	width: fit-children;
 	height: fit-children;
 	border: 1px solid gray;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
@@ -357,6 +356,7 @@
 	margin: 5px;
 	margin-left: 35px;
 }
+
 #ConflictDialogPanel .ItemPanel .Item .ItemTooltipDescription .ItemTooltipLabel
 {
 	min-height: 140px;
