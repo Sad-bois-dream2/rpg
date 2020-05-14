@@ -11,7 +11,7 @@ var defensiveElePanels = [], offensiveElePanels = [];
 var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
 var pagePanels = [], pageButtons = [];
 var tooltip = [];
-var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME_LABEL = 2, TOOLTIP_RARITY_LABEL = 3, TOOLTIP_TYPE_LABEL = 4, TOOLTIP_DESCRIPTION_LABEL = 5;
+var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME_LABEL = 2, TOOLTIP_RARITY_LABEL = 3, TOOLTIP_TYPE_LABEL = 4, TOOLTIP_DESCRIPTION_LABEL = 5, TOOLTIP_QUALITY_LABEL = 6;
 var compareWindow = [];
 var COMPARE_PANEL = 0, COMPARE_PANEL1_IMAGE = 1, COMPARE_PANEL1_NAME_LABEL = 2, COMPARE_PANEL1_RARITY_LABEL = 3, COMPARE_PANEL1_TYPE_LABEL = 4, COMPARE_PANEL1_DESCRIPTION_LABEL = 5,
 COMPARE_PANEL2_IMAGE = 6, COMPARE_PANEL2_NAME_LABEL = 7, COMPARE_PANEL2_RARITY_LABEL = 8, COMPARE_PANEL2_TYPE_LABEL = 9, COMPARE_PANEL2_DESCRIPTION_LABEL = 10;
@@ -484,7 +484,8 @@ function ShowEquippedItemTooltip(slotId) {
 		var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname));
 		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
 		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, position[0], position[1]);
+		var itemQuality = $.Localize("#DOTA_Inventory_quality");
+		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, position[0], position[1]);
 	}
 }
 
@@ -497,11 +498,12 @@ function ShowItemTooltip(slotId) {
 		var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname));
 		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
 		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, position[0], position[1]);
+		var itemQuality = $.Localize("#DOTA_Inventory_quality");
+		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, position[0], position[1]);
 	}
 }
 
-function CreateItemTooltip(icon, name, rarity, type, description, x, y) {
+function CreateItemTooltip(icon, name, rarity, type, description, quality, x, y) {
 		tooltip[TOOLTIP_IMAGE].itemname = icon;
 		tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 		tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
@@ -512,6 +514,7 @@ function CreateItemTooltip(icon, name, rarity, type, description, x, y) {
             tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
         }
 		tooltip[TOOLTIP_DESCRIPTION_LABEL].text = description;
+		tooltip[TOOLTIP_QUALITY_LABEL].text = quality;
 		tooltip[TOOLTIP_PANEL].style.marginLeft = (x+40) + "px";
 		tooltip[TOOLTIP_PANEL].style.marginTop = (y-50) + "px";
 		tooltip[TOOLTIP_PANEL].style.visibility = "visible";
@@ -629,7 +632,7 @@ function OnInventoryItemsDataRequest(event) {
 	compareWindow = [$("#ConflictDialogPanel"), 
 	$("#ItemTooltipImage1"), $("#ItemTooltipNameLabel1"), $("#ItemTooltipRarityLabel1"), $("#ItemTooltipTypeLabel1"), $("#ItemTooltipLabel1"),
 	$("#ItemTooltipImage2"), $("#ItemTooltipNameLabel2"), $("#ItemTooltipRarityLabel2"), $("#ItemTooltipTypeLabel2"), $("#ItemTooltipLabel2")];
-	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipRarityLabel"), $("#ItemTooltipTypeLabel"), $("#ItemTooltipLabel")];
+	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipRarityLabel"), $("#ItemTooltipTypeLabel"), $("#ItemTooltipLabel"), $("#ItemTooltipQualityLabel")];
 	/*inventoryStats = [$("#StrengthLabel"), $("#AgilityLabel"), $("#IntelligenceLabel"), $("#HealthLabel"), $("#ManaLabel"), $("#LevelLabel"), $("#CurrentXPLabel"), 
 	$("#SpellDamageLabel"), $("#SpellhasteLabel"), $("#AttackRangeLabel"), $("#AttackSpeedLabel"), $("#AttackDamageLabel"), $("#MoveSpeedLabel"), $("#ManaRegenLabel"), 
 	$("#PhysArmorLabel"), $("#HealthRegenLabel"), $("#PhysBlockLabel"), $("#MagicBlockLabel"), $("#DamageReductionLabel")]; */

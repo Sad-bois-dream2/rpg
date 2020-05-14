@@ -91,6 +91,17 @@
 	margin-top: 10px;
 }
 
+.ItemTooltipQualityLabel
+{
+	width: fill-parent-flow(1.0);
+	color: white;
+	font-size: 16px;
+	font-family: platformfont;
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: left;
+}
+
 .ItemTooltipHeader 
 {
 	flow-children: right;
