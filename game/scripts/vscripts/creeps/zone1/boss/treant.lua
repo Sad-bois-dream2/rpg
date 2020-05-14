@@ -176,13 +176,14 @@ function treant_hook:OnSpellStart()
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
         self.radius = self:GetSpecialValueFor("range")
         local target = self:FindTargetForHook(caster)
-
+        local vine_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        vine_dummy:EmitSoundParams("Hero_DarkWillow.Bramble.Spawn",1.0, 0.2, 0)
         local info =
         {
             Target = target,
             Source = caster,
             Ability = self,
-            EffectName = "particles/base_attacks/generic_projectile.vpcf",
+            EffectName = nil,
             iMoveSpeed = projectile_speed,
             vSourceLoc= caster:GetAbsOrigin(),                -- Optional (HOW)
             bDrawsOnMinimap = false,                          -- Optional
@@ -194,11 +195,30 @@ function treant_hook:OnSpellStart()
             bProvidesVision = true,                           -- Optional
             iVisionRadius = 400,                              -- Optional
             iVisionTeamNumber = caster:GetTeamNumber(),        -- Optional
+            ExtraData			=
+            {
+                vine_dummy	= vine_dummy:entindex(),
+            }
         }
         projectile = ProjectileManager:CreateTrackingProjectile(info)
         caster:EmitSound("Hero_Treant.NaturesGrasp.Cast") --casting sound
     end
 end
+
+-- Make the travel sound follow the vine
+function treant_hook:OnProjectileThink_ExtraData(location, data)
+    if not IsServer() then return end
+    if data.vine_dummy then
+        EntIndexToHScript(data.vine_dummy):SetAbsOrigin(location)
+        local vine = "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
+        local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, EntIndexToHScript(data.vine_dummy))
+        Timers:CreateTimer(2, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+    end
+end
+
 
 function treant_hook:OnProjectileHit(target)
     local caster = self:GetCaster()
@@ -481,9 +501,6 @@ function modifier_treant_storm_eye:OnCreated()
 end
 
 function modifier_treant_storm_eye:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
             self.parent:GetAbsOrigin(),
             nil,
@@ -500,7 +517,7 @@ function modifier_treant_storm_eye:OnIntervalThink()
         local distance = vector:Length2D()
             if distance < self.min_damage_range then
                 distance = self.min_damage_range end
-        local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)/100) * self.tick
+        local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)) * self.tick
         local damageTable = {}
         damageTable.caster = self.parent
         damageTable.target = enemy
@@ -593,9 +610,6 @@ function modifier_treant_seed:GetSpellHasteBonus()
 end
 
 function modifier_treant_seed:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     --damage
     local damageTable= {}
     damageTable.caster = self.caster
@@ -844,9 +858,6 @@ function modifier_treant_one_root:CheckState()
 end
 
 function modifier_treant_one_root:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local damageTable = {}
     damageTable.ability = self.ability
     damageTable.caster = self.caster
@@ -958,9 +969,6 @@ function modifier_treant_ingrain:OnCreated()
 end
 
 function modifier_treant_ingrain:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
     self.parent_loc_new = self:GetParent():GetAbsOrigin()
     local vector = self.parent_loc_new - self.parent_loc_old
     local distance = vector:Length2D()
@@ -1050,9 +1058,6 @@ end
 
 --gain 1 stack heal every 0.1s channel total of 30 stacks
 function modifier_treant_regrowth_channel:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
     local healTable = {}
     healTable.caster = self.caster
     healTable.target = self.caster

@@ -1063,9 +1063,6 @@ end
 
 --gain 1 stack every 0.1s channel total of 50 stacks
 function modifier_ursa_jelly_channel:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
     local healTable = {}
     healTable.caster = self.caster
     healTable.target = self.caster

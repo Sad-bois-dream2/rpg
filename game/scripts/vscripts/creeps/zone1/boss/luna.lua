@@ -152,9 +152,6 @@ function modifier_luna_sky:OnDeath(params)
 end
 
 function modifier_luna_sky:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     self.game_mode = GameRules:GetGameModeEntity()
     GameRules:BeginTemporaryNight(30)
 end
@@ -656,9 +653,6 @@ function modifier_luna_wax:OnCreated(keys)
 end
 
 function modifier_luna_wax:OnIntervalThink(keys)
-    if not IsServer() then
-        return
-    end
     local stacks = self:GetStackCount()
     self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 *stacks/5
     self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01 * stacks/5

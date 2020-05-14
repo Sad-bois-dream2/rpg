@@ -195,9 +195,6 @@ function modifier_lycan_wound_debuff:OnCreated(keys)
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target

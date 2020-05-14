@@ -141,9 +141,6 @@ function modifier_mirana_sky:OnDeath(params)
 end
 
 function modifier_mirana_sky:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     self.game_mode = GameRules:GetGameModeEntity()
     GameRules:BeginTemporaryNight(30)
 end
@@ -255,9 +252,6 @@ function mirana_blessing:FindLuna(parent, range)
 end
 
 function modifier_mirana_blessing:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
     self.luna = self.ability:FindLuna(self.parent, 2000)
     if self.luna == nil then
         return
@@ -584,9 +578,6 @@ function modifier_mirana_under:OnCreated()
 end
 
 function modifier_mirana_under:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local modifierTable = {}
     modifierTable.ability = self.ability
     modifierTable.target = self.parent
@@ -714,9 +705,6 @@ end
 
 --gain 1 stack every 0.1s channel total of 50 stacks
 function modifier_mirana_aligned_channel:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
     local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal_blue.vpcf", PATTACH_POINT_FOLLOW, self.caster)
     Timers:CreateTimer(1.0, function()
         ParticleManager:DestroyParticle(healFX, false)

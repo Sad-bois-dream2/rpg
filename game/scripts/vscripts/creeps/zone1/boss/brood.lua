@@ -378,9 +378,6 @@ end
 
 --smart mother tries to find enemy to charge in and oneshot
 function modifier_brood_comes_mother:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
             self.parent:GetAbsOrigin(),
             nil,
@@ -663,9 +660,6 @@ function modifier_brood_cocoons:CheckState()
 end
 
 function modifier_brood_cocoons:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
     local spider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
     spider:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
@@ -788,9 +782,6 @@ function modifier_brood_kiss:OnDestroy()
 end
 
 function modifier_brood_kiss:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local tick = 1
     self.delay = self.delay - tick
     ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, math.max(0, math.floor(self.delay)), 0))
@@ -1212,9 +1203,6 @@ end
 --------------------------------------------------------------------------------
 -- Interval Effects
 function modifier_brood_spit_burn_slow:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local dps = self:GetAbility():GetSpecialValueFor("burn_damage")
     local parent = self:GetParent()
     local caster = self:GetCaster()
@@ -1671,11 +1659,7 @@ function modifier_brood_web_enemy:GetMoveSpeedPercentBonus()
 end
 
 function modifier_brood_web_enemy:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
-    -- idk about alive thing
-    if (self.parent and not self.parent:IsNull() and self.parent:IsAlive()) then
+    if (self.parent and not self.parent:IsNull() ) then
         local summon_point = self.parent:GetAbsOrigin()
         local webspider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, self.caster, self.caster, self.casterTeam)
         FindClearSpaceForUnit(webspider, summon_point, true)

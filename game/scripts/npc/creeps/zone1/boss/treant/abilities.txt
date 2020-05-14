@@ -61,7 +61,7 @@
                 "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
-                "particle"  "particles/base_attacks/generic_projectile.vpcf"
+                "particle"  "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
         	}
 	}
     //=================================================================================================================
@@ -194,12 +194,12 @@
                 "03"
     			{
     				"var_type"					"FIELD_FLOAT"
-                    "min_damage"                "50 100 200"
+                    "min_damage"                "25 50 100"
     		    }
     			"03"
     			{
     				"var_type"					"FIELD_FLOAT"
-                    "increment_damage"          "50 100 200"
+                    "increment_damage"          "0.25 0.5 1"
     		    }
     		    "04"
     		    {
