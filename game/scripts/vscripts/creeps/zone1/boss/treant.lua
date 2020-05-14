@@ -273,10 +273,8 @@ function modifier_treant_flux_eye:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_treant_flux_eye:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
+function modifier_treant_flux_eye:OnIntervalThink()  --StartIntervalThink will only be called on server, so OnIntervalThink method doesn't have to call IsServer again.
+    -- damage
     local counter = 0
     Timers:CreateTimer(0, function()
         if counter < 10 then
@@ -312,10 +310,9 @@ function modifier_treant_flux_eye:OnIntervalThink()
         ParticleManager:DestroyParticle(self.pfx, false)
         ParticleManager:ReleaseParticleIndex(self.pfx)
     end)
-    --gather particle
     Timers:CreateTimer(2.5, function()
-        self.ppfx = ParticleManager:CreateParticle("particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
         self.parent:EmitSound("Hero_Oracle.FortunesEnd.Channel")
+        self.ppfx = ParticleManager:CreateParticle("particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
         Timers:CreateTimer(1.5, function()
             ParticleManager:DestroyParticle(self.ppfx, false)
             ParticleManager:ReleaseParticleIndex(self.ppfx)
@@ -474,7 +471,7 @@ function modifier_treant_storm_eye:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self.base_damage = self.ability:GetSpecialValueFor("min_damage")
-    self.increment = self.ability:GetSpecialValueFor("increment")
+    self.increment = self.ability:GetSpecialValueFor("increment_damage")
     self.min_damage_range = self.ability:GetSpecialValueFor("min_damage_range")
     self.range = self.ability:GetSpecialValueFor("range")
     --local duration = self.ability:GetSpecialValueFor("duration") --5
@@ -503,7 +500,7 @@ function modifier_treant_storm_eye:OnIntervalThink()
         local distance = vector:Length2D()
             if distance < self.min_damage_range then
                 distance = self.min_damage_range end
-        local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)) * self.tick
+        local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)/100) * self.tick
         local damageTable = {}
         damageTable.caster = self.parent
         damageTable.target = enemy
@@ -1043,14 +1040,9 @@ function modifier_treant_regrowth_channel:OnCreated(keys)
         self.health_heal_pct = self.ability:GetSpecialValueFor("health_heal_pct") * 0.01
         self.tick = self.ability:GetSpecialValueFor("tick")
         self.max_stacks = math.floor(self.channel_time/ self.tick) + 1 --29.999999254942 to be exact so need +1
-        --first stack instantly it seems got to 29 if no instant
-        local healTable = {}
-        healTable.caster = self.caster
-        healTable.target = self.caster
-        healTable.ability = self.ability
-        healTable.heal = self.caster:GetMaxHealth() * self.health_heal_pct /self.max_stacks
-        GameMode:HealUnit(healTable)
+
         self:StartIntervalThink(self.tick)
+        self:OnIntervalThink()
     else
         self:Destroy()
     end
@@ -1295,12 +1287,6 @@ function modifier_treant_root_debuff:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    --local vine = "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
-    --local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN_FOLLOW, self.parent)
-    --Timers:CreateTimer(4.0, function()
-        --ParticleManager:DestroyParticle(pidx, false)
-        --ParticleManager:ReleaseParticleIndex(pidx)
-    --end)
 end
 
 function modifier_treant_root_debuff:OnRefresh()

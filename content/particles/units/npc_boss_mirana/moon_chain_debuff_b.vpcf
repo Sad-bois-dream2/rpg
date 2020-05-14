@@ -270,10 +270,10 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_ember_spirit/ember_spirit_searing_chains_debuff_b_fire.vpcf"
+			m_ChildRef = resource:"particles/units/npc_boss_mirana/moon_chain_debuff_b_glow.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/npc_boss_mirana/moon_chain_debuff_b_glow.vpcf"
+			m_ChildRef = resource:"particles/units/npc_boss_mirana/moon_chain_debuff_b_fire.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 5

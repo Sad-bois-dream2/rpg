@@ -15,7 +15,7 @@
 			m_flOverbrightFactor = 5.0
 			m_flAddSelfAmount = 1.0
 			m_bSaturateColorPreAlphaBlend = false
-			m_hTexture = resource:"materials/particle/fire_burning_character/fire_burning_character.vtex"
+			m_hTexture = resource:"materials/particle/fire_burning_character/bluefire_burning_character.vtex"
 			m_flAnimationRate = 5.0
 			m_vecColorScale = 
 			{
@@ -186,7 +186,7 @@
 		{
 			_class = "C_OP_ColorInterpolate"
 			m_flFadeEndTime = 0.6
-			m_ColorFade = [ 135, 206, 250, 255 ]
+			m_ColorFade = [ 70, 130, 180, 255 ]
 		},
 		{
 			_class = "C_OP_PositionLock"

@@ -419,7 +419,7 @@ modifier_brood_comes_random_taunt = class({
         return false
     end,
     IsPurgable = function(self)
-        return false
+        return true
     end,
     RemoveOnDeath = function(self)
         return true
@@ -573,10 +573,11 @@ function brood_comes:OnSpellStart()
     --spawn spider horde
     local angleLeft = 0
     local summon_origin = tauntTarget:GetAbsOrigin()
-    local summon_point = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
+    local summon_point_base = tauntTarget:GetAbsOrigin() + self.radius * tauntTarget:GetForwardVector()
+    local summon_point
     for i = 0, self.number - 1, 1 do
         angleLeft = QAngle(0, i * (math.floor(360 / self.number)), 0)
-        summon_point = RotatePosition(summon_origin, angleLeft, summon_point)
+        summon_point = RotatePosition(summon_origin, angleLeft, summon_point_base)
         local spider = CreateUnitByName("npc_boss_brood_spiderling", summon_point, true, caster, caster, caster:GetTeamNumber())
         spider:AddNewModifier(caster, self.ability, "modifier_kill", { duration = 30 })
         --find all spiders to charge

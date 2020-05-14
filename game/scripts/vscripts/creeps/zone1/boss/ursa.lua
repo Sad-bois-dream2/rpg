@@ -672,7 +672,7 @@ function ursa_swift:FindTargetForBlink(caster)
                 false)
         local distanceToBoss = 0
         local latestDistance = 0
-        local jumpTarget = caster--?????
+        local jumpTarget
         local casterPos = caster:GetAbsOrigin()
         for _, enemy in pairs(enemies) do
             -- find the farthest hero from the heroes in range
@@ -755,7 +755,6 @@ function ursa_slam:OnSpellStart()
         self.caster = self:GetCaster()
         local sound_cast = "Hero_Ursa.Earthshock"
         local earthshock_particle = "particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7.vpcf"
-        local particle_hit = "particles/dev/library/base_dust_hit_shockwave.vpcf"
         -- Ability specials
         local radius = self:GetSpecialValueFor("radius")
         local damage = self:GetSpecialValueFor("damage")
@@ -771,7 +770,12 @@ function ursa_slam:OnSpellStart()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
-
+        --bigger aoe
+        if self:GetLevel() == 2 then
+            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale4_1000.vpcf", PATTACH_ABSORIGIN, self.caster)
+        elseif self:GetLevel() ==3 then
+            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale6_1500.vpcf", PATTACH_ABSORIGIN, self.caster)
+        end
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -784,12 +788,6 @@ function ursa_slam:OnSpellStart()
                 false)
 
         for _, enemy in pairs(enemies) do
-            -- Apply hit earthshock particles on enemies hit
-            local particle_hit_fx = ParticleManager:CreateParticle(particle_hit, PATTACH_ABSORIGIN, enemy)
-            Timers:CreateTimer(2.0, function()
-                ParticleManager:DestroyParticle(particle_hit_fx, false)
-                ParticleManager:ReleaseParticleIndex(particle_hit_fx)
-            end)
             --Damage nearby enemies
             local damageTable = {}
             damageTable.caster = self.caster
@@ -832,7 +830,12 @@ modifier_ursa_slam_slow = class({
     GetTexture = function(self)
         return ursa_slam:GetAbilityTextureName()
     end,
-
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN_FOLLOW
+    end
 })
 
 function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
@@ -857,13 +860,6 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
 end
 
-function modifier_ursa_slam_slow:GetEffectName()
-    return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
-end
-
-function modifier_ursa_slam_slow:GetEffectAttachType()
-    return PATTACH_ABSORIGIN_FOLLOW
-end
 
 LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -890,6 +886,15 @@ modifier_ursa_hunt_buff_stats = class({
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_DEATH }
     end,
+    --GetEffectName = function(self)
+        --return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
+    --end,
+    --GetEffectAttachType = function(self)
+        --return PATTACH_ABSORIGIN_FOLLOW
+    --end,
+    GetStatusEffectName = function(self)
+        return "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
+    end
 })
 
 function modifier_ursa_hunt_buff_stats:GetAttackDamagePercentBonus()
@@ -925,13 +930,6 @@ function modifier_ursa_hunt_buff_stats:OnDeath(params)
             ParticleManager:ReleaseParticleIndex(healFX)
         end)
     end
-end
-function modifier_ursa_hunt_buff_stats:GetEffectName()
-    return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
-end
-
-function modifier_ursa_hunt_buff_stats:GetEffectAttachType()
-    return PATTACH_ABSORIGIN_FOLLOW
 end
 
 LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1056,23 +1054,8 @@ function modifier_ursa_jelly_channel:OnCreated(keys)
         self.health_heal_pct = self.ability:GetSpecialValueFor("health_heal_pct") * 0.01
         self.tick = self.ability:GetSpecialValueFor("tick")
         self.max_stacks = math.floor(self.channel_time/ self.tick) + 1 --i print have found self.channel_time/ self.tick = 49.999999254942
-        --first stack instantly it seems got to 49 if no instant
-        local modifierTable = {}
-        modifierTable.ability = self.ability
-        modifierTable.target = self.caster
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_ursa_jelly_buff"
-        modifierTable.duration = -1 --self.duration
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = self.max_stacks
-        GameMode:ApplyStackingBuff(modifierTable)
-        local healTable = {}
-        healTable.caster = self.caster
-        healTable.target = self.caster
-        healTable.ability = self.ability
-        healTable.heal = self.caster:GetMaxHealth() * self.health_heal_pct /self.max_stacks
-        GameMode:HealUnit(healTable)
         self:StartIntervalThink(self.tick)
+        self:OnIntervalThink()
     else
         self:Destroy()
     end

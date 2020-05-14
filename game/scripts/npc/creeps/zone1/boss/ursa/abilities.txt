@@ -173,9 +173,7 @@
         "ScriptFile"					"creeps/zone1/boss/ursa"
         "AbilityTextureName"			"ursa_roar"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
    		"MaxLevel"						"3"
 
    		// Casting
@@ -184,7 +182,6 @@
         "AnimationIgnoresModelScale"    "1"
         "AnimationPlaybackRate"         "0.2"
         "AbilityCastPoint"				"2"
-        "AbilityCastRange"				"900"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
@@ -345,7 +342,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "500 800 1300"
+   				"radius"				    "500 1000 1500"
    			}
    			"02"
    			{

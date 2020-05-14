@@ -119,7 +119,8 @@ function modifier_mirana_sky:OnCreated()
     self.target = self:GetParent()
     self.ability = self:GetAbility()
     self.fixed_vision = self.ability:GetSpecialValueFor("fixed_vision")
-    self:StartIntervalThink(29.5)
+    self:StartIntervalThink(29)
+    self:OnIntervalThink()
 end
 
 function modifier_mirana_sky:GetFixedDayVision()
@@ -178,7 +179,7 @@ function mirana_sky:OnSpellStart()
             modifierTable.duration = -1
             GameMode:ApplyDebuff(modifierTable)
         end
-        caster:EmitSound("Hero_Nightstalker.Darkness.Team")
+        EmitGlobalSound("Hero_Nightstalker.Darkness.Team")
         local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
         local particle_darkness = "particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
         local particle_darkness_fx = ParticleManager:CreateParticle(particle_darkness, PATTACH_ABSORIGIN_FOLLOW, caster)
@@ -194,8 +195,6 @@ function mirana_sky:OnSpellStart()
             ParticleManager:DestroyParticle(particle_moon_fx, false)
             ParticleManager:ReleaseParticleIndex(particle_moon_fx)
         end)
-        self.game_mode = GameRules:GetGameModeEntity()
-        GameRules:BeginTemporaryNight(30)
     end
 end
 
@@ -233,6 +232,7 @@ function modifier_mirana_blessing:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self:StartIntervalThink(0.5)
+    self:OnIntervalThink()
 end
 
 function mirana_blessing:FindLuna(parent, range)
@@ -491,7 +491,7 @@ function mirana_holy:OnProjectileHit_ExtraData(target)
         damageTable.caster = caster
         damageTable.target = target
         damageTable.ability = self
-        damageTable.damage = damage*0.001 --nerf
+        damageTable.damage = damage
         damageTable.puredmg = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
@@ -578,22 +578,9 @@ function modifier_mirana_under:OnCreated()
     self.caster = self:GetCaster()
     self.interval = self:GetAbility():GetSpecialValueFor("interval") --4
     self.silence = self:GetAbility():GetSpecialValueFor("silence") --3
-    --first instance immediately
-    local modifierTable = {}
-    modifierTable.ability = self.ability
-    modifierTable.target = self.parent
-    modifierTable.caster = self.caster
-    modifierTable.modifier_name = "modifier_mirana_under_silence"
-    modifierTable.duration = self.silence
-    GameMode:ApplyDebuff(modifierTable)
-    local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
-    local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, self.parent)
-    Timers:CreateTimer(3.0, function()
-        ParticleManager:DestroyParticle(ray_fx, false)
-        ParticleManager:ReleaseParticleIndex(ray_fx)
-    end)
     --other instances
     self:StartIntervalThink(self.interval)
+    self:OnIntervalThink()
 end
 
 function modifier_mirana_under:OnIntervalThink()
@@ -718,17 +705,8 @@ function modifier_mirana_aligned_channel:OnCreated(keys)
         self.channel_time = self.ability:GetSpecialValueFor("channel_time")
         self.tick = self.ability:GetSpecialValueFor("tick")
         self.max_stacks = math.ceil(self.channel_time/ self.tick) --i print have found self.channel_time/ self.tick = 49.999999254942
-        --first stack instantly it seems got to 49 if no instant
-        local modifierTable = {}
-        modifierTable.ability = self.ability
-        modifierTable.target = self.caster
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_mirana_aligned_buff"
-        modifierTable.duration = -1 --self.duration
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = self.max_stacks
-        GameMode:ApplyStackingBuff(modifierTable)
         self:StartIntervalThink(self.tick)
+        self:OnIntervalThink()
     else
         self:Destroy()
     end
@@ -770,7 +748,7 @@ modifier_mirana_aligned_buff = class({
         return false
     end,
     IsHidden = function(self)
-        return true
+        return false
     end,
     IsPurgable = function(self)
         return false
@@ -848,8 +826,8 @@ function mirana_aligned:StarsAlignFX(target)
         ParticleManager:DestroyParticle(particle_starfall_fx, false)
         ParticleManager:ReleaseParticleIndex(particle_starfall_fx)
     end)
-    EmitSoundOn("Hero_Luna.Eclipse.Cast", target)
     Timers:CreateTimer(0.57,function()
+        EmitSoundOn("Hero_Luna.Eclipse.Cast", target)
         local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
         local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_ABSORIGIN_FOLLOW, target )
         ParticleManager:SetParticleControl( effect_cast, 1, Vector( 300, 300, 300 ) )
@@ -913,12 +891,12 @@ function mirana_aligned:OnChannelFinish()
             false)
     for _, enemy in pairs(enemies) do
         --Damage nearby enemies
-        Timers:CreateTimer(0.25,function()
+        Timers:CreateTimer(0.57,function()
             local damageTable = {}
             damageTable.caster = caster
             damageTable.target = enemy
             damageTable.ability = self
-            damageTable.damage = damage*0.2 --nerf
+            damageTable.damage = damage
             damageTable.naturedmg = true
             damageTable.voiddmg = true
             GameMode:DamageUnit(damageTable)
@@ -1158,6 +1136,7 @@ function modifier_mirana_bound:OnDeath(params)
     if (params.unit == self.parent and stack == 1 ) then
         if self.luna ~= nil then
             self.luna:FindModifierByName("modifier_luna_bound_buff"):SetStackCount(2)
+            self.luna:EmitSound("Item.MoonShard.Consume")
         end
         local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
         local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, self.parent)

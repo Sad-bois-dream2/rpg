@@ -134,7 +134,7 @@ function lycan_wound:ApplyDamageAndDebuff(target, caster)
     damageTable.caster = caster
     damageTable.target = target
     damageTable.ability = self
-    damageTable.damage = damage*0.03 --nerf
+    damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
     --heal negate
@@ -202,7 +202,7 @@ function modifier_lycan_wound_debuff:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
-    damageTable.damage = self.dot * self.target:GetMaxHealth() *0.03 --nerf
+    damageTable.damage = self.dot * self.target:GetMaxHealth()
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -657,12 +657,17 @@ function modifier_lycan_agility_buff:OnCreated(keys)
     if (not keys or keys.target) then
         self:Destroy()
     end
-    self.target = EntIndexToHScript(keys.target)
+    self.target = keys.target
 end
 
 function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
     return self.target
 end
+
+function modifier_lycan_agility_buff:GetCriticalChanceBonus()
+    return 2 -- 300% crit chance
+end
+
 
 LinkLuaModifier("modifier_lycan_agility_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -679,7 +684,7 @@ function lycan_agility:OnSpellStart()
     modifierTable.target = caster
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_lycan_agility_buff"
-    modifierTable.modifier_params = { target = target:GetEntityIndex() }
+    modifierTable.modifier_params = { target = target }
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
     --set table for already hit
@@ -696,14 +701,13 @@ function lycan_agility:OnSpellStart()
             self:Blink(target, caster)
             target = self:FindTargetForBlink(caster)
             --add new ignore aggro
-            if target ~= nil then
             modifierTable.ability = self
             modifierTable.target = caster
             modifierTable.caster = caster
             modifierTable.modifier_name = "modifier_lycan_agility_buff"
-            modifierTable.modifier_params = { target = target:GetEntityIndex() }
+            modifierTable.modifier_params = { target = target }
             modifierTable.duration = -1
-            GameMode:ApplyBuff(modifierTable) end
+            GameMode:ApplyBuff(modifierTable)
             return 1.5
         end
     end)
@@ -950,7 +954,7 @@ function modifier_lycan_bleeding_dot:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
-    damageTable.damage = damage * 0.03 --nerf
+    damageTable.damage = damage
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end
