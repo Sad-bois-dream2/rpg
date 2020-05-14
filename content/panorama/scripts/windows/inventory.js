@@ -26,9 +26,9 @@ var INVENTORY_SLOT_OFFHAND = 5
 var INVENTORY_SLOT_CAPE = 6
 var INVENTORY_SLOT_SHOULDER = 7
 var INVENTORY_SLOT_GLOVES = 8
-var INVENTORY_SLOT_RING1 = 9
+var INVENTORY_SLOT_RING = 9
 var INVENTORY_SLOT_BELT = 10
-var INVENTORY_SLOT_RING2 = 11
+var INVENTORY_SLOT_AMULET = 11
 // adding rarity here require change GetInventoryItemRarityName()
 var INVENTORY_ITEM_RARITY_COMMON = 0
 var INVENTORY_ITEM_RARITY_RARE = 1
@@ -89,14 +89,14 @@ function GetInventoryItemSlotName(slot) {
 		case INVENTORY_SLOT_GLOVES:
 			return "#DOTA_Inventory_slot_gloves";
 			break;
-		case INVENTORY_SLOT_RING1:
-			return "#DOTA_Inventory_slot_ring1";
+		case INVENTORY_SLOT_RING:
+			return "#DOTA_Inventory_slot_ring";
 			break;
 		case INVENTORY_SLOT_BELT:
 			return "#DOTA_Inventory_slot_belt";
 			break;
-		case INVENTORY_SLOT_RING2:
-			return "#DOTA_Inventory_slot_ring2";
+		case INVENTORY_SLOT_AMULET:
+			return "#DOTA_Inventory_slot_amulet";
 			break;
 		default:
 			return "Unknown";

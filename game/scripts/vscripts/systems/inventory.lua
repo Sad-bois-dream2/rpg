@@ -18,7 +18,7 @@ function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand, 5)
     Inventory:RegisterItemSlot("item_broadsword", self.rarity.cursed, self.slot.offhand, 5)
     Inventory:RegisterItemSlot("item_chainmail", self.rarity.rare, self.slot.body, 5)
-    Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring1, 5)
+    Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring, 5)
 end
 
 function Inventory:Init()
@@ -36,9 +36,9 @@ function Inventory:Init()
     self.slot.cape = 6
     self.slot.shoulder = 7
     self.slot.gloves = 8
-    self.slot.ring1 = 9
+    self.slot.ring = 9
     self.slot.belt = 10
-    self.slot.ring2 = 11
+    self.slot.amulet = 11
     -- latest slot id for internal stuff
     self.slot.last = 11
     -- Invalid slot id for internal stuff
