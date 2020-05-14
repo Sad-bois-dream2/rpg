@@ -486,8 +486,19 @@ function ShowEquippedItemTooltip(slotId) {
 		var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname));
 		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
 		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
-		var itemQuality = $.Localize("#DOTA_Inventory_quality");
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, null, position[0], position[1]);
+		var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname, inventoryEquippedSlots[slotId][SLOT_ITEM_STATS]));
+		var itemStatsCount = inventorySlots[slotId][SLOT_ITEM_STATS].length;
+		var missedLabels = itemStatsCount - statsLabelsInTooltip;
+		if(missedLabels > 0) {
+		    for(var i = 0; i < missedLabels; i++) {
+		        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
+                statsLabel.html = true;
+                statsLabel.style.visibility = "collapse";
+                statsLabels.push(statsLabel);
+                statsLabelsInTooltip++;
+		    }
+		}
+		CreateItemTooltip(inventoryEquippedSlots[slotId], itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, position[0], position[1]);
 	}
 }
 
@@ -531,11 +542,22 @@ function ShowItemTooltip(slotId) {
 		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
 		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
 		var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname, inventorySlots[slotId][SLOT_ITEM_STATS]));
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, null, position[0], position[1]);
+		var itemStatsCount = inventorySlots[slotId][SLOT_ITEM_STATS].length;
+		var missedLabels = itemStatsCount - statsLabelsInTooltip;
+		if(missedLabels > 0) {
+		    for(var i = 0; i < missedLabels; i++) {
+		        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
+                statsLabel.html = true;
+                statsLabel.style.visibility = "collapse";
+                statsLabels.push(statsLabel);
+                statsLabelsInTooltip++;
+		    }
+		}
+		CreateItemTooltip(inventorySlots[slotId], itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, position[0], position[1]);
 	}
 }
 
-function CreateItemTooltip(icon, name, rarity, type, description, quality, stats, x, y) {
+function CreateItemTooltip(slot, icon, name, rarity, type, description, quality, x, y) {
 		tooltip[TOOLTIP_IMAGE].itemname = icon;
 		tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 		tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
@@ -550,6 +572,15 @@ function CreateItemTooltip(icon, name, rarity, type, description, quality, stats
 		tooltip[TOOLTIP_PANEL].style.marginLeft = (x+40) + "px";
 		tooltip[TOOLTIP_PANEL].style.marginTop = (y-50) + "px";
 		tooltip[TOOLTIP_PANEL].style.visibility = "visible";
+		var latestStatId = 0;
+		for(var i = 0; i < slot[SLOT_ITEM_STATS].length; i++) {
+		    statsLabels[i].text = $.Localize("#DOTA_Tooltip_Ability_"+slot[SLOT_ITEM_IMAGE].itemname+"_"+slot[SLOT_ITEM_STATS][i].name) + slot[SLOT_ITEM_STATS][i].value;
+		    statsLabels[i].style.visibility = "visible";
+		    latestStatId++;
+		}
+		for(var i = latestStatId; i < statsLabelsInTooltip; i++) {
+		    statsLabels[i].style.visibility = "collapse";
+		}
 }
 
 function CreateInventorySlots() {
@@ -661,7 +692,7 @@ function OnInventoryItemsDataRequest(event) {
         var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
         statsLabel.html = true;
         statsLabel.style.visibility = "collapse";
-        statsLabels.push(statsLabel)
+        statsLabels.push(statsLabel);
     }
 	/*inventoryStats = [$("#StrengthLabel"), $("#AgilityLabel"), $("#IntelligenceLabel"), $("#HealthLabel"), $("#ManaLabel"), $("#LevelLabel"), $("#CurrentXPLabel"),
 	$("#SpellDamageLabel"), $("#SpellhasteLabel"), $("#AttackRangeLabel"), $("#AttackSpeedLabel"), $("#AttackDamageLabel"), $("#MoveSpeedLabel"), $("#ManaRegenLabel"), 

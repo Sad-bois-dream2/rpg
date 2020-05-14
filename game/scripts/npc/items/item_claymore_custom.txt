@@ -25,12 +25,12 @@
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"attack_damage_max"		"3"
+				"attack_damage_max"		"25"
 			}
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"attack_speed_min"		"10"
+				"attack_speed_min"		"1"
 			}
 			"04"
 			{

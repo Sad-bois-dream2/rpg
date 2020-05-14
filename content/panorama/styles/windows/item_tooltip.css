@@ -58,7 +58,7 @@
 {
 	width: fill-parent-flow(1.0);
 	flow-children: down;
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 .ItemTooltipStatsContainer Label
@@ -72,6 +72,7 @@
 	color: white;
 	font-size: 15px;
 	font-family: platformfont;
+	margin-bottom: 2px;
 }
 
 .ItemTooltipRarityLabel
@@ -108,7 +109,7 @@
 	font-family: platformfont;
 	horizontal-align: center;
 	vertical-align: center;
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 .ItemTooltipQualityLabel
