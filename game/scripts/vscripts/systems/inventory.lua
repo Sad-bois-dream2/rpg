@@ -344,7 +344,7 @@ function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
         local itemsData = {}
         local maxItemId = math.min(currentItem + self.maxItemsPerRequest, itemsDataLength)
         for i = currentItem, maxItemId do
-            table.insert(itemsData, { item = Inventory.items_data[i].item, slot = Inventory.items_data[i].slot, rarity = Inventory.items_data[i].rarity })
+            table.insert(itemsData, { item = Inventory.items_data[i].item, slot = Inventory.items_data[i].slot, rarity = Inventory.items_data[i].rarity, stats = Inventory.items_data[i].stats })
         end
         currentItem = currentItem + self.maxItemsPerRequest + 1
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_items_data", { items_data = json.encode(itemsData) })
