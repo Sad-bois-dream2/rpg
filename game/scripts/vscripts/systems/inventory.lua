@@ -23,9 +23,9 @@ end
 
 function Inventory:Init()
     self.maxItemsPerRequest = 10
-    -- slots count, change here require same changes in client side inventory.js
-    self.max_stored_items = 14 * 7
-    -- slot types
+    -- slots count, changes here require same changes in client side inventory.js
+    self.maxStoredItems = 14 * 7
+    -- slot types, changes here require changes in GetInventoryItemSlotName() in client side inventory.js
     self.slot = {}
     self.slot.mainhand = 0
     self.slot.body = 1
@@ -43,14 +43,14 @@ function Inventory:Init()
     self.slot.last = 11
     -- Invalid slot id for internal stuff
     self.slot.invalid = -1
-    -- item types
+    -- item types, changes here require changes in GetInventoryItemRarityName() in client side inventory.js
     self.rarity = {}
     self.rarity.common = 0
     self.rarity.rare = 1
     self.rarity.cursed = 2
     -- latest rarity id for internal stuff
     self.rarity.max = 2
-    self.items_data = {}
+    self.itemsData = {}
     self.items_kv = LoadKeyValues("scripts/npc/npc_items_custom.txt")
     Inventory:SetupItems()
     Inventory:InitPanaromaEvents()
@@ -63,11 +63,11 @@ end
 ---@return number
 function Inventory:AddItem(hero, item, itemStats)
     if (hero ~= nil and item ~= nil and hero.inventory ~= nil) then
-        if (not Inventory.items_data[item]) then
+        if (not Inventory.itemsData[item]) then
             DebugPrint("[INVENTORY] Attempt to add unknown item (" .. item .. ").")
             return Inventory.slot.invalid
         end
-        for i = 0, Inventory.max_stored_items do
+        for i = 0, Inventory.maxStoredItems do
             if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
                 if (not itemStats) then
                     local difficulty = 1
@@ -129,10 +129,10 @@ end
 ---@param difficulty number
 ---@return table
 function Inventory:GetPossibleItemStats(item)
-    if (not item or not Inventory.items_data[item]) then
+    if (not item or not Inventory.itemsData[item]) then
         return nil
     end
-    return Inventory.items_data[item].stats
+    return Inventory.itemsData[item].stats
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
@@ -169,7 +169,7 @@ function Inventory:IsSlotValid(slot, equipped)
                 return true
             end
         else
-            if (slot > Inventory.slot.invalid and slot < Inventory.max_stored_items) then
+            if (slot > Inventory.slot.invalid and slot < Inventory.maxStoredItems) then
                 return true
             end
         end
@@ -239,8 +239,8 @@ end
 ---@param item string
 ---@return number
 function Inventory:GetValidSlotForItem(item)
-    if (item and Inventory.items_data[item]) then
-        return Inventory.items_data[item].slot
+    if (item and Inventory.itemsData[item]) then
+        return Inventory.itemsData[item].slot
     end
     return Inventory.slot.invalid
 end
@@ -260,8 +260,8 @@ end
 function Inventory:IsItemValidForSlot(item, slot)
     slot = tonumber(slot)
     if (item ~= nil and slot ~= nil) then
-        if (slot > Inventory.slot.invalid and Inventory.items_data[item]) then
-            return Inventory.items_data[item].slot == slot
+        if (slot > Inventory.slot.invalid and Inventory.itemsData[item]) then
+            return Inventory.itemsData[item].slot == slot
         end
         return false
     end
@@ -274,7 +274,7 @@ function Inventory:SetupForHero(hero)
         hero.inventory = {}
         hero.inventory.items = {}
         hero.inventory.equipped_items = {}
-        for i = 0, Inventory.max_stored_items do
+        for i = 0, Inventory.maxStoredItems do
             hero.inventory.items[i] = {}
             hero.inventory.items[i].name = ""
         end
@@ -306,7 +306,7 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
             DebugPrint("[INVENTORY] Item slot (" .. itemSlot .. ") invalid.")
             return
         end
-        for _, value in pairs(Inventory.items_data) do
+        for _, value in pairs(Inventory.itemsData) do
             if value.item == itemName then
                 DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " (already exists).")
                 return
@@ -333,7 +333,7 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
                 end
             end
         end
-        Inventory.items_data[itemName] = { slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = itemDifficulty }
+        Inventory.itemsData[itemName] = { slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = itemDifficulty }
     else
         DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)");
         DebugPrint("itemName", itemName);
@@ -345,10 +345,10 @@ end
 
 function Inventory:GetItemDifficulty(item)
     local result = 0
-    if (not item or not Inventory.items_data[item]) then
+    if (not item or not Inventory.itemsData[item]) then
         return result
     end
-    return Inventory.items_data[item].difficulty
+    return Inventory.itemsData[item].difficulty
 end
 
 function Inventory:FindStatValuesFromKeyValues(statsTable, stat)
@@ -396,9 +396,9 @@ function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
     return result
 end
 
-function Inventory:GetTableSize(kv)
+function Inventory:GetTableSize(table)
     local count = 0
-    for _, __ in pairs(kv) do
+    for _, __ in pairs(table) do
         count = count + 1
     end
     return count
@@ -417,15 +417,18 @@ function Inventory:InitPanaromaEvents()
 end
 
 function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
-    local itemsDataLength = #Inventory.items_data
-    local currentItem = 1
-    while currentItem <= itemsDataLength do
-        local itemsData = {}
-        local maxItemId = math.min(currentItem + self.maxItemsPerRequest, itemsDataLength)
-        for i = currentItem, maxItemId do
-            table.insert(itemsData, { item = Inventory.items_data[i].item, slot = Inventory.items_data[i].slot, rarity = Inventory.items_data[i].rarity, stats = Inventory.items_data[i].stats })
+    local currentItem = 0
+    local itemsData = {}
+    for itemName, data in pairs(Inventory.itemsData) do
+        if (currentItem > self.maxItemsPerRequest) then
+            CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_items_data", { items_data = json.encode(itemsData) })
+            itemsData = {}
+            currentItem = 0
         end
-        currentItem = currentItem + self.maxItemsPerRequest + 1
+        table.insert(itemsData, { item = itemName, slot = data.slot, rarity = data.rarity, stats = data.stats })
+        currentItem = currentItem + 1
+    end
+    if (#itemsData > 0) then
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_items_data", { items_data = json.encode(itemsData) })
     end
 end
@@ -448,7 +451,7 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
                     return 1.0
                 end
                 Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
-                for i = 0, Inventory.max_stored_items do
+                for i = 0, Inventory.maxStoredItems do
                     local itemInInventorySlot = Inventory:GetItemInSlot(hero, false, i)
                     if (Inventory:IsItemNotEmpty(itemInInventorySlot)) then
                         Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot, false, i, Inventory:GetItemStatsForHero(hero, false, i))
