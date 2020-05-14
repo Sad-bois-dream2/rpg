@@ -2,17 +2,6 @@ if Inventory == nil then
     _G.Inventory = class({})
 end
 
--- for test only, remove later pls
-if (IsServer() and not Inventory.initialized) then
-    ListenToGameEvent("player_chat", function(event)
-        if (event.text == "-additem") then
-            local player = PlayerResource:GetPlayer(event.playerid)
-            local hero = player:GetAssignedHero()
-            Inventory:AddItem(hero, "item_claymore_custom")
-        end
-    end, nil)
-end
-
 -- items database
 function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand, 5)
@@ -99,10 +88,7 @@ function Inventory:GenerateStatsForItem(item, difficulty)
         return result
     end
     local itemDifficulty = Inventory:GetItemDifficulty(item)
-    local minRoll = 0
-    if (itemDifficulty > difficulty * 0.5 or math.abs(difficulty * 0.5 - itemDifficulty) < 0.01) then
-        minRoll = 0.5
-    end
+    local minRoll = difficulty / itemDifficulty
     if (difficulty > itemDifficulty or math.abs(difficulty - itemDifficulty) < 0.01) then
         minRoll = 1
     end
