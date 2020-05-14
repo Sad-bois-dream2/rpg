@@ -232,8 +232,8 @@ end
 ---@param itemSlot number
 function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
     if (itemName ~= nil and itemSlot ~= nil and itemRarity ~= nil) then
-        if (string.len(itemName) == 0) then
-            DebugPrint("[INVENTORY] Item name can't be empty.")
+        if (not type(itemName) == "string" or string.len(itemName) == 0) then
+            DebugPrint("[INVENTORY] Item name can't be empty and must be string.")
             return
         end
         if (not Inventory:IsSlotValid(itemSlot, true)) then
@@ -242,12 +242,12 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
         end
         for _, value in pairs(Inventory.items_data) do
             if value.item == itemName then
-                DebugPrint("[INVENTORY] Bad attempt to add item \"" .. itemName .. "\" for slot " .. itemSlot .. " (already exists).")
+                DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " (already exists).")
                 return
             end
         end
         if (itemRarity < 0 or itemRarity > Inventory.rarity.max) then
-            DebugPrint("[INVENTORY] Bad attempt to add item \"" .. itemName .. "\" for slot " .. itemSlot .. " with rarity " .. itemRarity .. " (unknown rarity).")
+            DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " with rarity " .. tostring(itemRarity) .. " (unknown rarity).")
             return
         end
         local itemStats = {}
