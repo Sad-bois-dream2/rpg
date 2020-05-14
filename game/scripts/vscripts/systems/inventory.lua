@@ -14,10 +14,10 @@ end
 
 -- items database
 function Inventory:SetupItems()
-    Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand)
-    Inventory:RegisterItemSlot("item_broadsword", self.rarity.cursed, self.slot.offhand)
-    Inventory:RegisterItemSlot("item_chainmail", self.rarity.rare, self.slot.body)
-    Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring1)
+    Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_broadsword", self.rarity.cursed, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_chainmail", self.rarity.rare, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring1, 5)
 end
 
 function Inventory:Init()
@@ -60,7 +60,7 @@ end
 ---@param hero CDOTA_BaseNPC_Hero
 ---@param item string
 ---@return number
-function Inventory:AddItem(hero, item)
+function Inventory:AddItem(hero, item, itemStats)
     if (hero ~= nil and item ~= nil and hero.inventory ~= nil) then
         local IsItemValid = false
         for _, value in pairs(Inventory.items_data) do
@@ -75,12 +75,75 @@ function Inventory:AddItem(hero, item)
         end
         for i = 0, Inventory.max_stored_items do
             if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
-                Inventory:SetItemInSlot(hero, item, false, i)
+                if (not itemStats) then
+                    local difficulty = 1
+                    itemStats = Inventory:GenerateStatsForItem(item, difficulty)
+                end
+                Inventory:SetItemInSlot(hero, item, false, i, itemStats)
                 return i
             end
         end
         return Inventory.slot.invalid
     end
+end
+
+---@param item string
+---@param difficulty number
+---@return number
+function Inventory:GenerateStatsForItem(item, difficulty)
+    local result = {}
+    difficulty = tonumber(difficulty)
+    if (not item or not type(item) == "string" or not difficulty) then
+        return result
+    end
+    local itemStats = Inventory:GetPossibleItemStats(item)
+    if (not itemStats) then
+        return result
+    end
+    local itemDifficulty = Inventory:GetItemDifficulty(item)
+    local minRoll = 0
+    if (itemDifficulty > difficulty * 0.5 or math.abs(difficulty * 0.5 - itemDifficulty) < 0.01) then
+        minRoll = 0.5
+    end
+    if (difficulty > itemDifficulty or math.abs(difficulty - itemDifficulty) < 0.01) then
+        minRoll = 1
+    end
+    for _, stat in pairs(itemStats) do
+        local value = Inventory:PerformRoll(stat.min, stat.max, stat.type, minRoll)
+        table.insert(result, { name = stat.name, value = value })
+    end
+    return result
+end
+
+function Inventory:RoundStatValue(x)
+    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
+end
+
+function Inventory:PerformRoll(min, max, type, minRoll)
+    min = min + ((max - min) * minRoll)
+    if (type == "FIELD_INTEGER") then
+        return math.random(math.floor(min), max)
+    end
+    if (type == "FIELD_FLOAT") then
+        return Inventory:RoundStatValue((min + math.random() * (max - min)) * 100) / 100
+    end
+    DebugPrint("[INVENTORY] Got unknown role type " .. tostring(type) .. ". Wtf?")
+    return 0
+end
+
+---@param item string
+---@param difficulty number
+---@return table
+function Inventory:GetPossibleItemStats(item)
+    if (not item or not type(item) == "string") then
+        return nil
+    end
+    for _, itemData in pairs(Inventory.items_data) do
+        if (itemData.item == item) then
+            return itemData.stats
+        end
+    end
+    return nil
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
@@ -135,7 +198,7 @@ end
 ---@param item string
 ---@param is_equipped boolean
 ---@return boolean
-function Inventory:SetItemInSlot(hero, item, is_equipped, slot)
+function Inventory:SetItemInSlot(hero, item, is_equipped, slot, stats)
     slot = tonumber(slot)
     if (hero ~= nil and item ~= nil and is_equipped ~= nil and slot ~= nil) then
         if (Inventory:IsHeroHaveInventory(hero) and Inventory:IsSlotValid(slot, is_equipped)) then
@@ -230,7 +293,7 @@ end
 ---@param itemName string
 ---@param itemRarity number
 ---@param itemSlot number
-function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
+function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficulty)
     if (itemName ~= nil and itemSlot ~= nil and itemRarity ~= nil) then
         if (not type(itemName) == "string" or string.len(itemName) == 0) then
             DebugPrint("[INVENTORY] Item name can't be empty and must be string.")
@@ -250,9 +313,14 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
             DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " with rarity " .. tostring(itemRarity) .. " (unknown rarity).")
             return
         end
+        itemDifficulty = tonumber(itemDifficulty)
+        if (not itemDifficulty or itemDifficulty < 0) then
+            DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " with rarity " .. tostring(itemRarity) .. " (item difficulty can't be nil or negative).")
+            return
+        end
         local itemStats = {}
         if (Inventory.items_kv[itemName] and Inventory.items_kv[itemName]["AbilitySpecial"]) then
-            local itemStatsNames = Inventory:GetItemStats(Inventory.items_kv[itemName]["AbilitySpecial"], itemName)
+            local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.items_kv[itemName]["AbilitySpecial"], itemName)
             for _, stat in pairs(itemStatsNames) do
                 local statEntry = Inventory:GenerateItemStatsEntry(Inventory.items_kv[itemName]["AbilitySpecial"], stat)
                 if (statEntry and stat.type) then
@@ -263,13 +331,26 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
                 end
             end
         end
-        table.insert(Inventory.items_data, { item = itemName, slot = itemSlot, rarity = itemRarity, stats = itemStats })
+        table.insert(Inventory.items_data, { item = itemName, slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = itemDifficulty })
     else
         DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)");
         DebugPrint("itemName", itemName);
         DebugPrint("itemRarity", itemRarity);
         DebugPrint("itemSlot", itemSlot);
     end
+end
+
+function Inventory:GetItemDifficulty(item)
+    local result = 1
+    if (not item or not type(item) == "string") then
+        return result
+    end
+    for _, itemData in pairs(Inventory.items_data) do
+        if (itemData.item == item) then
+            return itemData.difficulty
+        end
+    end
+    return result
 end
 
 function Inventory:GenerateItemStatsEntry(statsTable, stat)
@@ -292,7 +373,7 @@ function Inventory:GenerateItemStatsEntry(statsTable, stat)
     return result
 end
 
-function Inventory:GetItemStats(statsTable, itemName)
+function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
     local result = {}
     for _, statEntry in pairs(statsTable) do
         local entrySize = Inventory:GetTableSize(statEntry)

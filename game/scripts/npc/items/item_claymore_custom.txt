@@ -19,22 +19,22 @@
 		{
 			"01"
 			{
-				"var_type"			"FIELD_FLOAT"
+				"var_type"			"FIELD_INTEGER"
 				"attack_damage_min"		"1"
 			}
 			"02"
 			{
-				"var_type"			"FIELD_FLOAT"
+				"var_type"			"FIELD_INTEGER"
 				"attack_damage_max"		"3"
 			}
 			"03"
 			{
-				"var_type"			"FIELD_FLOAT"
+				"var_type"			"FIELD_INTEGER"
 				"attack_speed_min"		"10"
 			}
 			"04"
 			{
-				"var_type"			"FIELD_FLOAT"
+				"var_type"			"FIELD_INTEGER"
 				"attack_speed_max"		"15"
 			}
 		}
