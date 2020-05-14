@@ -30,4 +30,8 @@ function modifier_inventory_item_claymore_custom:GetAttackDamageBonus()
     return self.data.attack_damage
 end
 
-LinkLuaModifier("modifier_inventory_item_claymore_custom", "items/item_claymore", LUA_MODIFIER_MOTION_NONE)
+function modifier_inventory_item_claymore_custom:GetAttackSpeedBonus()
+    return self.data.attack_speed
+end
+
+LinkLuaModifier("modifier_inventory_item_claymore_custom", "items/item_claymore_custom", LUA_MODIFIER_MOTION_NONE)
