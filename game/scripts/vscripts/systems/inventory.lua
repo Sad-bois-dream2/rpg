@@ -87,7 +87,11 @@ end
 function Inventory:GenerateStatsForItem(item, difficulty)
     local result = {}
     difficulty = tonumber(difficulty)
-    if (not item or not type(item) == "string" or not difficulty) then
+    if (not item or not Inventory.itemsData[item] or not difficulty) then
+        DebugPrint("[INVENTORY] Unable to generate stats for " .. tostring(item) .. ". Wtf?")
+        DebugPrint("item", item)
+        DebugPrint("Inventory.itemsData[item]", Inventory.itemsData[item])
+        DebugPrint("difficulty", difficulty)
         return result
     end
     local itemStats = Inventory:GetPossibleItemStats(item)
@@ -102,9 +106,9 @@ function Inventory:GenerateStatsForItem(item, difficulty)
     if (difficulty > itemDifficulty or math.abs(difficulty - itemDifficulty) < 0.01) then
         minRoll = 1
     end
-    for _, stat in pairs(itemStats) do
-        local value = Inventory:PerformRoll(stat.min, stat.max, stat.type, minRoll)
-        table.insert(result, { name = stat.name, value = value })
+    for statName, statValues in pairs(itemStats) do
+        local value = Inventory:PerformRoll(statValues.min, statValues.max, statValues.type, minRoll)
+        table.insert(result, { name = statName, value = value })
     end
     return result
 end
@@ -140,7 +144,7 @@ end
 ---@param is_equipped boolean
 ---@return table
 function Inventory:GetItemStatsForHero(hero, is_equipped, slot)
-    if (not hero or not is_equipped or not slot or not Inventory:IsHeroHaveInventory(hero)) then
+    if (not hero or not slot or not Inventory:IsHeroHaveInventory(hero)) then
         return {}
     end
     if (is_equipped) then
@@ -222,7 +226,11 @@ function Inventory:SetItemInSlot(hero, item, is_equipped, slot, stats)
                     modifierTable.target = hero
                     modifierTable.caster = hero
                     modifierTable.modifier_name = "modifier_inventory_" .. item
-                    modifierTable.modifier_params = stats
+                    local modifierParams = {}
+                    for _, statData in pairs(stats) do
+                        modifierParams[statData.name] = statData.value
+                    end
+                    modifierTable.modifier_params = modifierParams
                     modifierTable.duration = -1
                     hero.inventory.equipped_items[slot].modifier = GameMode:ApplyBuff(modifierTable)
                 end
@@ -553,9 +561,10 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
         local itemFromSlot = Inventory:GetItemInSlot(hero, true, event.fromslot)
         local itemInSlot = Inventory:GetItemInSlot(hero, false, event.inslot)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, true, event.fromslot)
+        local statsInSlot = Inventory:GetItemStatsForHero(hero, false, event.inslot)
         -- swap equipped item with empty bottom slot
         if (not Inventory:IsItemNotEmpty(itemInSlot)) then
-            Inventory:SetItemInSlot(hero, "", true, event.fromslot, {})
+            Inventory:SetItemInSlot(hero, "", true, event.fromslot, statsInSlot)
             Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot, statsFromSlot)
         else
             -- swap equipped item with not empty bottom slot (conflict)
@@ -639,9 +648,10 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
         return
     end
     if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, true, desiredItemSlot))) then
+        local statsInSlot = Inventory:GetItemStatsForHero(hero, true, desiredItemSlot)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.fromslot)
         Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
-        Inventory:SetItemInSlot(hero, "", false, event.fromslot, {})
+        Inventory:SetItemInSlot(hero, "", false, event.fromslot, statsInSlot)
     else
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_start_item_replace_dialog_from_server", { player_id = event.player_id, item = event.item, slot = event.fromslot })
     end
@@ -698,7 +708,7 @@ end
 function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, itemSlot, itemStats)
     if (hero ~= nil and itemName ~= nil and is_equipped ~= nil and itemSlot ~= nil) then
         local player = hero:GetPlayerOwner()
-        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot, stats = itemStats })
+        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot, stats = json.encode(itemStats) })
     end
 end
 
