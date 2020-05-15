@@ -304,7 +304,7 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"total_damage"			"6400 145800 1843200"
+				"total_multiplier"			"32 243 1024"
 			}
 			"05"
 			{

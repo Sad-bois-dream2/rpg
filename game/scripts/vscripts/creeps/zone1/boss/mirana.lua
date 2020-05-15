@@ -608,7 +608,7 @@ function mirana_under:FindTargetForSilence(caster) --random with already hit rem
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
                 nil,
-                3000,
+                radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
                 DOTA_UNIT_TARGET_HERO,
                 DOTA_UNIT_TARGET_FLAG_NONE,
@@ -866,36 +866,38 @@ function mirana_aligned:OnChannelFinish()
     local base_damage = self:GetSpecialValueFor("base_damage")
     local damage = base_damage * math.pow(expo, expo_power)
     local radius = self:GetSpecialValueFor("radius")
-    self:StarsAlignFX(target)
-    -- Find all nearby enemies
-    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-            target:GetAbsOrigin(),
-            nil,
-            radius,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, enemy in pairs(enemies) do
-        --Damage nearby enemies
-        Timers:CreateTimer(0.57,function()
-            local damageTable = {}
-            damageTable.caster = caster
-            damageTable.target = enemy
-            damageTable.ability = self
-            damageTable.damage = damage
-            damageTable.naturedmg = true
-            damageTable.voiddmg = true
-            GameMode:DamageUnit(damageTable)
+    if not target:IsNull() then
+        self:StarsAlignFX(target)
+        -- Find all nearby enemies
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                target:GetAbsOrigin(),
+                nil,
+                radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            --Damage nearby enemies
+            Timers:CreateTimer(0.57,function()
+                local damageTable = {}
+                damageTable.caster = caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = damage
+                damageTable.naturedmg = true
+                damageTable.voiddmg = true
+                GameMode:DamageUnit(damageTable)
+            end)
+        end
+        --taunting if max charge
+        Timers:CreateTimer(1, function()
+            if expo_power == 5 then
+                caster:EmitSound("mirana_mir_kill_0"..math.random(1,11))
+            end
         end)
     end
-    --taunting if max charge
-    Timers:CreateTimer(1, function()
-        if expo_power == 5 then
-            caster:EmitSound("mirana_mir_kill_0"..math.random(1,11))
-        end
-    end)
     caster:RemoveModifierByName("modifier_mirana_aligned_buff")
 end
 
@@ -1022,7 +1024,7 @@ function  mirana_guile:OnSpellStart()
         FindClearSpaceForUnit(target, target2_loc, true)
         FindClearSpaceForUnit(target2, target_loc, true)
         --local tree_radius = self:GetSpecialValueFor("tree_radius") --200
-        -- Destroy trees around start and end areas -- ill leave it here just incase ppl get struck
+        -- Destroy trees around start and end areas -- ill leave it here just in case ppl get struck
         --GridNav:DestroyTreesAroundPoint(caster_loc, tree_radius, false)
         --GridNav:DestroyTreesAroundPoint(target_loc, tree_radius, false)
         --swap aggro

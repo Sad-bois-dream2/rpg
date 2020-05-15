@@ -695,8 +695,6 @@ function lycan_agility:OnSpellStart()
         if target ~= nil then
             --remove ignore aggro
             caster:RemoveModifierByName("modifier_lycan_agility_buff")
-            self:Blink(target, caster)
-            target = self:FindTargetForBlink(caster)
             --add new ignore aggro
             modifierTable.ability = self
             modifierTable.target = caster
@@ -705,6 +703,10 @@ function lycan_agility:OnSpellStart()
             modifierTable.modifier_params = { target = target }
             modifierTable.duration = -1
             GameMode:ApplyBuff(modifierTable)
+            --smash
+            self:Blink(target, caster)
+            --new target
+            target = self:FindTargetForBlink(caster)
             return 1.5
         end
     end)

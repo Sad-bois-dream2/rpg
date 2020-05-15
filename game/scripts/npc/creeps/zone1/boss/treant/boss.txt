@@ -27,6 +27,7 @@
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
+        "HeathBarOffset"        "250"
 
         // Attack
         //----------------------------------------------------------------
@@ -98,10 +99,10 @@
         "AttachWearables"
                     {
                         //"1" { "ItemDef" "9452"}
-                        "1" { "ItemDef" "9901"}
-                        "2" { "ItemDef" "9900"}
-                        "3" { "ItemDef" "9898"}
-                        "4" { "ItemDef" "9899"}
+                        "1" { "ItemDef" "9901" "StyleIndex" "1"}
+                        "2" { "ItemDef" "9900"  "Style" "1"}
+                        "3" { "ItemDef" "9898" "Index" "1"}
+                        "4" { "ItemDef" "9899", "Style"}
 
                     }
 

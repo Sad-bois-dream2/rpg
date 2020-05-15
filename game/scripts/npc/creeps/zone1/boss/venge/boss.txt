@@ -27,6 +27,7 @@
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
+        "HeathBarOffset"        "250"
 
         // Attack
         //----------------------------------------------------------------

@@ -507,7 +507,7 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
         damageTable.target = target
         damageTable.ability = self
         damageTable.damage = damage
-        damageTable.naturedmg = true
+        damageTable.frostdmg = true
         damageTable.voiddmg = true
         GameMode:DamageUnit(damageTable)
         local fx = "particles/econ/items/luna/luna_lucent_ti5/luna_lucent_beam_moonfall.vpcf"

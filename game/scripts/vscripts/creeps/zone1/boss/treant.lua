@@ -1216,6 +1216,7 @@ function treant_beam:OnProjectileHit_ExtraData(target)
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.naturedmg = true
+        damageTable.firedmg = true
         GameMode:DamageUnit(damageTable)
     end
 end
