@@ -51,13 +51,25 @@
 	font-family: platformfont;
 	text-align: center;
 	letter-spacing: 1px;
-    margin-bottom: 0px;
+    margin-bottom: 10px;
+}
+
+.DifficultyChangeLabel
+{
+    color: white;
+    font-size: 15px;
+	font-family: platformfont;
+	text-align: left;
+	letter-spacing: 1px;
+    margin-bottom: 3px;
 }
 
 #DifficultyChangesContainer
 {
     width: fill-parent-flow(1.0);
     height: fill-parent-flow(1.0);
+    flow-children: down;
+    overflow: squish scroll;
 }
 
 .ConfirmButton

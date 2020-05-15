@@ -1,4 +1,6 @@
-var difficultySlider, difficultyLabel;
+var difficultySlider, difficultyLabel, difficultyContainer;
+var difficultyContainerLabels = [];
+var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 10;
 
 function GetPickedDiffculty(value) {
     if(value  < 0.01) {
@@ -61,9 +63,42 @@ function GetPickedDiffculty(value) {
     return 20;
 }
 
+function GetPickedDiffcultyChanges(difficulty) {
+    var changes = [];
+    for(var i = 1; i < difficulty + 1; i++) {
+        var change = $.Localize("#DOTA_Difficulty_Change" + i);
+        if(!change.toLowerCase().includes("dota_") && change.length > 0) {
+            changes.push(change);
+        }
+    }
+    return changes;
+}
+
+function ModifyDifficultyWindow(difficulty) {
+    var changes = GetPickedDiffcultyChanges(difficulty);
+    var missedLines = changes.length - difficultyContainer.GetChildCount();
+    if(missedLines > 0) {
+        var difficultyChange = $.CreatePanel("Label", difficultyContainer, "");
+        difficultyChange.SetHasClass("DifficultyChangeLabel", true);
+        difficultyChange.style.visibility = "visible";
+        difficultyChange.html = true;
+        difficultyContainerLabels.push(difficultyChange);
+    }
+    var latestChangeId = 0;
+    changes.forEach(change => {
+        difficultyContainerLabels[latestChangeId].text = change;
+        difficultyContainerLabels[latestChangeId].style.visibility = "visible";
+        latestChangeId += 1;
+    });
+    for(var i = latestChangeId; i < difficultyContainer.GetChildCount(); i++) {
+        difficultyContainerLabels[i].style.visibility = "collapse";
+    }
+    difficultyLabel.text = $.Localize("#DOTA_Difficulty_" + difficulty);
+}
+
 function UpdateValues() {
     var difficulty = GetPickedDiffculty(difficultySlider.value);
-    difficultyLabel.text = $.Localize("#DOTA_Difficulty_" + difficulty);
+    ModifyDifficultyWindow(difficulty);
 }
 
 function AutoUpdateValues() {
@@ -76,5 +111,13 @@ function AutoUpdateValues() {
 (function() {
     difficultySlider = $("#DifficultySlider");
     difficultyLabel = $("#PickedDifficultyLabel");
+    difficultyContainer = $("#DifficultyChangesContainer");
+    for(var i = 0; i < INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER; i++) {
+        var difficultyChange = $.CreatePanel("Label", difficultyContainer, "");
+        difficultyChange.SetHasClass("DifficultyChangeLabel", true);
+        difficultyChange.style.visibility = "visible";
+        difficultyChange.html = true;
+        difficultyContainerLabels.push(difficultyChange);
+    }
     AutoUpdateValues();
 })();
