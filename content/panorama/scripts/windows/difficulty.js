@@ -152,7 +152,6 @@ function ModifyDifficultyWindow(difficulty) {
 }
 
 function OnConfirmButtonPressed() {
-    $.Msg("Sended");
     GameEvents.SendCustomGameEventToServer("rpg_difficulty_confirm", {"data" : "1"});
 }
 
@@ -160,7 +159,8 @@ function UpdateValues() {
     var difficulty = GetPickedDifficulty(difficultySlider.value);
     ModifyDifficultyWindow(difficulty);
     if(timerStarted) {
-        TIMER = Math.round((TIMER - UPDATE_INTERVAL) * 100) / 100;
+        TIMER = (Math.round((TIMER - UPDATE_INTERVAL) * 100) / 100).toFixed(2);
+        timeLeftLabel.text = $.Localize("#DOTA_Difficulty_TimeLeft").replace("%TIME%", TIMER);
     }
 }
 
@@ -189,6 +189,7 @@ function OnDifficultyWindowHostInfo(event) {
     difficultyContainer = $("#DifficultyChangesContainer");
     MainWindow = $("#MainWindow");
     confirmButton = $("#ConfirmButton");
+    timeLeftLabel = $("#TimeLeftLabel");
     for(var i = 0; i < INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER; i++) {
         var difficultyChange = $.CreatePanel("Label", difficultyContainer, "");
         difficultyChange.SetHasClass("DifficultyChangeLabel", true);
