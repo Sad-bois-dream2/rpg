@@ -1,7 +1,7 @@
 var difficultySlider, difficultyLabel, difficultyContainer;
 var difficultyContainerLabels = [];
 var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 10;
-var UPDATE_INTERVAL = 0.25, UPDATE_INTERVAL_TIMER = 0.1;
+var UPDATE_INTERVAL = 0.25, UPDATE_INTERVAL_TIMER = 0.1, UPDATE_INTERVAL_TIMER_LOADING_DOTS = 0.5;
 var mainWindow;
 var confirmButton;
 var TIMER = -1;
@@ -175,12 +175,36 @@ function UpdateValues() {
     }
 }
 
+var currentDot = 1;
+var currentDotTimer = -1;
+
 function AutoUpdateTimer() {
-    if(timerStarted && !Game.IsGamePaused()) {
-        TIMER = (Math.round((TIMER - UPDATE_INTERVAL_TIMER) * 100) / 100).toFixed(2);
-        timeLeftLabel.text = $.Localize("#DOTA_Difficulty_TimeLeft").replace("%TIME%", TIMER);
-        if(TIMER < 0) {
-            OnConfirmButtonPressed();
+    if(timerStarted) {
+        if(!Game.IsGamePaused()) {
+            TIMER = (Math.round((TIMER - UPDATE_INTERVAL_TIMER) * 100) / 100).toFixed(2);
+            timeLeftLabel.text = $.Localize("#DOTA_Difficulty_TimeLeft").replace("%TIME%", TIMER);
+            if(TIMER < 0) {
+                OnConfirmButtonPressed();
+            }
+        }
+    } else {
+        if(currentDotTimer < 0) {
+        var dots = "";
+        if(currentDot == 1) {
+            dots = ".  ";
+        }
+        if(currentDot == 2) {
+            dots = ".. ";
+        }
+        if(currentDot == 3) {
+            dots = "...";
+            currentDot = 0;
+        }
+        timeLeftLabel.text = $.Localize("#DOTA_Difficulty_Loading").replace("%DOTS%", dots);
+        currentDot += 1;
+        currentDotTimer = UPDATE_INTERVAL_TIMER_LOADING_DOTS;
+        } else {
+            currentDotTimer -= UPDATE_INTERVAL_TIMER;
         }
     }
     $.Schedule(UPDATE_INTERVAL_TIMER, function() {
@@ -196,8 +220,6 @@ function AutoUpdateValues() {
 }
 
 function OnDifficultyWindowOpenRequest(event) {
-    TIMER = event.pick_time;
-    timerStarted = true;
     MainWindow.style.visibility = "visible";
 }
 
@@ -208,6 +230,8 @@ function OnDifficultyWindowCloseRequest(event) {
 
 function OnDifficultyWindowHostInfo(event) {
     hostId = event.player_id;
+    TIMER = event.pick_time;
+    timerStarted = true;
     if(event.player_id == Players.GetLocalPlayer()) {
         confirmButton.style.visibility = "visible";
     }
@@ -234,7 +258,7 @@ function OnDifficultyWindowValueChangeRequest(event) {
     GameEvents.Subscribe("rpg_difficulty_open_window_from_server", OnDifficultyWindowOpenRequest);
     GameEvents.Subscribe("rpg_difficulty_close_window_from_server", OnDifficultyWindowCloseRequest);
     GameEvents.Subscribe("rpg_difficulty_change_value", OnDifficultyWindowValueChangeRequest);
-    GameEvents.Subscribe("rpg_difficulty_is_host", OnDifficultyWindowHostInfo);
+    GameEvents.Subscribe("rpg_difficulty_server_info", OnDifficultyWindowHostInfo);
     AutoUpdateValues();
     AutoUpdateTimer();
 })();

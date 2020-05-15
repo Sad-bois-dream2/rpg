@@ -11,7 +11,7 @@
         <Panel id="MainWindow" class="Window DifficultyWindow">
             <Panel class="WindowContent">
                 <Label class="TitleLabel" text="#DOTA_Difficulty_Title"/>
-                <Label id="TimeLeftLabel" class="TimeLeftLabel" text="#DOTA_Difficulty_TimeLeft"/>
+                <Label id="TimeLeftLabel" class="TimeLeftLabel" text="#DOTA_Difficulty_Loading"/>
                 <SlottedSlider id="DifficultySlider" class="HorizontalSlider" direction="horizontal" notches="20"/>
                 <Label id="PickedDifficultyLabel" class="PickedDifficultyLabel" text="Novice"/>
                 <Panel id="DifficultyChangesContainer"/>

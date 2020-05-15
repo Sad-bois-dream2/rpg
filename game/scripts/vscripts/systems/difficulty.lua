@@ -33,9 +33,8 @@ function Difficulty:OnAllHeroesSpawned()
     end
     Difficulty.hostId = Difficulty:FindHostPlayerId()
     if (Difficulty.hostId > -1) then
-        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_is_host", { player_id = Difficulty.hostId })
+        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_server_info", { player_id = Difficulty.hostId, pick_time = Difficulty.PICK_TIME})
     end
-    CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_open_window_from_server", { pick_time = Difficulty.PICK_TIME })
 end
 
 function Difficulty:InitPanaromaEvents()
@@ -52,7 +51,7 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         Difficulty.value = event.difficulty / 10
         Difficulty.confirmed = true
-        Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3})
+        Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
         Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })
         Notifications:BottomToAll({ text = "#DOTA_Difficulty_" .. event.difficulty, duration = 3, continue = true })
         Notifications:BottomToAll({ text = "!", duration = 3, continue = true })
@@ -115,6 +114,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     local unit = EntIndexToHScript(keys.entindex)
     if (unit.IsRealHero and unit:IsRealHero() and Difficulty:IsConfirmed() == false) then
         unit:AddNewModifier(unit, nil, "modifier_difficulty_stun", { Duration = Difficulty.PICK_TIME })
+        CustomGameEventManager:Send_ServerToPlayer(unit:GetPlayerOwner(), "rpg_difficulty_open_window_from_server", {})
     end
 end, nil)
 
