@@ -3,3 +3,26 @@
 	width: 800px;
 	height: 800px;
 }
+
+.WindowContent
+{
+	margin-top: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    flow-children: down;
+}
+
+.TitleLabel
+{
+    color: white;
+    font-size: 20px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

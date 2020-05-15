@@ -167,6 +167,7 @@ Slider.HorizontalSlider, SlottedSlider.HorizontalSlider
 {
 	width: fill-parent-flow (1.0);
 	height: fit-children;
+	margin-top: 10px;
 }
 
 Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
