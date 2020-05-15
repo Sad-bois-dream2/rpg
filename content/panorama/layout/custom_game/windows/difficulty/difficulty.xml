@@ -10,7 +10,7 @@
     <Panel class="Root" hittest="false">
         <Panel id="MainWindow" class="Window DifficultyWindow">
             <Panel class="WindowContent">
-
+                <SlottedSlider id="Equipped" class="HorizontalSlider" direction="horizontal" notches="20" />
             </Panel>
         </Panel>
     </Panel>
