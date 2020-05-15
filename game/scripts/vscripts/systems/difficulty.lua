@@ -52,11 +52,15 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         Difficulty.value = event.difficulty / 10
         Difficulty.confirmed = true
+        Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3})
+        Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })
+        Notifications:BottomToAll({ text = "#DOTA_Difficulty_" .. event.difficulty, duration = 3, continue = true })
+        Notifications:BottomToAll({ text = "!", duration = 3, continue = true })
         CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_close_window_from_server", {})
         local heroes = HeroList:GetAllHeroes()
         for _, hero in pairs(heroes) do
             local modifier = hero:FindModifierByName("modifier_difficulty_stun")
-            if(modifier) then
+            if (modifier) then
                 modifier:Destroy()
             end
         end

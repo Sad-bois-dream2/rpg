@@ -36,6 +36,8 @@
     GameUI.CustomUIConfig().team_colors[DOTATeam_t.DOTA_TEAM_CUSTOM_8] = "#8c2af4;";
 	</script>
 	<Panel>
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/barebones_worldpanels.xml" />
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/barebones_notifications.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/dota_ui_fix.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/action_bar.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/buff_list.xml" />
@@ -46,7 +48,6 @@
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/talenttree/talenttree.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/difficulty/difficulty.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/dummy/dummy.xml" />
-        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/barebones_worldpanels.xml" />
 		<!--
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/inventory.xml" /> -->
 	</Panel>

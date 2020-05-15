@@ -17,7 +17,7 @@ require('libraries/timers')
 -- This library can be used for advanced 3D projectile systems.
 --require('libraries/projectiles')
 -- This library can be used for sending panorama notifications to the UIs of players/teams/everyone
---require('libraries/notifications')
+require('libraries/notifications')
 -- This library can be used for starting customized animations on units from lua
 --require('libraries/animations')
 -- This library can be used for performing "Frankenstein" attachments on units

@@ -202,6 +202,7 @@ function OnDifficultyWindowOpenRequest(event) {
 }
 
 function OnDifficultyWindowCloseRequest(event) {
+    Game.EmitSound("Item.GlimmerCape.Activate");
     MainWindow.style.visibility = "collapse";
 }
 
