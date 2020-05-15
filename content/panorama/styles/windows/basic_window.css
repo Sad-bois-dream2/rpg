@@ -172,15 +172,14 @@ Slider.HorizontalSlider, SlottedSlider.HorizontalSlider
 
 Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
 {
-	height: 16px;
-	width: 100%;
-
+	height: fit-children;
+	width: fill-parent-flow(1.0);
 	padding: 10px;
 }
 
 Slider.HorizontalSlider #SliderTrackProgress, SlottedSlider.HorizontalSlider #SliderTrackProgress
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 10px;
 	background-color: gradient( linear, 0% 0%, 100% 0%, from( #222222FF ), to( #444f52FF ) );
 	box-shadow: inset black 0px 1px 4px 0px;
