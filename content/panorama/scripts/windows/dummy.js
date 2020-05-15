@@ -1,24 +1,27 @@
-//text = text + "<br><span class='DamageOwner'>Crystal Sorceress</span> dealed <span class='DamageNumber'>" + damage.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " </span> <font color='#8f8f8f'>Physical</font>, <font color='#2084f6'>Frost</font> damage from <span class='DamageSource'>" + damageType + "</span>.";
-var mainWindow, damageLabel, dpsLabel;
+var mainWindow, damageLabel, dpsLabel, logCapacity;
+var DPS_TIME = 10
 var MAX_CAPACITY = 50;
 var currentEntryIndex = 0;
 var damageEntries = [];
 var latestSelectedDummy;
 var armors = [];
+var storedDamage = 0;
 
 function OnClearLogButtonPressed() {
     for (var i = 0; i < MAX_CAPACITY; i++) {
 	    damageEntries[i].style.visibility = "collapse";
 	}
     currentEntryIndex = 0;
-    // I Have no idea why it disappearing sometimes, this prob will fix
-    $("#DamageLog").style.visibility = "visible";
+    UpdateLogCapacityText();
 }
 
 function OnStartTestButtonPressed() {
     if(latestSelectedDummy < 0) {
         return;
     }
+    OnClearLogButtonPressed();
+    storedDamage = 0;
+    dpsLabel.text = "?";
 	var localPlayer = Players.GetLocalPlayer();
     var event = {
         "dummy" : latestSelectedDummy,
@@ -30,10 +33,6 @@ function OnStartTestButtonPressed() {
 function UpdateSelection() {
     var selectedUnit = Players.GetLocalPlayerPortraitUnit();
     if(Entities.GetUnitName(selectedUnit) == "npc_dummy_dps_unit") {
-        if(selectedUnit != latestSelectedDummy) {
-            ClearWindow();
-            GameEvents.SendCustomGameEventToServer("rpg_load_damage", { "player_id" : localPlayer, "dummy" : selectedUnit});
-        }
         latestSelectedDummy = selectedUnit;
         var localPlayer = Game.GetLocalPlayerID()
         GameEvents.SendCustomGameEventToServer("rpg_close_all_windows", { "player_id" : localPlayer});
@@ -96,27 +95,32 @@ function BuildDamageSourceString(event) {
     }
 }
 
+function FormatDamageNumber(number) {
+    return Math.floor(number).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+}
+
 function OnDamageRegisterRequest(event) {
     if(currentEntryIndex < MAX_CAPACITY) {
         var text = $.Localize("#DOTA_Dummy_Damage_Instance");
         text = text.replace("%SOURCE%", $.Localize("#" + event.source));
-        text = text.replace("%DAMAGE%", Math.floor(event.damage));
+        text = text.replace("%DAMAGE%", FormatDamageNumber(event.damage));
         text = text.replace("%DAMAGE_TYPES%", BuildDamageTypesString(event));
         text = text.replace("%DAMAGE_SOURCE%", BuildDamageSourceString(event));
 	    damageEntries[currentEntryIndex].text = text;
 	    damageEntries[currentEntryIndex].style.visibility = "visible";
 	    currentEntryIndex++;
+	    UpdateLogCapacityText();
 	}
+    storedDamage += event.damage;
+    CalculateDPS();
 }
 
-function OnResultRegisterRequest(event) {
-    event.dps = Math.floor(event.dps);
-	dpsLabel.text = Math.floor(event.dps).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+function UpdateLogCapacityText() {
+    logCapacity.text = $.Localize("#DOTA_Dummy_Log_Capacity").replace("%CURRENT%", currentEntryIndex).replace("%MAX%", MAX_CAPACITY);
 }
 
-function ClearWindow() {
-    dpsLabel.text = "?";
-    OnClearLogButtonPressed();
+function CalculateDPS() {
+    dpsLabel.text = FormatDamageNumber(storedDamage / DPS_TIME);
 }
 
 function OnBossStatsButtonPressed() {
@@ -150,6 +154,7 @@ function OnUpdateStatsButtonPressed() {
 
 (function() {
     mainWindow = $("#MainWindow");
+    logCapacity = $("#DamageLogCapacity");
     damageContainer = $("#DamageLog");
     for (var i =0; i < MAX_CAPACITY; i++) {
         var damageEntry = $.CreatePanel("Label", damageContainer, "");
@@ -158,6 +163,7 @@ function OnUpdateStatsButtonPressed() {
         damageEntry.html = true;
         damageEntries.push(damageEntry);
     }
+    UpdateLogCapacityText();
     armors.push($("#PhysArmor"));
     armors.push($("#FireArmor"));
     armors.push($("#FrostArmor"));
