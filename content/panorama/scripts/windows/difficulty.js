@@ -63,6 +63,56 @@ function GetPickedDiffculty(value) {
     return 20;
 }
 
+function GetHealthBonusForDifficulty(difficulty) {
+    var heroesInGame =  Entities.GetAllHeroEntities().length;
+    var result = (difficulty * 100 * heroesInGame) - 100;
+    return RoundValue(result);
+}
+
+function GetArmorBonusForDifficulty(difficulty) {
+    var result = (difficulty / 20) * 100;
+    return RoundValue(result);
+}
+
+function GetEleArmorBonusForDifficulty(difficulty) {
+    var result = (difficulty / 20) * 100;
+    return RoundValue(result);
+}
+
+function GetAttackDamageBonusForDifficulty(difficulty) {
+    var result = Math.pow((difficulty / 2), 3) * 100;;
+    return RoundValue(result);
+}
+
+function GetExperienceBonusForDifficulty(difficulty) {
+    return 0;
+}
+
+function GetAbilitiesLevelForDifficulty(difficulty) {
+    var result = 1;
+    if (difficulty > 8) {
+        result = 2;
+    }
+    if (difficulty > 14) {
+        result = 3;
+    }
+    return result;
+}
+
+function RoundValue(value) {
+    return Math.floor(value * 100) / 100;
+}
+
+function FormatChangesText(change, difficulty) {
+    change = change.replace("%HEALTH%", GetHealthBonusForDifficulty(difficulty));
+    change = change.replace("%ARMOR%", GetArmorBonusForDifficulty(difficulty));
+    change = change.replace("%ELEARMOR%", GetEleArmorBonusForDifficulty(difficulty));
+    change = change.replace("%ATTACKDAMAGE%", GetAttackDamageBonusForDifficulty(difficulty));
+    change = change.replace("%EXPERIENCE%", GetExperienceBonusForDifficulty(difficulty));
+    change = change.replace("%ABILITYLEVEL%", GetAbilitiesLevelForDifficulty(difficulty));
+    return change;
+}
+
 function GetPickedDiffcultyChanges(difficulty) {
     var changes = [];
     for(var i = 1; i < difficulty + 1; i++) {
@@ -86,7 +136,7 @@ function ModifyDifficultyWindow(difficulty) {
     }
     var latestChangeId = 0;
     changes.forEach(change => {
-        difficultyContainerLabels[latestChangeId].text = change;
+        difficultyContainerLabels[latestChangeId].text = FormatChangesText(change, difficulty);
         difficultyContainerLabels[latestChangeId].style.visibility = "visible";
         latestChangeId += 1;
     });
@@ -94,6 +144,10 @@ function ModifyDifficultyWindow(difficulty) {
         difficultyContainerLabels[i].style.visibility = "collapse";
     }
     difficultyLabel.text = $.Localize("#DOTA_Difficulty_" + difficulty);
+}
+
+function OnConfirmButtonPressed() {
+
 }
 
 function UpdateValues() {

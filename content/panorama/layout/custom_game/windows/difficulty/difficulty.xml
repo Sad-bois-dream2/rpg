@@ -15,7 +15,7 @@
                 <SlottedSlider id="DifficultySlider" class="HorizontalSlider" direction="horizontal" notches="20"/>
                 <Label id="PickedDifficultyLabel" class="PickedDifficultyLabel" text="Novice"/>
                 <Panel id="DifficultyChangesContainer"/>
-                <Panel class="WindowButton ConfirmButton" onactivate="OnClearLogButtonPressed()">
+                <Panel class="WindowButton ConfirmButton" onactivate="OnConfirmButtonPressed()">
                     <Label text="#DOTA_Difficulty_BtnConfirm"/>
                 </Panel>
             </Panel>
