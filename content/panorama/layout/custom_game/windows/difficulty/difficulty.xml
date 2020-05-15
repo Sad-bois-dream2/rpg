@@ -1,0 +1,17 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/difficulty_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/basic_window.js"/>
+        <include src="file://{resources}/scripts/windows/difficulty.js"/>
+    </scripts>
+    <Panel class="Root" hittest="false">
+        <Panel id="MainWindow" class="Window DifficultyWindow">
+            <Panel class="WindowContent">
+
+            </Panel>
+        </Panel>
+    </Panel>
+</root>
