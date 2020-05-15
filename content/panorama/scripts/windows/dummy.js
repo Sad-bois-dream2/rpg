@@ -181,5 +181,4 @@ function OnUpdateStatsButtonPressed() {
     GameEvents.Subscribe("rpg_dummy_open_window_from_server", OnWindowOpenRequest);
     GameEvents.Subscribe("rpg_dummy_close_window_from_server", OnWindowCloseRequest);
     GameEvents.Subscribe("rpg_dummy_damage", OnDamageRegisterRequest);
-    GameEvents.Subscribe("rpg_dummy_result_dps", OnResultRegisterRequest);
 })();
