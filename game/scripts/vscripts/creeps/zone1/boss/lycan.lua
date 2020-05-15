@@ -19,7 +19,7 @@ end
 function lycan_call:OnSpellStart()
     local caster = self:GetCaster()
     local casterTeam = caster:GetTeamNumber()
-    caster:EmitSound("lycan_lycan_ability_summon_03")
+    caster:EmitSound("lycan_lycan_ability_summon_0"..math.random(3,6))
     --Find enemies in range
     local enemies = FindUnitsInRadius(casterTeam,
             caster:GetAbsOrigin(),
@@ -105,6 +105,9 @@ function modifier_lycan_companion:OnAttackLanded(keys)
         local wolf = CreateUnitByName("npc_boss_lycan_companion_wolf", summon_point, true, self.parent, self.parent, self.parentTeam)
         wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 5 })
         self.ability:StartCooldown(self.ability.cooldown)
+        if RollPercentage(15) then
+        self.parent:EmitSound("lycan_lycan_ally_0"..math.random(3,5))
+        end
     end
 end
 
@@ -153,6 +156,10 @@ function lycan_wound:OnSpellStart()
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
     self:ApplyDamageAndDebuff(target, caster)
+    if caster:HasModifier("modifier_lycan_transform") then
+        caster:EmitSound("lycan_lycan_wolf_attack_08")
+    else caster:EmitSound("lycan_lycan_attack_08") end
+
 end
 
 modifier_lycan_wound_debuff = class({
@@ -188,9 +195,6 @@ function modifier_lycan_wound_debuff:OnCreated(keys)
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
     local damageTable = {}
     damageTable.caster = self.caster
     damageTable.target = self.target
@@ -199,14 +203,16 @@ function modifier_lycan_wound_debuff:OnIntervalThink()
     damageTable.puredmg = true
     GameMode:DamageUnit(damageTable)
 end
-
+--heal negate
 function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
-    --heal negate
-    return -1 --that boi can never regain hp again
+    return -1
+end
+
+function modifier_lycan_wound_debuff:GetHealingReceivedPercentBonus()
+    return -1
 end
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
 
 ---------------------
 --lycan wolf form
@@ -295,6 +301,7 @@ function modifier_lycan_wolf_form:OnTakeDamage()
     if self.hp_pct <= self.hp_threshold then
         -- hp drop below threshold = transform
         self.ability:Transform()
+        Timers:CreateTimer(5, function() self.ability:EmitSound("lycan_lycan_level_05") end)
     end
 end
 
@@ -384,9 +391,6 @@ lycan_howl_aura = class({
 })
 
 modifier_lycan_howl_aura = class({
-    IsHidden = function(self)
-        return false
-    end,
     IsAuraActiveOnDeath = function(self)
         return false
     end,
@@ -582,7 +586,7 @@ function lycan_agility:FindTargetForBlink(caster) --random with already hit remo
                 nil,
                 radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_HERO,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
@@ -657,6 +661,11 @@ function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
     return self.target
 end
 
+function modifier_lycan_agility_buff:GetCriticalChanceBonus()
+    return 2 -- 300% crit chance
+end
+
+
 LinkLuaModifier("modifier_lycan_agility_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
 function lycan_agility:OnSpellStart()
@@ -666,7 +675,7 @@ function lycan_agility:OnSpellStart()
 
     local target = self:GetCursorTarget()
     local caster = self:GetCaster()
-    --apply ignore aggro, is it working kekw
+    --apply ignore aggro
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = caster
@@ -684,7 +693,19 @@ function lycan_agility:OnSpellStart()
     Timers:CreateTimer(1.5, function()
         --other targets 1.5 s delay from first and 1.5s delay on every target after
         if target ~= nil then
+            --remove ignore aggro
+            caster:RemoveModifierByName("modifier_lycan_agility_buff")
+            --add new ignore aggro
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_lycan_agility_buff"
+            modifierTable.modifier_params = { target = target }
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
+            --smash
             self:Blink(target, caster)
+            --new target
             target = self:FindTargetForBlink(caster)
             return 1.5
         end
@@ -972,6 +993,10 @@ function modifier_lycan_bleeding_heal_reduced:OnRefresh()
 end
 
 function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus()
+    return self.heal_reduced
+end
+
+function modifier_lycan_bleeding_heal_reduced:GetHealingReceivedPercentBonus()
     return self.heal_reduced
 end
 

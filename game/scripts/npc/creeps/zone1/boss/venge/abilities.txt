@@ -1,4 +1,645 @@
 "DOTAAbilities"
 {
+    //=================================================================================================================
+    // Venge : Moon Missle
+    //=================================================================================================================
+    "venge_missile"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_missile"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"splash_max"				"100"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"splash_min"			    "0"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"slow_min"			        "0"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"slow_max"			        "200"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"			        "0.3 0.5 0.7"
+   			}
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Eclipsed Sky
+    //=================================================================================================================
+    "venge_sky"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_sky"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"999"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"fixed_vision"				"500 350 200"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : The Other Side of the Moon
+    //=================================================================================================================
+    "venge_side"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_side"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"health_per_infuse"			"50 33 25"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"resist"			        "50 100 200"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"fire_as"			        "100 400 700"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"frost_slow"			    "25 50 75"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"earth_dmg_reduction"	    "25 50 75"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"void_mana_burn"			"3 5 7"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"holy_ad_ms"			    "100 400 700"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"nature_regen"			        "1 2 3"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"inferno_resist_reduce"		"4 8 12"
+   			}
+   			"10"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_duration"			"300"
+   			}
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Sky Fall
+    //=================================================================================================================
+    "venge_fall"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_fall"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"45"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_fire"				"5"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"base_damage"				"1000 5000 10000"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"				        "250 1250 2500"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "5 8 11"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"interval"				    "0.5"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"contract_radius"			"250"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Rising Tide
+    //=================================================================================================================
+    "venge_tide"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_tide"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_frost"				"5"
+   			}
+            "02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "600"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"				        "5 10 15"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"				        "2 3.5 5"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "500 1500 4500"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"flood_slow"			    "25"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"flood_radius"			    "600"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"flood_duration"			    "8"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Moonify
+    //=================================================================================================================
+    "venge_moonify"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_moonify"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"45"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_earth"				"5"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "5"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "1500"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "50 150 450"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"interval"				    "2.5"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"pull_distance"				"200 250 300"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"moon_duration"				"8 10 12"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"hit_to_kill"				"3 5 7"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"pull_speed"				"3 5 7"
+   			}
+   			"10"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"rescue"				    "3 5 7"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Umbra
+    //=================================================================================================================
+    "venge_umbra"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_umbra"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_void"				"500 350 200"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "1500"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"mana_burn"				    "80 90 100"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"void_per_burn"				"60"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"				    "1 2 3"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nyx_assassin.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Spirit Guardian
+    //=================================================================================================================
+    "venge_guardian"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_guardian"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_holy"				"5"
+   			}
+            "02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"ms"				        "200 275 350"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "8 16 24"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
+    //=================================================================================================================
+    // Venge : Moon Storm
+    //=================================================================================================================
+    "venge_storm"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_storm"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"8 6 4"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"infuse_nature"				"5"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"			            "2000"
+   			}
+            "02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"chance"				    "40 60 80"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "10"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "200 600 1800"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "170"
+   			}
+   		}
+	    "precache"
+        {
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
+            "particle" "particles/generic_gameplay/generic_manaburn.vpcf"
+    	}
+    }
+
+    //=================================================================================================================
+    // Venge : Fel Moon
+    //=================================================================================================================
+    "venge_fel"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/venge"
+        "AbilityTextureName"			"venge_fel"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+    	// Casting
+    	//-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastPoint"				"0.1"
+        "AbilityCastRange"				"1500"
+        // Time
+       	//-------------------------------------------------------------------------------------------------------------
+       	"AbilityCooldown"				"30"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+         "DOTA_Tooltip_Ability_venge_fel_infuse_inferno"        "INFUSE INFERNO DURATION: "
+         "DOTA_Tooltip_Ability_venge_fel_range"         "RANGE: "
+         "DOTA_Tooltip_Ability_venge_fel_number"            "NUMBER OF FEL MOONS: "
+         "DOTA_Tooltip_Ability_venge_fel_flat_resist_reduction"     "FLAT ALL RESISTANCE REDUCTION PER FEL MOON: "
+         "DOTA_Tooltip_Ability_venge_fel_dot"           "DAMAGE OVER TIME: "
+         "DOTA_Tooltip_Ability_venge_fel_duration"      "FEL BURN DURATION: "
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"fel_infuse_inferno"		"5"
+   			}
+            "02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "1500"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"				    "3 7 11"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"flat_resist_reduction"	    "10 15 20"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"				        "100 500 1500"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"				    "10"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	}
+    }
 
 }
