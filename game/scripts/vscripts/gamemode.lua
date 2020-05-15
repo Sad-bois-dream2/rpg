@@ -17,7 +17,7 @@ require('libraries/timers')
 -- This library can be used for advanced 3D projectile systems.
 --require('libraries/projectiles')
 -- This library can be used for sending panorama notifications to the UIs of players/teams/everyone
---require('libraries/notifications')
+require('libraries/notifications')
 -- This library can be used for starting customized animations on units from lua
 --require('libraries/animations')
 -- This library can be used for performing "Frankenstein" attachments on units
@@ -45,6 +45,7 @@ require('events')
 json = require('libraries/json')
 require('libraries/popup')
 require('systems/game_mechanics')
+require('systems/difficulty')
 require('systems/inventory')
 require('items/require')
 require('systems/talenttree')
@@ -132,6 +133,7 @@ function GameMode:OnGameInProgress()
     CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
         dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
     end)
+    Difficulty:OnAllHeroesSpawned()
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game

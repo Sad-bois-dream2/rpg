@@ -319,7 +319,7 @@ function modifier_creep_scaling:OnCreated()
             self.healthBonus = 10
         end
     end
-    self.difficulty = 1
+    self.difficulty = Difficulty:GetValue()
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0

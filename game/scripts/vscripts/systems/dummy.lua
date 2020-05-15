@@ -181,7 +181,7 @@ function modifier_dps_dummy_counter:OnDestroy()
     local dummy = self.parent
     dummy.dummyParticle = ParticleManager:CreateParticle("particles/units/dummy/dummy.vpcf", PATTACH_OVERHEAD_FOLLOW, dummy)
     Timers:CreateTimer(Dummy.DPS_TIME, function()
-        Dummy:CalculateDPS(dummy)
+        Dummy:Release(dummy)
         ParticleManager:DestroyParticle(dummy.dummyParticle, true)
         ParticleManager:ReleaseParticleIndex(dummy.dummyParticle)
     end, nil)
@@ -267,21 +267,10 @@ function Dummy:OnDummyUpdateStatsRequest(event)
     Units:ForceStatsCalculation(event.dummy)
 end
 
-function Dummy:CalculateDPS(dummy)
+function Dummy:Release(dummy)
     if (not IsServer() or not dummy) then
         return
     end
-    local dps = 0
-    for _, instance in pairs(dummy.damageInstances) do
-        dps = dps + instance.damage
-    end
-    dps = dps / Dummy.DPS_TIME
-    local player = PlayerResource:GetPlayer(dummy.owner)
-    local event = {
-        player_id = dummy.owner,
-        dps = dps
-    }
-    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_dummy_result_dps", event)
     dummy.isbusy = nil
     dummy.isready = nil
     dummy.owner = nil
@@ -355,6 +344,7 @@ if not Dummy.initialized and IsServer() then
     ListenToGameEvent('npc_spawned', Dynamic_Wrap(Dummy, 'OnNPCSpawned'), Dummy)
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_dps_dummy, 'OnPostTakeDamage'))
     Dummy:InitPanaromaEvents()
+    -- Changing that require same change in client side dummy.js
     Dummy.DPS_TIME = 10
     Dummy.DPS_DELAY = 5
     Dummy.initialized = true

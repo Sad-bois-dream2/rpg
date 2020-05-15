@@ -1,4 +1,7 @@
 function OnInventoryButtonClicked() {
+    if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
+        return
+    }
 	var localPlayer = Players.GetLocalPlayer();
 	$.DispatchEvent("DOTAHideTitleTextTooltip", $.GetContextPanel());
     GameEvents.SendCustomGameEventToServer("rpg_close_all_windows", { "player_id" : localPlayer});
@@ -6,6 +9,9 @@ function OnInventoryButtonClicked() {
 }
 
 function OnTalentTreeButtonClicked() {
+    if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
+        return
+    }
 	var localPlayer = Players.GetLocalPlayer();
 	$.DispatchEvent("DOTAHideTitleTextTooltip", $.GetContextPanel());
     GameEvents.SendCustomGameEventToServer("rpg_close_all_windows", { "player_id" : localPlayer});

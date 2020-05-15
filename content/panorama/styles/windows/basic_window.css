@@ -91,142 +91,6 @@
 	width: 100%;
 }
 
-.WindowSlider
-{
-	width: fill-parent-flow( 1.0 );
-	margin-bottom: 0px;
-}
-
-.WindowSlider .SliderThumb
-{
-	tooltip-position: top;
-	tooltip-body-position: 50% 50%;
-}
-
-Slider.HorizontalSlider, SlottedSlider.HorizontalSlider
-{
-	width: 420px;
-	height: 30px;
-}
-
-Slider.HorizontalSlider .SliderTrack, SlottedSlider.HorizontalSlider .SliderTrack
-{
-	height: 16px;
-	width: 100%;
-
-	padding: 10px;
-}
-
-Slider.HorizontalSlider .SliderTrackProgress, SlottedSlider.HorizontalSlider .SliderTrackProgress
-{
-	width: 100%;
-	height: 10px;
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #222222FF ), to( #444f52FF ) );
-	box-shadow: inset black 0px 1px 4px 0px;
-	margin-left: 1px;
-}
-
-Slider.HorizontalSlider .SliderTrackProgress:disabled, SlottedSlider.HorizontalSlider .SliderTrackProgress:disabled
-{
-	width: 100%;
-	height: 10px;
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #010101FF ), to( #333333FF ) );
-	box-shadow: inset black 0px 1px 4px 0px;  // flickering when sliding...bug?
-	margin-left: 1px;
-}
-
-
-Slider.HorizontalSlider .SliderThumb, SlottedSlider.HorizontalSlider .SliderThumb
-{
-	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #91a5b9 ), to( #444f52 ) );
-	border-radius: 13%;
-	width: 16px;
-	height: 30px;
-}
-
-Slider.HorizontalSlider .SliderThumb:hover, SlottedSlider.HorizontalSlider .SliderThumb:hover
-{
-	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #b8c5d3 ), to( #444f52 ) );
-}
-
-Slider.HorizontalSlider .SliderThumb:disabled, SlottedSlider.HorizontalSlider .SliderThumb:disabled
-{
-	background-color: #333333;
-}
-
-SlottedSlider.HorizontalSlider .SliderNotch
-{
-	margin-top: 14px;
-	border-bottom: 2px solid #5e686966;
-	border-left:2px solid #5e686966;
-	border-right:2px solid #5e686966;
-	background-color: black;
-	//border-radius: 13%;
-	width: 12px;
-	height: 12px;
-	vertical-align: bottom;
-	z-index: 3;
-}
-
-//
-// Slider
-//
-
-Slider
-{
-	// needs to be at least as wide as the thumb and, as the thumb center stops at end
-	// of track, needs to allow for 1/2 the height of the thumb on each end
-	width: 30px;
-	height: 130px;
-	margin-bottom: 20px;
-}
-
-.SliderTrack
-{
-	height: 120px;
-	width: 16px;
-	background-color: #283842;
-	align: center center;
-	background-color: black;
-	border: 2px solid #5e686966;
-	z-index: 2;
-
-}
-
-SlottedSlider.HorizontalSlider .SliderNotch
-{
-	margin-top: 14px;
-	border-bottom: 2px solid #5e686966;
-	border-left:2px solid #5e686966;
-	border-right:2px solid #5e686966;
-	background-color: black;
-	//border-radius: 13%;
-	width: 12px;
-	height: 12px;
-	vertical-align: bottom;
-	z-index: 3;
-}
-
-.SliderTrackProgress
-{
-	width: 10px;
-	height: 99%;
-	background-color: gradient( linear, 0% 100%, 0% 0%, from( #222222FF ), to( #444f52FF ) );
-	align: center center;
-	border-radius: 3px;
-	z-index: 3;
-}
-
-.SliderThumb
-{
-	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #91a5b9 ), to( #444f52 ) );
-	border-radius: 13%;
-	width: 30px;
-	height: 16px;
-	box-shadow: fill black 1px 1px 32px 0px;
-	z-index: 4;
-}
-
 .WindowButton {
 	width: fit-children;
 	height: fit-children;
@@ -283,4 +147,130 @@ SlottedSlider.HorizontalSlider .SliderNotch
 	padding-bottom: 5px;
     color: white;
 	font-size: 14px;
+}
+
+SlottedSlider.HorizontalSlider .SliderNotch
+{
+	margin-top: 14px;
+	border-bottom: 2px solid #5e686966;
+	border-left:2px solid #5e686966;
+	border-right:2px solid #5e686966;
+	background-color: black;
+	//border-radius: 13%;
+	width: 12px;
+	height: 12px;
+	vertical-align: bottom;
+	z-index: 3;
+}
+
+Slider.HorizontalSlider, SlottedSlider.HorizontalSlider
+{
+	width: fill-parent-flow (1.0);
+	height: fit-children;
+	margin-top: 10px;
+}
+
+Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
+{
+	height: fit-children;
+	width: fill-parent-flow(1.0);
+	padding: 10px;
+}
+
+Slider.HorizontalSlider #SliderTrackProgress, SlottedSlider.HorizontalSlider #SliderTrackProgress
+{
+	width: fill-parent-flow(1.0);
+	height: 10px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #222222FF ), to( #444f52FF ) );
+	box-shadow: inset black 0px 1px 4px 0px;
+	margin-left: 1px;
+}
+
+Slider.HorizontalSlider #SliderTrackProgress:disabled, SlottedSlider.HorizontalSlider #SliderTrackProgress:disabled
+{
+	width: 100%;
+	height: 10px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #010101FF ), to( #333333FF ) );
+	box-shadow: inset black 0px 1px 4px 0px;  // flickering when sliding...bug?
+	margin-left: 1px;
+}
+
+#SliderThumb
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #91a5b9 ), to( #444f52 ) );
+	border-radius: 13%;
+	width: 30px;
+	height: 16px;
+	box-shadow: fill black 1px 1px 32px 0px;
+	z-index: 4;
+	margin-top: -3px;
+}
+
+#SliderThumb:hover
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #b8c5d3 ), to( #444f52 ) );
+}
+
+Slider.HorizontalSlider #SliderThumb, SlottedSlider.HorizontalSlider #SliderThumb
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #91a5b9 ), to( #444f52 ) );
+	border-radius: 13%;
+	width: 16px;
+	height: 30px;
+}
+
+Slider.HorizontalSlider #SliderThumb:hover, SlottedSlider.HorizontalSlider #SliderThumb:hover
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #b8c5d3 ), to( #444f52 ) );
+}
+
+Slider.HorizontalSlider #SliderThumb:disabled, SlottedSlider.HorizontalSlider #SliderThumb:disabled
+{
+	background-color: #333333;
+}
+
+
+SlottedSlider.HorizontalSlider #SliderTrack
+{
+	height: 4px;
+	border: 1px solid black;
+	padding-right: 2px;
+}
+
+SlottedSlider.HorizontalSlider .SliderNotch
+{
+	margin-top:-7px;
+	border: 1px solid black;
+	background-color: black;
+	border-radius: 50%;
+	width: 18px;
+	height: 18px;
+	z-index: 2;
+}
+
+SlottedSlider.HorizontalSlider #SliderTrackProgress
+{
+	visibility: collapse;
+}
+
+SlottedSlider.HorizontalSlider #SliderThumb
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( #91a5b944 ), to( #444f5244 ) );
+	border-radius: 50%;
+	width: 16px;
+	height: 16px;
+	box-shadow: fill black 1px 1px 32px 0px;
+	z-index: 4;
+}
+
+.ValueSet SlottedSlider.HorizontalSlider #SliderThumb
+{
+	background-color: gradient( radial, 50% 50%, -5% -5%, 60% 60%, from( white ), to( #444f52 ) );
+}
+
+
+SlottedSlider.HorizontalSlider .SliderNotch:hover
+{
+	border: 2px solid #54666E00;
+	background-color: gradient( radial, 50% 50%, 0% 0%, 30% 30%, from( #49545E ), to( black ) );
 }
