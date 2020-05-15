@@ -8,50 +8,51 @@
 
 .DamageLog
 {
-    width: 370px;
-    height: fit-children;
+    width: fill-parent-flow (1.0);
+    height: 500px;
+    max-height: 500px;
     background-color: black;
     border-radius: 5px;
-    overflow: squish scroll;
-    max-height: 500px;
-    min-height: 500px;
     flow-children: down;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 5px;
 }
+
+#DamageLog
+{
+    overflow: squish scroll;
+    height: 485px;
+    max-height: 485px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    flow-children: down;
+}
+
 .DamageEntry
 {
 	color: white;
-	horizontal-align: left;
-	vertical-align: top;
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: fit-children;
-}
-
-.DamageEntry Label
-{
 	horizontal-align: left;
 	vertical-align: top;
-	width: 100%;
 	font-size: 14px;
 	text-overflow: shrink;
+	text-align: left;
 	white-space: normal;
 }
 
-.DamageNumber {
-	font-size: 14px;
-}
-
-.DamageOwner {
-	font-size: 14px;
-	font-style: italic;
-}
-
-.DamageSource {
-	font-size: 14px;
-	font-weight: bold;
+.DamageLogCapacity
+{
+    color: white;
+    background-color: black;
+	width: fill-parent-flow(1.0);
+	height: fit-children;
+	horizontal-align: right;
+	vertical-align: center;
+	font-size: 12px;
+	text-overflow: shrink;
+	text-align: right;
+	white-space: normal;
+	padding-right: 5px;
 }
 
 .WindowContent
@@ -69,12 +70,14 @@
 
 .TopContent .LeftSide
 {
+    width: 370px;
     margin-left: 30px;
+    flow-children: down;
 }
 
 .TopContent .RightSide
 {
-    width: 100%;
+    width: fill-parent-flow(1.0);
     flow-children: down;
 }
 
@@ -93,6 +96,7 @@
 {
     width: 100%;
     vertical-align: center;
+    margin-bottom: 8px;
 }
 
 .WindowTextBox Image

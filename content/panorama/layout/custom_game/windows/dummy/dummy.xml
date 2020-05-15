@@ -12,7 +12,10 @@
             <Panel class="WindowContent">
                 <Panel class="TopContent">
                     <Panel class="LeftSide">
-                        <Panel id="DamageLog" class="DamageLog"/>
+                        <Panel class="DamageLog">
+                            <Panel id="DamageLog" />
+                            <Label id="DamageLogCapacity" class="DamageLogCapacity" text ="#DOTA_Dummy_Log_Capacity" onmouseover="DOTAShowTextTooltip('#DOTA_Dummy_Log_Capacity_Description')" onmouseout="DOTAHideTextTooltip()"/>
+                        </Panel>
                     </Panel>
                     <Panel class="RightSide">
                         <Label html="true" class="RightSideLabel" text="#DOTA_Dummy_DPS_Label"/>
