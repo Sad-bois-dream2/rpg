@@ -9,11 +9,11 @@ function Difficulty:Init()
     Difficulty:InitPanaromaEvents()
 end
 
-function Difficulty:IsSet()
+function Difficulty:IsConfirmed()
     return Difficulty.confirmed
 end
 
-function Difficulty:Get()
+function Difficulty:GetValue()
     return Difficulty.value
 end
 
@@ -49,7 +49,7 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     end
     event.PlayerID = tonumber(event.PlayerID)
     event.difficulty = tonumber(event.difficulty)
-    if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsSet() == false) then
+    if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         Difficulty.value = event.difficulty / 10
         Difficulty.confirmed = true
         CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_close_window_from_server", {})
@@ -109,7 +109,7 @@ ListenToGameEvent("npc_spawned", function(keys)
         return
     end
     local unit = EntIndexToHScript(keys.entindex)
-    if (unit.IsRealHero and unit:IsRealHero() and Difficulty:IsSet() == false) then
+    if (unit.IsRealHero and unit:IsRealHero() and Difficulty:IsConfirmed() == false) then
         unit:AddNewModifier(unit, nil, "modifier_difficulty_stun", { Duration = Difficulty.PICK_TIME })
     end
 end, nil)

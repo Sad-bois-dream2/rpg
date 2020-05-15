@@ -59,7 +59,7 @@ function Inventory:AddItem(hero, item, itemStats)
         for i = 0, Inventory.maxStoredItems do
             if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
                 if (not itemStats) then
-                    local difficulty = 1
+                    local difficulty = Difficulty:GetValue()
                     itemStats = Inventory:GenerateStatsForItem(item, difficulty)
                 end
                 Inventory:SetItemInSlot(hero, item, false, i, itemStats)
