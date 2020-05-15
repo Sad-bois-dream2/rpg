@@ -9,12 +9,12 @@
 .DamageLog
 {
     width: 370px;
-    height: fit-children;
+    height: 500px;
+    max-height: 500px;
+    min-height: 500px;
     background-color: black;
     border-radius: 5px;
     overflow: squish scroll;
-    max-height: 500px;
-    min-height: 500px;
     flow-children: down;
 	padding-bottom: 5px;
 	padding-left: 5px;
@@ -24,19 +24,13 @@
 .DamageEntry
 {
 	color: white;
-	horizontal-align: left;
-	vertical-align: top;
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: fit-children;
-}
-
-.DamageEntry Label
-{
 	horizontal-align: left;
 	vertical-align: top;
-	width: 100%;
 	font-size: 14px;
 	text-overflow: shrink;
+	text-align: left;
 	white-space: normal;
 }
 
