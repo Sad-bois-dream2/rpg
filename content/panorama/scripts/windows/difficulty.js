@@ -1,8 +1,13 @@
 var difficultySlider, difficultyLabel, difficultyContainer;
 var difficultyContainerLabels = [];
 var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 10;
+var UPDATE_INTERVAL = 0.1;
+var mainWindow;
+var confirmButton;
+var TIMER = -1;
+var timerStarted = false;
 
-function GetPickedDiffculty(value) {
+function GetPickedDifficulty(value) {
     if(value  < 0.01) {
         return 1;
     }
@@ -113,7 +118,7 @@ function FormatChangesText(change, difficulty) {
     return change;
 }
 
-function GetPickedDiffcultyChanges(difficulty) {
+function GetPickedDifficultyChanges(difficulty) {
     var changes = [];
     for(var i = 1; i < difficulty + 1; i++) {
         var change = $.Localize("#DOTA_Difficulty_Change" + i);
@@ -125,7 +130,7 @@ function GetPickedDiffcultyChanges(difficulty) {
 }
 
 function ModifyDifficultyWindow(difficulty) {
-    var changes = GetPickedDiffcultyChanges(difficulty);
+    var changes = GetPickedDifficultyChanges(difficulty);
     var missedLines = changes.length - difficultyContainer.GetChildCount();
     if(missedLines > 0) {
         var difficultyChange = $.CreatePanel("Label", difficultyContainer, "");
@@ -147,25 +152,43 @@ function ModifyDifficultyWindow(difficulty) {
 }
 
 function OnConfirmButtonPressed() {
-
+    $.Msg("Sended");
+    GameEvents.SendCustomGameEventToServer("rpg_difficulty_confirm", {"data" : "1"});
 }
 
 function UpdateValues() {
-    var difficulty = GetPickedDiffculty(difficultySlider.value);
+    var difficulty = GetPickedDifficulty(difficultySlider.value);
     ModifyDifficultyWindow(difficulty);
+    if(timerStarted) {
+        TIMER = Math.round((TIMER - UPDATE_INTERVAL) * 100) / 100;
+    }
 }
 
 function AutoUpdateValues() {
     UpdateValues();
-    $.Schedule(0.1, function() {
+    $.Schedule(UPDATE_INTERVAL, function() {
         AutoUpdateValues();
     });
+}
+
+function OnDifficultyWindowOpenRequest(event) {
+    TIMER = event.pick_time;
+    timerStarted = true;
+    MainWindow.style.visibility = "visible";
+}
+
+function OnDifficultyWindowHostInfo(event) {
+    if(event.player_id == Players.GetLocalPlayer()) {
+        confirmButton.style.visibility = "visible";
+    }
 }
 
 (function() {
     difficultySlider = $("#DifficultySlider");
     difficultyLabel = $("#PickedDifficultyLabel");
     difficultyContainer = $("#DifficultyChangesContainer");
+    MainWindow = $("#MainWindow");
+    confirmButton = $("#ConfirmButton");
     for(var i = 0; i < INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER; i++) {
         var difficultyChange = $.CreatePanel("Label", difficultyContainer, "");
         difficultyChange.SetHasClass("DifficultyChangeLabel", true);
@@ -173,5 +196,7 @@ function AutoUpdateValues() {
         difficultyChange.html = true;
         difficultyContainerLabels.push(difficultyChange);
     }
+    GameEvents.Subscribe("rpg_difficulty_open_window_from_server", OnDifficultyWindowOpenRequest);
+    GameEvents.Subscribe("rpg_difficulty_is_host", OnDifficultyWindowHostInfo);
     AutoUpdateValues();
 })();
