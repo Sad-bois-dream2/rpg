@@ -5,6 +5,7 @@ end
 function Difficulty:Init()
     Difficulty.confirmed = false
     Difficulty.PICK_TIME = 30
+    Difficulty.value = 1
     Difficulty:InitPanaromaEvents()
 end
 
@@ -30,11 +31,11 @@ function Difficulty:OnAllHeroesSpawned()
     if (not IsServer()) then
         return
     end
-    CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_open_window_from_server", { pick_time = Difficulty.PICK_TIME })
     Difficulty.hostId = Difficulty:FindHostPlayerId()
     if (Difficulty.hostId > -1) then
         CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_is_host", { player_id = Difficulty.hostId })
     end
+    CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_open_window_from_server", { pick_time = Difficulty.PICK_TIME })
 end
 
 function Difficulty:InitPanaromaEvents()
@@ -47,8 +48,18 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
         return
     end
     event.PlayerID = tonumber(event.PlayerID)
-    if (Difficulty.hostId == event.PlayerID) then
-
+    event.difficulty = tonumber(event.difficulty)
+    if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsSet() == false) then
+        Difficulty.value = event.difficulty / 10
+        Difficulty.confirmed = true
+        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_close_window_from_server", {})
+        local heroes = HeroList:GetAllHeroes()
+        for _, hero in pairs(heroes) do
+            local modifier = hero:FindModifierByName("modifier_difficulty_stun")
+            if(modifier) then
+                modifier:Destroy()
+            end
+        end
     end
 end
 
@@ -56,7 +67,11 @@ function Difficulty:OnDifficultyWindowChangedRequest(event)
     if (not event) then
         return
     end
-
+    event.PlayerID = tonumber(event.PlayerID)
+    event.value = tonumber(event.value)
+    if (event.PlayerID == Difficulty.hostId and event.value) then
+        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_change_value", { value = event.value })
+    end
 end
 
 modifier_difficulty_stun = class({
