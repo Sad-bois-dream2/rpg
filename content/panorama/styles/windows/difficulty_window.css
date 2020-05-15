@@ -1,7 +1,9 @@
 .DifficultyWindow
 {
 	width: 800px;
-	height: 800px;
+	height: 600px;
+	vertical-align: top;
+	margin-top: 50px;
 }
 
 .WindowContent
@@ -25,4 +27,62 @@
 	letter-spacing: 1px;
     font-weight: bold;
     text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.TimeLeftLabel
+{
+    color: white;
+    font-size: 16px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    margin-bottom: 0px;
+}
+
+.PickedDifficultyLabel
+{
+    color: white;
+    font-size: 16px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    margin-bottom: 0px;
+}
+
+#DifficultyChangesContainer
+{
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
+}
+
+.ConfirmButton
+{
+    vertical-align: center;
+    horizontal-align: center;
+}
+
+SlottedSlider.HorizontalSlider #SliderThumb
+{
+    background-image: url("s2r://panorama/images/hud/skull_stroke_png.vtex");
+    background-position: center;
+    background-size: 100% 100%;
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	box-shadow: fill black 1px 1px 32px 1px;
+}
+
+SlottedSlider.HorizontalSlider .SliderNotch
+{
+    visibility: collapse;
+}
+
+Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
+{
+    margin-top: 8px;
 }
