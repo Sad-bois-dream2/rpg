@@ -2,7 +2,6 @@
 BAREBONES_VERSION = "1.00"
 
 -- Set this to true if you want to see a complete debug output of all events/processes done by barebones
--- You can also change the cvar 'barebones_spew' at any time to 1 or 0 for output/no output
 BAREBONES_DEBUG_SPEW = IsInToolsMode()
 
 if GameMode == nil then
@@ -118,22 +117,17 @@ end
   is useful for starting any game logic timers/thinkers, beginning the first round, etc.
 ]]
 function GameMode:OnGameInProgress()
-    --Timers:CreateTimer(5, -- Start this timer 5 game-time seconds later
-    --function()
-    --DebugPrint("This function is called 5 seconds after the game begins, and every 5 seconds thereafter")
-    --local hero = PlayerResource:GetPlayer(0):GetAssignedHero()
-    --GameMode:SetupInventoryForHero(hero)
-    --return 5.0 -- Rerun this timer every 5 game-time seconds
-    --end)
     if (BAREBONES_DEBUG_SPEW) then
         -- sad bois for testing all stuff in game
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
     end
+    -- Trainer
     CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
         dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
     end)
-    Difficulty:OnAllHeroesSpawned()
+    -- Vision in village
+    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234,15143.157227,384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game

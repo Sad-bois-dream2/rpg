@@ -1,6 +1,6 @@
 var difficultySlider, difficultyLabel, difficultyContainer;
 var difficultyContainerLabels = [];
-var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 10;
+var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 20;
 var UPDATE_INTERVAL = 0.25, UPDATE_INTERVAL_TIMER = 0.1, UPDATE_INTERVAL_TIMER_LOADING_DOTS = 0.5;
 var mainWindow;
 var confirmButton;
@@ -219,26 +219,30 @@ function AutoUpdateValues() {
     });
 }
 
-function OnDifficultyWindowOpenRequest(event) {
-    MainWindow.style.visibility = "visible";
-}
-
 function OnDifficultyWindowCloseRequest(event) {
     Game.EmitSound("Item.GlimmerCape.Activate");
     MainWindow.style.visibility = "collapse";
 }
 
-function OnDifficultyWindowHostInfo(event) {
-    hostId = event.player_id;
+function OnDifficultyWindowInfo(event) {
+    if(event.host == 1) {
+        confirmButton.style.visibility = "visible";
+        $("#DifficultySliderContainer").hittestchildren = true;
+    } else {
+        confirmButton.style.visibility = "collapse";
+        $("#DifficultySliderContainer").hittestchildren = false;
+        $("#TitleLabel").text = $.Localize("#DOTA_Difficulty_Title_Client").toUpperCase();
+    }
     TIMER = event.pick_time;
     timerStarted = true;
-    if(event.player_id == Players.GetLocalPlayer()) {
-        confirmButton.style.visibility = "visible";
-    }
 }
 
 function OnDifficultyWindowValueChangeRequest(event) {
-    difficultySlider.value = event.value
+    difficultySlider.value = event.value;
+}
+
+function OnDifficultyWindowHostIdInfo(event) {
+    hostId = event.host;
 }
 
 (function() {
@@ -255,10 +259,11 @@ function OnDifficultyWindowValueChangeRequest(event) {
         difficultyChange.html = true;
         difficultyContainerLabels.push(difficultyChange);
     }
-    GameEvents.Subscribe("rpg_difficulty_open_window_from_server", OnDifficultyWindowOpenRequest);
     GameEvents.Subscribe("rpg_difficulty_close_window_from_server", OnDifficultyWindowCloseRequest);
     GameEvents.Subscribe("rpg_difficulty_change_value", OnDifficultyWindowValueChangeRequest);
-    GameEvents.Subscribe("rpg_difficulty_server_info", OnDifficultyWindowHostInfo);
+    GameEvents.Subscribe("rpg_difficulty_host_id", OnDifficultyWindowHostIdInfo);
+    GameEvents.Subscribe("rpg_difficulty_get_info_from_server", OnDifficultyWindowInfo);
     AutoUpdateValues();
     AutoUpdateTimer();
+    GameEvents.SendCustomGameEventToServer("rpg_difficulty_get_info", {});
 })();
