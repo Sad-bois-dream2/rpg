@@ -1,4 +1,4 @@
-var difficultySlider, difficultyLabel, difficultyContainer, difficultySliderClient;
+var difficultySlider, difficultyLabel, difficultyContainer;
 var difficultyContainerLabels = [];
 var INITIAL_LINES_IN_DIFFICULTY_CHANGES_CONTAINER = 20;
 var UPDATE_INTERVAL = 0.25, UPDATE_INTERVAL_TIMER = 0.1, UPDATE_INTERVAL_TIMER_LOADING_DOTS = 0.5;
@@ -227,12 +227,10 @@ function OnDifficultyWindowCloseRequest(event) {
 function OnDifficultyWindowInfo(event) {
     if(event.host == 1) {
         confirmButton.style.visibility = "visible";
-        $("#DifficultySliderContainer").style.visibility = "visible";
-        $("#DifficultySliderClientContainer").style.visibility = "collapse";
+        $("#DifficultySliderContainer").hittestchildren = true;
     } else {
         confirmButton.style.visibility = "collapse";
-        $("#DifficultySliderContainer").style.visibility = "collapse";
-        $("#DifficultySliderClientContainer").style.visibility = "visible";
+        $("#DifficultySliderContainer").hittestchildren = false;
         $("#TitleLabel").text = $.Localize("#DOTA_Difficulty_Title_Client").toUpperCase();
     }
     TIMER = event.pick_time;
@@ -241,7 +239,6 @@ function OnDifficultyWindowInfo(event) {
 
 function OnDifficultyWindowValueChangeRequest(event) {
     difficultySlider.value = event.value;
-    difficultySliderClient.value = event.value;
 }
 
 function OnDifficultyWindowHostIdInfo(event) {
@@ -250,7 +247,6 @@ function OnDifficultyWindowHostIdInfo(event) {
 
 (function() {
     difficultySlider = $("#DifficultySlider");
-    difficultySliderClient = $("#DifficultySliderClient");
     difficultyLabel = $("#PickedDifficultyLabel");
     difficultyContainer = $("#DifficultyChangesContainer");
     MainWindow = $("#MainWindow");
