@@ -460,6 +460,18 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
             end)
 end
 
+function Inventory:GetEmptyInventorySlotsCount(hero)
+    local result = 0
+    if (hero and Inventory:IsHeroHaveInventory(hero)) then
+        for i = 0, Inventory.maxStoredItems do
+            if (not Inventory:IsItemNotEmpty(Inventory:GetItemStatsForHero(hero, false, i))) then
+                result = result + 1
+            end
+        end
+    end
+    return result
+end
+
 function Inventory:OnInventoryItemPickedFromGround(event)
     if (event ~= nil and event.item ~= nil and event.itemEntity ~= nil and event.player_id ~= nil) then
         local player = PlayerResource:GetPlayer(event.player_id)
@@ -467,8 +479,11 @@ function Inventory:OnInventoryItemPickedFromGround(event)
             local hero = player:GetAssignedHero()
             if (hero ~= nil) then
                 if (Inventory:IsHeroHaveInventory(hero)) then
-                    if (event.itemEntity:GetPurchaser() == hero and Inventory:AddItem(hero, event.item) ~= Inventory.slot.invalid) then
-                        event.itemEntity:Destroy()
+                    if (event.itemEntity:GetPurchaser() == hero) then
+                        if (Inventory:GetEmptyInventorySlotsCount(hero) > 0) then
+                            Inventory:AddItem(hero, event.item, event.itemEntity.inventoryStats)
+                            event.itemEntity:Destroy()
+                        end
                     else
                         hero:DropItemAtPositionImmediate(event.itemEntity, hero:GetAbsOrigin())
                     end
