@@ -218,7 +218,7 @@
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
                 "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "particle"  "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf"
-                "particle"  "particles/units/npc_boss_treant/treant_storm/storm.vpcf"
+                "particle"  "particles/units/npc_boss_treant/treant_storm/wind.vpcf"
             }
         }
 

@@ -9,6 +9,15 @@ function IsLuna(unit)
     end
 end
 
+function RotateVectorAroundAngle( vec, angle )
+    local x = vec[1]
+    local y = vec[2]
+    angle = angle * 0.01745
+    local vec2 = Vector(0,0,0)
+    vec2[1] = x * math.cos(angle) - y * math.sin(angle)
+    vec2[2] = x * math.sin(angle) + y * math.cos(angle)
+    return vec2
+end
 --------------
 --mirana shard
 ---------------
@@ -643,6 +652,179 @@ function mirana_under:Silence(target)
     target:EmitSound("Hero_SkywrathMage.AncientSeal.Target")
 end
 
+function mirana_under:StarShower(caster, pos, lifetimeinticks, tickdelay, movement,aoe, damage  )
+    if not caster:IsNull() then
+        local offset_start = math.random(0,359)
+        local strikepos = pos
+        --each set of stars have different pattern
+        local responses =
+        {
+            "outercircle_innercircle",
+            "spiral_in_random",
+            "spiral_out_random",
+            "from_out_inwards",
+            "random",
+            "circleoutin",
+            "forwardandcircle",
+            "forwardrandom"
+
+        }
+        local aoetype = responses[RandomInt(1, #responses)]
+        local path_direction
+        print(aoetype)
+        -- boss aoe random
+        if aoetype == "outercircle_innercircle" then
+            local radius = 900
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    if i > lifetimeinticks / 2 then
+                        radius = 450
+                    end
+                    strikepos = pos + Vector(radius*math.cos(math.rad(offset_start+2*i*360/lifetimeinticks)), radius*math.sin(math.rad(offset_start+2*i*360/lifetimeinticks)), 0)
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "spiral_in_random" then
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(lifetimeinticks-i), function()
+                    strikepos = strikepos + Vector((lifetimeinticks-i)*movement*math.cos(math.rad(offset_start+i*20)), (lifetimeinticks-i)*movement*math.sin(math.rad(offset_start+i*20)), 0)
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "spiral_out_random" then
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    strikepos = strikepos + Vector(i*movement*math.cos(math.rad(offset_start+i*20)), i*movement*math.sin(math.rad(offset_start+i*20)), 0)
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "from_out_inwards" then
+            strikepos = pos + Vector(1500*math.cos(math.rad(offset_start)), 1500*math.sin(math.rad(offset_start)), 0)
+            local direction = (pos - strikepos):Normalized()
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    strikepos = strikepos + i*movement*direction
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "random" then
+            strikepos = pos + Vector(math.random(150,200)*math.cos(math.rad(offset_start)), math.random(150,200)*math.sin(math.rad(offset_start)), 0)
+            path_direction = Vector(0,0,0) + RandomVector(1)
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    strikepos = strikepos + movement*path_direction
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "circleoutin" then
+            local distance = 0
+            local distance_per_tick = 400
+            local angle = 0
+            local angle_per_tick = 15
+            path_direction = Vector(0,0,0) + RandomVector(1)
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    distance = distance + distance_per_tick
+                    angle = angle + angle_per_tick
+                    if i == math.floor(lifetimeinticks / 2) then
+                        distance_per_tick = -1 * distance_per_tick
+                    end
+                    strikepos = pos + RotateVectorAroundAngle(Vector(1,0,0), angle) * distance
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "forwardandcircle" then
+            local startpos = pos - caster:GetForwardVector() * 2000
+            local radius = 650
+            local angle = 0
+            local angle_per_tick = 25
+            local forward_per_tick = 300
+            path_direction = (pos - startpos):Normalized()
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    angle = angle + angle_per_tick
+                    strikepos = startpos + RotateVectorAroundAngle(Vector(1,0,0), angle) * radius + path_direction * i * forward_per_tick
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "forwardrandom" then
+            path_direction = Vector(0,0,0) + RandomVector(1)
+            local angle_max = 25
+            movement = 450
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    strikepos = strikepos + movement*path_direction
+                    path_direction = RotateVectorAroundAngle(path_direction, math.random(-angle_max, angle_max))
+                    angle_max = angle_max + 3
+                    self:ShowerAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        end
+    end
+end
+
+function mirana_under:ShowerAoe(caster, aoe, strikepos, damage)
+    if not caster:IsNull() then
+        local particle_starfall_fx = ParticleManager:CreateParticle( "particles/econ/items/mirana/mirana_starstorm_bow/mirana_starstorm_starfall_attack.vpcf",  PATTACH_WORLDORIGIN, caster)
+        ParticleManager:SetParticleControl(particle_starfall_fx, 0, strikepos)
+        ParticleManager:SetParticleControl(particle_starfall_fx, 1, strikepos)
+        ParticleManager:SetParticleControl(particle_starfall_fx, 3, strikepos)
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(particle_starfall_fx, false)
+            ParticleManager:ReleaseParticleIndex(particle_starfall_fx)
+        end)
+        Timers:CreateTimer(0.57, function()
+            local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
+                    strikepos,
+                    nil,
+                    aoe,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_HERO ,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                local damageTable = {}
+                damageTable.caster = caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = damage
+                damageTable.voiddmg = true
+                damageTable.naturedmg = true
+                GameMode:DamageUnit(damageTable)
+                local modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = enemy
+                modifierTable.caster = caster
+                modifierTable.modifier_name = "modifier_stunned"
+                modifierTable.duration = 0.1 --stun
+                GameMode:ApplyDebuff(modifierTable)
+                modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = enemy
+                modifierTable.caster = caster
+                modifierTable.modifier_name = "modifier_mirana_under_silence"
+                modifierTable.duration = 3 --silence
+                GameMode:ApplyDebuff(modifierTable)
+                local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
+                local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, enemy)
+                Timers:CreateTimer(3.0, function()
+                    ParticleManager:DestroyParticle(ray_fx, false)
+                    ParticleManager:ReleaseParticleIndex(ray_fx)
+                end)
+            end
+            local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
+            local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, caster)
+            ParticleManager:SetParticleControl( effect_cast, 0, strikepos)
+            ParticleManager:SetParticleControl( effect_cast, 1, Vector( aoe, aoe, aoe ) )
+            Timers:CreateTimer(1.0, function()
+                ParticleManager:DestroyParticle(effect_cast, false)
+                ParticleManager:ReleaseParticleIndex(effect_cast)
+            end)
+        end)
+    end
+end
+
 function mirana_under:OnSpellStart()
     if not IsServer() then
         return
@@ -651,7 +833,7 @@ function mirana_under:OnSpellStart()
     local target =  self:FindTargetForSilence(caster)
     self.duration = self:GetSpecialValueFor("seal_duration")
     local number = self:GetSpecialValueFor("number_targets")
-    --set table for already hit
+    --silence
     local counter = 0
     Timers:CreateTimer(0, function()
         if counter < number then
@@ -659,6 +841,23 @@ function mirana_under:OnSpellStart()
             target = self:FindTargetForSilence(caster)
             counter = counter +1
             return 0.1
+        end
+    end)
+    --random weak star aligned  with ministun
+    local pos = caster:GetAbsOrigin()
+    local lifetimeinticks = 15
+    local tickdelay = 1
+    local movement = 200
+    local aoe = 300
+    local counter2 = 0
+    local number2 = self:GetSpecialValueFor("number_of_starfall_set")
+    local damage = self:GetSpecialValueFor("damage")
+    EmitSoundOn("mirana_mir_levelup_02", caster)
+    Timers:CreateTimer(0, function()
+        if counter2 < number2 then
+            self:StarShower(caster, pos, lifetimeinticks, tickdelay, movement,aoe, damage  )
+            counter2 = counter2 +1
+            return 0.5
         end
     end)
 end
@@ -817,11 +1016,15 @@ function mirana_aligned:StarsAlignFX(target)
     Timers:CreateTimer(0.57,function()
         EmitSoundOn("Hero_Luna.Eclipse.Cast", target)
         local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
+        local shockwave = "particles/econ/items/outworld_devourer/od_ti8/od_ti8_santies_eclipse_area_shockwave.vpcf"
         local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_ABSORIGIN_FOLLOW, target )
+        local fx =  ParticleManager:CreateParticle( shockwave, PATTACH_ABSORIGIN_FOLLOW, target )
         ParticleManager:SetParticleControl( effect_cast, 1, Vector( 300, 300, 300 ) )
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(effect_cast, false)
             ParticleManager:ReleaseParticleIndex(effect_cast)
+            ParticleManager:DestroyParticle(fx, false)
+            ParticleManager:ReleaseParticleIndex(fx)
         end)
     end)
 

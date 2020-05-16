@@ -248,6 +248,16 @@
 				"var_type"				"FIELD_FLOAT"
 				"seal_duration"		    "7 11 15"
 			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"		        "100 300 1000"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"number_of_starfall_set"	"8 10 12"
+			}
 
    		}
 	    "precache"

@@ -450,7 +450,7 @@ function luna_wave:OnSpellStart()
 
     for _, enemy in pairs(enemies) do
         -- This "dummy" literally only exists to attach the gush travel sound to
-        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, "modifier_luna_wave_thinker", {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
         gush_dummy:EmitSoundParams("Hero_Tidehunter.Gush.AghsProjectile",1.0, 0.2, 0)
 
         local direction	= (enemy:GetAbsOrigin() - self:GetCaster():GetAbsOrigin()):Normalized()
@@ -526,6 +526,15 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
     end
 end
 
+--remove thinker
+modifier_luna_wave_thinker = class({})
+
+function modifier_luna_wave_thinker:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    UTIL_Remove(self:GetParent())
+end
 ---------
 --luna wax wane
 --------
