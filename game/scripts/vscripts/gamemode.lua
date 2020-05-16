@@ -133,7 +133,6 @@ function GameMode:OnGameInProgress()
     CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
         dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
     end)
-    Difficulty:OnAllHeroesSpawned()
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game

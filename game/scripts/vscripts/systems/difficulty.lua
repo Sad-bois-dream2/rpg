@@ -17,29 +17,23 @@ function Difficulty:GetValue()
     return Difficulty.value
 end
 
-function Difficulty:FindHostPlayerId()
-    local players = PlayerResource:GetPlayerCount() - 1
-    for i = 0, players do
-        if (GameRules:PlayerHasCustomGameHostPrivileges(PlayerResource:GetPlayer(i))) then
-            return i
-        end
-    end
-    return -1
-end
-
-function Difficulty:OnAllHeroesSpawned()
-    if (not IsServer()) then
-        return
-    end
-    Difficulty.hostId = Difficulty:FindHostPlayerId()
-    if (Difficulty.hostId > -1) then
-        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_server_info", { player_id = Difficulty.hostId, pick_time = Difficulty.PICK_TIME})
-    end
-end
-
 function Difficulty:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_difficulty_changed", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowChangedRequest'))
     CustomGameEventManager:RegisterListener("rpg_difficulty_confirm", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowConfirmRequest'))
+    CustomGameEventManager:RegisterListener("rpg_difficulty_get_info", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowCheckHostRequest'))
+end
+
+function Difficulty:OnDifficultyWindowCheckHostRequest(event)
+    if (not event) then
+        return
+    end
+    event.PlayerID = tonumber(event.PlayerID)
+    local player = PlayerResource:GetPlayer(event.PlayerID)
+    local IsHost = 0
+    if GameRules:PlayerHasCustomGameHostPrivileges(player) then
+        IsHost = 1
+    end
+    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_difficulty_get_info_from_server", { host = IsHost, pick_time = Difficulty.PICK_TIME })
 end
 
 function Difficulty:OnDifficultyWindowConfirmRequest(event)
@@ -48,19 +42,22 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     end
     event.PlayerID = tonumber(event.PlayerID)
     event.difficulty = tonumber(event.difficulty)
-    if (Difficulty.hostId == event.PlayerID and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
-        Difficulty.value = event.difficulty / 10
-        Difficulty.confirmed = true
-        Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
-        Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })
-        Notifications:BottomToAll({ text = "#DOTA_Difficulty_" .. event.difficulty, duration = 3, continue = true })
-        Notifications:BottomToAll({ text = "!", duration = 3, continue = true })
-        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_close_window_from_server", {})
-        local heroes = HeroList:GetAllHeroes()
-        for _, hero in pairs(heroes) do
-            local modifier = hero:FindModifierByName("modifier_difficulty_stun")
-            if (modifier) then
-                modifier:Destroy()
+    local player = PlayerResource:GetPlayer(event.PlayerID)
+    if (player and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
+        if (GameRules:PlayerHasCustomGameHostPrivileges(player)) then
+            Difficulty.value = event.difficulty / 10
+            Difficulty.confirmed = true
+            Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
+            Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })
+            Notifications:BottomToAll({ text = "#DOTA_Difficulty_" .. event.difficulty, duration = 3, continue = true })
+            Notifications:BottomToAll({ text = "!", duration = 3, continue = true })
+            CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_close_window_from_server", {})
+            local heroes = HeroList:GetAllHeroes()
+            for _, hero in pairs(heroes) do
+                local modifier = hero:FindModifierByName("modifier_difficulty_stun")
+                if (modifier) then
+                    modifier:Destroy()
+                end
             end
         end
     end
@@ -72,8 +69,11 @@ function Difficulty:OnDifficultyWindowChangedRequest(event)
     end
     event.PlayerID = tonumber(event.PlayerID)
     event.value = tonumber(event.value)
-    if (event.PlayerID == Difficulty.hostId and event.value) then
-        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_change_value", { value = event.value })
+    if (event.PlayerID and event.value) then
+        local player = PlayerResource:GetPlayer(event.PlayerID)
+        if GameRules:PlayerHasCustomGameHostPrivileges(player) then
+            CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_change_value", { value = event.value })
+        end
     end
 end
 
@@ -114,7 +114,6 @@ ListenToGameEvent("npc_spawned", function(keys)
     local unit = EntIndexToHScript(keys.entindex)
     if (unit.IsRealHero and unit:IsRealHero() and Difficulty:IsConfirmed() == false) then
         unit:AddNewModifier(unit, nil, "modifier_difficulty_stun", { Duration = Difficulty.PICK_TIME })
-        CustomGameEventManager:Send_ServerToPlayer(unit:GetPlayerOwner(), "rpg_difficulty_open_window_from_server", {})
     end
 end, nil)
 

@@ -219,22 +219,18 @@ function AutoUpdateValues() {
     });
 }
 
-function OnDifficultyWindowOpenRequest(event) {
-    MainWindow.style.visibility = "visible";
-}
-
 function OnDifficultyWindowCloseRequest(event) {
     Game.EmitSound("Item.GlimmerCape.Activate");
     MainWindow.style.visibility = "collapse";
 }
 
-function OnDifficultyWindowHostInfo(event) {
-    hostId = event.player_id;
-    TIMER = event.pick_time;
-    timerStarted = true;
-    if(event.player_id == Players.GetLocalPlayer()) {
+function OnDifficultyWindowInfo(event) {
+    if(event.host == 1) {
+        hostId = event.player_id;
         confirmButton.style.visibility = "visible";
     }
+    TIMER = event.pick_time;
+    timerStarted = true;
 }
 
 function OnDifficultyWindowValueChangeRequest(event) {
@@ -255,10 +251,10 @@ function OnDifficultyWindowValueChangeRequest(event) {
         difficultyChange.html = true;
         difficultyContainerLabels.push(difficultyChange);
     }
-    GameEvents.Subscribe("rpg_difficulty_open_window_from_server", OnDifficultyWindowOpenRequest);
     GameEvents.Subscribe("rpg_difficulty_close_window_from_server", OnDifficultyWindowCloseRequest);
     GameEvents.Subscribe("rpg_difficulty_change_value", OnDifficultyWindowValueChangeRequest);
-    GameEvents.Subscribe("rpg_difficulty_server_info", OnDifficultyWindowHostInfo);
+    GameEvents.Subscribe("rpg_difficulty_get_info_from_server", OnDifficultyWindowInfo);
     AutoUpdateValues();
     AutoUpdateTimer();
+    GameEvents.SendCustomGameEventToServer("rpg_difficulty_get_info", {});
 })();
