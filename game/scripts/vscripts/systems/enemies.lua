@@ -315,7 +315,7 @@ function modifier_creep_scaling:OnCreated()
         self.armor = 15
         self.elementalArmor = 0.47
     else
-        local eliteChance = math.floor(5 * (1 + (self.difficulty / 2)))
+        local eliteChance = math.floor(5 * (1 + (self.difficulty)))
         if (RollPercentage(eliteChance) and not self.creep:GetOwner()) then
             self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
             self.armor = 5
