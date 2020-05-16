@@ -958,7 +958,7 @@ end
 -- terror_lord_ruthless_predator modifiers
 modifier_terror_lord_ruthless_predator_aura = class({
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsAuraActiveOnDeath = function(self)
         return false
