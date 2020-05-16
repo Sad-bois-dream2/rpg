@@ -310,11 +310,12 @@ function modifier_creep_scaling:OnCreated()
     self.armor = 2
     self.elementalArmor = 0.11
     self.healthBonus = 1
+    self.difficulty = Difficulty:GetValue()
     if (Enemies:IsBoss(self.creep)) then
         self.armor = 15
         self.elementalArmor = 0.47
     else
-        local eliteChance = 5
+        local eliteChance = math.floor(5 * (1 + (self.difficulty / 2)))
         if (RollPercentage(eliteChance) and not self.creep:GetOwner()) then
             self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
             self.armor = 5
@@ -323,7 +324,6 @@ function modifier_creep_scaling:OnCreated()
             self.healthBonus = 10
         end
     end
-    self.difficulty = Difficulty:GetValue()
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
