@@ -20,10 +20,10 @@ end
 function Difficulty:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_difficulty_changed", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowChangedRequest'))
     CustomGameEventManager:RegisterListener("rpg_difficulty_confirm", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowConfirmRequest'))
-    CustomGameEventManager:RegisterListener("rpg_difficulty_get_info", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowCheckHostRequest'))
+    CustomGameEventManager:RegisterListener("rpg_difficulty_get_info", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowGetInfoRequest'))
 end
 
-function Difficulty:OnDifficultyWindowCheckHostRequest(event)
+function Difficulty:OnDifficultyWindowGetInfoRequest(event)
     if (not event) then
         return
     end
@@ -32,6 +32,7 @@ function Difficulty:OnDifficultyWindowCheckHostRequest(event)
     local IsHost = 0
     if GameRules:PlayerHasCustomGameHostPrivileges(player) then
         IsHost = 1
+        CustomGameEventManager:Send_ServerToAllClients("rpg_difficulty_host_id", { host = event.PlayerID })
     end
     CustomGameEventManager:Send_ServerToPlayer(player, "rpg_difficulty_get_info_from_server", { host = IsHost, pick_time = Difficulty.PICK_TIME })
 end

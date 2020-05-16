@@ -95,7 +95,18 @@ SlottedSlider.HorizontalSlider .SliderNotch
     visibility: collapse;
 }
 
+SlottedSlider.HorizontalSlider SlottedSlider.HorizontalSlider
+{
+    margin-top: 0px;
+}
+
+
 Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
 {
     margin-top: 8px;
+}
+
+.SliderHidden
+{
+    visibility: collapse;
 }
