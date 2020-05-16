@@ -4,7 +4,7 @@ end
 
 function Difficulty:Init()
     Difficulty.confirmed = false
-    Difficulty.PICK_TIME = 30
+    Difficulty.PICK_TIME = 35 -- desired time + ~5
     Difficulty.value = 1
     Difficulty:InitPanaromaEvents()
 end
