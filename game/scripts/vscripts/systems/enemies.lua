@@ -81,7 +81,7 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
-function Enemies:GetDropTable(enemy, difficulty)
+function Enemies:GetDropTableFor(enemy, difficulty)
 
 end
 
@@ -315,7 +315,7 @@ function modifier_creep_scaling:OnCreated()
         self.elementalArmor = 0.47
     else
         local eliteChance = 5
-        if (RollPercentage(eliteChance)) then
+        if (RollPercentage(eliteChance) and not self.creep:GetOwner()) then
             self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
             self.armor = 5
             self.elementalArmor = 0.23
