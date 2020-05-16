@@ -81,6 +81,10 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
+function Enemies:GetDropTable(enemy, difficulty)
+
+end
+
 -- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
@@ -268,7 +272,7 @@ function Enemies:OverwriteAbilityFunctions(ability)
             local abilityLevel = context:GetLevel()
             context:EndCooldown()
             context:StartCooldown(context:GetCooldown(abilityLevel - 1))
-            if(context.OnAbilityPhaseInterrupted2) then
+            if (context.OnAbilityPhaseInterrupted2) then
                 context.OnAbilityPhaseInterrupted2(context)
             end
         end

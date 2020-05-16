@@ -56,16 +56,25 @@ function Inventory:AddItem(hero, item, itemStats)
             DebugPrint("[INVENTORY] Attempt to add unknown item (" .. item .. ").")
             return Inventory.slot.invalid
         end
+        if (not itemStats) then
+            local difficulty = Difficulty:GetValue()
+            itemStats = Inventory:GenerateStatsForItem(item, difficulty)
+        end
         for i = 0, Inventory.maxStoredItems do
             if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
-                if (not itemStats) then
-                    local difficulty = Difficulty:GetValue()
-                    itemStats = Inventory:GenerateStatsForItem(item, difficulty)
-                end
                 Inventory:SetItemInSlot(hero, item, false, i, itemStats)
                 return i
             end
         end
+        local item = CreateItem(item, hero, hero)
+        local positionOnGround = hero:GetAbsOrigin()
+        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
+        if (itemOnGround == nil) then
+            item:Destroy()
+            return Inventory.slot.invalid
+        end
+        Inventory:SetItemEntityStats(item, itemStats)
+        item:SetPurchaser(hero)
         return Inventory.slot.invalid
     end
 end
@@ -526,9 +535,22 @@ function Inventory:OnInventoryDropItemRequest(event, args)
         item:Destroy()
         return
     end
-    item.inventoryStats = Inventory:GetItemStatsForHero(hero, event.equipped, event.slot)
+    Inventory:SetItemEntityStats(item, Inventory:GetItemStatsForHero(hero, event.equipped, event.slot))
     item:SetPurchaser(hero)
     Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
+end
+
+function Inventory:SetItemEntityStats(item, itemStats)
+    if (item) then
+        item.inventoryStats = itemStats
+    end
+end
+
+function Inventory:GetItemEntityStats(item)
+    if (item and item.inventoryStats) then
+        return item.inventoryStats
+    end
+    return nil
 end
 
 function Inventory:OnInventorySwapItemsRequest(event, args)
