@@ -225,11 +225,12 @@ function OnDifficultyWindowCloseRequest(event) {
 }
 
 function OnDifficultyWindowInfo(event) {
-    if(event.host == 0) {
+    if(event.host == 1) {
         confirmButton.style.visibility = "visible";
         $("#DifficultySliderContainer").style.visibility = "visible";
         $("#DifficultySliderClientContainer").style.visibility = "collapse";
     } else {
+        confirmButton.style.visibility = "collapse";
         $("#DifficultySliderContainer").style.visibility = "collapse";
         $("#DifficultySliderClientContainer").style.visibility = "visible";
         $("#TitleLabel").text = $.Localize("#DOTA_Difficulty_Title_Client").toUpperCase();
