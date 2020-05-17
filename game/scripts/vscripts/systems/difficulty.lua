@@ -46,7 +46,7 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     local player = PlayerResource:GetPlayer(event.PlayerID)
     if (player and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         if (GameRules:PlayerHasCustomGameHostPrivileges(player)) then
-            Difficulty.value = event.difficulty / 10
+            Difficulty.value = event.difficulty / 2
             Difficulty.confirmed = true
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })

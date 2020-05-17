@@ -2,7 +2,6 @@
 var INVENTORY_SLOTS_PER_ROW = 14;
 var INVENTORY_SLOT_ROWS = 7;
 var INVENTORY_SLOTS_COUNT = INVENTORY_SLOTS_PER_ROW * INVENTORY_SLOT_ROWS;
-var INVENTORY_EQUIPPED_SLOTS_COUNT = 12;
 var inventorySlots = [];
 var inventoryEquippedSlots = [];
 var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2;
@@ -32,6 +31,7 @@ var INVENTORY_SLOT_GLOVES = 8
 var INVENTORY_SLOT_RING = 9
 var INVENTORY_SLOT_BELT = 10
 var INVENTORY_SLOT_AMULET = 11
+var INVENTORY_SLOT_LAST = 11
 // adding rarity here require change GetInventoryItemRarityName()
 var INVENTORY_ITEM_RARITY_COMMON = 0
 var INVENTORY_ITEM_RARITY_RARE = 1
@@ -162,7 +162,11 @@ function OnInventorySlotDragStart( panelId, dragCallbacks ) {
 	displayPanel.itemname = inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname;
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
-    dragCallbacks.offsetY = 0; 
+    dragCallbacks.offsetY = 0;
+    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
+    if(desiredInventorySlot > -1) {
+        inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", true);
+    }
 } 
 
 function OnInventorySlotDragEnd( panelId, draggedPanel ) {
@@ -187,6 +191,10 @@ function OnInventorySlotDragEnd( panelId, draggedPanel ) {
 			GameEvents.SendCustomGameEventToServer("rpg_inventory_drop_item_on_ground", {"data" : jsonEncodedData});
 		}
 	}
+    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotFromId][SLOT_ITEM_IMAGE].itemname);
+    if(desiredInventorySlot > -1) {
+        inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", false);
+    }
 } 
 
 function OnRightClickOnInventoryEquippedSlot(slotId) {
@@ -409,6 +417,13 @@ function UpdateValues() {
 		var localPlayer = Players.GetLocalPlayer();
 		currentHero = Players.GetPlayerHeroEntityIndex(localPlayer);
 	}
+	var showNames = false;
+	if(GameUI.IsAltDown()) {
+	    showNames = true;
+	}
+	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
+		inventoryEquippedSlots[i][SLOT_PANEL].SetHasClass("Alt", showNames);
+	}
 }
 
 function AutoUpdateValues() {
@@ -578,27 +593,46 @@ function ShowEquippedItemTooltip(slotId) {
 	}
 }
 
-function GetMaxValueForItemStat(itemName, itemStat) {
-    var max = 0;
+function GetMinMaxValueForItemStat(itemName, itemStat) {
+    var result = [];
     for(var i = 0; i < inventoryItemsData.length; i++) {
-        if(inventoryItemsData[i].item == itemName) {
-            if(inventoryItemsData[i].stats[itemStat] != null) {
-                max = inventoryItemsData[i].stats[itemStat].max;
-                break;
-            }
+        if(inventoryItemsData[i].item == itemName && inventoryItemsData[i].stats[itemStat] != null) {
+            result[0] = inventoryItemsData[i].stats[itemStat].min;
+            result[1] = inventoryItemsData[i].stats[itemStat].max;
+            break;
         }
     }
-    if(max == 0) {
-        return 1
+    return result
+}
+
+function CalculateItemStatRoll(value, min, max, itemName, itemStat) {
+	if(min == max) {
+		return 1;
+	}
+    if(min < 0 && max >= 0) {
+        return 1 - (value / min); // save roll = value / min, save load = save roll * min
     }
-    return max
+    if(min >= 0 && max > 0) {
+        return (value - min) / (max - min); // save roll = value / max, save load = save roll * max
+    }
+    if(min < 0 && max < 0) {
+        return 1 - ((value-max)/(min-max)); // save roll = value / max, save load = save roll * max
+    }
+    $.Msg("[INVENTORY] Unable to calculate roll value for " + itemName + " and stat " + itemStats[i].name + ". Used 0 to fix that. Value = " + value + ", min = " + min + ", max = " + max);
+    return 0;
 }
 
 function CalculateQualityOfItem(itemName, itemStats) {
     var totalQuality = itemStats.length;
     var currentQuality = 0;
     for(var i = 0; i < itemStats.length; i++) {
-        currentQuality += itemStats[i].value / GetMaxValueForItemStat(itemName, itemStats[i].name);
+        var minMaxValues = GetMinMaxValueForItemStat(itemName, itemStats[i].name);
+        if(minMaxValues.length > 0) {
+            currentQuality += CalculateItemStatRoll(itemStats[i].value, minMaxValues[0], minMaxValues[1], itemName, itemStats[i].name);
+        } else {
+            totalQuality = totalQuality - 1;
+            $.Msg("[INVENTORY] There are error receiving min & max values for " + itemName + " and stat " + itemStats[i].name + ". Ignoring.");
+        }
     }
     if(totalQuality > 0) {
         totalQuality = currentQuality / totalQuality;
@@ -637,6 +671,7 @@ function CreateItemTooltip(slot, icon, name, rarity, type, description, quality,
 		tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 		tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
 		tooltip[TOOLTIP_TYPE_LABEL].text = type;
+		$.Msg(description);
         if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
             tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
         } else {
@@ -651,17 +686,12 @@ function CreateItemTooltip(slot, icon, name, rarity, type, description, quality,
 		for(var i = 0; i < slot[SLOT_ITEM_STATS].length; i++) {
 		    var statName = $.Localize("#DOTA_Tooltip_Ability_"+slot[SLOT_ITEM_IMAGE].itemname+"_"+slot[SLOT_ITEM_STATS][i].name);
 		    var statValue = slot[SLOT_ITEM_STATS][i].value;
-		    var preSymbol = "";
-		    if(statValue < 0) {
-		        preSymbol = "-";
-		    }
 		    var IsPercent = (statName.charAt(0) == "%");
             if(IsPercent) {
                 statName = statName.slice(1, statName.length);
-                statValue *= 100;
                 statValue += "%";
             }
-		    statsLabels[i].text = statName + preSymbol + statValue;
+		    statsLabels[i].text = statName + statValue;
 		    statsLabels[i].style.visibility = "visible";
 		    latestStatId++;
 		}
@@ -760,7 +790,7 @@ function OnInventoryItemsDataRequest(event) {
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];
 	pageButtons = [$("#Page0Button"), $("#Page1Button"), $("#Page2Button")];
-	for(var i = 0; i < INVENTORY_EQUIPPED_SLOTS_COUNT; i++) {
+	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
 		var inventorySlotPanel = $("#InventoryEquippedSlot"+i);
 		var inventorySlotImage = $("#InventoryEquippedSlotImage"+i);
 		inventorySlotImage.Data().defaultImage = inventorySlotImage.itemname;

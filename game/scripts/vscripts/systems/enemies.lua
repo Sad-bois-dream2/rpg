@@ -82,6 +82,10 @@ function Enemies:InitAbilites()
     --Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
+function Enemies:GetDropTableFor(enemy, difficulty)
+
+end
+
 -- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
@@ -269,7 +273,7 @@ function Enemies:OverwriteAbilityFunctions(ability)
             local abilityLevel = context:GetLevel()
             context:EndCooldown()
             context:StartCooldown(context:GetCooldown(abilityLevel - 1))
-            if(context.OnAbilityPhaseInterrupted2) then
+            if (context.OnAbilityPhaseInterrupted2) then
                 context.OnAbilityPhaseInterrupted2(context)
             end
         end
@@ -307,12 +311,13 @@ function modifier_creep_scaling:OnCreated()
     self.armor = 2
     self.elementalArmor = 0.11
     self.healthBonus = 1
+    self.difficulty = Difficulty:GetValue()
     if (Enemies:IsBoss(self.creep)) then
         self.armor = 15
         self.elementalArmor = 0.47
     else
-        local eliteChance = 5
-        if (RollPercentage(eliteChance)) then
+        local eliteChance = math.floor(5 * (1 + (self.difficulty)))
+        if (RollPercentage(eliteChance) and not self.creep:GetOwner()) then
             self.creep:AddNewModifier(self.creep, nil, "modifier_creep_elite", { Duration = -1 })
             self.armor = 5
             self.elementalArmor = 0.23
@@ -320,7 +325,6 @@ function modifier_creep_scaling:OnCreated()
             self.healthBonus = 10
         end
     end
-    self.difficulty = Difficulty:GetValue()
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
