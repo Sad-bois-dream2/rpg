@@ -41,7 +41,7 @@ modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
             [MODIFIER_STATE_MAGIC_IMMUNE] = true,
             [MODIFIER_STATE_UNSELECTABLE] = true,
             [MODIFIER_STATE_NOT_ON_MINIMAP] = true,
-            [MODIFIER_STATE_COMMAND_RESTRICTED] = false
+            [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
         }
     end
 })
