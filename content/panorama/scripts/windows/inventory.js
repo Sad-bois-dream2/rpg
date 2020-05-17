@@ -651,17 +651,12 @@ function CreateItemTooltip(slot, icon, name, rarity, type, description, quality,
 		for(var i = 0; i < slot[SLOT_ITEM_STATS].length; i++) {
 		    var statName = $.Localize("#DOTA_Tooltip_Ability_"+slot[SLOT_ITEM_IMAGE].itemname+"_"+slot[SLOT_ITEM_STATS][i].name);
 		    var statValue = slot[SLOT_ITEM_STATS][i].value;
-		    var preSymbol = "";
-		    if(statValue < 0) {
-		        preSymbol = "-";
-		    }
 		    var IsPercent = (statName.charAt(0) == "%");
             if(IsPercent) {
                 statName = statName.slice(1, statName.length);
-                statValue *= 100;
                 statValue += "%";
             }
-		    statsLabels[i].text = statName + preSymbol + statValue;
+		    statsLabels[i].text = statName + statValue;
 		    statsLabels[i].style.visibility = "visible";
 		    latestStatId++;
 		}
