@@ -71,6 +71,9 @@ end
 function modifier_treant_hook_motion:OnHorizontalMotionInterrupted()
     if IsServer() then
         self:Destroy()
+        Timers:CreateTimer(0.3, function()
+            FindClearSpaceForUnit(self.parent, self.expected_location, true)
+        end)
     end
 end
 
@@ -78,14 +81,14 @@ function modifier_treant_hook_motion:UpdateHorizontalMotion(me, dt)
     if (IsServer()) then
         local caster_location = self.caster:GetAbsOrigin()
         local current_location = self.parent:GetAbsOrigin()
-        local expected_location = current_location + self.parent:GetForwardVector() * self.dash_speed * dt
-        local isTraversable = GridNav:IsTraversable(expected_location)
-        local isBlocked = GridNav:IsBlocked(expected_location)
-        local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.parent:GetHullRadius(), true)
+        self.expected_location = current_location + self.parent:GetForwardVector() * self.dash_speed * dt
+        --local isTraversable = GridNav:IsTraversable(expected_location)
+        --local isBlocked = GridNav:IsBlocked(expected_location)
+        --local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.parent:GetHullRadius(), true)
         local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
         local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
-        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range and distance_to_caster > 200 ) then --and not distance_to_caster< 250
-            self.parent:SetAbsOrigin(expected_location)
+        if (traveled_distance < self.dash_range and distance_to_caster > 200 ) then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
+            self.parent:SetAbsOrigin(self.expected_location)
             self.parent:EmitSound("Hero_DarkWillow.Bramble.Spawn")--vine spawn sound
             local vine = "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
             local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, self.parent)
@@ -836,8 +839,11 @@ modifier_treant_one_root = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetStatusEffectName = function(self)
-        return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN
     end,
 })
 
@@ -1291,7 +1297,10 @@ modifier_treant_root_debuff = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+        return "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN
     end,
 })
 

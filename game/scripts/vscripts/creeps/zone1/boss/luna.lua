@@ -187,14 +187,7 @@ function luna_sky:OnSpellStart()
             modifierTable.duration = -1
             GameMode:ApplyDebuff(modifierTable)
         end
-            local responses =
-            {
-                "luna_luna_ability_eclipse_01",
-                "luna_luna_ability_eclipse_02",
-                "luna_luna_ability_eclipse_03",
-            }
-            self:GetCaster():EmitSound(responses[RandomInt(1, #responses)])
-        EmitGlobalSound("Hero_Nightstalker.Darkness.Team")
+        self:GetCaster():EmitSound("Hero_Nightstalker.Darkness.Team")
         local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
         local particle_darkness = "particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
         local particle_darkness_fx = ParticleManager:CreateParticle(particle_darkness, PATTACH_ABSORIGIN_FOLLOW, caster)

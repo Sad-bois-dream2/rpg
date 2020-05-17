@@ -185,7 +185,7 @@ function mirana_sky:OnSpellStart()
             modifierTable.duration = -1
             GameMode:ApplyDebuff(modifierTable)
         end
-        EmitGlobalSound("Hero_Nightstalker.Darkness.Team")
+        self:GetCaster():EmitSound("Hero_Nightstalker.Darkness.Team")
         local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
         local particle_darkness = "particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
         local particle_darkness_fx = ParticleManager:CreateParticle(particle_darkness, PATTACH_ABSORIGIN_FOLLOW, caster)
@@ -251,12 +251,10 @@ function mirana_blessing:FindLuna(parent, range)
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    for _, ally in pairs(allies) do
-        if IsLuna(ally) == true then
-            local Luna = ally
-            return Luna
-        else return nil
-        end
+    local luna = allies[1]
+    if IsLuna(luna) == true then
+        return luna
+    else return nil
     end
 end
 
@@ -609,6 +607,15 @@ mirana_under = class({
         return "mirana_under"
     end,
 })
+
+function mirana_under:IsRequireCastbar()
+    return true
+end
+
+function mirana_under:IsInterruptible()
+    return false
+end
+
 
 function mirana_under:FindTargetForSilence(caster) --random with already hit removal
     if IsServer() then
