@@ -578,27 +578,30 @@ function ShowEquippedItemTooltip(slotId) {
 	}
 }
 
-function GetMaxValueForItemStat(itemName, itemStat) {
-    var max = 0;
+function GetMinMaxValueForItemStat(itemName, itemStat) {
+    var result = [];
     for(var i = 0; i < inventoryItemsData.length; i++) {
-        if(inventoryItemsData[i].item == itemName) {
-            if(inventoryItemsData[i].stats[itemStat] != null) {
-                max = inventoryItemsData[i].stats[itemStat].max;
-                break;
-            }
+        if(inventoryItemsData[i].item == itemName && inventoryItemsData[i].stats[itemStat] != null) {
+            result[0] = inventoryItemsData[i].stats[itemStat].min;
+            result[1] = inventoryItemsData[i].stats[itemStat].max;
+            break;
         }
     }
-    if(max == 0) {
-        return 1
-    }
-    return max
+    return result
 }
+
 
 function CalculateQualityOfItem(itemName, itemStats) {
     var totalQuality = itemStats.length;
     var currentQuality = 0;
     for(var i = 0; i < itemStats.length; i++) {
-        currentQuality += itemStats[i].value / GetMaxValueForItemStat(itemName, itemStats[i].name);
+        var minMaxValues = GetMinMaxValueForItemStat(itemName, itemStats[i].name);
+        if(minMaxValues.length > 0) {
+            currentQuality += Math.abs(itemStats[i].value / (minMaxValues[1] - minMaxValues[0]));
+        } else {
+            totalQuality = totalQuality - 1;
+            $.Msg("[INVENTORY] There are error receiving min & max values for " + itemName + " and stat " + itemStats[i].name + ". Ignoring.");
+        }
     }
     if(totalQuality > 0) {
         totalQuality = currentQuality / totalQuality;
