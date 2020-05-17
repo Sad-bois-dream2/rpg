@@ -40,7 +40,7 @@ function Inventory:Init()
     -- latest rarity id for internal stuff
     self.rarity.max = 2
     self.itemsData = {}
-    self.items_kv = LoadKeyValues("scripts/npc/npc_items_custom.txt")
+    self.itemsKeyValues = LoadKeyValues("scripts/npc/npc_items_custom.txt")
     Inventory:SetupItems()
     Inventory:InitPanaromaEvents()
 end
@@ -56,16 +56,25 @@ function Inventory:AddItem(hero, item, itemStats)
             DebugPrint("[INVENTORY] Attempt to add unknown item (" .. item .. ").")
             return Inventory.slot.invalid
         end
+        if (not itemStats) then
+            local difficulty = Difficulty:GetValue()
+            itemStats = Inventory:GenerateStatsForItem(item, difficulty)
+        end
         for i = 0, Inventory.maxStoredItems do
             if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i))) then
-                if (not itemStats) then
-                    local difficulty = Difficulty:GetValue()
-                    itemStats = Inventory:GenerateStatsForItem(item, difficulty)
-                end
                 Inventory:SetItemInSlot(hero, item, false, i, itemStats)
                 return i
             end
         end
+        local item = CreateItem(item, hero, hero)
+        local positionOnGround = hero:GetAbsOrigin()
+        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
+        if (itemOnGround == nil) then
+            item:Destroy()
+            return Inventory.slot.invalid
+        end
+        Inventory:SetItemEntityStats(item, itemStats)
+        item:SetPurchaser(hero)
         return Inventory.slot.invalid
     end
 end
@@ -93,30 +102,18 @@ function Inventory:GenerateStatsForItem(item, difficulty)
         minRoll = 1
     end
     for statName, statValues in pairs(itemStats) do
-        local value = Inventory:PerformRoll(statValues.min, statValues.max, statValues.type, minRoll)
+        local value = Inventory:PerformRoll(statValues.min, statValues.max, minRoll)
         table.insert(result, { name = statName, value = value })
     end
     return result
 end
 
-function Inventory:RoundStatValue(x)
-    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
-end
-
-function Inventory:PerformRoll(min, max, type, minRoll)
+function Inventory:PerformRoll(min, max, minRoll)
     min = min + ((max - min) * minRoll)
-    if (type == "FIELD_INTEGER") then
-        return math.random(math.floor(min), max)
-    end
-    if (type == "FIELD_FLOAT") then
-        return Inventory:RoundStatValue((min + math.random() * (max - min)) * 100) / 100
-    end
-    DebugPrint("[INVENTORY] Got unknown role type " .. tostring(type) .. ". Wtf?")
-    return 0
+    return math.random(math.floor(min), max)
 end
 
 ---@param item string
----@param difficulty number
 ---@return table
 function Inventory:GetPossibleItemStats(item)
     if (not item or not Inventory.itemsData[item]) then
@@ -315,15 +312,14 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
             return
         end
         local itemStats = {}
-        if (Inventory.items_kv[itemName] and Inventory.items_kv[itemName]["AbilitySpecial"]) then
-            local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.items_kv[itemName]["AbilitySpecial"], itemName)
+        if (Inventory.itemsKeyValues[itemName] and Inventory.itemsKeyValues[itemName]["AbilitySpecial"]) then
+            local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], itemName)
             for _, stat in pairs(itemStatsNames) do
-                local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.items_kv[itemName]["AbilitySpecial"], stat)
-                if (statEntry and stat.type) then
-                    statEntry.type = stat.type
+                local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], stat, itemName)
+                if (statEntry) then
                     itemStats[stat.name] = statEntry
                 else
-                    DebugPrint("[INVENTORY] Can't find min and max values or type for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
+                    DebugPrint("[INVENTORY] Can't find min and max values for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
                 end
             end
         end
@@ -345,7 +341,7 @@ function Inventory:GetItemDifficulty(item)
     return Inventory.itemsData[item].difficulty
 end
 
-function Inventory:FindStatValuesFromKeyValues(statsTable, stat)
+function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)
     local result
     local min
     local max
@@ -360,6 +356,11 @@ function Inventory:FindStatValuesFromKeyValues(statsTable, stat)
         end
     end
     if (min and max) then
+        if (max < min) then
+            min = 0
+            max = 0
+            DebugPrint("[INVENTORY] Max value for stat " .. tostring(stat.name) .. " from item " .. tostring(itemName) .. " must be greater or equal min. Used 0 for both to fix that.")
+        end
         result = { min = min, max = max }
     end
     return result
@@ -370,17 +371,14 @@ function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
     for _, statEntry in pairs(statsTable) do
         local entrySize = Inventory:GetTableSize(statEntry)
         if (entrySize == 2) then
-            local entryType
             local entry
             for k, v in pairs(statEntry) do
-                if (k == "var_type") then
-                    entryType = v
-                elseif (string.match(k, "_min")) then
+                if (string.match(k, "_min")) then
                     entry = string.gsub(k, "_min", "")
                 end
             end
-            if (entry and entryType) then
-                table.insert(result, { name = entry, type = entryType })
+            if (entry) then
+                table.insert(result, { name = entry })
             end
         else
             DebugPrint("[INVENTORY] Expected two key-value pairs from ability special for item " .. tostring(itemName) .. ", but received " .. tostring(entrySize) .. ". Ignoring.")
@@ -526,9 +524,22 @@ function Inventory:OnInventoryDropItemRequest(event, args)
         item:Destroy()
         return
     end
-    item.inventoryStats = Inventory:GetItemStatsForHero(hero, event.equipped, event.slot)
+    Inventory:SetItemEntityStats(item, Inventory:GetItemStatsForHero(hero, event.equipped, event.slot))
     item:SetPurchaser(hero)
     Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
+end
+
+function Inventory:SetItemEntityStats(item, itemStats)
+    if (item) then
+        item.inventoryStats = itemStats
+    end
+end
+
+function Inventory:GetItemEntityStats(item)
+    if (item and item.inventoryStats) then
+        return item.inventoryStats
+    end
+    return nil
 end
 
 function Inventory:OnInventorySwapItemsRequest(event, args)
