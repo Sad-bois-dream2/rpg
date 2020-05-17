@@ -590,6 +590,22 @@ function GetMinMaxValueForItemStat(itemName, itemStat) {
     return result
 }
 
+function CalculateItemStatRoll(value, min, max, itemName, itemStat) {
+	if(min == max) {
+		return 1;
+	}
+    if(min < 0 && max >= 0) {
+        return 1 - (value / min); // save roll = value / min, save load = save roll * min
+    }
+    if(min >= 0 && max > 0) {
+        return (value - min) / (max - min); // save roll = value / max, save load = save roll * max
+    }
+    if(min < 0 && max < 0) {
+        return 1 - ((value-max)/(min-max)); // save roll = value / max, save load = save roll * max
+    }
+    $.Msg("[INVENTORY] Unable to calculate roll value for " + itemName + " and stat " + itemStats[i].name + ". Used 0 to fix that. Value = " + value + ", min = " + min + ", max = " + max);
+    return 0;
+}
 
 function CalculateQualityOfItem(itemName, itemStats) {
     var totalQuality = itemStats.length;
@@ -597,7 +613,7 @@ function CalculateQualityOfItem(itemName, itemStats) {
     for(var i = 0; i < itemStats.length; i++) {
         var minMaxValues = GetMinMaxValueForItemStat(itemName, itemStats[i].name);
         if(minMaxValues.length > 0) {
-            currentQuality += Math.abs(itemStats[i].value / (minMaxValues[1] - minMaxValues[0]));
+            currentQuality += CalculateItemStatRoll(itemStats[i].value, minMaxValues[0], minMaxValues[1], itemName, itemStats[i].name);
         } else {
             totalQuality = totalQuality - 1;
             $.Msg("[INVENTORY] There are error receiving min & max values for " + itemName + " and stat " + itemStats[i].name + ". Ignoring.");

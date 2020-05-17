@@ -315,7 +315,7 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
         if (Inventory.itemsKeyValues[itemName] and Inventory.itemsKeyValues[itemName]["AbilitySpecial"]) then
             local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], itemName)
             for _, stat in pairs(itemStatsNames) do
-                local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], stat)
+                local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], stat, itemName)
                 if (statEntry) then
                     itemStats[stat.name] = statEntry
                 else
@@ -341,7 +341,7 @@ function Inventory:GetItemDifficulty(item)
     return Inventory.itemsData[item].difficulty
 end
 
-function Inventory:FindStatValuesFromKeyValues(statsTable, stat)
+function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)
     local result
     local min
     local max
@@ -356,6 +356,11 @@ function Inventory:FindStatValuesFromKeyValues(statsTable, stat)
         end
     end
     if (min and max) then
+        if (max < min) then
+            min = 0
+            max = 0
+            DebugPrint("[INVENTORY] Max value for stat " .. tostring(stat.name) .. " from item " .. tostring(itemName) .. " must be greater or equal min. Used 0 for both to fix that.")
+        end
         result = { min = min, max = max }
     end
     return result
