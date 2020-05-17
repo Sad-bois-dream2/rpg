@@ -671,6 +671,7 @@ function CreateItemTooltip(slot, icon, name, rarity, type, description, quality,
 		tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 		tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
 		tooltip[TOOLTIP_TYPE_LABEL].text = type;
+		$.Msg(description);
         if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
             tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
         } else {

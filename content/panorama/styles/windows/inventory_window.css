@@ -417,9 +417,9 @@
 	flow-children: right;
 }
 
-#npc_dota_hero_axe, #npc_dota_hero_underlord, #npc_dota_hero_mars, #npc_dota_hero_doom_bringer,
-#npc_dota_hero_phantom_assassin, #npc_dota_hero_juggernaut, #npc_dota_hero_drow_ranger, #npc_dota_hero_windrunner,
-#npc_dota_hero_silencer, #npc_dota_hero_enchantress, #npc_dota_hero_crystal_maiden, #npc_dota_hero_invoker
+.ItemTooltipLabel
 {
-	visibility: collapse;
+    color: white;
+	font-family: platformfont;
+	font-size: 16px;
 }

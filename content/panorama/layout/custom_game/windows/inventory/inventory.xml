@@ -1,8 +1,8 @@
 <root>
 	<styles>
 		<include src="file://{resources}/styles/windows/basic_window.css" />
-		<include src="file://{resources}/styles/windows/inventory_window.css" />
 		<include src="file://{resources}/styles/windows/item_tooltip.css" />
+		<include src="file://{resources}/styles/windows/inventory_window.css" />
 	</styles>
 	<scripts>
 		<include src="file://{resources}/scripts/windows/inventory.js" />
