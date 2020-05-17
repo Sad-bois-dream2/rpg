@@ -17,60 +17,60 @@
 						<Panel id="LeftItemSlots" class="LeftItemSlots">
 							<Panel id="InventoryEquippedSlot0" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(0)" onmouseover="ShowEquippedItemTooltip(0)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage0" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_claymore"/>
-								<Label text="Main hand"/>
+								<Label text="#DOTA_Inventory_slot_mainhand"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot1" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(1)" onmouseover="ShowEquippedItemTooltip(1)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage1" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_chainmail"/>
-								<Label text="Body"/>
+								<Label text="#DOTA_Inventory_slot_body"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot2" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(2)" onmouseover="ShowEquippedItemTooltip(2)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage2" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_inventory_legs_background"/>
-								<Label text="Legs"/>
+								<Label text="#DOTA_Inventory_slot_legs"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot3" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(3)" onmouseover="ShowEquippedItemTooltip(3)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage3" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_boots"/>
-								<Label text="Boots"/>
+								<Label text="#DOTA_Inventory_slot_boots"/>
 							</Panel>
 						</Panel>
 						<Panel id="RightItemSlots" class="RightItemSlots">
 							<Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)" onmouseover="ShowEquippedItemTooltip(5)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage5" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_poor_mans_shield"/>
-								<Label text="Off hand"/>
+								<Label text="#DOTA_Inventory_slot_offhand"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot6" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(6)" onmouseover="ShowEquippedItemTooltip(6)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage6" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_cloak"/>
-								<Label text="Cape"/>
+								<Label text="#DOTA_Inventory_slot_cape"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot7" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(7)" onmouseover="ShowEquippedItemTooltip(7)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage7" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shivas_guard"/>
-								<Label text="Shoulders"/>
+								<Label text="#DOTA_Inventory_slot_shoulder"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot8" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(8)" onmouseover="ShowEquippedItemTooltip(8)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage8" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_gloves"/>
-								<Label text="Gloves"/>
+								<Label text="#DOTA_Inventory_slot_gloves"/>
 							</Panel>
 						</Panel>
 						<Panel id="MiddleItemSlots" class="MiddleItemSlots">
 							<Panel id="InventoryEquippedSlot4" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(4)" onmouseover="ShowEquippedItemTooltip(4)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage4" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_helm_of_iron_will"/>
-								<Label text="Helmet"/>
+								<Label text="#DOTA_Inventory_slot_helmet"/>
 							</Panel>
 						</Panel>
 						<Panel id="MiddleItemSlotsFromBottom" class="MiddleItemSlots FromBottom">
 							<Panel class="LeftRings">
 								<Panel id="InventoryEquippedSlot9" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(9)" onmouseover="ShowEquippedItemTooltip(9)" onmouseout="HideItemTooltip()" showtooltip="false">
 									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage9" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_ring_of_protection"/>
-									<Label text="Ring1"/>
+									<Label text="#DOTA_Inventory_slot_ring"/>
 								</Panel>
 							</Panel>
 							<Panel id="InventoryEquippedSlot10" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(10)" onmouseover="ShowEquippedItemTooltip(10)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage10" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_belt_of_strength"/>
-								<Label text="Belt"/>
+								<Label text="#DOTA_Inventory_slot_belt"/>
 							</Panel>
 							<Panel class="RightRings">
 								<Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)" onmouseover="ShowEquippedItemTooltip(11)" onmouseout="HideItemTooltip()" showtooltip="false">
 									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage11" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shadow_amulet"/>
-									<Label text="Ring2"/>
+									<Label text="#DOTA_Inventory_slot_amulet"/>
 								</Panel>
 							</Panel>
 						</Panel>

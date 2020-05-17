@@ -2,7 +2,6 @@
 var INVENTORY_SLOTS_PER_ROW = 14;
 var INVENTORY_SLOT_ROWS = 7;
 var INVENTORY_SLOTS_COUNT = INVENTORY_SLOTS_PER_ROW * INVENTORY_SLOT_ROWS;
-var INVENTORY_EQUIPPED_SLOTS_COUNT = 12;
 var inventorySlots = [];
 var inventoryEquippedSlots = [];
 var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2;
@@ -32,6 +31,7 @@ var INVENTORY_SLOT_GLOVES = 8
 var INVENTORY_SLOT_RING = 9
 var INVENTORY_SLOT_BELT = 10
 var INVENTORY_SLOT_AMULET = 11
+var INVENTORY_SLOT_LAST = 11
 // adding rarity here require change GetInventoryItemRarityName()
 var INVENTORY_ITEM_RARITY_COMMON = 0
 var INVENTORY_ITEM_RARITY_RARE = 1
@@ -162,7 +162,11 @@ function OnInventorySlotDragStart( panelId, dragCallbacks ) {
 	displayPanel.itemname = inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname;
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
-    dragCallbacks.offsetY = 0; 
+    dragCallbacks.offsetY = 0;
+    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
+    if(desiredInventorySlot > -1) {
+        inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", true);
+    }
 } 
 
 function OnInventorySlotDragEnd( panelId, draggedPanel ) {
@@ -187,6 +191,10 @@ function OnInventorySlotDragEnd( panelId, draggedPanel ) {
 			GameEvents.SendCustomGameEventToServer("rpg_inventory_drop_item_on_ground", {"data" : jsonEncodedData});
 		}
 	}
+    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotFromId][SLOT_ITEM_IMAGE].itemname);
+    if(desiredInventorySlot > -1) {
+        inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", false);
+    }
 } 
 
 function OnRightClickOnInventoryEquippedSlot(slotId) {
@@ -408,6 +416,13 @@ function UpdateValues() {
 	} else {
 		var localPlayer = Players.GetLocalPlayer();
 		currentHero = Players.GetPlayerHeroEntityIndex(localPlayer);
+	}
+	var showNames = false;
+	if(GameUI.IsAltDown()) {
+	    showNames = true;
+	}
+	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
+		inventoryEquippedSlots[i][SLOT_PANEL].SetHasClass("Alt", showNames);
 	}
 }
 
@@ -774,7 +789,7 @@ function OnInventoryItemsDataRequest(event) {
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];
 	pageButtons = [$("#Page0Button"), $("#Page1Button"), $("#Page2Button")];
-	for(var i = 0; i < INVENTORY_EQUIPPED_SLOTS_COUNT; i++) {
+	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
 		var inventorySlotPanel = $("#InventoryEquippedSlot"+i);
 		var inventorySlotImage = $("#InventoryEquippedSlotImage"+i);
 		inventorySlotImage.Data().defaultImage = inventorySlotImage.itemname;
