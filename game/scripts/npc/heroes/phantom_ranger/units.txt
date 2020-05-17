@@ -42,7 +42,9 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
-		"MovementSpeed"				"320"		// Speed.			
+		"MovementSpeed"				"320"		// Speed.
+		"MovementTurnRate"			"1.0"
+			
 		// Status
 		//----------------------------------------------------------------
 		"StatusHealth"				"1"		// Base health.
@@ -54,6 +56,12 @@
 		//----------------------------------------------------------------
 		"VisionDaytimeRange"		"400"		// Range of vision during day light.
 		"VisionNighttimeRange"		"400"		// Range of vision at night time.
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_GOODGUYS"
+		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_HERO"
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_HERO"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 	}	
 	"npc_dota_phantom_ranger_void_disciple"	
 	{
@@ -77,7 +85,7 @@
 		
 		// Attack
 		//----------------------------------------------------------------
-		"AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
 		"AttackDamageMin"			"0"		// Damage range min.
 		"AttackDamageMax"			"0"		// Damage range max.
 		"AttackRate"				"1.7"		// Speed of attack.
@@ -105,7 +113,12 @@
 		"StatusHealthRegen"			"0"		// Health regeneration rate.
 		"StatusMana"				"0"		// Base mana.
 		"StatusManaRegen"			"0"		// Mana regeneration rate.		 
-		
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_GOODGUYS"
+		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_HERO"
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_HERO"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 		// Vision
 		//----------------------------------------------------------------
 		"VisionDaytimeRange"		"400"		// Range of vision during day light.

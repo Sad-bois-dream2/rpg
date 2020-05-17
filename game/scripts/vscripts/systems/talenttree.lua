@@ -114,8 +114,8 @@ function TalentTree:Init()
             "terror_lord_ruthless_predator",
             "phantom_ranger_void_arrows",
             "phantom_ranger_hunters_focus",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
+            "phantom_ranger_phantom_of_vengeance",
+            "phantom_ranger_black_arrow"
         },
         ["npc_dota_hero_juggernaut"] = {
             "luminous_samurai_blade_dance",
