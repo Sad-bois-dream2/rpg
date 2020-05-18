@@ -58,38 +58,21 @@ function modifier_hero:OnDeath(keys)
         return
     end
     local hero = keys.unit
-    local killer = keys.attacker
     if (hero ~= self.parent) then
         return
     end
-    if (Enemies:IsBoss(killer)) then
-        if (Enemies:IsDamagedByHero(killer, hero)) then
-            Enemies:OnBossHealing(killer)
-            Enemies:ResetDamageForHero(killer, hero)
-        end
-    else
-        local owner = killer:GetOwner()
-        if (Enemies:IsBoss(owner)) then
-            if (Enemies:IsDamagedByHero(owner, hero)) then
-                Enemies:OnBossHealing(owner)
-                Enemies:ResetDamageForHero(owner, hero)
-            end
-        else
-            local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                    hero:GetAbsOrigin(),
-                    nil,
-                    5000,
-                    DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    DOTA_UNIT_TARGET_ALL,
-                    DOTA_UNIT_TARGET_FLAG_NONE,
-                    FIND_ANY_ORDER,
-                    false)
-            for _, enemy in pairs(enemies) do
-                if (Enemies:IsBoss(enemy) and Enemies:IsDamagedByHero(enemy, hero)) then
-                    Enemies:OnBossHealing(enemy)
-                    Enemies:ResetDamageForHero(enemy, hero)
-                end
-            end
+    local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+            hero:GetAbsOrigin(),
+            nil,
+            FIND_UNITS_EVERYWHERE,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        if (Enemies:IsBoss(enemy)) then
+            Enemies:OnBossHealing(enemy, hero)
         end
     end
 end
