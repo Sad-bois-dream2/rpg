@@ -43,10 +43,26 @@ modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
             [MODIFIER_STATE_NOT_ON_MINIMAP] = true,
             [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
         }
-    end
+    end,
+    DeclareFunctions = function(self)
+    return { MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN }
+end
 })
 
 LinkedModifiers["modifier_phantom_ranger_phantom_of_vengeance_phantom"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_of_vengeance_phantom:OnCreated(params)
+    if not IsServer() then return end
+    self.phantomSpeed = params.phantomSpeed
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_of_vengeance_phantom:GetModifierMoveSpeed_AbsoluteMin()
+    return self.phantomSpeed
+end
 
 --------------------------------------------------------------------------------
 -- Phantom of Vengeance
@@ -56,7 +72,6 @@ phantom_ranger_phantom_of_vengeance = class({
         return "phantom_ranger_phantom_of_vengeance"
     end
 })
-
 
 --------------------------------------------------------------------------------
 
@@ -94,10 +109,11 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(pSource, pTarget)
         self.caster:SetCursorPosition(target + self.caster:GetForwardVector())
         target = self:GetCursorPosition()
     end
+
     local distance = DistanceBetweenVectors(source, target)
 	local targetVector = target - source
     local projectile = {
-        EffectName = "particles/units/heroes/hero_puck/puck_illusory_orb.vpcf",
+        --EffectName = "particles/units/heroes/hero_puck/puck_illusory_orb.vpcf",
         Source = sourceUnit,
         vSpawnOrigin = source,
         Ability = self,
@@ -113,35 +129,32 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(pSource, pTarget)
         bReplaceExisting = false,
         bProvidesVision = false
     }
-    ProjectileManager:CreateLinearProjectile(projectile)
-    sourceUnit:EmitSound("Hero_Spectre.HauntCast")
+    Timers:CreateTimer(0.05, function()
+        ProjectileManager:CreateLinearProjectile(projectile)
+        sourceUnit:EmitSound("Hero_Spectre.HauntCast")
+    end) 
 
-    local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", target, true, self.caster, self.caster, self.caster:GetTeamNumber())
+    local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", source, true, self.caster, self.caster, self.caster:GetTeamNumber())
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = phantom
     modifierTable.caster = phantom
     modifierTable.modifier_name = "modifier_phantom_ranger_phantom_of_vengeance_phantom"
     modifierTable.duration = -1
+    modifierTable.modifier_params = { phantomSpeed = phantomSpeed }
     GameMode:ApplyBuff(modifierTable)
     phantom:SetOwner(self.caster)
-    phantom.basemovespeed = phantomSpeed
     local wearables = GetWearables(self.caster)
     AddWearables(phantom, wearables)
+    phantom:SetRenderColor(120, 0, 30)
     ForEachWearable(phantom,
             function(wearable)
-                modifierTable = {}
-                modifierTable.ability = self
-                modifierTable.target = wearable
-                modifierTable.caster = phantom
-                modifierTable.modifier_name = "modifier_phantom_ranger_phantom_of_vengeance_phantom"
-                modifierTable.duration = -1
-                GameMode:ApplyBuff(modifierTable)
+                wearable:SetRenderColor(120, 0, 30)
             end)
-     phantom:MoveToNPC(phantom:GetOwner())
-    -- phantom:MoveToPosition(target)
-    -- phantom:MoveToPosition(targetVector)
-     Timers:CreateTimer(duration, function()
+    Timers:CreateTimer(0.05, function()
+        phantom:MoveToPosition(target)
+        end, self)
+    Timers:CreateTimer(duration, function()
         phantom_ranger_phantom_of_vengeance:DestroyPhantom(phantom)
     end)
 end
