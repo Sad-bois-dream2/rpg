@@ -1,3 +1,16 @@
+------------
+--Helper function
+-------------
+function RotateVectorAroundAngle( vec, angle )
+    local x = vec[1]
+    local y = vec[2]
+    angle = angle * 0.01745
+    local vec2 = Vector(0,0,0)
+    vec2[1] = x * math.cos(angle) - y * math.sin(angle)
+    vec2[2] = x * math.sin(angle) + y * math.cos(angle)
+    return vec2
+end
+
 ---------------------
 --lycan call
 ---------------------
@@ -36,7 +49,7 @@ function lycan_call:OnSpellStart()
         for i = 0, self.number - 1, 1 do
             summon_point = enemy:GetAbsOrigin() + 50 * enemy:GetForwardVector() * i
             local wolf = CreateUnitByName("npc_boss_lycan_call_wolf", summon_point, true, caster, caster, casterTeam)
-            wolf:AddNewModifier(caster, self, "modifier_kill", { duration = 5 })
+            wolf:AddNewModifier(caster, self, "modifier_kill", { duration = 30 })
         end
     end
 end
@@ -103,9 +116,9 @@ function modifier_lycan_companion:OnAttackLanded(keys)
     if (keys.attacker == self.parent and self.ability:IsCooldownReady() and RollPercentage(self.ability.chance)) then
         local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
         local wolf = CreateUnitByName("npc_boss_lycan_companion_wolf", summon_point, true, self.parent, self.parent, self.parentTeam)
-        wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 5 })
+        wolf:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 30 })
         self.ability:StartCooldown(self.ability.cooldown)
-        if RollPercentage(15) then
+        if RollPercentage(25) then
         self.parent:EmitSound("lycan_lycan_ally_0"..math.random(3,5))
         end
     end
@@ -121,6 +134,14 @@ lycan_wound = class({
         return "lycan_wound"
     end,
 })
+
+function lycan_wound:IsRequireCastbar()
+    return true
+end
+
+function lycan_wound:IsInterruptible()
+    return false
+end
 
 function lycan_wound:ApplyDamageAndDebuff(target, caster)
     local duration = self:GetSpecialValueFor("duration")
@@ -155,6 +176,13 @@ function lycan_wound:OnSpellStart()
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
+    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(bound_fx, false)
+        ParticleManager:ReleaseParticleIndex(bound_fx)
+    end)
     self:ApplyDamageAndDebuff(target, caster)
     if caster:HasModifier("modifier_lycan_transform") then
         caster:EmitSound("lycan_lycan_wolf_attack_08")
@@ -173,7 +201,7 @@ modifier_lycan_wound_debuff = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
@@ -214,6 +242,178 @@ end
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
 
+-------------
+--lycan lupine
+----------------
+
+-- Slow modifier
+modifier_lycan_lupine = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return lycan_lupine:GetAbilityTextureName()
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_enchantress_enchant_slow.vpcf"
+    end,
+})
+
+function modifier_lycan_lupine:GetAttackSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_lycan_lupine:GetMoveSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_lycan_lupine:GetSpellHasteBonus()
+    return self.slow
+end
+
+function modifier_lycan_lupine:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+
+end
+
+
+LinkLuaModifier("modifier_lycan_lupine", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
+lycan_lupine = class({
+    GetAbilityTextureName = function(self)
+        return "lycan_lupine"
+    end,
+})
+
+function lycan_lupine:IsRequireCastbar()
+    return true
+end
+
+function lycan_lupine:IsInterruptible()
+    return false
+end
+
+function lycan_lupine:LupineShower(caster, pos, lifetimeinticks, tickdelay, movement,aoe, damage  )
+    if not caster:IsNull() then
+        local offset_start = math.random(0,359)
+        local strikepos = pos
+        --each set of explosion have different pattern
+        local responses =
+        {
+            "from_out_inwards",
+            "spiral_in_random",
+        }
+        local aoetype = responses[RandomInt(1, #responses)]
+        print(aoetype)
+        -- boss aoe random
+        if aoetype == "from_out_inwards" then
+            strikepos = pos + Vector(1500*math.cos(math.rad(offset_start)), 1500*math.sin(math.rad(offset_start)), 0)
+            local direction = (pos - strikepos):Normalized()
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(i-1), function()
+                    strikepos = strikepos + i*movement*direction
+                    self:LupineAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        elseif aoetype == "spiral_in_random" then
+            for i=1, lifetimeinticks do
+                Timers:CreateTimer(tickdelay*(lifetimeinticks-i), function()
+                    strikepos = strikepos + Vector((lifetimeinticks-i)*movement*math.cos(math.rad(offset_start+i*20)), (lifetimeinticks-i)*movement*math.sin(math.rad(offset_start+i*20)), 0)
+                    self:LupineAoe(caster, aoe, strikepos, damage)
+                end)
+            end
+        end
+    end
+end
+
+
+function lycan_lupine:LupineAoe(caster, aoe, strikepos, damage)
+    if not caster:IsNull() then
+        --explode
+        local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
+                strikepos,
+                nil,
+                aoe,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO ,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.physdmg = true
+            GameMode:DamageUnit(damageTable)
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_lycan_lupine"
+            modifierTable.duration = self:GetSpecialValueFor("duration")
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        local particle_cast = "particles/units/npc_boss_lycan/lycan_lupine/lupine_explode.vpcf"
+        local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, caster)
+        ParticleManager:SetParticleControl( effect_cast, 0, strikepos)
+        ParticleManager:SetParticleControl( effect_cast, 1, Vector( aoe, aoe, aoe ) )
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(effect_cast, false)
+            ParticleManager:ReleaseParticleIndex(effect_cast)
+        end)
+    end
+end
+
+function lycan_lupine:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(bound_fx, false)
+        ParticleManager:ReleaseParticleIndex(bound_fx)
+    end)
+    --random explosion
+    local pos = caster:GetAbsOrigin()
+    local lifetimeinticks = 30
+    local tickdelay = 0.5
+    local movement = 50
+    local aoe = 315
+    local counter2 = 0
+    local number2 = self:GetSpecialValueFor("number_of_lupine_set")
+    local damage = self:GetSpecialValueFor("damage")
+    EmitSoundOn("lycan_lycan_battlebegins_01", caster)
+    Timers:CreateTimer(0, function()
+        if counter2 < number2 then
+            self:LupineShower(caster, pos, lifetimeinticks, tickdelay, movement,aoe, damage  )
+            counter2 = counter2 +1
+            return 1
+        end
+    end)
+end
+
+
 ---------------------
 --lycan wolf form
 ---------------------
@@ -248,15 +448,17 @@ function lycan_wolf_form:Transform()
     modifierTable.modifier_name = "modifier_lycan_transform"
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
-    ParticleManager:SetParticleControl(particle_cast_fx, 0, casterPosition)
-    ParticleManager:SetParticleControl(particle_cast_fx, 1, casterPosition)
-    ParticleManager:SetParticleControl(particle_cast_fx, 2, casterPosition)
-    ParticleManager:SetParticleControl(particle_cast_fx, 3, casterPosition)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(particle_cast_fx, false)
-        ParticleManager:ReleaseParticleIndex(particle_cast_fx)
-    end)
-    caster:EmitSound("Hero_Lycan.Shapeshift.Cast")
+    if not caster:IsNull() then
+        caster:EmitSound("Hero_Lycan.Shapeshift.Cast")
+        ParticleManager:SetParticleControl(particle_cast_fx, 0, casterPosition)
+        ParticleManager:SetParticleControl(particle_cast_fx, 1, casterPosition)
+        ParticleManager:SetParticleControl(particle_cast_fx, 2, casterPosition)
+        ParticleManager:SetParticleControl(particle_cast_fx, 3, casterPosition)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(particle_cast_fx, false)
+            ParticleManager:ReleaseParticleIndex(particle_cast_fx)
+        end)
+    end
 end
 
 modifier_lycan_wolf_form = class({
@@ -301,7 +503,6 @@ function modifier_lycan_wolf_form:OnTakeDamage()
     if self.hp_pct <= self.hp_threshold then
         -- hp drop below threshold = transform
         self.ability:Transform()
-        Timers:CreateTimer(5, function() self.ability:EmitSound("lycan_lycan_level_05") end)
     end
 end
 
@@ -571,11 +772,110 @@ end
 ---------------------
 --lycan agility
 ---------------------
+--attack damage and crit bonus
+
+modifier_lycan_agility_attack = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+
+function modifier_lycan_agility_attack:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ad = self:GetAbility():GetSpecialValueFor("attack_bonus") * 0.01
+    self.crit = self:GetAbility():GetSpecialValueFor("crit_chance_bonus")*0.01
+end
+
+function modifier_lycan_agility_attack:GetAttackDamagePercentBonus()
+    return self.ad
+end
+
+function modifier_lycan_agility_attack:GetCriticalChanceBonus()
+    return self.crit
+end
+
+
+LinkLuaModifier("modifier_lycan_agility_attack", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
+--ignore aggro and invul
+modifier_lycan_agility_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/units/npc_boss_luna/luna_cruelty/luna_cruelty.vpcf"
+    end,
+})
+
+function modifier_lycan_agility_buff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    if (not keys or keys.target) then
+        self:Destroy()
+    end
+    self.target = keys.target
+end
+
+function modifier_lycan_agility_buff:CheckState()
+    local state = { [MODIFIER_STATE_INVULNERABLE] = true,
+                    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+    }
+    return state
+end
+
+
+function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
+    return self.target
+end
+
+LinkLuaModifier("modifier_lycan_agility_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
 lycan_agility = class({
     GetAbilityTextureName = function(self)
         return "lycan_agility"
     end,
 })
+
+
+function lycan_agility:IsRequireCastbar()
+    return true
+end
+
+function lycan_agility:IsInterruptible()
+    return false
+end
+
 
 function lycan_agility:FindTargetForBlink(caster) --random with already hit removal
     if IsServer() then
@@ -609,15 +909,12 @@ function lycan_agility:Blink(target, caster)
     if (target == nil) then
         return
     end
-
     local start_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf", PATTACH_ABSORIGIN, caster)
-
     local targetPosition = target:GetAbsOrigin()
     local vector = (targetPosition - caster:GetAbsOrigin())
     local direction = vector:Normalized()
     -- move to 54 range on the back of target
     FindClearSpaceForUnit(self:GetCaster(), target:GetAbsOrigin() + ((target:GetAbsOrigin() - caster:GetAbsOrigin()):Normalized() * (54)), false)
-
     ProjectileManager:ProjectileDodge(caster)
     ParticleManager:SetParticleControl(start_particle, 2, caster:GetAbsOrigin())
     ParticleManager:ReleaseParticleIndex(start_particle)
@@ -629,45 +926,6 @@ function lycan_agility:Blink(target, caster)
     caster:SetForwardVector(direction)
 end
 
-modifier_lycan_agility_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-function modifier_lycan_agility_buff:OnCreated(keys)
-    if not IsServer() then
-        return
-    end
-    if (not keys or keys.target) then
-        self:Destroy()
-    end
-    self.target = keys.target
-end
-
-function modifier_lycan_agility_buff:GetIgnoreAggroTarget()
-    return self.target
-end
-
-function modifier_lycan_agility_buff:GetCriticalChanceBonus()
-    return 2 -- 300% crit chance
-end
-
-
-LinkLuaModifier("modifier_lycan_agility_buff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
-
 function lycan_agility:OnSpellStart()
     if not IsServer() then
         return
@@ -675,23 +933,52 @@ function lycan_agility:OnSpellStart()
 
     local target = self:GetCursorTarget()
     local caster = self:GetCaster()
+    local sound = "lycan_lycan_attack_05"
+    EmitSoundOn(sound, caster)
+    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(bound_fx, false)
+        ParticleManager:ReleaseParticleIndex(bound_fx)
+    end)
     --apply ignore aggro
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = caster
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_lycan_agility_buff"
-    modifierTable.modifier_params = { target = target }
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
+    --apply attack buff
+    modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_lycan_agility_attack"
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
     --set table for already hit
     self.already_hit = {}
     self:Blink(target, caster) --first target on cursor mostly gonna be tank
     table.insert(self.already_hit, target)
+
     --next target
     target = self:FindTargetForBlink(caster)
-    Timers:CreateTimer(1.5, function()
-        --other targets 1.5 s delay from first and 1.5s delay on every target after
+    --if only 1 remove buff
+    if target == nil then
+        --delay remove attack multiplier
+        Timers:CreateTimer(1, function ()
+            if caster:HasModifier("modifier_lycan_agility_attack") then
+                caster:RemoveModifierByName("modifier_lycan_agility_buff")
+                caster:RemoveModifierByName("modifier_lycan_agility_attack")
+                return 0.1
+            end
+        end)
+    end
+    --check for more target
+    Timers:CreateTimer(1, function()
+        --other targets 1 s delay from first and 1s delay on every target after
         if target ~= nil then
             --remove ignore aggro
             caster:RemoveModifierByName("modifier_lycan_agility_buff")
@@ -703,16 +990,34 @@ function lycan_agility:OnSpellStart()
             modifierTable.modifier_params = { target = target }
             modifierTable.duration = -1
             GameMode:ApplyBuff(modifierTable)
+            --attack multiplier
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_lycan_agility_attack"
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
             --smash
             self:Blink(target, caster)
             --new target
             target = self:FindTargetForBlink(caster)
-            return 1.5
+            --when he cannot find target
+            if target == nil then
+                --delay remove attack multiplier
+                Timers:CreateTimer(2, function ()
+                    if caster:HasModifier("modifier_lycan_agility_attack") then
+                        caster:RemoveModifierByName("modifier_lycan_agility_buff")
+                        caster:RemoveModifierByName("modifier_lycan_agility_attack")
+                        return 0.1
+                    end
+                end)
+            end
+            return 1
         end
     end)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
-    caster:RemoveModifierByName("modifier_lycan_agility_buff")
+
 end
 
 
@@ -892,7 +1197,7 @@ modifier_lycan_bleeding = class({
     end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
-    end
+    end,
 })
 
 function modifier_lycan_bleeding:OnCreated()
@@ -925,14 +1230,17 @@ modifier_lycan_bleeding_dot = class({
         return true
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-    end
+    end,
+    GetTexture = function(self)
+        return lycan_bleeding:GetAbilityTextureName()
+    end,
 })
 
 function modifier_lycan_bleeding_dot:OnCreated()
@@ -971,10 +1279,13 @@ modifier_lycan_bleeding_heal_reduced = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetTexture = function(self)
+        return lycan_bleeding:GetAbilityTextureName()
     end,
 })
 
@@ -1001,6 +1312,7 @@ function modifier_lycan_bleeding_heal_reduced:GetHealingReceivedPercentBonus()
 end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
+
 
 if (IsServer() and not GameMode.ZONE1_BOSS_LYCAN) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_lycan_transform, 'OnTakeDamage'))

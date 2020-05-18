@@ -822,7 +822,7 @@ modifier_ursa_slam_slow = class({
         return true
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false

@@ -176,7 +176,7 @@ function treant_hook:OnSpellStart()
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
         self.radius = self:GetSpecialValueFor("range")
         local target = self:FindTargetForHook(caster)
-        local vine_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        local vine_dummy = CreateModifierThinker(self:GetCaster(), self, "modifier_treant_hook_thinker", {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
         vine_dummy:EmitSoundParams("Hero_DarkWillow.Bramble.Spawn",1.0, 0.2, 0)
         local info =
         {
@@ -245,7 +245,15 @@ function treant_hook:OnProjectileHit(target)
     end
 end
 
+--remove thinker
+modifier_treant_hook_thinker = class({})
 
+function modifier_treant_hook_thinker:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    UTIL_Remove(self:GetParent())
+end
 ----------------
 -- treant flux
 ----------------
@@ -1236,7 +1244,7 @@ modifier_treant_root = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
