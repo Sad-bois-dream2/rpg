@@ -81,10 +81,6 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
-function Enemies:GetDropTableFor(enemy, difficulty)
-
-end
-
 -- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
@@ -102,6 +98,14 @@ function Enemies:Init()
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_creep_scaling, 'OnPostTakeDamage'))
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
+end
+
+function Enemies:GetItemDropFor(enemy)
+    local itemDrop = {}
+    if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
+        return itemDrop
+    end
+
 end
 
 function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
