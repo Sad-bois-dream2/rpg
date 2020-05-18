@@ -82,6 +82,12 @@ function Enemies:InitAbilites()
     --Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
+function Enemies:GetEliteEnemyDropChance(enemy, difficulty)
+    local baseDropChance = 35
+    local maxDropChance = 70
+    return math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / Enemies.DIFFICULTY_MAX)), maxDropChance)
+end
+
 function Enemies:BuildDropTable(enemy, difficulty)
     local dropTable = {}
     local IsBoss = Enemies:IsBoss(enemy)
@@ -89,7 +95,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local IsTrash = (IsBoss == false and IsElite == false)
     local dropChance = 10
     if (IsElite) then
-        dropChance = 35 + ((difficulty / Enemies.DIFFICULTY_MAX) * 35)
+        dropChance = Enemies:GetEliteEnemyDropChance(enemy, difficulty)
     end
     if (IsBoss) then
         dropChance = 100
@@ -97,25 +103,87 @@ function Enemies:BuildDropTable(enemy, difficulty)
     if (not RollPercentage(dropChance)) then
         return dropTable
     end
-    local itemsTable = {
-        { Inventory:GetItemsByRarity(Inventory.rarity.common), 100 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.uncommon), 70 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.rare), 35 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueRare), 25 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.legendary), 25 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueLegendary), 25 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.cursedLegendary), 35 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.ancient), 20 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueAncient), 15 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.cursedAncient), 25 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.immortal), 15 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueImmortal), 15 },
-        { Inventory:GetItemsByRarity(Inventory.rarity.cursedImmortal), 20 }
-    }
-    for _, itemsTier in pairs(itemsTable) do
-        itemsTier[2] = math.min(itemsTier[2] * Enemies.dropChanceFactor, 100)
+    local itemsPerDrop = 1
+    local dropChanceFactor = Enemies.dropChanceFactor
+    local itemsTable = {}
+    table.insert(itemsTable, Inventory.rarity.common, { tier = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100 })
+    if (difficulty > Enemies.DIFFICULTY1) then
+        table.insert(itemsTable, Inventory.rarity.uncommon, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uncommon), chance = 60 })
     end
-
+    if (difficulty > Enemies.DIFFICULTY1_5) then
+        table.insert(itemsTable, Inventory.rarity.rare, { tier = Inventory:GetItemsByRarity(Inventory.rarity.rare), chance = 25 })
+        itemsTable[Inventory.rarity.uncommon].chance = 80
+    end
+    if (difficulty > Enemies.DIFFICULTY2) then
+        itemsTable[Inventory.rarity.rare].chance = 35
+    end
+    if (difficulty > Enemies.DIFFICULTY2_5) then
+        table.insert(itemsTable, Inventory.rarity.uniqueRare, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueRare), chance = 20 })
+    end
+    if (difficulty > Enemies.DIFFICULTY3) then
+        itemsTable[Inventory.rarity.uniqueRare].chance = 25
+    end
+    if (difficulty > Enemies.DIFFICULTY3_5) then
+        table.insert(itemsTable, Inventory.rarity.legendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.legendary), chance = 25 })
+    end
+    if (difficulty > Enemies.DIFFICULTY4) then
+        table.insert(itemsTable, Inventory.rarity.uniqueLegendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueLegendary), chance = 25 })
+    end
+    if (difficulty > Enemies.DIFFICULTY4_5) then
+        table.insert(itemsTable, Inventory.rarity.cursedLegendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedLegendary), chance = 35 })
+    end
+    if (difficulty > Enemies.DIFFICULTY5) then
+        table.insert(itemsTable, Inventory.rarity.ancient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.ancient), chance = 20 })
+    end
+    if (difficulty > Enemies.DIFFICULTY5_5) then
+        table.insert(itemsTable, Inventory.rarity.uniqueAncient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueAncient), chance = 15 })
+        table.insert(itemsTable, Inventory.rarity.cursedAncient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedAncient), chance = 25 })
+        itemsTable[Inventory.rarity.common] = nil
+        itemsTable[Inventory.rarity.uncommon] = nil
+    end
+    if (difficulty > Enemies.DIFFICULTY6) then
+        if (IsElite) then
+            itemsPerDrop = RandomInt(1, 2)
+        end
+    end
+    if (difficulty > Enemies.DIFFICULTY6_5) then
+        if (IsBoss) then
+            itemsPerDrop = 2
+        end
+    end
+    if (difficulty > Enemies.DIFFICULTY7) then
+        dropChanceFactor = dropChanceFactor + 0.2
+        if (IsBoss) then
+            dropChanceFactor = dropChanceFactor + 0.3
+        end
+    end
+    if (difficulty > Enemies.DIFFICULTY7_5) then
+        table.insert(itemsTable, Inventory.rarity.immortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.immortal), chance = 15 })
+    end
+    if (difficulty > Enemies.DIFFICULTY8) then
+        table.insert(itemsTable, Inventory.rarity.uniqueImmortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueImmortal), chance = 15 })
+    end
+    if (difficulty > Enemies.DIFFICULTY8_5) then
+        table.insert(itemsTable, Inventory.rarity.cursedImmortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedImmortal), chance = 20 })
+    end
+    if (difficulty > Enemies.DIFFICULTY9) then
+        itemsTable[Inventory.rarity.rare] = nil
+        itemsTable[Inventory.rarity.uniqueRare] = nil
+        itemsTable[Inventory.rarity.legendary] = nil
+        itemsTable[Inventory.rarity.uniqueLegendary] = nil
+        itemsTable[Inventory.rarity.cursedLegendary] = nil
+    end
+    if (difficulty > Enemies.DIFFICULTY9_5) then
+        itemsTable[Inventory.rarity.immortal].chance = itemsTable[Inventory.rarity.immortal].chance * 1.5
+        itemsTable[Inventory.rarity.uniqueImmortal].chance = itemsTable[Inventory.rarity.uniqueImmortal].chance * 1.5
+        itemsTable[Inventory.rarity.cursedImmortal].chance = itemsTable[Inventory.rarity.cursedImmortal].chance * 1.5
+    end
+    if (difficulty > Enemies.DIFFICULTY10) then
+        dropChanceFactor = dropChanceFactor + 0.25
+    end
+    for _, itemsTier in pairs(itemsTable) do
+        itemsTier.chance = math.min(itemsTier.chance * dropChanceFactor, 100)
+    end
 end
 
 -- Internal stuff
