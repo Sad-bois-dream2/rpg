@@ -71,9 +71,8 @@ function modifier_hero:OnDeath(keys)
             FIND_ANY_ORDER,
             false)
     for _, enemy in pairs(enemies) do
-        if (Enemies:IsBoss(enemy) and Enemies:IsDamagedByHero(enemy, hero)) then
-            Enemies:OnBossHealing(enemy)
-            Enemies:ResetDamageForHero(enemy, hero)
+        if (Enemies:IsBoss(enemy)) then
+            Enemies:OnBossHealing(enemy, hero)
         end
     end
 end
