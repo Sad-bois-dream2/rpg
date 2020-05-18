@@ -452,7 +452,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
     local unit = EntIndexToHScript(keys.entindex)
     local IsLegitUnit = unit:IsCreature() and not (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() == DOTA_TEAM_NEUTRALS) then
+    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() ~= DOTA_TEAM_GOODGUYS) then
         unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
     end
 end, nil)
