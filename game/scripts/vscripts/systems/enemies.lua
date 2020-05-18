@@ -205,7 +205,7 @@ function Enemies:GetBossHealingPercentFor(unit)
         return 0
     end
     local result = 0.1
-    local difficulty = Difficulty:Get()
+    local difficulty = Difficulty:GetValue()
     if (difficulty > 4) then
         result = 0.2
     end
