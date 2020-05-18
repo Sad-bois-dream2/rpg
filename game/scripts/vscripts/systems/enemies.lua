@@ -89,13 +89,31 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local IsTrash = (IsBoss == false and IsElite == false)
     local dropChance = 10
     if (IsElite) then
-        dropChance = 50
+        dropChance = 35 + ((difficulty / Enemies.DIFFICULTY_MAX) * 35)
     end
     if (IsBoss) then
         dropChance = 100
     end
     if (not RollPercentage(dropChance)) then
         return dropTable
+    end
+    local itemsTable = {
+        { Inventory:GetItemsByRarity(self.rarity.common), 100 },
+        { Inventory:GetItemsByRarity(self.rarity.uncommon), 70 },
+        { Inventory:GetItemsByRarity(self.rarity.rare), 35 },
+        { Inventory:GetItemsByRarity(self.rarity.uniqueRare), 25 },
+        { Inventory:GetItemsByRarity(self.rarity.legendary), 25 },
+        { Inventory:GetItemsByRarity(self.rarity.uniqueLegendary), 25 },
+        { Inventory:GetItemsByRarity(self.rarity.cursedLegendary), 35 },
+        { Inventory:GetItemsByRarity(self.rarity.ancient), 20 },
+        { Inventory:GetItemsByRarity(self.rarity.uniqueAncient), 15 },
+        { Inventory:GetItemsByRarity(self.rarity.cursedAncient), 25 },
+        { Inventory:GetItemsByRarity(self.rarity.immortal), 15 },
+        { Inventory:GetItemsByRarity(self.rarity.uniqueImmortal), 15 },
+        { Inventory:GetItemsByRarity(self.rarity.cursedImmortal), 20 }
+    }
+    for _, itemsTier in pairs(itemsTable) do
+        itemsTier[2] = math.min(itemsTier[2] * Enemies.dropChanceFactor, 100)
     end
 
 end
@@ -133,6 +151,8 @@ function Enemies:Init()
     Enemies.DIFFICULTY9_5 = 9.5
     Enemies.DIFFICULTY10 = 10
     Enemies.DIFFICULTY10_5 = 10.5
+    Enemies.DIFFICULTY_MAX = 10.5
+    Enemies.dropChanceFactor = 1
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
     Enemies:BuildDropTable()
@@ -330,6 +350,9 @@ modifier_creep_scaling = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function()
+        return { MODIFIER_EVENT_ON_DEATH }
     end
 })
 
@@ -396,7 +419,7 @@ function modifier_creep_scaling:OnCreated()
         Castbar:AddToUnit(self.creep)
     end
     self.damage = self.damage * math.pow(self.difficulty, 3)
-    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / 10)), 150)
+    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
     Timers:CreateTimer(0, function()
@@ -409,6 +432,22 @@ function modifier_creep_scaling:OnCreated()
             return 0.25
         end
     end, self)
+end
+
+function modifier_creep_scaling:OnDeath(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.creep) then
+        if (Enemies:IsBoss(self.creep)) then
+            Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
+            Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName(), duration = 3, continue = true })
+            Notifications:BottomToAll({ text = "#DOTA_Difficulty_BossDead", duration = 3, continue = true })
+            Notifications:BottomToAll({ text = (math.floor(Enemies.dropChanceFactor * 10000) / 100) .. "!", duration = 3, continue = true })
+            Enemies.dropChanceFactor = Enemies.dropChanceFactor + 0.05
+        end
+        Enemies:DropItems(self.creep)
+    end
 end
 
 function modifier_creep_scaling:GetAttackDamageBonus()

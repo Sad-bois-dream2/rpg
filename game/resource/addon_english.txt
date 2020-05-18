@@ -830,6 +830,7 @@
         "DOTA_Difficulty_Change20"        ""
         "DOTA_Difficulty_BtnConfirm"		"CONFIRM"
         "DOTA_Difficulty_Set"        "Game difficulty set to "
+        "DOTA_Difficulty_BossDead"		" has been defeated! Drop chances increased by "
         "DOTA_Tooltip_modifier_creep_elite"		"Elite"
         "DOTA_Tooltip_modifier_creep_elite_Description"		"This is an Elite enemy. Elite enemies are more powerful than regular ones and have random abilities, but may give better rewards."
         // Countless items

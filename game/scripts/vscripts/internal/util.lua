@@ -226,3 +226,11 @@ end
 function DistanceBetweenVectors(vec1, vec2)
     return (vec1 - vec2):Length()
 end
+
+function GetTableSize(table)
+    local count = 0
+    for _, __ in pairs(table) do
+        count = count + 1
+    end
+    return count
+end

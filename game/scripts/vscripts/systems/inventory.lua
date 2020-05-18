@@ -394,7 +394,7 @@ end
 function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
     local result = {}
     for _, statEntry in pairs(statsTable) do
-        local entrySize = Inventory:GetTableSize(statEntry)
+        local entrySize = GetTableSize(statEntry)
         if (entrySize == 2) then
             local entry
             for k, v in pairs(statEntry) do
@@ -411,14 +411,6 @@ function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
         end
     end
     return result
-end
-
-function Inventory:GetTableSize(table)
-    local count = 0
-    for _, __ in pairs(table) do
-        count = count + 1
-    end
-    return count
 end
 
 -- Panaroma related stuff
