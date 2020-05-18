@@ -818,7 +818,7 @@
         "DOTA_Difficulty_Change8"        "★ Unique Legendary items added to drop table. Elite enemies drop chance increased to %ELITEDROPCHANCE%%."
         "DOTA_Difficulty_Change9"        "★ Cursed Legendary items added to drop table. Elite enemies drop chance increased to %ELITEDROPCHANCE%%."
         "DOTA_Difficulty_Change10"        "★ Ancient items added to drop table. Elite enemies drop chance increased to %ELITEDROPCHANCE%%."
-        "DOTA_Difficulty_Change11"        "★ Unique Ancient and Cursed Ancient items added to drop table. Common and Uncommon items removed from drop table."
+        "DOTA_Difficulty_Change11"        "★ Unique Ancient and Cursed Ancient items added to drop table. Common and Uncommon items removed from drop table. Elite enemies drop chance increased to %ELITEDROPCHANCE%%."
         "DOTA_Difficulty_Change12"        "★ Elite enemies now may roll more abilities. Elite enemies now may drop up to two items."
         "DOTA_Difficulty_Change13"        "★ Bosses now drop two items instead of one." // 7
         "DOTA_Difficulty_Change14"        "★ Random affixes added to each zone. All drop chances increased by 20%. Boss drop chances increased by additional 30%."

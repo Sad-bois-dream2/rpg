@@ -7,6 +7,7 @@ var confirmButton;
 var TIMER = -1;
 var timerStarted = false;
 var hostId = -1;
+var DIFFICULTY_MAX = 20;
 
 function GetPickedDifficulty(value) {
     if(value  < 0.01) {
@@ -105,17 +106,25 @@ function GetAbilitiesLevelForDifficulty(difficulty) {
     return result;
 }
 
+function GetEliteEnemyDropChance(difficulty) {
+    var baseDropChance = 35;
+    var maxDropChance = 70;
+    var difficultyMax = 10.5;
+    return Math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / difficultyMax)), maxDropChance);
+}
+
 function RoundValue(value) {
     return Math.floor(value * 100) / 100;
 }
 
-function FormatChangesText(change, difficulty) {
+function FormatChangesText(change, difficulty, changeNum) {
     change = change.replace("%HEALTH%", GetHealthBonusForDifficulty(difficulty));
     change = change.replace("%ARMOR%", GetArmorBonusForDifficulty(difficulty));
     change = change.replace("%ELEARMOR%", GetEleArmorBonusForDifficulty(difficulty));
     change = change.replace("%ATTACKDAMAGE%", GetAttackDamageBonusForDifficulty(difficulty));
     change = change.replace("%EXPERIENCE%", GetExperienceBonusForDifficulty(difficulty));
     change = change.replace("%ABILITYLEVEL%", GetAbilitiesLevelForDifficulty(difficulty));
+    change = change.replace("%ELITEDROPCHANCE%", GetEliteEnemyDropChance((changeNum/2) + 0.5));
     return change;
 }
 
@@ -142,7 +151,7 @@ function ModifyDifficultyWindow(difficulty) {
     }
     var latestChangeId = 0;
     changes.forEach(change => {
-        difficultyContainerLabels[latestChangeId].text = FormatChangesText(change, difficulty);
+        difficultyContainerLabels[latestChangeId].text = FormatChangesText(change, difficulty, latestChangeId+1);
         difficultyContainerLabels[latestChangeId].style.visibility = "visible";
         latestChangeId += 1;
     });
