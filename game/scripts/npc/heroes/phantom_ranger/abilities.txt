@@ -197,6 +197,7 @@
 			"precache"
 			{
 				"particle" "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf"
+				"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
 			}
 		}
 	}
@@ -253,7 +254,7 @@
 		}
 		"precache"
 		{
-		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
+			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
 			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
 			"particle" "particles/status_fx/status_effect_maledict.vpcf"
 		}
@@ -438,7 +439,7 @@
 		"precache"
 		{
 			"particle" "particles/units/heroes/hero_drow/drow_frost_arrow.vpcf"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
+			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
     		"soundfile" "soundevents/game_sounds_heroes/game_sounds_drowranger.vsndevts"
 		}
 	}
@@ -453,7 +454,7 @@
 		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"phantom_ranger_phantom_of_vengeance"
 		"AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
- 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+ 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"	
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
@@ -517,9 +518,7 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/heroes/hero_puck/puck_illusory_orb.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
 			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
 			"particle" "particles/status_fx/status_effect_maledict.vpcf"
 		}
@@ -536,7 +535,7 @@
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"phantom_ranger_shadowstep"	
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK | DOTA_ABILITY_BEHAVIOR_ROOT_DISABLES"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
 		"MaxLevel"						"1"
 
 		// Casting
@@ -548,7 +547,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"precache"
 		{
-    		"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
+    		//"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
 		}
 	}		
 

@@ -265,6 +265,7 @@ end
 function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
     if (target ~= nil) then
         GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damageScaling , voiddmg = true })
+        target:EmitSound("Hero_ShadowDemon.ShadowPoison.Impact")
         GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_shadow_waves_debuff", duration = self.duration })
         GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })
     end

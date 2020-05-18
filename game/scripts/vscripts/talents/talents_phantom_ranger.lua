@@ -75,21 +75,22 @@ phantom_ranger_phantom_of_vengeance = class({
 
 --------------------------------------------------------------------------------
 
--- function phantom_ranger_phantom_of_vengeance:GetAssociatedSecondaryAbilities()
---     return "phantom_ranger_shadowstep"
--- end
+ function phantom_ranger_phantom_of_vengeance:GetAssociatedSecondaryAbilities()
+     return "phantom_ranger_shadowstep"
+ end
 
 --------------------------------------------------------------------------------
 
 function phantom_ranger_phantom_of_vengeance:OnSpellStart(pSource, pTarget)
 
 	self.caster = self:GetCaster()
+    self.caster.phantom_of_vengeance_shadowstep_enabled = false
     self.damage = self:GetSpecialValueFor("contact_damage")
     self.cdr = self:GetSpecialValueFor("contact_cdr")
     self.receivedCdr = false
 	local phantomSpeed = self:GetSpecialValueFor("phantom_speed")
     local radius = self:GetSpecialValueFor("radius")
-    local duration = self:GetSpecialValueFor("duration")
+    local phantomDuration = self:GetSpecialValueFor("duration")
 	local source
 	local target
     local sourceUnit
@@ -109,11 +110,10 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(pSource, pTarget)
         self.caster:SetCursorPosition(target + self.caster:GetForwardVector())
         target = self:GetCursorPosition()
     end
-
+    -- Damaging part of the spell is a linear projectile.
     local distance = DistanceBetweenVectors(source, target)
 	local targetVector = target - source
     local projectile = {
-        --EffectName = "particles/units/heroes/hero_puck/puck_illusory_orb.vpcf",
         Source = sourceUnit,
         vSpawnOrigin = source,
         Ability = self,
@@ -130,33 +130,31 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(pSource, pTarget)
         bProvidesVision = false
     }
     Timers:CreateTimer(0.05, function()
-        ProjectileManager:CreateLinearProjectile(projectile)
-        sourceUnit:EmitSound("Hero_Spectre.HauntCast")
+        self.caster.phantom_of_vengeance_projectile = ProjectileManager:CreateLinearProjectile(projectile)
+        sourceUnit:EmitSound("Hero_Spectre.Haunt")
     end) 
 
-    local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", source, true, self.caster, self.caster, self.caster:GetTeamNumber())
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = phantom
-    modifierTable.caster = phantom
-    modifierTable.modifier_name = "modifier_phantom_ranger_phantom_of_vengeance_phantom"
-    modifierTable.duration = -1
-    modifierTable.modifier_params = { phantomSpeed = phantomSpeed }
-    GameMode:ApplyBuff(modifierTable)
-    phantom:SetOwner(self.caster)
-    local wearables = GetWearables(self.caster)
-    AddWearables(phantom, wearables)
-    phantom:SetRenderColor(120, 0, 30)
-    ForEachWearable(phantom,
-            function(wearable)
-                wearable:SetRenderColor(120, 0, 30)
-            end)
+    local phantom = self:CreatePhantomAtPoint(source, phantomSpeed, phantomDuration)
     Timers:CreateTimer(0.05, function()
         phantom:MoveToPosition(target)
         end, self)
-    Timers:CreateTimer(duration, function()
-        phantom_ranger_phantom_of_vengeance:DestroyPhantom(phantom)
-    end)
+
+
+    if not self.caster:HasAbility("phantom_ranger_shadowstep") then
+        local index
+        local i = 7
+        while (not index and i < self.caster:GetAbilityCount()) do
+            if (not self.caster:GetAbilityByIndex(i)) then index = i end
+            i = i + 1
+        end
+        local ability = self.caster:AddAbility("phantom_ranger_shadowstep")
+        if (index) then ability:SetAbilityIndex(index) end
+    end
+    self.caster:SwapAbilities("phantom_ranger_phantom_of_vengeance", "phantom_ranger_shadowstep", false, true)
+    self.caster.phantom_of_vengeance_shadowstep_enabled = true
+    self.caster:FindAbilityByName("phantom_ranger_shadowstep"):SetLevel(1)
+    -- Goes on a 0.1 second cooldown when ability is cast to prevent accidental double tap
+    self.caster:FindAbilityByName("phantom_ranger_shadowstep"):StartCooldown(0.1)
 end
 
 --------------------------------------------------------------------------------
@@ -166,14 +164,57 @@ function phantom_ranger_phantom_of_vengeance:OnProjectileHit(target, location)
     if (target) then
 
         GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true })
-        target:EmitSound("Hero_Spectre.Haunt")
+        target:EmitSound("Hero_Spectre.HauntCast")
         if ((Enemies:IsBoss(target) or Enemies:IsElite(target)) and not self.receivedCdr) then 
 
             self.receivedCdr = true
             GameMode:ReduceAbilityCooldown({ ability = self:GetAbilityName(), reduction = self.cdr, isflat = true, target = self.caster })
 
         end
+
     end
+
+end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_of_vengeance:CreatePhantomAtPoint(point, phantomSpeed, phantomDuration)
+
+    local phantom = CreateUnitByName("npc_dota_phantom_ranger_phantom", point, true, self.caster, self.caster, self.caster:GetTeamNumber())
+    local pSpeed
+    if (phantomSpeed) then pSpeed = phantomSpeed else pSpeed = phantom:GetBaseMoveSpeed() end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = phantom
+    modifierTable.caster = phantom
+    modifierTable.modifier_name = "modifier_phantom_ranger_phantom_of_vengeance_phantom"
+    modifierTable.duration = -1
+    modifierTable.modifier_params = { phantomSpeed = pSpeed }
+    GameMode:ApplyBuff(modifierTable)
+    phantom:SetOwner(self.caster)
+    local wearables = GetWearables(self.caster)
+    AddWearables(phantom, wearables)
+    phantom:SetRenderColor(120, 0, 30)
+    ForEachWearable(phantom, function(wearable)
+        wearable:SetRenderColor(120, 0, 30)
+    end)
+    if (phantomDuration) then 
+
+        Timers:CreateTimer(phantomDuration, function()
+
+            phantom_ranger_phantom_of_vengeance:DestroyPhantom(phantom)
+            if (self.caster.phantom_of_vengeance_shadowstep_enabled) then
+
+                self.caster:SwapAbilities("phantom_ranger_shadowstep", "phantom_ranger_phantom_of_vengeance", false, true)
+                self.caster.phantom_of_vengeance_shadowstep_enabled = false
+
+            end
+
+        end)
+
+    end
+
+    return phantom
 
 end
 
@@ -185,6 +226,62 @@ function phantom_ranger_phantom_of_vengeance:DestroyPhantom(phantom)
             phantom:Destroy()
         end)
     end
+end
+
+--------------------------------------------------------------------------------
+-- Shadowstep (phantom of vengeance associated spell)
+
+phantom_ranger_shadowstep = class({
+    GetAbilityTextureName = function(self)  
+        return "phantom_ranger_shadowstep"
+    end
+})
+
+--------------------------------------------------------------------------------
+
+ function phantom_ranger_phantom_of_vengeance:GetAssociatedPrimaryAbilities()
+     return "phantom_ranger_phantom_of_vengeance"
+ end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_shadowstep:OnSpellStart()
+
+    if not IsServer() then return end
+    local caster = self:GetCaster()
+    local target = self:GetCursorPosition()
+    local activePhantoms = FindActivePhantoms(caster)
+    if (activePhantoms) then
+
+        local closestPhantom = activePhantoms[1]
+        local closestPhantomPoint = activePhantoms[1]:GetAbsOrigin()
+        local closestDistance = DistanceBetweenVectors(target, closestPhantomPoint)
+        for _, phantom in pairs(activePhantoms) do
+
+            if (DistanceBetweenVectors(target, phantom:GetAbsOrigin()) < closestDistance) then
+
+                closestPhantom = phantom
+                closestPhantomPoint = phantom:GetAbsOrigin()
+                closestDistance = DistanceBetweenVectors(target, closestPhantomPoint)
+
+            end
+
+        end
+
+        closestPhantom:Stop()
+        ProjectileManager:DestroyLinearProjectile(self.caster.phantom_of_vengeance_projectile)
+        FindClearSpaceForUnit(closestPhantom, caster:GetAbsOrigin(), true)
+        FindClearSpaceForUnit(caster, closestPhantomPoint, true)
+        caster:EmitSound("Hero_Spectre.Reality")
+
+    end    
+    if (caster.phantom_of_vengeance_shadowstep_enabled) then
+
+        caster:SwapAbilities("phantom_ranger_shadowstep", "phantom_ranger_phantom_of_vengeance", false, true)
+        caster.phantom_of_vengeance_shadowstep_enabled = false
+
+    end
+
 end
 
 --------------------------------------------------------------------------------
@@ -1345,6 +1442,15 @@ end
 
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do LinkLuaModifier(LinkedModifier, "talents/talents_phantom_ranger", MotionController) end
 
+function FindActivePhantoms(caster)
+    local phantoms = Entities:FindAllByModel("models/heroes/drow/drow_base.vmdl")   
+    Custom_ArrayRemove(phantoms, function(i, j)
+        -- Remember that you want to return whatever STAYS in the array
+        return phantoms[i] and phantoms[i]:IsAlive() and not phantoms[i]:IsHero() and phantoms[i]:GetOwner() == caster and phantoms[i]:HasModifier("modifier_phantom_ranger_phantom_of_vengeance_phantom")
+    end)
+    
+    return phantoms
+end
 
 -- GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
 -- GameMode.PreDamageAfterResistancesEventHandlersTable = {}
