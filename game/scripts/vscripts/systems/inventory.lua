@@ -5,9 +5,9 @@ end
 -- items database
 function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand, 5)
-    Inventory:RegisterItemSlot("item_broadsword", self.rarity.cursed, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_broadsword", self.rarity.uncommon, self.slot.offhand, 5)
     Inventory:RegisterItemSlot("item_chainmail", self.rarity.rare, self.slot.body, 5)
-    Inventory:RegisterItemSlot("item_third_eye", self.rarity.cursed, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_third_eye", self.rarity.uniqueRare, self.slot.ring, 5)
 end
 
 function Inventory:Init()
@@ -35,10 +35,20 @@ function Inventory:Init()
     -- item types, changes here require changes in GetInventoryItemRarityName() in client side inventory.js
     self.rarity = {}
     self.rarity.common = 0
-    self.rarity.rare = 1
-    self.rarity.cursed = 2
+    self.rarity.uncommon = 1
+    self.rarity.rare = 2
+    self.rarity.uniqueRare = 3
+    self.rarity.legendary = 4
+    self.rarity.uniqueLegendary = 5
+    self.rarity.cursedLegendary = 6
+    self.rarity.ancient = 7
+    self.rarity.uniqueAncient = 8
+    self.rarity.cursedAncient = 9
+    self.rarity.immortal = 10
+    self.rarity.uniqueImmortal = 11
+    self.rarity.cursedImmortal = 12
     -- latest rarity id for internal stuff
-    self.rarity.max = 2
+    self.rarity.max = 12
     self.itemsData = {}
     self.itemsKeyValues = LoadKeyValues("scripts/npc/npc_items_custom.txt")
     Inventory:SetupItems()
@@ -77,6 +87,21 @@ function Inventory:AddItem(hero, item, itemStats)
         item:SetPurchaser(hero)
         return Inventory.slot.invalid
     end
+end
+
+function Inventory:GetItemsByRarity(rarity)
+    local result = {}
+    rarity = tonumber((rarity))
+    if (rarity < 0 or rarity > Inventory.rarity.max) then
+        DebugPrint("[INVENTORY] Attempt to get items with unknown rarity (rarity=" .. tostring(rarity) .. ")")
+        return result
+    end
+    for itemName, itemData in pairs(Inventory.itemsData) do
+        if (itemData.rarity == rarity) then
+            table.insert(result, { name = itemName, slot = itemData.slot, rarity = itemData.rarity, stats = itemData.stats, difficulty = itemData.difficulty })
+        end
+    end
+    return result
 end
 
 ---@param item string

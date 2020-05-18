@@ -34,7 +34,7 @@ function Difficulty:OnDifficultyWindowCheckStateRequest(event)
     if (Difficulty:IsConfirmed() == true) then
         state = 1
     end
-    if(player) then
+    if (player) then
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_difficulty_check_state_from_server", { state = state })
     end
 end
@@ -62,7 +62,8 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     local player = PlayerResource:GetPlayer(event.PlayerID)
     if (player and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         if (GameRules:PlayerHasCustomGameHostPrivileges(player)) then
-            Difficulty.value = event.difficulty / 2
+            Difficulty.value = math.max(1, (event.difficulty / 2) + 0.5)
+            print(Difficulty.value)
             Difficulty.confirmed = true
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })

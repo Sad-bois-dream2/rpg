@@ -33,9 +33,20 @@ var INVENTORY_SLOT_BELT = 10
 var INVENTORY_SLOT_AMULET = 11
 var INVENTORY_SLOT_LAST = 11
 // adding rarity here require change GetInventoryItemRarityName()
-var INVENTORY_ITEM_RARITY_COMMON = 0
-var INVENTORY_ITEM_RARITY_RARE = 1
-var INVENTORY_ITEM_RARITY_CURSED = 2
+var INVENTORY_ITEM_RARITY_COMMON = 0;
+var INVENTORY_ITEM_RARITY_UNCOMMON = 1;
+var INVENTORY_ITEM_RARITY_RARE = 2;
+var INVENTORY_ITEM_RARITY_UNIQUE_RARE = 3;
+var INVENTORY_ITEM_RARITY_LEGENDARY = 4;
+var INVENTORY_ITEM_RARITY_UNIQUE_LEGENDARY = 5;
+var INVENTORY_ITEM_RARITY_CURSED_LEGENDARY = 6;
+var INVENTORY_ITEM_RARITY_ANCIENT = 7;
+var INVENTORY_ITEM_RARITY_UNIQUE_ANCIENT = 8;
+var INVENTORY_ITEM_RARITY_CURSED_ANCIENT = 9;
+var INVENTORY_ITEM_RARITY_IMMORTAL = 10;
+var INVENTORY_ITEM_RARITY_UNIQUE_IMMORTAL = 11;
+var INVENTORY_ITEM_RARITY_CURSED_IMMORTAL = 12;
+
 
 var ELEMENTS = [
 	["Fire", "file://{images}/custom_game/hud/fire_element.png"],
@@ -49,18 +60,49 @@ var ELEMENTS = [
 
 function GetInventoryItemRarityName(rarity) {
 	switch(rarity) {
-		case INVENTORY_ITEM_RARITY_COMMON:
+        case INVENTORY_ITEM_RARITY_COMMON:
 			return "#DOTA_Inventory_rarity_common";
 			break;
-		case INVENTORY_ITEM_RARITY_RARE:
+        case INVENTORY_ITEM_RARITY_UNCOMMON:
+			return "#DOTA_Inventory_rarity_uncommon";
+			break;
+        case INVENTORY_ITEM_RARITY_RARE:
 			return "#DOTA_Inventory_rarity_rare";
 			break;
-		case INVENTORY_ITEM_RARITY_CURSED:
-			return "#DOTA_Inventory_rarity_cursed";
+        case INVENTORY_ITEM_RARITY_UNIQUE_RARE:
+			return "#DOTA_Inventory_rarity_unique_rare";
+			break;
+        case INVENTORY_ITEM_RARITY_LEGENDARY:
+			return "#DOTA_Inventory_rarity_legendary";
+			break;
+        case INVENTORY_ITEM_RARITY_UNIQUE_LEGENDARY:
+			return "#DOTA_Inventory_rarity_unique_legendary";
+			break;
+        case INVENTORY_ITEM_RARITY_CURSED_LEGENDARY:
+			return "#DOTA_Inventory_rarity_cursed_legendary";
+			break;
+        case INVENTORY_ITEM_RARITY_ANCIENT:
+			return "#DOTA_Inventory_rarity_ancient";
+			break;
+        case INVENTORY_ITEM_RARITY_UNIQUE_ANCIENT:
+			return "#DOTA_Inventory_rarity_unique_ancient";
+			break;
+        case INVENTORY_ITEM_RARITY_CURSED_ANCIENT:
+			return "#DOTA_Inventory_rarity_cursed_ancient";
+			break;
+        case INVENTORY_ITEM_RARITY_IMMORTAL:
+			return "#DOTA_Inventory_rarity_immortal";
+			break;
+        case INVENTORY_ITEM_RARITY_UNIQUE_IMMORTAL:
+			return "#DOTA_Inventory_unique_immortal";
+			break;
+        case INVENTORY_ITEM_RARITY_CURSED_IMMORTAL:
+			return "#DOTA_Inventory_cursed_immortal";
 			break;
 		default:
 			return "Unknown";
 	}
+
 }
 
 function GetInventoryItemSlotName(slot) {

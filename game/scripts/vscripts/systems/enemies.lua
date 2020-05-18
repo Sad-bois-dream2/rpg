@@ -82,6 +82,30 @@ function Enemies:InitAbilites()
     --Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
+function Enemies:BuildDropTable(enemy, difficulty)
+    local dropTable = {}
+    local IsBoss = Enemies:IsBoss(enemy)
+    local IsElite = Enemies:IsElite(enemy)
+    local IsTrash = (IsBoss == false and IsElite == false)
+    local dropChance = 10
+    if (IsElite) then
+        dropChance = 50
+    end
+    if (IsBoss) then
+        dropChance = 100
+    end
+    if (not RollPercentage(dropChance)) then
+        return dropTable
+    end
+    local tier1Items = Inventory:GetItemsByRarity(Inventory.rarity.common)
+    local tier2Items = Inventory:GetItemsByRarity(Inventory.rarity.rare)
+    local tier3Items = Inventory:GetItemsByRarity(Inventory.rarity.cursed)
+    local tier1DropChance = 100
+    local tier2DropChance = 100
+    local tier3DropChance = 100
+
+end
+
 -- Internal stuff
 function Enemies:Init()
     if (not IsServer()) then
@@ -95,16 +119,46 @@ function Enemies:Init()
     Enemies.STATS_SENDING_INTERVAL = 1
     Enemies.MAX_ABILITIES = 10
     Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
+    Enemies.DIFFICULTY1 = 1
+    Enemies.DIFFICULTY1_5 = 1.5
+    Enemies.DIFFICULTY2 = 2
+    Enemies.DIFFICULTY2_5 = 2.5
+    Enemies.DIFFICULTY3 = 3
+    Enemies.DIFFICULTY3_5 = 3.5
+    Enemies.DIFFICULTY4 = 4
+    Enemies.DIFFICULTY4_5 = 4.5
+    Enemies.DIFFICULTY5 = 5
+    Enemies.DIFFICULTY5_5 = 5.5
+    Enemies.DIFFICULTY6 = 6
+    Enemies.DIFFICULTY6_5 = 6.5
+    Enemies.DIFFICULTY7 = 7
+    Enemies.DIFFICULTY7_5 = 7.5
+    Enemies.DIFFICULTY8 = 8
+    Enemies.DIFFICULTY8_5 = 8.5
+    Enemies.DIFFICULTY9 = 9
+    Enemies.DIFFICULTY9_5 = 9.5
+    Enemies.DIFFICULTY10 = 10
+    Enemies.DIFFICULTY10_5 = 10.5
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
+    Enemies:BuildDropTable()
 end
 
-function Enemies:GetItemDropFor(enemy)
-    local itemDrop = {}
+function Enemies:DropItems(enemy)
+    local items = {}
     if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
-        return itemDrop
+        return
     end
+    local difficulty = Difficulty:GetValue()
+    items = Enemies:BuildDropTable(enemy, difficulty)
 
+end
+
+function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
+    abilityType = tonumber(abilityType)
+    if (enemyName and abilityName and abilityType and abilityType > 0 and abilityType < Enemies.ABILITY_TYPE_LAST) then
+        table.insert(Enemies.enemyAbilities, { owner = enemyName, name = abilityName, type = abilityType })
+    end
 end
 
 function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
