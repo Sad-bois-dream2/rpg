@@ -10,16 +10,16 @@
     <Panel class="Root" hittest="false">
         <Panel id="MainWindow" class="Window DifficultyWindow">
             <Panel class="WindowContent">
-                <Label id="TitleLabel" class="TitleLabel" text="#DOTA_Difficulty_Title"/>
-                <Label id="TimeLeftLabel" class="TimeLeftLabel" text="#DOTA_Difficulty_TimeLeft"/>
-                <Panel id="DifficultySliderContainer" hittest="false">
-                    <SlottedSlider id="DifficultySlider" class="HorizontalSlider" direction="horizontal" notches="20"/>
-                </Panel>
-                <Label id="PickedDifficultyLabel" class="PickedDifficultyLabel" text="Novice"/>
-                <Panel id="DifficultyChangesContainer"/>
-                <Panel id="ConfirmButton" class="WindowButton ConfirmButton" onactivate="OnConfirmButtonPressed()">
-                    <Label text="#DOTA_Difficulty_BtnConfirm"/>
-                </Panel>
+                    <Label id="TitleLabel" class="TitleLabel" text="#DOTA_Difficulty_Title"/>
+                    <Label id="TimeLeftLabel" class="TimeLeftLabel" text="#DOTA_Difficulty_TimeLeft"/>
+                    <Panel id="DifficultySliderContainer" hittest="false">
+                        <SlottedSlider id="DifficultySlider" class="HorizontalSlider" direction="horizontal" notches="20"/>
+                    </Panel>
+                    <Label id="PickedDifficultyLabel" class="PickedDifficultyLabel" text="Novice"/>
+                    <Panel id="DifficultyChangesContainer"/>
+                    <Panel id="ConfirmButton" class="WindowButton ConfirmButton" onactivate="OnConfirmButtonPressed()">
+                        <Label text="#DOTA_Difficulty_BtnConfirm"/>
+                    </Panel>
             </Panel>
         </Panel>
     </Panel>

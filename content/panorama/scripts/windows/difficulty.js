@@ -113,18 +113,104 @@ function GetEliteEnemyDropChance(difficulty) {
     return Math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / difficultyMax)), maxDropChance);
 }
 
+function GetItemDropChances(difficulty) {
+    var common = 0, uncommon = 1, rare = 2, uniqueRare = 3, legendary = 4, uniqueLegendary = 5, cursedLegendary = 6, ancient = 7, uniqueAncient = 8, cursedAncient = 9, immortal = 10, uniqueImmortal = 11, cursedImmortal = 12, last = 12;
+    var result = [100,0,0,0,0,0,0,0,0,0,0,0,0];
+    var factor = 1;
+    if(difficulty > 1) {
+        result[uncommon] = 60;
+    }
+    if(difficulty > 1.5) {
+        result[uncommon] = 80;
+        result[rare] = 25;
+    }
+    if(difficulty > 2) {
+        result[rare] = 35;
+    }
+    if(difficulty > 2.5) {
+        result[uniqueRare] = 20;
+    }
+    if(difficulty > 3) {
+        result[uniqueRare] = 25;
+    }
+    if(difficulty > 3.5) {
+        result[legendary] = 25;
+    }
+    if(difficulty > 4) {
+        result[uniqueLegendary] = 25;
+    }
+    if(difficulty > 4.5) {
+        result[cursedLegendary] = 35;
+    }
+    if(difficulty > 5) {
+        result[ancient] = 20;
+    }
+    if(difficulty > 5.5) {
+        result[ancient] = 20;
+        result[cursedAncient] = 25;
+        result[uniqueAncient] = 15;
+        result[common] = 0;
+        result[uncommon] = 0;
+    }
+    if(difficulty > 7) {
+        factor += 0.2;
+    }
+    if(difficulty > 7.5) {
+        result[immortal] = 15;
+    }
+    if(difficulty > 8) {
+        result[uniqueImmortal] = 15;
+    }
+    if(difficulty > 8.5) {
+        result[cursedImmortal] = 20;
+    }
+    if(difficulty > 9) {
+         result[rare] = 0;
+         result[uniqueRare] = 0;
+         result[legendary] = 0;
+         result[uniqueLegendary] = 0;
+         result[cursedLegendary] = 0;
+    }
+    if(difficulty > 9.5) {
+         result[immortal] = result[immortal] * 1.5;
+         result[uniqueImmortal] = result[uniqueImmortal] * 1.5;
+         result[cursedImmortal] = result[cursedImmortal] * 1.5;
+    }
+    if(difficulty > 10) {
+        factor += 0.25;
+    }
+    for(var i = 0; i <= last; i++) {
+        result[i] = (Math.floor(Math.min(result[i] * factor, 100)*100) / 100);
+    }
+    return result;
+}
+
 function RoundValue(value) {
     return Math.floor(value * 100) / 100;
 }
 
-function FormatChangesText(change, difficulty, changeNum) {
+function FormatChangesText(change, difficulty) {
+    var convertedDifficulty = (difficulty / 2) + 0.5;
+    var dropChances = GetItemDropChances(convertedDifficulty);
     change = change.replace("%HEALTH%", GetHealthBonusForDifficulty(difficulty));
     change = change.replace("%ARMOR%", GetArmorBonusForDifficulty(difficulty));
     change = change.replace("%ELEARMOR%", GetEleArmorBonusForDifficulty(difficulty));
     change = change.replace("%ATTACKDAMAGE%", GetAttackDamageBonusForDifficulty(difficulty));
     change = change.replace("%EXPERIENCE%", GetExperienceBonusForDifficulty(difficulty));
     change = change.replace("%ABILITYLEVEL%", GetAbilitiesLevelForDifficulty(difficulty));
-    change = change.replace("%ELITEDROPCHANCE%", GetEliteEnemyDropChance((changeNum/2) + 0.5));
+    change = change.replace("%ELITEDROPCHANCE%", GetEliteEnemyDropChance(convertedDifficulty));
+    change = change.replace("%UNIQUERARECHANCE%", dropChances[1]);
+    change = change.replace("%RARECHANCE%", dropChances[2]);
+    change = change.replace("%UNIQUERARECHANCE%", dropChances[3]);
+    change = change.replace("%LEGENDARYCHANCE%", dropChances[4]);
+    change = change.replace("%UNIQUELEGENDARYCHANCE%", dropChances[5]);
+    change = change.replace("%CURSEDLEGENDARYCHANCE%", dropChances[6]);
+    change = change.replace("%ANCIENTCHANCE%", dropChances[7]);
+    change = change.replace("%UNIQUEANCIENTCHANCE%", dropChances[8]);
+    change = change.replace("%CURSEDANCIENTCHANCE%", dropChances[9]);
+    change = change.replace("%IMMORTALCHANCE%", dropChances[10]);
+    change = change.replace("%UNIQUEIMMORTALCHANCE%", dropChances[11]);
+    change = change.replace("%CURSEDIMMORTALCHANCE%", dropChances[12]);
     return change;
 }
 
@@ -151,7 +237,7 @@ function ModifyDifficultyWindow(difficulty) {
     }
     var latestChangeId = 0;
     changes.forEach(change => {
-        difficultyContainerLabels[latestChangeId].text = FormatChangesText(change, difficulty, latestChangeId+1);
+        difficultyContainerLabels[latestChangeId].text = FormatChangesText(change, difficulty);
         difficultyContainerLabels[latestChangeId].style.visibility = "visible";
         latestChangeId += 1;
     });
