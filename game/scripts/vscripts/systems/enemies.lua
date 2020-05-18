@@ -98,19 +98,19 @@ function Enemies:BuildDropTable(enemy, difficulty)
         return dropTable
     end
     local itemsTable = {
-        { Inventory:GetItemsByRarity(self.rarity.common), 100 },
-        { Inventory:GetItemsByRarity(self.rarity.uncommon), 70 },
-        { Inventory:GetItemsByRarity(self.rarity.rare), 35 },
-        { Inventory:GetItemsByRarity(self.rarity.uniqueRare), 25 },
-        { Inventory:GetItemsByRarity(self.rarity.legendary), 25 },
-        { Inventory:GetItemsByRarity(self.rarity.uniqueLegendary), 25 },
-        { Inventory:GetItemsByRarity(self.rarity.cursedLegendary), 35 },
-        { Inventory:GetItemsByRarity(self.rarity.ancient), 20 },
-        { Inventory:GetItemsByRarity(self.rarity.uniqueAncient), 15 },
-        { Inventory:GetItemsByRarity(self.rarity.cursedAncient), 25 },
-        { Inventory:GetItemsByRarity(self.rarity.immortal), 15 },
-        { Inventory:GetItemsByRarity(self.rarity.uniqueImmortal), 15 },
-        { Inventory:GetItemsByRarity(self.rarity.cursedImmortal), 20 }
+        { Inventory:GetItemsByRarity(Inventory.rarity.common), 100 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.uncommon), 70 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.rare), 35 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueRare), 25 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.legendary), 25 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueLegendary), 25 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.cursedLegendary), 35 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.ancient), 20 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueAncient), 15 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.cursedAncient), 25 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.immortal), 15 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.uniqueImmortal), 15 },
+        { Inventory:GetItemsByRarity(Inventory.rarity.cursedImmortal), 20 }
     }
     for _, itemsTier in pairs(itemsTable) do
         itemsTier[2] = math.min(itemsTier[2] * Enemies.dropChanceFactor, 100)
@@ -440,11 +440,11 @@ function modifier_creep_scaling:OnDeath(keys)
     end
     if (keys.unit == self.creep) then
         if (Enemies:IsBoss(self.creep)) then
+            Enemies.dropChanceFactor = Enemies.dropChanceFactor + 0.05
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName(), duration = 3, continue = true })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_BossDead", duration = 3, continue = true })
             Notifications:BottomToAll({ text = (math.floor(Enemies.dropChanceFactor * 10000) / 100) .. "!", duration = 3, continue = true })
-            Enemies.dropChanceFactor = Enemies.dropChanceFactor + 0.05
         end
         Enemies:DropItems(self.creep)
     end

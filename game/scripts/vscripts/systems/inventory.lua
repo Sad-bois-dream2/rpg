@@ -92,7 +92,7 @@ end
 function Inventory:GetItemsByRarity(rarity)
     local result = {}
     rarity = tonumber(rarity)
-    if (rarity < 0 or rarity > Inventory.rarity.max) then
+    if (not rarity or rarity < 0 or rarity > Inventory.rarity.max) then
         DebugPrint("[INVENTORY] Attempt to get items with unknown rarity (rarity=" .. tostring(rarity) .. ")")
         return result
     end
