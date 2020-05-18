@@ -63,7 +63,6 @@ function Difficulty:OnDifficultyWindowConfirmRequest(event)
     if (player and event.difficulty and event.difficulty > 0 and Difficulty:IsConfirmed() == false) then
         if (GameRules:PlayerHasCustomGameHostPrivileges(player)) then
             Difficulty.value = math.max(1, (event.difficulty / 2) + 0.5)
-            print(Difficulty.value)
             Difficulty.confirmed = true
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_Set", duration = 3, continue = true })

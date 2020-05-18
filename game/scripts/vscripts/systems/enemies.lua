@@ -97,12 +97,6 @@ function Enemies:BuildDropTable(enemy, difficulty)
     if (not RollPercentage(dropChance)) then
         return dropTable
     end
-    local tier1Items = Inventory:GetItemsByRarity(Inventory.rarity.common)
-    local tier2Items = Inventory:GetItemsByRarity(Inventory.rarity.rare)
-    local tier3Items = Inventory:GetItemsByRarity(Inventory.rarity.cursed)
-    local tier1DropChance = 100
-    local tier2DropChance = 100
-    local tier3DropChance = 100
 
 end
 
