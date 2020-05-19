@@ -46,6 +46,7 @@ function OnPortraitClick(id) {
 
 function OnHPBarClick(id) {
 	var IsAltDown = GameUI.IsAltDown();
+    var IsCtrlDown = GameUI.IsControlDown();
 	if(IsAltDown) {
         var hero = Heroes[id][HERO_ENTITY];
 		var player = Players.GetLocalPlayer();
@@ -67,7 +68,11 @@ function OnHPBarClick(id) {
         		"value" : hpPercent
         	}
         ];
-        GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Ally_health", "args": JSON.stringify(args)});
+        if(IsCtrlDown) {
+            GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Ally_health_healing", "args": JSON.stringify(args)});
+        } else {
+            GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Ally_health", "args": JSON.stringify(args)});
+        }
 	}
 }
 
