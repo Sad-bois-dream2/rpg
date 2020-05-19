@@ -1133,7 +1133,7 @@ modifier_mirana_guile = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/npc_boss_mirana/moon_chain_debuff.vpcf"
+        return "particles/units/npc_boss_mirana/mirana_guile/moon_chain_debuff.vpcf"
     end,
     GetEffectAttachType = function(self)
         return PATTACH_ABSORIGIN_FOLLOW
@@ -1165,7 +1165,7 @@ mirana_guile = class({
 
 function  mirana_guile:ApplyChains(target, caster)
     target:EmitSound("Hero_EmberSpirit.SearingChains.Target")
-    local impact_pfx = ParticleManager:CreateParticle("particles/units/npc_boss_mirana/moon_chain_cast.vpcf", PATTACH_ABSORIGIN, target)
+    local impact_pfx = ParticleManager:CreateParticle("particles/units/npc_boss_mirana/mirana_guile/moon_chain_cast.vpcf", PATTACH_ABSORIGIN, target)
     ParticleManager:SetParticleControl(impact_pfx, 0, caster:GetAbsOrigin())
     ParticleManager:SetParticleControl(impact_pfx, 1, target:GetAbsOrigin())
     ParticleManager:ReleaseParticleIndex(impact_pfx)

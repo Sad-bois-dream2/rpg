@@ -360,6 +360,7 @@
    		"precache"
         		{
                     "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
+                    "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
                     "particle" "particles/units/npc_boss_brood/brood_spit/brood_spit_proj.vpcf"
                     "particle"  "particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin.vpcf"
                     "particle"  "particles/units/heroes/hero_snapfire/hero_snapfire_ultimate_calldown.vpcf"

@@ -495,6 +495,10 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
         modifierTable.modifier_name = "modifier_luna_wave_amp"
         modifierTable.duration = duration
         GameMode:ApplyDebuff(modifierTable)
+        local amp_modifiers = target:FindAllModifiersByName("modifier_luna_wave_amp")
+        for _,modifier in pairs(amp_modifiers) do
+            modifier:ForceRefresh()
+        end
         local damageTable = {}
         damageTable.caster = self:GetCaster()
         damageTable.target = target

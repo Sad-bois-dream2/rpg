@@ -772,9 +772,17 @@ function ursa_slam:OnSpellStart()
         end)
         --bigger aoe
         if self:GetLevel() == 2 then
-            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale4_1000.vpcf", PATTACH_ABSORIGIN, self.caster)
+            local earthshock_particle_fx2 = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale4_1000.vpcf", PATTACH_ABSORIGIN, self.caster)
+            Timers:CreateTimer(5.0, function()
+                ParticleManager:DestroyParticle(earthshock_particle_fx2, false)
+                ParticleManager:ReleaseParticleIndex(earthshock_particle_fx2)
+            end)
         elseif self:GetLevel() ==3 then
-            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale6_1500.vpcf", PATTACH_ABSORIGIN, self.caster)
+            local earthshock_particle_fx3 =ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale6_1500.vpcf", PATTACH_ABSORIGIN, self.caster)
+            Timers:CreateTimer(5.0, function()
+                ParticleManager:DestroyParticle(earthshock_particle_fx3, false)
+                ParticleManager:ReleaseParticleIndex(earthshock_particle_fx3)
+            end)
         end
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),

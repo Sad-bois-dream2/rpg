@@ -67,19 +67,15 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_bound", Enemies.ABILITY_TYPE_INNATE)
     --venge boss
     --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_missile", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_sky", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_sky", Enemies.ABILITY_TYPE_INNATE)
     --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_side", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fall", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_tide", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_moonify", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fall", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_tide", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_moonify", Enemies.ABILITY_TYPE_INNATE)
     --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_umbra", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_guardian", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_mind_control", Enemies.ABILITY_TYPE_INNATE)
     --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_storm", Enemies.ABILITY_TYPE_INNATE)
     --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fel", Enemies.ABILITY_TYPE_INNATE)
-    --spirit of mirana
-    --Enemies:RegisterEnemyAbility("npc_boss_mirana", "mirana_shard", Enemies.ABILITY_TYPE_INNATE)
-    --spirit of luna
-    --Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_void", Enemies.ABILITY_TYPE_INNATE)
 end
 
 function Enemies:GetDropTableFor(enemy, difficulty)

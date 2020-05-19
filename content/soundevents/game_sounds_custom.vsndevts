@@ -177,3 +177,64 @@
 		}
 	}
 }
+
+"g.venge_bubble_drowning"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"update_operator"
+			{
+				"operator"		"sos_reference_stack"
+				"reference_stack"		"src1_3d"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"		"sounds/venge_bubble_drowning.vsnd"
+						}
+					}
+					"volume_min"
+					{
+						"value"		"5.000000"
+					}
+					"volume_max"
+					{
+						"value"		"10.000000"
+					}
+					"pitch_min"
+					{
+						"value"		"0.950000"
+					}
+					"pitch_max"
+					{
+						"value"		"1.050000"
+					}
+					"chan_type"
+					{
+						"value"		"6"
+					}
+					"memory_type"
+					{
+						"value"		"0"
+					}
+					"soundlevel_min"
+					{
+						"value"		"130.000000"
+					}
+					"soundlevel_max"
+					{
+						"value"		"130.000000"
+					}
+					"spread_radius"
+					{
+						"value"		"600.000000"
+					}
+				}
+			}
+		}
+	}
+}

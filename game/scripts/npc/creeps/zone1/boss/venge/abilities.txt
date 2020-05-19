@@ -88,7 +88,8 @@
 	    "precache"
         {
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "particle"  "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
+    	    "particle"  "particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
     	}
     }
     //=================================================================================================================
@@ -182,12 +183,13 @@
    		"MaxLevel"						"3"
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.1"
-        "AbilityCastRange"				"1500"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.23"
+        "AbilityCastRange"				"3000"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
-       	"AbilityCooldown"				"45"
+       	"AbilityCooldown"				"999"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -201,39 +203,68 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"range"				        "2000"
+   				"range"				        "3000"
    			}
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"base_damage"				"1000 5000 10000"
+   				"main_damage"				"1000 4000 16000"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				        "250 1250 2500"
+   				"burn_dps"				    "100 400 1600"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "5 8 11"
+   				"burn_duration"				"5"
    			}
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"interval"				    "0.5"
+   				"damage_interval"			"0.5"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"contract_radius"			"250"
+   				"area_of_effect"			"250"
    			}
-
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"travel_distance"			"1200 1350 1500"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"travel_speed"			    "300 350 400"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"burn_dps_interval"			"1"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"land_time"			        "1.3"
+   			}
+   			"10"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"number"			        "30 35 40"
+   			}
    		}
 	    "precache"
         {
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_invoker.vsndevts"
+    	    "soundfile" "sounds/items/heavens_halberd.vsnd"
+    	    "soundfile" "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts"
+    	    "particle"  "particles/econ/items/lina/lina_ti7/lina_spell_light_strike_array_ti7.vpcf"
+    	    "particle" "particles/units/npc_boss_venge/venge_fall/venge_fall_fly.vpcf"
+    	    "particle" "particles/units/npc_boss_venge/venge_fall/venge_fall.vpcf"
+    	    "particle" "particles/units/heroes/hero_phoenix/phoenix_fire_spirit_burn.vpcf"
     	}
     }
     //=================================================================================================================
@@ -252,18 +283,18 @@
    		"MaxLevel"						"3"
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.1"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.23"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
-       	"AbilityCooldown"				"30"
+       	"AbilityCooldown"				"999"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
-
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
@@ -277,43 +308,44 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "600"
+   				"projectile_speed"			"600"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"number"				        "5 10 15"
+   				"projectile_radius"			"200"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"stun"				        "2 3.5 5"
+   				"bubble_tick"				"0.1"
    			}
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"				    "500 1500 4500"
+   				"bubble_damage"				"0.8 1.2 1.6"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"flood_slow"			    "25"
+   				"number"				    "2 3 4"
    			}
    			"08"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"flood_radius"			    "600"
-   			}
-   			"08"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"flood_duration"			    "8"
+   				"hit_count"				    "2 3 4"
    			}
    		}
 	    "precache"
         {
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "soundfile" "soundevents/game_sounds_custom.vsndevts"
+    	    "soundfile" "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_morphling.vsndevts"
+    	    "particle"  "particles/econ/events/ti7/fountain_regen_ti7_bubbles.vpcf"
+    	    "particle"  "particles/units/npc_boss_venge/venge_tide/venge_bubble.vpcf"
+    	    "particle"  "particles/econ/taunts/snapfire/snapfire_taunt_bubble_pop.vpcf"
+    	    "particle"  "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf"
+    	    "particle"  "particles/units/heroes/hero_morphling/morphling_waveform.vpcf"
     	}
     }
     //=================================================================================================================
@@ -332,8 +364,9 @@
    		"MaxLevel"						"3"
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.1"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.23"
         "AbilityCastRange"				"1500"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -346,58 +379,82 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"infuse_earth"				"5"
+   				"infuse_holy"				"5"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"range"				        "5"
+   				"range"				        "1500"
    			}
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "1500"
+   				"radius"				    "3000"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"				    "50 150 450"
+   				"damage"				    "2 6 18"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"interval"				    "2.5"
+   				"fixed_movement_speed"		"200 250 300"
    			}
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"pull_distance"				"200 250 300"
+   				"off_duration"				"1.5"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"moon_duration"				"8 10 12"
+   				"on_duration"				"1"
    			}
    			"08"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"hit_to_kill"				"3 5 7"
+   				"moon_duration"				"9 11.5 13"
    			}
    			"09"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"pull_speed"				"3 5 7"
+   				"hit_count"				    "2 3 4"
    			}
    			"10"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"rescue"				    "3 5 7"
+   				"rescue"				    "200"
+   			}
+   			"11"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"on_count"				    "4 5 6"
+   			}
+   			"12"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"total_damage"				"56 168 504"
+   			}
+   			"13"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"interval"				    "2.5"
    			}
    		}
 	    "precache"
         {
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "soundfile" "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_grimstroke.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
+    	    "particle"  "particles/units/npc_boss_venge/venge_moonify/soul_back.vpcf"
+    	    "particle"  "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
+    	    "particle"  "particles/units/heroes/hero_keeper_of_the_light/keeper_dazzling_debuff.vpcf"
+    	    "particle"  "particles/status_fx/status_effect_keeper_dazzle.vpcf"
+    	    "particle"  "particles/units/heroes/hero_keeper_of_the_light/keeper_dazzling.vpcf"
+    	    "particle"  "particles/units/heroes/hero_keeper_of_the_light/keeper_dazzling_on.vpcf"
+    	    "particle"  "particles/units/heroes/hero_chen/chen_holy_persuasion.vpcf"
     	}
     }
     //=================================================================================================================
@@ -461,24 +518,25 @@
     	}
     }
     //=================================================================================================================
-    // Venge : Spirit Guardian
+    // Venge : Mind Control
     //=================================================================================================================
-    "venge_guardian"
+    "venge_mind_control"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
         "ScriptFile"					"creeps/zone1/boss/venge"
-        "AbilityTextureName"			"venge_guardian"
+        "AbilityTextureName"			"venge_mind_control"
        	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
     	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
     	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
-    	"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.1"
-        "AbilityCastRange"				"1500"
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AbilityCastPoint"				"1.67"
+        "AnimationPlaybackRate"         "0.28"
+        "AbilityCastRange"				"2000"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
        	"AbilityCooldown"				"30"
@@ -487,27 +545,58 @@
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
+
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"infuse_holy"				"5"
+   				"infuse_void"				"5"
    			}
             "02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms"				        "200 275 350"
+   				"range"			            "2000"
    			}
-   			"03"
+            "03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "8 16 24"
+   				"movespeed_bonus"			"75 125 175"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"attackspeed_bonus"		    "100 200 300"
+   			}
+            "05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"target_search_radius"		"7000"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"charm_duration"			"7 9 11"
+   			}
+            "07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"600 700 800"
+   			}
+            "08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"stun"			            "5 7 9"
    			}
 
    		}
 	    "precache"
         {
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
-    	    "particle" "particles/units/heroes/hero_spectre/spectre_desolate_debuff.vpcf"
+    	    "soundfile" "sounds/items/heavens_halberd.vsnd"
+    	    "soundfile" "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts"
+    	    "particle"  "particles/units/heroes/hero_chaos_knight/chaos_knight_chaos_bolt.vpcf"
+    	    "particle"  "particles/units/heroes/hero_bounty_hunter/bounty_hunter_track_shield.vpcf"
+    	    "particle"  "particles/units/heroes/hero_nevermore/nevermore_loadout.vpcf"
+    	    "particle"  "particles/units/heroes/hero_nevermore/nevermore_wings.vpcf"
+
     	}
     }
     //=================================================================================================================

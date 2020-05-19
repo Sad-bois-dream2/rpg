@@ -644,7 +644,6 @@ function modifier_brood_cocoons:OnCreated()
         return
     end
     self.parent = self:GetParent()
-    self.parent:NoHealthBar()
     self.caster = self:GetCaster()
     self.interval = self:GetAbility():GetSpecialValueFor("interval")
     self:StartIntervalThink(self.interval)
@@ -784,6 +783,7 @@ end
 function modifier_brood_kiss:OnIntervalThink()
     local tick = 1
     self.delay = self.delay - tick
+    self.parent:EmitSound("Hero_DarkWillow.Ley.Count")
     ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, math.max(0, math.floor(self.delay)), 0))
     if (self.delay < 1) then
         self.parent:ForceKill(false)
@@ -1652,6 +1652,7 @@ function modifier_brood_web_enemy:OnCreated()
 
     --spawn spiderling on enemy in web
     self:StartIntervalThink(self.interval)
+    self:OnIntervalThink()
 end
 
 function modifier_brood_web_enemy:GetMoveSpeedPercentBonus()
