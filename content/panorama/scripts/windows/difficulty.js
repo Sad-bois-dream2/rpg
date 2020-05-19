@@ -158,6 +158,7 @@ function OnConfirmButtonPressed() {
 }
 
 var prevSliderValue = -1;
+var checkStateRequestSended = false;
 
 function UpdateValues() {
     var difficulty = GetPickedDifficulty(difficultySlider.value);
@@ -166,19 +167,16 @@ function UpdateValues() {
         GameEvents.SendCustomGameEventToServer("rpg_difficulty_changed", {"value": difficultySlider.value});
         prevSliderValue = difficultySlider.value;
     }
-    if(timerStarted && !Game.IsGamePaused()) {
-        TIMER = (Math.round((TIMER - UPDATE_INTERVAL) * 100) / 100).toFixed(2);
-        timeLeftLabel.text = $.Localize("#DOTA_Difficulty_TimeLeft").replace("%TIME%", TIMER);
-        if(TIMER < 0) {
-            OnConfirmButtonPressed();
-        }
+    if(!checkStateRequestSended) {
+        GameEvents.SendCustomGameEventToServer("rpg_difficulty_check_state", {});
+        checkStateRequestSended = true;
     }
 }
 
-var currentDot = 1;
-var currentDotTimer = -1;
-
 function AutoUpdateTimer() {
+    if(MainWindow.style.visibility == "collapse") {
+        return;
+    }
     if(timerStarted) {
         if(!Game.IsGamePaused()) {
             TIMER = (Math.round((TIMER - UPDATE_INTERVAL_TIMER) * 100) / 100).toFixed(2);
@@ -187,25 +185,6 @@ function AutoUpdateTimer() {
                 OnConfirmButtonPressed();
             }
         }
-    } else {
-        if(currentDotTimer < 0) {
-        var dots = "";
-        if(currentDot == 1) {
-            dots = ".  ";
-        }
-        if(currentDot == 2) {
-            dots = ".. ";
-        }
-        if(currentDot == 3) {
-            dots = "...";
-            currentDot = 0;
-        }
-        timeLeftLabel.text = $.Localize("#DOTA_Difficulty_Loading").replace("%DOTS%", dots);
-        currentDot += 1;
-        currentDotTimer = UPDATE_INTERVAL_TIMER_LOADING_DOTS;
-        } else {
-            currentDotTimer -= UPDATE_INTERVAL_TIMER;
-        }
     }
     $.Schedule(UPDATE_INTERVAL_TIMER, function() {
         AutoUpdateTimer();
@@ -213,6 +192,9 @@ function AutoUpdateTimer() {
 }
 
 function AutoUpdateValues() {
+    if(MainWindow.style.visibility == "collapse") {
+        return;
+    }
     UpdateValues();
     $.Schedule(UPDATE_INTERVAL, function() {
         AutoUpdateValues();
@@ -245,6 +227,12 @@ function OnDifficultyWindowHostIdInfo(event) {
     hostId = event.host;
 }
 
+function OnDifficultyWindowCheckState(event) {
+    if(event.state == 1) {
+        MainWindow.style.visibility = "collapse";
+    }
+}
+
 (function() {
     difficultySlider = $("#DifficultySlider");
     difficultyLabel = $("#PickedDifficultyLabel");
@@ -263,6 +251,7 @@ function OnDifficultyWindowHostIdInfo(event) {
     GameEvents.Subscribe("rpg_difficulty_change_value", OnDifficultyWindowValueChangeRequest);
     GameEvents.Subscribe("rpg_difficulty_host_id", OnDifficultyWindowHostIdInfo);
     GameEvents.Subscribe("rpg_difficulty_get_info_from_server", OnDifficultyWindowInfo);
+    GameEvents.Subscribe("rpg_difficulty_check_state_from_server", OnDifficultyWindowCheckState);
     AutoUpdateValues();
     AutoUpdateTimer();
     GameEvents.SendCustomGameEventToServer("rpg_difficulty_get_info", {});

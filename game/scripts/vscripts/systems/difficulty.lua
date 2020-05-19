@@ -21,6 +21,22 @@ function Difficulty:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_difficulty_changed", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowChangedRequest'))
     CustomGameEventManager:RegisterListener("rpg_difficulty_confirm", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowConfirmRequest'))
     CustomGameEventManager:RegisterListener("rpg_difficulty_get_info", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowGetInfoRequest'))
+    CustomGameEventManager:RegisterListener("rpg_difficulty_check_state", Dynamic_Wrap(Difficulty, 'OnDifficultyWindowCheckStateRequest'))
+end
+
+function Difficulty:OnDifficultyWindowCheckStateRequest(event)
+    if (not event) then
+        return
+    end
+    event.PlayerID = tonumber(event.PlayerID)
+    local player = PlayerResource:GetPlayer(event.PlayerID)
+    local state = 0
+    if (Difficulty:IsConfirmed() == true) then
+        state = 1
+    end
+    if(player) then
+        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_difficulty_check_state_from_server", { state = state })
+    end
 end
 
 function Difficulty:OnDifficultyWindowGetInfoRequest(event)
