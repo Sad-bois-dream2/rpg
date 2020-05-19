@@ -844,7 +844,7 @@
         "DOTA_Chat_Self_maxlevel"		"I have maximum level!"
         "DOTA_Chat_Self_needxp"		"I need <font color='#DAAF01'>%XP% (%EXPPERCENT%%) XP</font> to reach <font color='#DAAF01'>Level %NEXTLEVEL%</font>."
         "DOTA_Chat_Ally_health"		"Ally %HERO% have <font color='#00FF00'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
-        "DOTA_Chat_Ally_health_healing"		"I think ally %HERO% need some <font color='#00FF00'>healing</font>."
+        "DOTA_Chat_Ally_health_healing"		"I think ally %HERO% needs some <font color='#00FF00'>healing</font>."
         "DOTA_Chat_Ally_mana"		"Ally %HERO% have <font color='#257FF6'>%CURRENTMP% (%MPPERCENT%%)</font> mana left."
         "DOTA_Chat_Ally_maxlevel"		"Ally %HERO% have maximum level!"
         "DOTA_Chat_Ally_level"		"Ally %HERO% have <font color='#DAAF01'>Level %LEVEL%</font>."
