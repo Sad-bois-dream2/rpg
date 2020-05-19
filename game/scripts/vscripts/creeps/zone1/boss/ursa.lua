@@ -256,7 +256,7 @@ LinkLuaModifier("modifier_ursa_dash_motion", "creeps/zone1/boss/ursa.lua", LUA_M
 
 
 -- ursa_dash
-ursa_dash = ursa_dash or class({
+ursa_dash = ursa_dash ({
     GetAbilityTextureName = function(self)
         return "ursa_dash"
     end,
