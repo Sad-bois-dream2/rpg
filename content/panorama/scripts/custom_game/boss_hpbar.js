@@ -12,8 +12,13 @@ function OnPortraitClick() {
 	GameUI.SetCameraTargetPosition(Entities.GetAbsOrigin(latestSelectedCreep), -1.0);
 	if(IsAltDown) {
 		var player = Players.GetLocalPlayer();
-		var message = "Enemy " + $.Localize("#" + Entities.GetUnitName(latestSelectedCreep)) + " is still alive.";
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+		    {
+		        "name" : "%ENEMY%",
+		        "value" : "#" + Entities.GetUnitName(latestSelectedCreep)
+		    }
+		];
+		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Enemy_is_alive", "args": JSON.stringify(args)});
 	}
 }
 
@@ -25,8 +30,21 @@ function OnHPBarClick() {
 		var maxHp = Entities.GetMaxHealth(latestSelectedCreep);
 		var hpPercent = (currentHp / maxHp) * 100;
 		hpPercent = Math.round(hpPercent * 100) / 100;
-		var message = "Enemy " + $.Localize("#" + Entities.GetUnitName(latestSelectedCreep)) + " have " + currentHp + " (" + hpPercent + "%) health left.";
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+		    {
+		        "name" : "%ENEMY%",
+		        "value" : "#" + Entities.GetUnitName(latestSelectedCreep)
+		    },
+		    {
+		        "name" : "%CURRENTHP%",
+		        "value" : currentHp
+		    },
+		    {
+		        "name" : "%HPPERCENT%",
+		        "value" : hpPercent
+		    }
+		];
+		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Enemy_health", "args": JSON.stringify(args)});
 	}
 }
 
@@ -39,8 +57,21 @@ function OnMPBarClick() {
 		var mpPercent = (currentMp / maxMp) * 100;
 		mpPercent = Math.round(mpPercent * 100) / 100;
 		if (!isNaN(mpPercent)) {
-			var message = "Enemy " + $.Localize("#" + Entities.GetUnitName(latestSelectedCreep)) + " have " + currentMp + " (" + mpPercent + "%) mana left.";
-			GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+            var args = [
+                {
+                    "name" : "%ENEMY%",
+                    "value" : "#" + Entities.GetUnitName(latestSelectedCreep)
+                },
+                {
+                    "name" : "%CURRENTMP%",
+                    "value" : currentMp
+                },
+                {
+                    "name" : "%MPPERCENT%",
+                    "value" : mpPercent
+                }
+            ];
+            GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : "#DOTA_Chat_Enemy_mana", "args": JSON.stringify(args)});
 		}
 	}
 }
