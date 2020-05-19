@@ -184,6 +184,16 @@ function Enemies:BuildDropTable(enemy, difficulty)
     for _, itemsTier in pairs(itemsTable) do
         itemsTier.chance = math.min(itemsTier.chance * dropChanceFactor, 100)
     end
+    for i = 1, itemsPerDrop do
+        for rarity = #itemsTable, Inventory.rarity.common do
+            if(GetTableSize(dropTable) >= itemsPerDrop) then
+                break
+            end
+            if (itemsTable[rarity] and RollPercentage(itemsTable[rarity].chance)) then
+                table.insert(dropTable, itemsTable[rarity][math.random(1, #itemsTable[rarity])])
+            end
+        end
+    end
 end
 
 -- Internal stuff
@@ -232,7 +242,7 @@ function Enemies:DropItems(enemy)
     end
     local difficulty = Difficulty:GetValue()
     items = Enemies:BuildDropTable(enemy, difficulty)
-
+    PrintTable(items)
 end
 
 function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)
