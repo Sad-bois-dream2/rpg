@@ -223,7 +223,6 @@ function Enemies:Init()
     Enemies.dropChanceFactor = 1
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
-    Enemies:BuildDropTable()
 end
 
 function Enemies:DropItems(enemy)

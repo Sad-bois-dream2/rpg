@@ -127,7 +127,7 @@ function GameMode:OnGameInProgress()
         dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
     end)
     -- Vision in village
-    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234,15143.157227,384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
+    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game
@@ -175,10 +175,15 @@ function GameMode:OnSayChatMessageRequest(event, args)
         return
     end
     event.player_id = tonumber(event.player_id)
-    if (event.player_id and event.msg) then
+    if (event.player_id and event.msg and type(event.msg) == "string") then
         local player = PlayerResource:GetPlayer(event.player_id)
-        if (player) then
-            Say(player, event.msg, true)
+        local messageLength = string.len(event.msg)
+        if (messageLength < 1) then
+            return
+        end
+        event.msg = string.sub(event.msg, 1, math.min(50, messageLength))
+        if (player and string.len(event.msg) > 0) then
+            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg })
         end
     end
 end

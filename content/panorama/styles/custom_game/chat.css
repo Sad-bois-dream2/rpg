@@ -1,0 +1,52 @@
+@define defaultFont: Radiance,FZLanTingHei-R-GBK,TH Sarabun New,YDYGO 540,Gulim,MingLiU;
+
+.CustomChatLineContainer {
+    width: 750px;
+    max-width: 750px;
+    height: fit-children;
+    flow-children: right;
+    margin-top: -2px;
+    margin-left: 5px;
+    padding-top: 2px;
+    margin-bottom: 2px;
+    transition-property: opacity!immediate;
+    transition-duration: 0.1s;
+}
+
+DOTAChat#HudChat.Active .CustomChatLineContainer {
+    opacity: 1;
+}
+
+DOTAChat#HudChat .CustomChatLineContainer {
+    opacity: 0;
+}
+
+DOTAChat#HudChat .CustomChatLineContainer.NotReallyExpired {
+    opacity: 1;
+}
+
+.CustomChatLineLabel {
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1.5px 0px 2 #000000;
+    vertical-align: bottom;
+	font-family: defaultFont;
+    color: #ebdcbd;
+}
+
+.CustomHeroBadge {
+    width: 32px;
+    height: 32px;
+    margin-bottom: -12px;
+    margin-top: -4px;
+}
+
+.CustomHeroIcon {
+    width: 40px;
+    height: 23px;
+    margin-top: 0px;
+    margin-bottom: -6px;
+    margin-right: 4px;
+    transform: translateY(2px);
+    border: 1px solid black;
+}
