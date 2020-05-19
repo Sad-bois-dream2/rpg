@@ -249,7 +249,6 @@ function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
         iVisionTeamNumber = self.caster:GetTeamNumber()
     }
     ProjectileManager:CreateLinearProjectile(info)
-    print("Launch projectile")
 end
 
 function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
