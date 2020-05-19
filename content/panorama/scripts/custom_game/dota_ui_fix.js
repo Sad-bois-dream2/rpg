@@ -7,7 +7,6 @@ var CHAT_EXPIRE_TIME = 7 + UPDATE_INTERVAL;
 function UpdateValues() {
     for(var i = 0; i < customChatLines.length; i++) {
         if(customChatLines[i][CHAT_LINE_TIME] > UPDATE_INTERVAL) {
-            $.Msg(customChatLines[i][CHAT_LINE_TIME]);
             customChatLines[i][CHAT_LINE_TIME] -= UPDATE_INTERVAL;
         }
         if(customChatLines[i][CHAT_LINE_TIME] <= UPDATE_INTERVAL) {
