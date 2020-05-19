@@ -6,11 +6,10 @@ var CHAT_EXPIRE_TIME = 7 + UPDATE_INTERVAL;
 
 function UpdateValues() {
     for(var i = 0; i < customChatLines.length; i++) {
-        if(customChatLines[i][CHAT_LINE_TIME] > UPDATE_INTERVAL) {
-            customChatLines[i][CHAT_LINE_TIME] -= UPDATE_INTERVAL;
-        }
+        customChatLines[i][CHAT_LINE_TIME] -= UPDATE_INTERVAL;
         if(customChatLines[i][CHAT_LINE_TIME] <= UPDATE_INTERVAL) {
             customChatLines[i][CHAT_LINE_PANEL].SetHasClass("NotReallyExpired", false);
+            customChatLines[i][CHAT_LINE_TIME] = UPDATE_INTERVAL;
         }
     }
 }
@@ -35,8 +34,24 @@ function OnChatMessageRequest(event) {
     var chatLineLabel = chatLine.FindChildTraverse('ChatLabel');
     chatLine.SetHasClass("NotReallyExpired", true);
     var playerColor = GetHEXPlayerColor(0);
+    if(event.args != "[]") {
+        event.args = JSON.parse(event.args);
+        event.args = JSON.parse(event.args);
+    } else {
+        event.args = [];
+    }
+    if(event.text.startsWith('#')) {
+        event.text = $.Localize(event.text);
+    }
+    for(var i = 0; i < event.args.length; i++) {
+        if(event.args[i].value.toString().startsWith('#')) {
+            event.args[i].value = $.Localize(event.args[i].value);
+        }
+        event.text = event.text.replace(event.args[i].name, event.args[i].value);
+    }
     var chatLineText = $.Localize("#DOTA_Chat_Allies").replace("%NAME%", "<font color='" + playerColor + "'>" + Players.GetPlayerName(event.player_id) + "</font>").replace("%TEXT%", event.text);
     chatLineLabel.text = chatLineText;
+    heroIcon.SetImage("file://{images}/heroes/" + event.hero + ".png");
     customChatLines.push([chatLine, CHAT_EXPIRE_TIME])
 }
 

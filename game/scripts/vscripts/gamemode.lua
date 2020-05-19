@@ -181,9 +181,13 @@ function GameMode:OnSayChatMessageRequest(event, args)
         if (messageLength < 1) then
             return
         end
-        event.msg = string.sub(event.msg, 1, math.min(50, messageLength))
+        event.msg = string.sub(event.msg, 1, math.min(100, messageLength))
+        if(not event.args) then
+            event.args = {}
+        end
+        event.args = json.encode(event.args)
         if (player and string.len(event.msg) > 0) then
-            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg })
+            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName()})
         end
     end
 end

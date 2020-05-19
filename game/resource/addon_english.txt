@@ -834,6 +834,13 @@
         "DOTA_Tooltip_modifier_creep_elite"		"Elite"
         "DOTA_Tooltip_modifier_creep_elite_Description"		"This is an Elite enemy. Elite enemies are more powerful than regular ones and have random abilities, but may give better rewards."
         "DOTA_Chat_Allies"		"[Allies] %NAME%: %TEXT%"
+        "DOTA_Chat_Ally_is_alive"		"Ally %HERO% is still alive."
+        "DOTA_Chat_Ally_is_dead"		"Ally %HERO% is dead and will respawn in %TIME% second(s)."
+        "DOTA_Chat_Ally_health"		"Ally %HERO% have <font color='#00FF00'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
+        "DOTA_Chat_Ally_mana"		"Ally %HERO% have <font color='#257FF6'>%CURRENTMP% (%MPPERCENT%%)</font> mana left."
+        "DOTA_Chat_Ally_maxlevel"		"Ally %HERO% have maximum level!"
+        "DOTA_Chat_Ally_level"		"Ally %HERO% have <font color='#DAAF01'>Level %LEVEL%</font>."
+        "DOTA_Chat_Ally_needxp"		"Ally %HERO% need <font color='#DAAF01'>%XP% (%EXPPERCENT%%)</font> to reach <font color='#DAAF01'>Level %NEXTLEVEL%</font>."
         // Countless items
         "DOTA_Tooltip_Ability_item_claymore_custom"      "Claymore"
         "DOTA_Tooltip_Ability_item_claymore_custom_Description"      ""

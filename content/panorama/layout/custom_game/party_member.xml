@@ -33,7 +33,13 @@
 			var id = GetCurrentHeroId();
 			root.Data().OnPortraitClick(id);
 		}
-		
+
+		function OnLvlBarClick() {
+			var root = $.GetContextPanel();
+			var id = GetCurrentHeroId();
+			root.Data().OnLvlBarClick(id);
+		}
+
 		function ChangePanelSize() {
 			var root = $.GetContextPanel();
 			root.Data().ChangePanelSize();
