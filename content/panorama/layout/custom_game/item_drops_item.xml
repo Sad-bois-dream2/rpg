@@ -1,0 +1,18 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/item_drops.css"/>
+    </styles>
+    <script>
+        function OnClick() {
+            $.GetContextPanel().DeleteAsync(0);
+        }
+    </script>
+    <Panel class="DropItemContainer" onmouseactivate="OnClick()">
+        <DOTAItemImage id="DropItemIcon" class="DropItemIcon" showtooltip="false" itemname="item_claymore_custom" scaling="stretch-to-fit-preserve-aspect" />
+        <Image class="DropItemArrow" scaling="stretch-to-fit-preserve-aspect" src="s2r://panorama/images/control_icons/double_arrow_right_png.vtex"/>
+        <Panel class="HeroContainer">
+            <DOTAHeroImage id="HeroContainerIcon" class="HeroContainerIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+            <Label id="HeroContainerLabel" html="true" class="HeroContainerLabel" text="Player Name" />
+        </Panel>
+    </Panel>
+</root>

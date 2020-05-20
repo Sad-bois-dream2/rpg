@@ -151,6 +151,7 @@ function GetItemDropChances(difficulty) {
         result[uniqueAncient] = 15;
         result[common] = 0;
         result[uncommon] = 0;
+        factor += 0.1;
     }
     if(difficulty > 7) {
         factor += 0.2;
@@ -170,6 +171,7 @@ function GetItemDropChances(difficulty) {
         result[legendary] = 0;
         result[uniqueLegendary] = 0;
         result[cursedLegendary] = 0;
+        factor += 0.3;
     }
     if(difficulty > 9.5) {
          result[immortal] = result[immortal] * 1.5;

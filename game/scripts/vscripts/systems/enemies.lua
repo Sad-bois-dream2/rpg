@@ -93,7 +93,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local IsBoss = Enemies:IsBoss(enemy)
     local IsElite = Enemies:IsElite(enemy)
     local IsTrash = (IsBoss == false and IsElite == false)
-    local dropChance = 10
+    local dropChance = 100
     if (IsElite) then
         dropChance = Enemies:GetEliteEnemyDropChance(enemy, difficulty)
     end
@@ -140,6 +140,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
         table.insert(itemsTable, Inventory.rarity.cursedAncient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedAncient), chance = 25 })
         itemsTable[Inventory.rarity.common] = nil
         itemsTable[Inventory.rarity.uncommon] = nil
+        dropChanceFactor = dropChanceFactor + 0.1
     end
     if (difficulty > Enemies.DIFFICULTY6) then
         if (IsElite) then
@@ -172,6 +173,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
         itemsTable[Inventory.rarity.legendary] = nil
         itemsTable[Inventory.rarity.uniqueLegendary] = nil
         itemsTable[Inventory.rarity.cursedLegendary] = nil
+        dropChanceFactor = dropChanceFactor + 0.3
     end
     if (difficulty > Enemies.DIFFICULTY9_5) then
         itemsTable[Inventory.rarity.immortal].chance = itemsTable[Inventory.rarity.immortal].chance * 1.5
@@ -186,14 +188,16 @@ function Enemies:BuildDropTable(enemy, difficulty)
     end
     for i = 1, itemsPerDrop do
         for rarity = #itemsTable, Inventory.rarity.common do
-            if(GetTableSize(dropTable) >= itemsPerDrop) then
+            if (GetTableSize(dropTable) >= itemsPerDrop) then
                 break
             end
             if (itemsTable[rarity] and RollPercentage(itemsTable[rarity].chance)) then
-                table.insert(dropTable, itemsTable[rarity][math.random(1, #itemsTable[rarity])])
+                table.insert(dropTable, itemsTable[rarity].tier[math.random(1, #itemsTable[rarity].tier)])
             end
         end
     end
+    print("Dropped ", #dropTable, " items from ", enemy:GetUnitName())
+    return dropTable
 end
 
 -- Internal stuff
@@ -236,13 +240,16 @@ function Enemies:Init()
 end
 
 function Enemies:DropItems(enemy)
-    local items = {}
     if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
         return
     end
     local difficulty = Difficulty:GetValue()
-    items = Enemies:BuildDropTable(enemy, difficulty)
-    PrintTable(items)
+    for _, hero in pairs(HeroList:GetAllHeroes()) do
+        for _, item in pairs(Enemies:BuildDropTable(enemy, difficulty)) do
+            CustomGameEventManager:Send_ServerToAllClients("rpg_item_dropped", { item = item.name, hero = hero:GetUnitName(), player_id = hero:GetPlayerOwnerID() })
+            Inventory:AddItem(hero, item.name)
+        end
+    end
 end
 
 function Enemies:RegisterEnemyAbility(enemyName, abilityName, abilityType)

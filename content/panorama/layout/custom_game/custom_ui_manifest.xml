@@ -44,6 +44,7 @@
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/party.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/screen_buttons.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/boss_hpbar.xml" />
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/item_drops.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/inventory/inventory.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/talenttree/talenttree.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/difficulty/difficulty.xml" />
