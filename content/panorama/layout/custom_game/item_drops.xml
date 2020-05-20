@@ -9,5 +9,24 @@
     </scripts>
     <Panel class="Root" hittest="false">
         <Panel id="DropContainer" />
+        <Panel id="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+            <Panel class="ItemTooltipHeader">
+                <Panel>
+                    <DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
+                </Panel>
+                <Panel class="ItemTooltipName">
+                    <Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Item name" />
+                </Panel>
+            </Panel>
+            <Panel class="ItemTooltipDescription">
+                <Panel class="ItemTooltipInfoContainer">
+                    <Label id="ItemTooltipRarityLabel" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
+                    <Label id="ItemTooltipTypeLabel" html="true" class="ItemTooltipTypeLabel"  text="Item type" />
+                </Panel>
+                <Label id="ItemTooltipQualityLabel" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
+                <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description" />
+                <Panel id="ItemTooltipStatsContainer" class="ItemTooltipStatsContainer" />
+            </Panel>
+        </Panel>
     </Panel>
 </root>

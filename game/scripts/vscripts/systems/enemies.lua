@@ -246,7 +246,7 @@ function Enemies:DropItems(enemy)
     local difficulty = Difficulty:GetValue()
     for _, hero in pairs(HeroList:GetAllHeroes()) do
         for _, item in pairs(Enemies:BuildDropTable(enemy, difficulty)) do
-            CustomGameEventManager:Send_ServerToAllClients("rpg_item_dropped", { item = item.name, hero = hero:GetUnitName(), player_id = hero:GetPlayerOwnerID() })
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = item.name, hero = hero:GetUnitName(), player_id = hero:GetPlayerOwnerID() })
             Inventory:AddItem(hero, item.name)
         end
     end
@@ -320,7 +320,7 @@ function Enemies:OnUpdateEnemyStatsRequest(event, args)
             player.latestSelectedEnemy = enemy
             Timers:CreateTimer(0, function()
                 if (enemy ~= nil and not enemy:IsNull() and enemy == player.latestSelectedEnemy) then
-                    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_update_enemy_stats_from_server", { enemy = enemy:entindex(), stats = json.encode(enemy.stats) })
+                    CustomGameEventManager:Send_ServerToPlayer(player, "rpg_enemy_update_stats_from_server", { enemy = enemy:entindex(), stats = json.encode(enemy.stats) })
                     return Enemies.STATS_SENDING_INTERVAL
                 end
             end)
@@ -329,7 +329,7 @@ function Enemies:OnUpdateEnemyStatsRequest(event, args)
 end
 
 function Enemies:InitPanaromaEvents()
-    CustomGameEventManager:RegisterListener("rpg_update_enemy_stats", Dynamic_Wrap(Enemies, 'OnUpdateEnemyStatsRequest'))
+    CustomGameEventManager:RegisterListener("rpg_enemy_update_stats", Dynamic_Wrap(Enemies, 'OnUpdateEnemyStatsRequest'))
 end
 
 function Enemies:IsElite(unit)

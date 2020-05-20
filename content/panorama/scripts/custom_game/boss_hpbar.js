@@ -87,7 +87,7 @@ function UpdateSelection() {
         bossPanel.style.visibility = "visible";
         latestSelectedCreep = selectedCreep;
         UpdateModifiers();
-		GameEvents.SendCustomGameEventToServer("rpg_update_enemy_stats", { "player_id" : Players.GetLocalPlayer(), "enemy": selectedCreep});
+		GameEvents.SendCustomGameEventToServer("rpg_enemy_update_stats", { "player_id" : Players.GetLocalPlayer(), "enemy": selectedCreep});
         var currentAbilities = 0;
         var abiltiesCount = Entities.GetAbilityCount(selectedCreep);
         for (var i = 0; i < MAX_ABILITIES_ON_PANEL; i++) {
@@ -418,6 +418,6 @@ function ClosePanel() {
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelection);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelection);
     GameEvents.Subscribe("rpg_aggro_target_changed", OnAggroChanged);
-    GameEvents.Subscribe("rpg_update_enemy_stats_from_server", OnUpdateStatsRequest);
+    GameEvents.Subscribe("rpg_enemy_update_stats_from_server", OnUpdateStatsRequest);
     AutoUpdateValues();
 })();

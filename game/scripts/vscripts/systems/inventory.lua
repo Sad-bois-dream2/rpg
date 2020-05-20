@@ -71,9 +71,10 @@ function Inventory:AddItem(hero, item, itemStats)
             itemStats = Inventory:GenerateStatsForItem(item, difficulty)
         end
         for i = 0, Inventory.maxStoredItems do
-            if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, i).name)) then
+            local itemInSlot = Inventory:GetItemInSlot(hero, false, i)
+            if (itemInSlot and not Inventory:IsItemNotEmpty(itemInSlot)) then
                 Inventory:SetItemInSlot(hero, item, false, i, itemStats)
-                return i, Inventory:GetItemInSlot(hero, false, i)
+                return i, itemInSlot
             end
         end
         local item = CreateItem(item, hero, hero)
@@ -156,9 +157,9 @@ function Inventory:GetItemStatsForHero(hero, is_equipped, slot)
         return {}
     end
     if (is_equipped) then
-        return hero.inventory.equipped_items[slot].stats
+        return DeepTableCopy(hero.inventory.equipped_items[slot].stats)
     else
-        return hero.inventory.items[slot].stats
+        return DeepTableCopy(hero.inventory.items[slot].stats)
     end
 end
 
@@ -199,9 +200,9 @@ function Inventory:GetItemInSlot(hero, is_equipped, slot)
     if (hero ~= nil and slot ~= nil and is_equipped ~= nil) then
         if (Inventory:IsHeroHaveInventory(hero) and Inventory:IsSlotValid(slot, is_equipped)) then
             if (is_equipped) then
-                return hero.inventory.equipped_items[slot]
+                return DeepTableCopy(hero.inventory.equipped_items[slot])
             else
-                return hero.inventory.items[slot]
+                return DeepTableCopy(hero.inventory.items[slot])
             end
         end
     end
@@ -217,7 +218,7 @@ end
 ---@return boolean
 function Inventory:SetItemInSlot(hero, item, is_equipped, slot, stats)
     slot = tonumber(slot)
-    if (hero ~= nil and item ~= nil and is_equipped ~= nil and slot ~= nil) then
+    if (hero ~= nil and item ~= nil and is_equipped ~= nil and slot ~= nil and type(item) == "string") then
         if (Inventory:IsHeroHaveInventory(hero) and Inventory:IsSlotValid(slot, is_equipped)) then
             if (not stats) then
                 stats = {}
@@ -264,8 +265,11 @@ end
 ---@param item string
 ---@return boolean
 function Inventory:IsItemNotEmpty(item)
-    if (type(item) == "string") then
-        return string.len(item) > 0
+    if (not item) then
+        return false
+    end
+    if (type(item.name) == "string") then
+        return string.len(item.name) > 0
     end
     return false
 end
@@ -461,15 +465,15 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
                 end
                 Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
                 for i = 0, Inventory.maxStoredItems do
-                    local itemInInventorySlot = Inventory:GetItemInSlot(hero, false, i).name
-                    if (Inventory:IsItemNotEmpty(itemInInventorySlot)) then
-                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot, false, i, Inventory:GetItemStatsForHero(hero, false, i))
+                    local itemInInventorySlot = Inventory:GetItemInSlot(hero, false, i)
+                    if (itemInInventorySlot and Inventory:IsItemNotEmpty(itemInInventorySlot)) then
+                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot.name, false, i, Inventory:GetItemStatsForHero(hero, false, i))
                     end
                 end
                 for i = 0, Inventory.slot.last do
-                    local itemInInventoryEquippedSlot = Inventory:GetItemInSlot(hero, true, i).name
+                    local itemInInventoryEquippedSlot = Inventory:GetItemInSlot(hero, true, i)
                     if (Inventory:IsItemNotEmpty(itemInInventoryEquippedSlot)) then
-                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventoryEquippedSlot, true, i, Inventory:GetItemStatsForHero(hero, true, i))
+                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventoryEquippedSlot.name, true, i, Inventory:GetItemStatsForHero(hero, true, i))
                     end
                 end
             end)
@@ -519,7 +523,8 @@ function Inventory:OnInventoryDropItemRequest(event, args)
     if (not Inventory:IsHeroHaveInventory(hero)) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, event.equipped, event.slot).name ~= event.item) then
+    local itemInSlot = Inventory:GetItemInSlot(hero, event.equipped, event.slot)
+    if (not itemInSlot or itemInSlot.name ~= event.item) then
         return
     end
     local item = CreateItem(event.item, hero, hero)
@@ -575,14 +580,14 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
     end
     -- swap bottom slot with equipped slots
     if (event.equipped) then
-        local itemFromSlot = Inventory:GetItemInSlot(hero, true, event.fromslot).name
-        local itemInSlot = Inventory:GetItemInSlot(hero, false, event.inslot).name
+        local itemFromSlot = Inventory:GetItemInSlot(hero, true, event.fromslot)
+        local itemInSlot = Inventory:GetItemInSlot(hero, false, event.inslot)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, true, event.fromslot)
         local statsInSlot = Inventory:GetItemStatsForHero(hero, false, event.inslot)
         -- swap equipped item with empty bottom slot
         if (not Inventory:IsItemNotEmpty(itemInSlot)) then
+            Inventory:SetItemInSlot(hero, itemFromSlot.name, false, event.inslot, statsFromSlot)
             Inventory:SetItemInSlot(hero, "", true, event.fromslot, statsInSlot)
-            Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot, statsFromSlot)
         else
             -- swap equipped item with not empty bottom slot (conflict)
             local event_data = {
@@ -595,12 +600,12 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
         end
     else
         -- swap in bottom slots
-        local itemFromSlot = Inventory:GetItemInSlot(hero, false, event.fromslot).name
-        local itemInSlot = Inventory:GetItemInSlot(hero, false, event.inslot).name
+        local itemFromSlot = Inventory:GetItemInSlot(hero, false, event.fromslot)
+        local itemInSlot = Inventory:GetItemInSlot(hero, false, event.inslot)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.fromslot)
         local statsInSlot = Inventory:GetItemStatsForHero(hero, false, event.inslot)
-        Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot, statsFromSlot)
-        Inventory:SetItemInSlot(hero, itemInSlot, false, event.fromslot, statsInSlot)
+        Inventory:SetItemInSlot(hero, itemInSlot.name, false, event.fromslot, statsInSlot)
+        Inventory:SetItemInSlot(hero, itemFromSlot.name, false, event.inslot, statsFromSlot)
     end
 end
 
@@ -624,10 +629,11 @@ function Inventory:OnInventoryEquippedItemRightClick(event, args)
     if (not Inventory:IsHeroHaveInventory(hero)) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, true, event.fromslot).name ~= event.item) then
+    local itemFromSlot = Inventory:GetItemInSlot(hero, true, event.fromslot)
+    if (not itemFromSlot or itemFromSlot.name ~= event.item) then
         return
     end
-    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, event.inslot).name)) then
+    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, false, event.inslot))) then
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, true, event.fromslot)
         Inventory:SetItemInSlot(hero, "", true, event.fromslot, {})
         Inventory:SetItemInSlot(hero, event.item, false, event.inslot, statsFromSlot)
@@ -661,10 +667,11 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
     if (desiredItemSlot ~= event.inslot) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, false, event.fromslot).name ~= event.item) then
+    local itemFromSlot = Inventory:GetItemInSlot(hero, false, event.fromslot)
+    if (not itemFromSlot or itemFromSlot.name ~= event.item) then
         return
     end
-    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, true, desiredItemSlot).name)) then
+    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, true, desiredItemSlot))) then
         local statsInSlot = Inventory:GetItemStatsForHero(hero, true, desiredItemSlot)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.fromslot)
         Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
@@ -715,7 +722,8 @@ function Inventory:OnInventoryEquipItemRequest(event, args)
     if (desiredItemSlot == Inventory.slot.invalid) then
         return
     end
-    if (Inventory:GetItemInSlot(hero, false, event.slot).name == event.item) then
+    local itemInSlot = Inventory:GetItemInSlot(hero, false, event.slot)
+    if (itemInSlot and itemInSlot.name == event.item) then
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.slot)
         Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
         Inventory:SetItemInSlot(hero, "", false, event.slot, {})
