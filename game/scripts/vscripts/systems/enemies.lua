@@ -242,8 +242,6 @@ function Enemies:GetDropItemColor(rarity)
     return Vector(255, 255, 255)
 end
 
-Inventory:CreateItemOnGround(HeroList:GetHero(0), HeroList:GetHero(0):GetAbsOrigin(), "item_claymore_custom")
-
 function Enemies:LaunchItem(itemData)
     local pidx
     Timers:CreateTimer(itemData.delay, function()
@@ -251,8 +249,8 @@ function Enemies:LaunchItem(itemData)
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
             Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
-            EmitSoundOnLocationWithCaster(itemData.landPosition,"Item.DropGemWorld", itemData.hero)
             CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID() })
+            EmitSoundOnLocationWithCaster(itemData.landPosition,"ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
             local distance = DistanceBetweenVectors(itemData.launchPosition, itemData.landPosition)
