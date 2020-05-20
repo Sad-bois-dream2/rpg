@@ -13,6 +13,8 @@
 		"ItemSellable"					"0"
 		"ItemKillable"					"0"
 		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf"
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilitySpecial"

@@ -248,17 +248,17 @@ function Enemies:LaunchItem(itemData)
         if (itemData.launched) then
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            Inventory:AddItem(itemData.hero, itemData.itemName)
+            Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
             CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID() })
         else
-            local landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
-            local distance = DistanceBetweenVectors(itemData.launchPosition, landPosition)
+            itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
+            local distance = DistanceBetweenVectors(itemData.launchPosition, itemData.landPosition)
             if (distance < 150) then
                 itemData.travelTime = 0.1
             end
-            pidx = ParticleManager:CreateParticle("particles/items/projectiles/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
+            pidx = ParticleManager:CreateParticle("particles/items/drop/projectile/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
             ParticleManager:SetParticleControl(pidx, 0, itemData.launchPosition)
-            ParticleManager:SetParticleControl(pidx, 1, landPosition)
+            ParticleManager:SetParticleControl(pidx, 1, itemData.landPosition)
             ParticleManager:SetParticleControl(pidx, 2, Enemies:GetDropItemColor(itemData.itemRarity))
             ParticleManager:SetParticleControl(pidx, 4, Vector(itemData.travelTime, 0, 0))
             itemData.launched = true
@@ -269,6 +269,10 @@ end
 
 function Enemies:DropItems(enemy)
     if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
+        return
+    end
+    Inventory:CreateItemOnGround(HeroList:GetHero(0), HeroList:GetHero(0):GetAbsOrigin(), "item_claymore_custom")
+    if(true) then
         return
     end
     local difficulty = Difficulty:GetValue()

@@ -74,19 +74,27 @@ function Inventory:AddItem(hero, item, itemStats)
             local itemInSlot = Inventory:GetItemInSlot(hero, false, i)
             if (itemInSlot and not Inventory:IsItemNotEmpty(itemInSlot)) then
                 Inventory:SetItemInSlot(hero, item, false, i, itemStats)
-                return i, itemInSlot
+                return i, Inventory:GetItemInSlot(hero, false, i)
             end
         end
         local item = CreateItem(item, hero, hero)
         local positionOnGround = hero:GetAbsOrigin()
         local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
-        if (itemOnGround == nil) then
-            item:Destroy()
-            return Inventory.slot.invalid, nil
-        end
         Inventory:SetItemEntityStats(item, itemStats)
         item:SetPurchaser(hero)
         return Inventory.slot.invalid, item
+    end
+end
+
+function Inventory:CreateItemOnGround(hero, location, item, itemStats)
+    local slot, item = Inventory:AddItem(hero, item, itemStats)
+    if (slot ~= Inventory.slot.invalid) then
+        local itemStats = Inventory:GetItemStatsForHero(hero, false, slot)
+        local itemEntity = CreateItem(item.name, hero, hero)
+        Inventory:SetItemEntityStats(itemEntity, itemStats)
+        itemEntity:SetPurchaser(hero)
+        CreateItemOnPositionSync(location, itemEntity)
+        Inventory:SetItemInSlot(hero, "", false, slot, {})
     end
 end
 
