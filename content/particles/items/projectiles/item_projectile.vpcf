@@ -85,7 +85,7 @@
 			m_flTravelTime = 1.0
 			m_PathParameters = 
 			{
-				m_flBulge = 0.5
+				m_flBulge = 1.0
 				m_nEndControlPointNumber = 1
 				m_nBulgeControl = 2
 			}
