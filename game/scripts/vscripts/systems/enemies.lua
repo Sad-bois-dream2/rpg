@@ -93,7 +93,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local IsBoss = Enemies:IsBoss(enemy)
     local IsElite = Enemies:IsElite(enemy)
     local IsTrash = (IsBoss == false and IsElite == false)
-    local dropChance = 100
+    local dropChance = 10
     if (IsElite) then
         dropChance = Enemies:GetEliteEnemyDropChance(enemy, difficulty)
     end
@@ -196,7 +196,6 @@ function Enemies:BuildDropTable(enemy, difficulty)
             end
         end
     end
-    print("Dropped ", #dropTable, " items from ", enemy:GetUnitName())
     return dropTable
 end
 
@@ -239,15 +238,53 @@ function Enemies:Init()
     Enemies:InitPanaromaEvents()
 end
 
+function Enemies:GetDropItemColor(rarity)
+    return Vector(255, 255, 255)
+end
+
+function Enemies:LaunchItem(itemData)
+    local pidx
+    Timers:CreateTimer(itemData.delay, function()
+        if (itemData.launched) then
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+            Inventory:AddItem(itemData.hero, itemData.itemName)
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID() })
+        else
+            local landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
+            local distance = DistanceBetweenVectors(itemData.launchPosition, landPosition)
+            if (distance < 150) then
+                itemData.travelTime = 0.1
+            end
+            pidx = ParticleManager:CreateParticle("particles/items/projectiles/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
+            ParticleManager:SetParticleControl(pidx, 0, itemData.launchPosition)
+            ParticleManager:SetParticleControl(pidx, 1, landPosition)
+            ParticleManager:SetParticleControl(pidx, 2, Enemies:GetDropItemColor(itemData.itemRarity))
+            ParticleManager:SetParticleControl(pidx, 4, Vector(itemData.travelTime, 0, 0))
+            itemData.launched = true
+            return itemData.travelTime
+        end
+    end)
+end
+
 function Enemies:DropItems(enemy)
     if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
         return
     end
     local difficulty = Difficulty:GetValue()
+    local travelTime = 1.25
     for _, hero in pairs(HeroList:GetAllHeroes()) do
+        local delay = 0
         for _, item in pairs(Enemies:BuildDropTable(enemy, difficulty)) do
-            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = item.name, hero = hero:GetUnitName(), player_id = hero:GetPlayerOwnerID() })
-            Inventory:AddItem(hero, item.name)
+            local itemData = {}
+            itemData.hero = hero
+            itemData.itemName = item.name
+            itemData.itemRarity = item.rarity
+            itemData.launchPosition = enemy:GetAbsOrigin()
+            itemData.travelTime = travelTime
+            itemData.delay = delay
+            Enemies:LaunchItem(itemData)
+            delay = delay + 0.5
         end
     end
 end
