@@ -270,7 +270,7 @@
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"talents/talents_phantom_ranger"
 		"AbilityTextureName"			"phantom_ranger_void_arrows"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
@@ -519,8 +519,9 @@
 		"precache"
 		{
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
-			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-			"particle" "particles/status_fx/status_effect_maledict.vpcf"
+			"particle"  "particles/units/heroes/hero_puck/puck_illusory_orb.vpcf"
+			//"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
+			//"particle" "particles/status_fx/status_effect_maledict.vpcf"
 		}
 		
 	}

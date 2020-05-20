@@ -81,12 +81,19 @@ phantom_ranger_phantom_of_vengeance = class({
 
 --------------------------------------------------------------------------------
 
+ function phantom_ranger_phantom_of_vengeance:GetCastAnimation()
+     return ACT_DOTA_CAST_ABILITY_2
+ end
+
+--------------------------------------------------------------------------------
+
 function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
 
     self.caster = self:GetCaster()
     sourceUnit = sourceUnit or self.caster
     target = target or self:GetCursorPosition()
     self.fromPhantom = (sourceUnit ~= self.caster)
+    if (not self.fromPhantom) then self.caster.phantom_of_vengeance_shadowstep_enabled = false end
     self.damage = self:GetSpecialValueFor("contact_damage")
     self.cdr = self:GetSpecialValueFor("contact_cdr")
     self.receivedCdr = false
@@ -94,14 +101,20 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
 	local phantomSpeed = self:GetSpecialValueFor("phantom_speed")
     local radius = self:GetSpecialValueFor("radius")
     local phantomDuration = self:GetSpecialValueFor("duration")    
-    
-
-    if (not self.fromPhantom) then self.caster.phantom_of_vengeance_shadowstep_enabled = false end
     local source = sourceUnit:GetAbsOrigin()
+
     if target == source then
+
         self.caster:SetCursorPosition(target + sourceUnit:GetForwardVector())
         target = self:GetCursorPosition()
+
     end
+
+
+    local phantom = self:CreatePhantomAtPoint(source, phantomSpeed, phantomDuration)
+    Timers:CreateTimer(0.05, function()
+        phantom:MoveToPosition(target)
+    end, self)
     -- Damaging part of the spell is a linear projectile.
     local distance = DistanceBetweenVectors(source, target)
 	local targetVector = target - source
@@ -119,10 +132,12 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
         iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
         iUnitTargetType = DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
         bReplaceExisting = false,
-        bProvidesVision = false
+        bProvidesVision = false,
+        ExtraData = { fromsummon = self.fromPhantom }
     }
+
     Timers:CreateTimer(0.05, function()
-        self.caster.phantom_of_vengeance_projectile = ProjectileManager:CreateLinearProjectile(projectile)
+        phantom.phantom_of_vengeance_projectile = ProjectileManager:CreateLinearProjectile(projectile)
         sourceUnit:EmitSound("Hero_Spectre.Haunt")
     end) 
 
@@ -147,20 +162,15 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
 
     end
 
-    local phantom = self:CreatePhantomAtPoint(source, phantomSpeed, phantomDuration)
-    Timers:CreateTimer(0.05, function()
-        phantom:MoveToPosition(target)
-    end, self)
-
 end
 
 --------------------------------------------------------------------------------
 
-function phantom_ranger_phantom_of_vengeance:OnProjectileHit(target, location)
+function phantom_ranger_phantom_of_vengeance:OnProjectileHit_ExtraData(target, location, ExtraData)
 
-    if (target) then
+    if (target and not target:IsNull()) then
 
-        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true, fromsummon = self.fromPhantom })
+        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true, fromsummon = ExtraData.fromsummon })
         target:EmitSound("Hero_Spectre.HauntCast")
         if ((Enemies:IsBoss(target) or Enemies:IsElite(target)) and not self.receivedCdr) then 
 
@@ -204,6 +214,7 @@ function phantom_ranger_phantom_of_vengeance:CreatePhantomAtPoint(point, phantom
 
                 self.caster:SwapAbilities("phantom_ranger_shadowstep", "phantom_ranger_phantom_of_vengeance", false, true)
                 self.caster.phantom_of_vengeance_shadowstep_enabled = false
+
             end
 
         end)
@@ -239,7 +250,7 @@ phantom_ranger_shadowstep = class({
 
 --------------------------------------------------------------------------------
 
- function phantom_ranger_phantom_of_vengeance:GetAssociatedPrimaryAbilities()
+ function phantom_ranger_shadowstep:GetAssociatedPrimaryAbilities()
      return "phantom_ranger_phantom_of_vengeance"
  end
 
@@ -271,7 +282,7 @@ function phantom_ranger_shadowstep:OnSpellStart()
         if (GridNav:CanFindPath(caster:GetAbsOrigin(), closestPhantomPoint)) then 
 
             closestPhantom:Stop()
-            ProjectileManager:DestroyLinearProjectile(caster.phantom_of_vengeance_projectile)
+            ProjectileManager:DestroyLinearProjectile(closestPhantom.phantom_of_vengeance_projectile)
             FindClearSpaceForUnit(closestPhantom, caster:GetAbsOrigin(), true)
             FindClearSpaceForUnit(caster, closestPhantomPoint, true)
             caster:EmitSound("Hero_Spectre.Reality")
@@ -280,10 +291,8 @@ function phantom_ranger_shadowstep:OnSpellStart()
 
     end    
 
-    print (caster.phantom_of_vengeance_shadowstep_enabled)
     caster:SwapAbilities("phantom_ranger_shadowstep", "phantom_ranger_phantom_of_vengeance", false, true)
-    caster.phantom_of_vengeance_shadowstep_enabled = false 
-    print (    caster.phantom_of_vengeance_shadowstep_enabled)       
+    caster.phantom_of_vengeance_shadowstep_enabled = false       
 
 end
 
@@ -1316,9 +1325,13 @@ function modifier_npc_dota_hero_drow_ranger_talent_47:OnAbilityFullyCast(params)
         local activePhantoms = FindActivePhantoms(self.caster, "modifier_phantom_ranger_soul_echo_phantom")
         if (activePhantoms) then
 
+            local animation = params.ability:GetCastAnimation()
+            local behavior = params.ability:GetBehavior()
             for _, phantom in pairs(activePhantoms) do
 
+                if ( bit.band(behavior, bit.bor(DOTA_ABILITY_BEHAVIOR_POINT, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET)) ~= 0 ) then phantom:FaceTowards(params.ability:GetCursorPosition()) end                
                 params.ability.OnSpellStart(params.ability, phantom, nil)
+                phantom:ForcePlayActivityOnce(animation)
 
             end
 

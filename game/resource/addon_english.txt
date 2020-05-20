@@ -577,7 +577,7 @@
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_37"		"Multishot"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_37_Description"		"While under Hunter's Focus, your attacks fire arrows at 2/3/4 enemies (including main target) in a 600 radius around the main target which can apply attack modifiers, but your total damage is reduced by 45/35/25%."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_38"		"Sudden Vengeance"
-		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_38_Description"		"Casting an ability causes a void explosion around the shadow from Phantom of Vengeance, dealing 40/80/120% attack damage in a 300 radius around it."
+		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_38_Description"		"Casting an ability causes a void explosion in a 400 radius around the shadows from Phantom of Vengeance, dealing 40/80/120% attack damage."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_39"		"Death's Embrace"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_39_Description"		"Increases your damage dealt by 10/15/20% against enemies affected by Black Arrow or Shadow Wave."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_40"		"Frenetic"

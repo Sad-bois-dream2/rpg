@@ -137,6 +137,14 @@ function phantom_ranger_soul_echo:CreatePhantom()
     phantom.damageTransfer = self.phantomDamageTransfer
     self.caster.phantom_ranger_soul_echo = self.caster.phantom_ranger_soul_echo or {}
     self.caster.phantom_ranger_soul_echo.phantom = phantom
+    -- Talent 47 (Mirage) duration increase
+    local talent47Level = TalentTree:GetHeroTalentLevel(self.caster, 47)
+    if (talent47Level > 0) then
+
+        local talent47ExtraDurationPerLevel = 1
+        self.duration = self.duration + 4 + talent47Level * talent47ExtraDurationPerLevel
+
+    end
     Timers:CreateTimer(self.duration, function()
         phantom_ranger_soul_echo:DestroyPhantom(phantom)
     end)
