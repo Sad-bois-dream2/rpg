@@ -350,6 +350,7 @@ function modifier_phantom_ranger_black_arrow_debuff:OnIntervalThink()
 	if not IsServer() then return end
 	local hasBane = self.target:FindModifierByName("modifier_phantom_ranger_black_arrow_bane")
 	local finalDamage = Units:GetAttackDamage(self.caster) * self.damage / 100
+    finalDamage = finalDamage * self:GetStackCount()
 	if (hasBane) then
 
 		local baneStacks = hasBane:GetStackCount()
@@ -366,7 +367,9 @@ function modifier_phantom_ranger_black_arrow_debuff:OnAttacked(params)
 
 	if not IsServer() then return end
 	if (params.attacker == self.caster) then
+
 		GameMode:ApplyStackingDebuff({ caster = self.caster, target = params.target, ability = self.ability, modifier_name = "modifier_phantom_ranger_black_arrow_bane", duration = self.baneDuration, stacks = 1, max_stacks = self.baneMaxStacks }) 
+
 	end
 
 end
@@ -444,8 +447,17 @@ end
 function phantom_ranger_black_arrow:OnProjectileHit_ExtraData(target, location, ExtraData)
 
     if (target ~= nil) then
-        GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_black_arrow_debuff", duration = ExtraData.duration})
+
+        local modifier = GameMode:ApplyStackingDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_black_arrow_debuff", duration = ExtraData.duration, stacks = 1, max_stacks = 10})
+        Timers:CreateTimer(ExtraData.duration, function()
+
+            if (modifier ~= nil and not modifier:IsNull() and not self:IsNull() and not modifier:GetParent():IsNull() and not self.caster:IsNull()) then
+                modifier:DecrementStackCount()
+            end
+
+        end)
         target:EmitSound("Hero_ShadowDemon.DemonicPurge.Impact")
+
     end
     return false
 
