@@ -304,7 +304,7 @@
 		}
 		"precache"
 		{
-			"particle"  "particles/units/heroes/hero_vengeful/vengeful_magic_missle.vpcf"
+			//"particle" "particles/units/phantom_ranger/phantom_ranger_black_arrow.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -438,7 +438,7 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/heroes/hero_drow/drow_frost_arrow.vpcf"
+			"particle" "particles/units/phantom_ranger/phantom_ranger_black_arrow.vpcf"
 			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
     		"soundfile" "soundevents/game_sounds_heroes/game_sounds_drowranger.vsndevts"
 		}
@@ -469,7 +469,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"12 12 12 12"
+		"AbilityCooldown"				"15 14 13 12"
 	
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------

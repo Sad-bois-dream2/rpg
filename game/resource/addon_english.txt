@@ -80,10 +80,12 @@
 		"DOTA_Tooltip_modifier_phantom_ranger_black_arrow_bane"			"Bane"
 		"DOTA_Tooltip_modifier_phantom_ranger_black_arrow_bane_Description"		"Taking %dMODIFIER_PROPERTY_TOOLTIP%%% increased damage from Black Arrow."
 		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance"		"Phantom of Vengeance"
-		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance_Description"		"Sends an invulnerable shadow of Phantom Ranger towards a target location, dealing void damage to enemies on its path. You can use this ability again to swap positions with it. If this hits an Elite or Boss, reduce the cooldown by <font color='white'><b>5</b></font> seconds." 
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance_Description"		"Sends an invulnerable shadow of Phantom Ranger towards a target location, dealing void damage to enemies on its path. You can use this ability again to swap positions with one of your phantoms (from this skill). If this hits an Elite or Boss, reduce the cooldown by <font color='white'><b>5</b></font> seconds." 
 		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance_contact_damage" "%ATTACK DAMAGE TO DAMAGE:"
 		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance_duration" "PHANTOM DURATION:"
 		"DOTA_Tooltip_Ability_phantom_ranger_phantom_of_vengeance_max_distance" "CAST RANGE:"
+		"DOTA_Tooltip_Ability_phantom_ranger_shadowstep"		"Shadowstep"
+		"DOTA_Tooltip_Ability_phantom_ranger_shadowstep_Description"		"Select the Phantom to swap positions with." 
 
 		// Molten Guardian (mars)
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash"		"Scorching Clash"

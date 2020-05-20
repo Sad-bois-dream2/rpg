@@ -23,10 +23,10 @@ function Precache(context)
     PrecacheResource("particle_folder", "particles/units/terror_lord/talents/ashes_of_terror", context)
     -- Phantom Ranger talents
     PrecacheResource("particle", "particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", context)
+    PrecacheResource("particle", "particles/units/heroes/hero_invoker/invoker_emp_explode.vpcf", context)
     PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_queenofpain.vsndevts", context)
+    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_invoker.vsndevts", context)
     PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts", context)
-    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts", context)
-    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_drowranger.vsndevts", context)
     -- Dummy
     PrecacheResource("particle", "particles/units/dummy/dummy.vpcf", context)
     PrecacheResource("particle", "particles/units/dummy/dummy_number.vpcf", context)
