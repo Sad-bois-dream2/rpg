@@ -248,8 +248,8 @@ function Enemies:LaunchItem(itemData)
         if (itemData.launched) then
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
-            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID() })
+            local createdItem = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats)})
             EmitSoundOnLocationWithCaster(itemData.landPosition,"ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
@@ -270,10 +270,6 @@ end
 
 function Enemies:DropItems(enemy)
     if (not enemy or enemy:IsNull() or not enemy:GetOwner()) then
-        return
-    end
-    Inventory:CreateItemOnGround(HeroList:GetHero(0), HeroList:GetHero(0):GetAbsOrigin(), "item_claymore_custom")
-    if(true) then
         return
     end
     local difficulty = Difficulty:GetValue()

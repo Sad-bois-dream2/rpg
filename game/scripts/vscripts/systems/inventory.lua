@@ -96,6 +96,7 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
         CreateItemOnPositionSync(location, itemEntity)
         Inventory:SetItemInSlot(hero, "", false, slot, {})
     end
+    return item
 end
 
 function Inventory:GetItemsByRarity(rarity)
