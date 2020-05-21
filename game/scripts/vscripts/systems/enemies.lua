@@ -238,10 +238,6 @@ function Enemies:Init()
     Enemies:InitPanaromaEvents()
 end
 
-function Enemies:GetDropItemColor(rarity)
-    return Vector(255, 255, 255)
-end
-
 --[[
 CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = "item_claymore_custom", hero = HeroList:GetHero(0):GetUnitName(), player_id = 0, stats = json.encode({
     {
@@ -255,6 +251,25 @@ CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item 
 })})
 --]]
 
+function Enemies:GetItemDropProjectileIndexByRarity(rarity)
+    if(rarity >= Inventory.rarity.immortal) then
+        return 10
+    end
+    if(rarity >= Inventory.rarity.ancient) then
+        return 8
+    end
+    if(rarity >= Inventory.rarity.legendary) then
+        return 6
+    end
+    if(rarity >= Inventory.rarity.rare) then
+        return 4
+    end
+    if(rarity >= Inventory.rarity.uncommon) then
+        return 2
+    end
+    return 0
+end
+
 function Enemies:LaunchItem(itemData)
     local pidx
     Timers:CreateTimer(itemData.delay, function()
@@ -262,8 +277,8 @@ function Enemies:LaunchItem(itemData)
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
             local createdItem = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
-            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats)})
-            EmitSoundOnLocationWithCaster(itemData.landPosition,"ui.trophy_new", itemData.hero)
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats) })
+            EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
             local distance = DistanceBetweenVectors(itemData.launchPosition, itemData.landPosition)
@@ -273,7 +288,7 @@ function Enemies:LaunchItem(itemData)
             pidx = ParticleManager:CreateParticle("particles/items/drop/projectile/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
             ParticleManager:SetParticleControl(pidx, 0, itemData.launchPosition)
             ParticleManager:SetParticleControl(pidx, 1, itemData.landPosition)
-            ParticleManager:SetParticleControl(pidx, 2, Enemies:GetDropItemColor(itemData.itemRarity))
+            ParticleManager:SetParticleControl(pidx, 2, Enemies:GetItemDropProjectileIndexByRarity(itemData.itemRarity))
             ParticleManager:SetParticleControl(pidx, 4, Vector(itemData.travelTime, 0, 0))
             itemData.launched = true
             return itemData.travelTime
