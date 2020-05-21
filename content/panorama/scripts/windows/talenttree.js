@@ -68,8 +68,14 @@ function CreateTalentTooltip(icon, name, description, x, y) {
 	tooltip[TOOLTIP_IMAGE].SetImage(icon);
 	tooltip[TOOLTIP_NAME].text = name.toUpperCase();
 	tooltip[TOOLTIP_DESCRIPTION].text = description;
-	tooltip[TOOLTIP_PANEL].style.marginLeft = (x+40) + "px";
-	tooltip[TOOLTIP_PANEL].style.marginTop = (y-50) + "px";
+	if(tooltip[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
+	    x -= tooltip[TOOLTIP_PANEL].actuallayoutwidth;
+	}
+	if(tooltip[TOOLTIP_PANEL].actuallayoutheight + y > Game.GetScreenHeight()) {
+	    y -= tooltip[TOOLTIP_PANEL].actuallayoutheight;
+	}
+	tooltip[TOOLTIP_PANEL].style.marginLeft = x + "px";
+	tooltip[TOOLTIP_PANEL].style.marginTop = y + "px";
 	tooltip[TOOLTIP_PANEL].style.visibility = "visible";
 }
 

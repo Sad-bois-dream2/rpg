@@ -29,6 +29,9 @@ function Precache(context)
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
     -- Boss healing mechanic particle
     PrecacheResource("particle", "particles/units/boss/boss_healing.vpcf", context)
+    -- Item drops
+    PrecacheResource("particle", "particles/items/drop/projectile/item_projectile.vpcf", context)
+    PrecacheResource("soundfile", "soundevents/game_sounds_ui_imported.vsndevts", context)
     -- All enemy abilities
     for _, ability in pairs(Enemies.enemyAbilities) do
         PrecacheItemByNameSync(ability.name, context)

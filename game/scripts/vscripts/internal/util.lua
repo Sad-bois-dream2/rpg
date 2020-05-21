@@ -226,3 +226,40 @@ end
 function DistanceBetweenVectors(vec1, vec2)
     return (vec1 - vec2):Length()
 end
+
+function GetTableSize(table)
+    local count = 0
+    for _, __ in pairs(table) do
+        count = count + 1
+    end
+    return count
+end
+
+function ShallowTableCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function DeepTableCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[DeepTableCopy(orig_key)] = DeepTableCopy(orig_value)
+        end
+        setmetatable(copy, DeepTableCopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end

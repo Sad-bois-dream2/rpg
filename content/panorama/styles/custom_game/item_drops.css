@@ -1,0 +1,61 @@
+#DropContainer {
+    width: 200px;
+    height: 400px;
+    horizontal-align: right;
+    visibility: visible;
+    flow-children: down;
+    overflow: squish scroll;
+    margin-top: 40px;
+    margin-right: 10px;
+    padding-top: 10px;
+    opacity-mask: url("s2r://panorama/images/masks/softedge_vertical_vscroll_psd.vtex") 1.0;
+}
+
+.DropItemContainer {
+    width: fill-parent-flow(1.0);
+    height: 60px;
+	border: 1px solid gray;
+	border-radius: 10px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	flow-children: right;
+	horizontal-align: right;
+	margin-bottom: 5px;
+}
+
+.DropItemArrow {
+    horizontal-align: center;
+    vertical-align: center;
+    width: 40px;
+    margin-left: 10px;
+}
+
+.DropItemIcon {
+    vertical-align: center;
+    margin-left: 10px;
+	border-radius: 5px;
+    horizontal-align: center;
+    width: 64px;
+    height: 48px;
+}
+
+.DropItemHeroContainer {
+	flow-children: down;
+    vertical-align: center;
+    width: fill-parent-flow(1.0);
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.DropItemHeroContainerIcon {
+    horizontal-align: center;
+}
+
+.DropItemHeroContainerLabel {
+    color: white;
+	text-align: center;
+    text-overflow: shrink;
+    horizontal-align: center;
+}
