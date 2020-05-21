@@ -146,24 +146,25 @@ function GetItemDropChances(difficulty) {
         result[ancient] = 20;
     }
     if(difficulty > 5.5) {
-        result[ancient] = 20;
-        result[cursedAncient] = 25;
+        result[ancient] = 10;
+        result[cursedAncient] = 10;
         result[uniqueAncient] = 15;
         result[common] = 0;
         result[uncommon] = 0;
+        result[rare] = 100;
         factor += 0.1;
     }
     if(difficulty > 7) {
         factor += 0.2;
     }
     if(difficulty > 7.5) {
-        result[immortal] = 15;
+        result[immortal] = 7;
     }
     if(difficulty > 8) {
-        result[uniqueImmortal] = 15;
+        result[uniqueImmortal] = 2;
     }
     if(difficulty > 8.5) {
-        result[cursedImmortal] = 20;
+        result[cursedImmortal] = 3;
     }
     if(difficulty > 9) {
         result[rare] = 0;
@@ -171,7 +172,7 @@ function GetItemDropChances(difficulty) {
         result[legendary] = 0;
         result[uniqueLegendary] = 0;
         result[cursedLegendary] = 0;
-        factor += 0.3;
+        result[ancient] = 100;
     }
     if(difficulty > 9.5) {
          result[immortal] = result[immortal] * 1.5;
