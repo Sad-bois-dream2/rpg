@@ -242,6 +242,8 @@ function Enemies:GetDropItemColor(rarity)
     return Vector(255, 255, 255)
 end
 
+CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = "item_claymore_custom", hero = HeroList:GetHero(0):GetUnitName(), player_id = 0, stats = json.encode({})})
+
 function Enemies:LaunchItem(itemData)
     local pidx
     Timers:CreateTimer(itemData.delay, function()

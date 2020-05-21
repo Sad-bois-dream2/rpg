@@ -2,11 +2,9 @@
     <styles>
         <include src="file://{resources}/styles/custom_game/item_drops.css"/>
     </styles>
-    <script>
-        function OnClick() {
-            $.GetContextPanel().DeleteAsync(0);
-        }
-    </script>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/dropped_item.js" />
+    </scripts>
     <Panel class="DropItemContainer" onmouseactivate="OnClick()">
         <DOTAItemImage id="DropItemIcon" class="DropItemIcon" showtooltip="false" itemname="item_claymore_custom" scaling="stretch-to-fit-preserve-aspect" />
         <Image class="DropItemArrow" scaling="stretch-to-fit-preserve-aspect" src="s2r://panorama/images/control_icons/double_arrow_right_png.vtex"/>
