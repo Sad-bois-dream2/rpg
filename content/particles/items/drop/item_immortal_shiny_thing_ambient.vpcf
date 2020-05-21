@@ -53,6 +53,9 @@
 		{
 			_class = "C_OP_SpinUpdate"
 		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
 	]
 	m_Initializers = 
 	[
