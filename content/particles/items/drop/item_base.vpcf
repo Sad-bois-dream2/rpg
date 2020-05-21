@@ -39,7 +39,7 @@
 			m_nField = "12"
 		},
 		{
-			_class = "C_OP_EndCapDecay"
+			_class = "C_OP_EndCapTimedDecay"
 		},
 	]
 	m_Initializers = 
