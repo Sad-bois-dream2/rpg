@@ -54,6 +54,29 @@ function OnChatMessageRequest(event) {
     customChatLines.push([chatLine, CHAT_EXPIRE_TIME])
 }
 
+function FixCastbarLayout() {
+    var customUIContainer = $.GetContextPanel().GetParent();
+    var found = false;
+    var castbarsContainer;
+    for(var i = 0; i < customUIContainer.GetChildCount(); i++) {
+        var customContainer = customUIContainer.GetChild(i);
+        if(found) {
+            break;
+        }
+        for(var j = 0; j < customContainer.GetChildCount(); j++) {
+            var customContainerChild = customContainer.GetChild(j);
+            if(customContainerChild.FindChildTraverse('CastbarPanel') != null) {
+                found = true;
+                castbarsContainer = customContainer;
+                break;
+            }
+        }
+    }
+    if(found) {
+        castbarsContainer.style.zIndex = null;
+    }
+}
+
 (function() {
     var base = $.GetContextPanel().GetParent().GetParent().GetParent();
     var kdaPanel = base.FindChildTraverse('quickstats');
@@ -77,6 +100,7 @@ function OnChatMessageRequest(event) {
     minimap.style.borderRadius = "10px";
     chatLinesContainer = base.FindChildTraverse('ChatLinesPanel');
     chatControls = base.FindChildTraverse('ChatControls');
+    FixCastbarLayout();
     GameEvents.Subscribe("rpg_say_chat_message_from_server", OnChatMessageRequest);
     AutoUpdateValues();
 })();
