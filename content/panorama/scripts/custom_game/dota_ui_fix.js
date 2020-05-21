@@ -75,6 +75,19 @@ function FixCastbarLayout() {
     if(found) {
         castbarsContainer.style.zIndex = null;
     }
+    return found;
+}
+
+function StartCastbarFixTimer() {
+    var stopTimer = false;
+    if(Game.GameStateIsAfter(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
+        stopTimer = FixCastbarLayout();
+    }
+    if(!stopTimer) {
+        $.Schedule(0.1, function() {
+            StartCastbarFixTimer();
+        });
+    }
 }
 
 (function() {
@@ -100,7 +113,7 @@ function FixCastbarLayout() {
     minimap.style.borderRadius = "10px";
     chatLinesContainer = base.FindChildTraverse('ChatLinesPanel');
     chatControls = base.FindChildTraverse('ChatControls');
-    FixCastbarLayout();
     GameEvents.Subscribe("rpg_say_chat_message_from_server", OnChatMessageRequest);
     AutoUpdateValues();
+    StartCastbarFixTimer();
 })();
