@@ -280,7 +280,7 @@ function Enemies:LaunchItem(itemData)
             CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats) })
             EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
-            itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius())
+            itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius() + 50)
             local distance = DistanceBetweenVectors(itemData.launchPosition, itemData.landPosition)
             if (distance < 150) then
                 itemData.travelTime = 0.1
@@ -288,7 +288,7 @@ function Enemies:LaunchItem(itemData)
             pidx = ParticleManager:CreateParticle("particles/items/drop/projectile/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
             ParticleManager:SetParticleControl(pidx, 0, itemData.launchPosition)
             ParticleManager:SetParticleControl(pidx, 1, itemData.landPosition)
-            ParticleManager:SetParticleControl(pidx, 2, Enemies:GetItemDropProjectileIndexByRarity(itemData.itemRarity))
+            ParticleManager:SetParticleControl(pidx, 2, Vector(Enemies:GetItemDropProjectileIndexByRarity(itemData.itemRarity), 0, 0))
             ParticleManager:SetParticleControl(pidx, 4, Vector(itemData.travelTime, 0, 0))
             itemData.launched = true
             return itemData.travelTime
