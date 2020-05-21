@@ -252,19 +252,19 @@ CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item 
 --]]
 
 function Enemies:GetItemDropProjectileIndexByRarity(rarity)
-    if(rarity >= Inventory.rarity.immortal) then
+    if (rarity >= Inventory.rarity.immortal) then
         return 10
     end
-    if(rarity >= Inventory.rarity.ancient) then
+    if (rarity >= Inventory.rarity.ancient) then
         return 8
     end
-    if(rarity >= Inventory.rarity.legendary) then
+    if (rarity >= Inventory.rarity.legendary) then
         return 6
     end
-    if(rarity >= Inventory.rarity.rare) then
+    if (rarity >= Inventory.rarity.rare) then
         return 4
     end
-    if(rarity >= Inventory.rarity.uncommon) then
+    if (rarity >= Inventory.rarity.uncommon) then
         return 2
     end
     return 0
@@ -281,10 +281,6 @@ function Enemies:LaunchItem(itemData)
             EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius() + 50)
-            local distance = DistanceBetweenVectors(itemData.launchPosition, itemData.landPosition)
-            if (distance < 150) then
-                itemData.travelTime = 0.1
-            end
             pidx = ParticleManager:CreateParticle("particles/items/drop/projectile/item_projectile.vpcf", PATTACH_ABSORIGIN, itemData.hero)
             ParticleManager:SetParticleControl(pidx, 0, itemData.launchPosition)
             ParticleManager:SetParticleControl(pidx, 1, itemData.landPosition)
@@ -594,7 +590,7 @@ function modifier_creep_scaling:OnDeath(keys)
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName(), duration = 3, continue = true })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_BossDead", duration = 3, continue = true })
-            Notifications:BottomToAll({ text = (math.floor(Enemies.dropChanceFactor * 10000) / 100) .. "!", duration = 3, continue = true })
+            Notifications:BottomToAll({ text = (math.floor((Enemies.dropChanceFactor - 1) * 10000) / 100) .. "%!", duration = 3, continue = true })
         end
         Enemies:DropItems(self.creep)
     end
