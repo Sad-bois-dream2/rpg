@@ -4,7 +4,7 @@ end
 
 ---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:SetupForHero(hero)
-    if (hero ~= nil and hero:GetUnitName() ~= "npc_dota_hero_wisp") then
+    if (hero ~= nil) then
         hero.talents = {}
         hero.talents.level = {}
         hero.talents.modifiers = {}
@@ -20,9 +20,11 @@ end
 if (IsServer()) then
     ListenToGameEvent("player_chat", function(event)
         if (event.text == "-reset") then
+            PlayerResource:ReplaceHeroWith(event.playerid, "npc_dota_hero_drow_ranger", 0, 0)
+            --[[
             local player = PlayerResource:GetPlayer(event.playerid)
             local hero = player:GetAssignedHero()
-            TalentTree:Reset(hero)
+            TalentTree:Reset(hero) --]]
         end
     end, nil)
 end

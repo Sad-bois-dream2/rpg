@@ -469,9 +469,6 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
                 if (hero == nil) then
                     return 1.0
                 end
-                if (hero:GetUnitName() == "npc_dota_hero_wisp") then
-                    return 1.0
-                end
                 if (not Inventory:IsHeroHaveInventory(hero)) then
                     return 1.0
                 end

@@ -20,7 +20,6 @@
 		"npc_dota_hero_enchantress"	"Priestess of Sacred Forest" // Support #2
 		"npc_dota_hero_doom_bringer"	"Melee str phys dd №2"
 		"npc_dota_hero_dark_willow"	"Ranger agi phys dd №1"
-		"npc_dota_hero_wisp"	"Poor Soul"
 		// Countless hero abilities
 		"DOTA_Tooltip_Ability_empty5"		"Ability slot"
 		"DOTA_Tooltip_Ability_empty5_Description"		"Can be learned from the 3rd row in talents."

@@ -1,0 +1,12 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/heroselection_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/heroselection.js"/>
+    </scripts>
+    <Panel class="Root" hittest="true">
+        <Panel style="width: 0%; height: 0%; background-color: white;"></Panel>
+    </Panel>
+</root>

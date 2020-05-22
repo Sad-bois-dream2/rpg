@@ -56,6 +56,7 @@ require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
 require('systems/dummy')
+require('systems/heroselection')
 require('heroes/require')
 require('creeps/require')
 --[[
@@ -141,7 +142,6 @@ function GameMode:InitGameMode()
     GameModeEntity:SetFogOfWarDisabled(false)
     GameModeEntity:SetBuybackEnabled(false)
     GameModeEntity:SetDamageFilter(Dynamic_Wrap(GameMode, "DamageFilter"), self)
-    GameModeEntity:SetCustomGameForceHero( "npc_dota_hero_wisp" )
     DebugPrint('[BAREBONES] Done loading gamemode!\n\n')
 end
 
