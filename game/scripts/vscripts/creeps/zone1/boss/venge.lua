@@ -1863,7 +1863,7 @@ function modifier_venge_bubble:OnCreated( kv )
     self.parent = self:GetParent()
     self.bubble_tick = self:GetAbility():GetSpecialValueFor( "bubble_tick" )
     local Max_Health = self:GetParent():GetMaxHealth()
-    self.bubble_damage = self:GetAbility():GetSpecialValueFor( "bubble_damage" ) * Max_Health * 0.01
+    self.bubble_damage = self:GetAbility():GetSpecialValueFor( "bubble_damage" ) * Max_Health * 0.01 * self.bubble_tick
 
     self.hBubble = CreateUnitByName( "npc_boss_venge_bubble", self:GetParent():GetAbsOrigin(), true, self:GetCaster(), self:GetCaster(), self:GetCaster():GetTeamNumber() )
     local vector = self.parent:GetAbsOrigin()-self:GetCaster():GetAbsOrigin()

@@ -1870,9 +1870,6 @@ modifier_brood_angry_stack = class({
     GetTexture = function(self)
         return brood_angry:GetAbilityTextureName()
     end,
-    DeclareFunctions = function(self)
-        return {MODIFIER_PROPERTY_MODEL_SCALE}
-    end
 })
 
 function modifier_brood_angry_stack:OnCreated()
@@ -1927,11 +1924,6 @@ function modifier_brood_angry_stack:OnRefresh()
         return
     end
     self:OnCreated()
-end
-
--- "Each angry buff of brood size by 2%. This has no impact on her collision size."
-function modifier_brood_angry_stack:GetModifierModelScale()
-    return 2* self:GetStackCount()
 end
 
 function modifier_brood_angry_stack:GetAttackSpeedPercentBonus()
