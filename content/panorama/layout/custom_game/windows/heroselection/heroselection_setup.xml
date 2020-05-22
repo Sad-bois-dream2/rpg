@@ -7,8 +7,35 @@
         <include src="file://{resources}/scripts/windows/heroselection_setup.js"/>
     </scripts>
     <Panel class="Root" hittest="true">
-        <Panel id="MainWindow" class="Window HeroSelectionSetup">
-                <Label id="TimerLabel" text="#custom_game_team_select_timer"/>
+        <Panel class="HeroSelectionSetup">
+            <Panel class="PlayerHeroes">
+                <Panel class="HeroContainer">
+                    <Panel id="HeroColor0" class="HeroColor" />
+                    <DOTAHeroImage id="HeroIcon0" heroname="npc_dota_hero_nevermore" class="HeroIcon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="HeroName0" class="HeroPlayerName" text="Player Name" />
+                </Panel>
+                <Panel class="HeroContainer">
+                    <Panel id="HeroColor1" class="HeroColor" />
+                    <DOTAHeroImage id="HeroIcon1" heroname="npc_dota_hero_nevermore" class="HeroIcon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="HeroName1" class="HeroPlayerName" text="Player Name" />
+                </Panel>
+                <Panel class="HeroContainer">
+                    <Panel id="HeroColor2" class="HeroColor" />
+                    <DOTAHeroImage id="HeroIcon2" heroname="npc_dota_hero_nevermore" class="HeroIcon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="HeroName2" class="HeroPlayerName" text="Player Name" />
+                </Panel>
+                <Panel class="HeroContainer">
+                    <Panel id="HeroColor3" class="HeroColor" />
+                    <DOTAHeroImage id="HeroIcon3" heroname="npc_dota_hero_nevermore" class="HeroIcon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="HeroName3" class="HeroPlayerName" text="Player Name" />
+                </Panel>
+                <Panel class="HeroContainer">
+                    <Panel id="HeroColor4" class="HeroColor" />
+                    <DOTAHeroImage id="HeroIcon4" heroname="npc_dota_hero_nevermore" class="HeroIcon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="HeroName4" class="HeroPlayerName" text="Very Long Player Name" />
+                </Panel>
+            </Panel>
         </Panel>
+        <Label id="TimerLabel" text="#custom_game_team_select_timer"/>
     </Panel>
 </root>

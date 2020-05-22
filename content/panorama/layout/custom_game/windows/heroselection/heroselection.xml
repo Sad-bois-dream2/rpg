@@ -7,6 +7,5 @@
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
     <Panel class="Root" hittest="true">
-        <Panel style="width: 100%; height: 100%; border: 2px solid red;"></Panel>
     </Panel>
 </root>

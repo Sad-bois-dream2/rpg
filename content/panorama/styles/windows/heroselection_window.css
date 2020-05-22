@@ -1,8 +1,58 @@
 .HeroSelectionSetup {
-    width: 100px;
+    width: fill-parent-flow(1.0);
     height: fit-children;
     horizontal-align: center;
     vertical-align: top;
+}
+
+.PlayerHeroes {
+    width: fit-children;
+    horizontal-align: center;
+    vertical-align: center;
+    flow-children: right;
+    margin-top: 5px;
+}
+
+.HeroContainer {
+    width: 102px;
+    height: 80px;
+    flow-children: down;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+.HeroIcon {
+    width: fill-parent-flow(1.0);
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+}
+
+.HeroIcon.notpicked {
+    brightness: 1;
+    saturation: 0;
+    wash-color: grey;
+}
+
+.HeroColor {
+    width: fill-parent-flow(1.0);
+    height: 5px;
+}
+
+.HeroPlayerName {
+    width: fill-parent-flow(1.0);
+    font-size: 14px;
+    text-align: center;
+    color: lightgray;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    text-overflow: ellipsis;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 #TimerLabel {

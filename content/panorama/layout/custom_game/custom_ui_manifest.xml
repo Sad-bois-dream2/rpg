@@ -49,7 +49,8 @@
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/talenttree/talenttree.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/difficulty/difficulty.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/dummy/dummy.xml"/>
+        <CustomUIElement type="GameSetup" layoutfile="file://{resources}/layout/custom_game/team_select.xml" />
         <CustomUIElement type="GameSetup" layoutfile="file://{resources}/layout/custom_game/windows/heroselection/heroselection_setup.xml"/>
-        <!--<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/inventory.xml" /> -->
+        <!--CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/inventory.xml" /> -->
     </Panel>
 </root>
