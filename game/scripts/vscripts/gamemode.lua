@@ -141,6 +141,7 @@ function GameMode:InitGameMode()
     GameModeEntity:SetFogOfWarDisabled(false)
     GameModeEntity:SetBuybackEnabled(false)
     GameModeEntity:SetDamageFilter(Dynamic_Wrap(GameMode, "DamageFilter"), self)
+    GameModeEntity:SetCustomGameForceHero( "npc_dota_hero_wisp" )
     DebugPrint('[BAREBONES] Done loading gamemode!\n\n')
 end
 

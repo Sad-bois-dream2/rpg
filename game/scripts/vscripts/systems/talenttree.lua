@@ -4,7 +4,7 @@ end
 
 ---@param hero CDOTA_BaseNPC_Hero
 function TalentTree:SetupForHero(hero)
-    if (hero ~= nil) then
+    if (hero ~= nil and hero:GetUnitName() ~= "npc_dota_hero_wisp") then
         hero.talents = {}
         hero.talents.level = {}
         hero.talents.modifiers = {}
