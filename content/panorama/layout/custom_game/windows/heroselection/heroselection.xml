@@ -7,5 +7,9 @@
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
     <Panel class="Root" hittest="true">
+        <Panel class="AvailableHeroesContainer">
+            <Panel class="SaveLoadSlots" />
+            <Panel id="AvailableHeroes" />
+        </Panel>
     </Panel>
 </root>

@@ -3,6 +3,7 @@
     height: fit-children;
     horizontal-align: center;
     vertical-align: top;
+    flow-children: down;
 }
 
 .PlayerHeroes {
@@ -24,6 +25,7 @@
 
 .HeroIcon {
     width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
@@ -63,4 +65,236 @@
     vertical-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    width: 100px;
+}
+
+.lds-default {
+  width: 80px;
+  height: 80px;
+  vertical-align: center;
+  horizontal-align: center;
+}
+
+.lds-default .dot1 {
+  animation-delay: 0s;
+  margin-top: 37px;
+  margin-left: 66px;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  	animation-name: lds-default;
+  	animation-duration: 1.2s;
+  	animation-iteration-count: infinite;
+  	animation-timing-function: linear;
+}
+.lds-default .dot2 {
+  animation-delay: -0.1s;
+  margin-top: 22px;
+  margin-left: 62px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot3 {
+  animation-delay: -0.2s;
+  margin-top: 11px;
+  margin-left: 52px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot4 {
+  animation-delay: -0.3s;
+  margin-top: 7px;
+  margin-left: 37px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot5 {
+  animation-delay: -0.4s;
+  margin-top: 11px;
+  margin-left: 22px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot6 {
+  animation-delay: -0.5s;
+  margin-top: 22px;
+  margin-left: 11px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot7 {
+  animation-delay: -0.6s;
+  margin-top: 37px;
+  margin-left: 7px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot8 {
+  animation-delay: -0.7s;
+  margin-top: 52px;
+  margin-left: 11px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot9 {
+  animation-delay: -0.8s;
+  margin-top: 62px;
+  margin-left: 22px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot10 {
+  animation-delay: -0.9s;
+  margin-top: 66px;
+  margin-left: 37px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot11 {
+  animation-delay: -1s;
+  margin-top: 62px;
+  margin-left: 52px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+.lds-default .dot12 {
+  animation-delay: -1.1s;
+  margin-top: 52px;
+  margin-left: 62px;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    	animation-name: lds-default;
+    	animation-duration: 1.2s;
+    	animation-iteration-count: infinite;
+    	animation-timing-function: linear;
+}
+
+@keyframes 'lds-default' {
+  0%
+  {
+		transform: scaleX(1.0) scaleY(1.0);
+  }
+  20%
+  {
+		transform: scaleX(1.0) scaleY(1.0);
+  }
+  50%
+  {
+		transform: scaleX(1.5) scaleY(1.5);
+  }
+  80%
+  {
+		transform: scaleX(1.0) scaleY(1.0);
+  }
+  100%
+  {
+		transform: scaleX(1.0) scaleY(1.0);
+  }
+}
+
+.AvailableHeroesContainer {
+    vertical-align: bottom;
+    horizontal-align: right;
+    flow-children: down;
+    width: 700px;
+}
+
+#AvailableHeroes {
+	width: fill-parent-flow(1.0);
+    height: fit-children;
+    flow-children: right-wrap;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+.AvailableHeroesButton {
+    margin-bottom: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.AvailableHeroesButton:hover {
+    border: 1px solid gold;
+}
+
+.AvailableHeroesIcon {
+    width: 98px;
+    height: 56px;
 }

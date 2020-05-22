@@ -1,0 +1,8 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/heroselection_window.css"/>
+    </styles>
+    <RadioButton group="Heroes" class="AvailableHeroesButton">
+        <DOTAHeroImage id="HeroIcon" heroname="npc_dota_hero_crystal_maiden" class="AvailableHeroesIcon" scaling="stretch-to-fit-preserve-aspect" />
+    </RadioButton>
+</root>
