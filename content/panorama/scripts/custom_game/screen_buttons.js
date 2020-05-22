@@ -1,3 +1,5 @@
+var buttonsPanel;
+
 function OnInventoryButtonClicked() {
     if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
         return
@@ -18,7 +20,14 @@ function OnTalentTreeButtonClicked() {
     GameEvents.SendCustomGameEventToServer("rpg_talenttree_open_window", { "player_id" : localPlayer});
 }
 
+function FixButtonPanelPosition() {
+    buttonsPanel.SetHasClass("OnLeftSide", Game.IsHUDFlipped());
+    $.Schedule(0.1, function() {
+        FixButtonPanelPosition();
+    });
+}
+
 (function() {
-	var container = $("#ButtonsRoot");
-	container.style.width = (container.GetChildCount() * 85) + "px";
+	buttonsPanel = $("#ButtonsRoot");
+	FixButtonPanelPosition();
 })();
