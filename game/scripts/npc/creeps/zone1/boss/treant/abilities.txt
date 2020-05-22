@@ -347,7 +347,7 @@
                 "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
-                "particle"  "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+                "particle"  "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
         }
 	}
 
@@ -464,7 +464,8 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-        "AbilityCastPoint"				"0.4"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.25"
         "AbilityCastRange"				"2600"
 
 		// Special
@@ -540,7 +541,7 @@
           "precache"
        {
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
-                "particle"  "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+                "particle"  "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
 
        }
     }

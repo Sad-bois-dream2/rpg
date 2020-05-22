@@ -22,7 +22,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"explode_per_mana"		    "0.5 1 3"
+   				"explode_per_mana"		    "0.33 0.67 1"
    			}
    			"02"
    			{
@@ -161,7 +161,7 @@
         "AbilityCastRange"				"2000"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
-       	"AbilityCooldown"				"10 9 8"
+       	"AbilityCooldown"				"10"
 
 
    		// Special
@@ -206,6 +206,7 @@
     	    "particle"  "particles/status_fx/status_effect_gush.vpcf"
     	    "particle"  "particles/units/heroes/hero_tidehunter/tidehunter_gush_upgrade.vpcf"
     	    "particle"  "particles/econ/items/luna/luna_lucent_ti5/luna_lucent_beam_moonfall.vpcf"
+    	    "particle"  "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
     	}
     }
     //=================================================================================================================
@@ -355,6 +356,7 @@
         {
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_lich.vsndevts"
     	    "particle"  "particles/units/npc_boss_luna/luna_orbs/luna_orbs_projectile.vpcf"
+    	    "particle"  "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
     	}
     }
     //=================================================================================================================
@@ -459,7 +461,7 @@
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_antimage.vsndevts"
             "soundfile" "sounds/items/moon_shard.vsnd"
             "particle"  "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
-            "particle"  "particles/generic_gameplay/generic_manaburn.vpcf"
+            "particle"  "particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf"
             "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
     	}
     }

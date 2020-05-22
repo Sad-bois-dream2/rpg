@@ -262,6 +262,15 @@ ursa_dash = ursa_dash or class({
     end,
 })
 
+function ursa_dash:IsRequireCastbar()
+    return true
+end
+
+function ursa_dash:IsInterruptible()
+    return false
+end
+
+
 function ursa_dash:FindTargetForDash(caster)
     local range = self:GetSpecialValueFor("dash_range") * 1.5
     -- Find all nearby enemies
@@ -832,9 +841,6 @@ modifier_ursa_slam_slow = class({
     RemoveOnDeath = function(self)
         return true
     end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     GetTexture = function(self)
         return ursa_slam:GetAbilityTextureName()
     end,
@@ -875,6 +881,29 @@ LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MOD
 -- ursa hunting prey
 ---------------------
 -- modifiers
+--just to make him blue
+modifier_ursa_hunt_blue = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
+    end
+})
+
+function modifier_ursa_hunt_blue:OnCreated()
+    if not IsServer() then
+        return
+    end
+end
+
+--real buff
 modifier_ursa_hunt_buff_stats = class({
     IsDebuff = function(self)
         return false
@@ -894,15 +923,13 @@ modifier_ursa_hunt_buff_stats = class({
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_DEATH }
     end,
-    --GetEffectName = function(self)
-        --return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
-    --end,
-    --GetEffectAttachType = function(self)
-        --return PATTACH_ABSORIGIN_FOLLOW
-    --end,
-    GetStatusEffectName = function(self)
-        return "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
-    end
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN_FOLLOW
+    end,
+
 })
 
 function modifier_ursa_hunt_buff_stats:GetAttackDamagePercentBonus()
@@ -1021,6 +1048,13 @@ function ursa_hunt:OnSpellStart()
     modifierTable.ability = self
     modifierTable.target = caster
     modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_ursa_hunt_blue"
+    modifierTable.duration = duration
+    GameMode:ApplyBuff(modifierTable) --blue boi
+    modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_ursa_hunt_buff_stats"
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable) -- apply bloodrage
@@ -1132,9 +1166,9 @@ function modifier_ursa_jelly_buff:OnCreated(keys)
     local channel_time = self.ability:GetSpecialValueFor("channel_time")
     local max_health = self:GetParent():GetMaxHealth()
     local tick = self.ability:GetSpecialValueFor("tick")
-    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * (self:GetStackCount()) * tick /(channel_time)
+    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * (self:GetStackCount()+1) * tick /(channel_time)
     self.regen = (self.ability:GetSpecialValueFor("regen") * 0.01 * (self:GetStackCount())* tick /(channel_time) * max_health) + 1
-end -- not sure which one need +1 but like lycan stack final value seems off by 1
+end
 
 function modifier_ursa_jelly_buff:OnRefresh(keys)
     if not IsServer() then
@@ -1144,11 +1178,11 @@ function modifier_ursa_jelly_buff:OnRefresh(keys)
 end
 
 function modifier_ursa_jelly_buff:GetDamageReductionBonus()
-    return self.dmg_reduction --or 0
+    return self.dmg_reduction
 end
 
 function modifier_ursa_jelly_buff:GetHealthRegenerationBonus()
-    return self.regen or 0
+    return self.regen
 end
 
 

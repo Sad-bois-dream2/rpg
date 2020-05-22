@@ -178,32 +178,32 @@
 	}
 }
 
-"g.venge_bubble_drowning"
+"Bubbles.Test"
 {
 	"operator_stacks"
 	{
 		"update_stack"
 		{
-			"update_operator"
+			"reference_operator"
 			{
 				"operator"		"sos_reference_stack"
-				"reference_stack"		"src1_3d"
+				"reference_stack"		"dota_update_default"
 				"operator_variables"
 				{
 					"vsnd_files"
 					{
 						"value"
 						{
-							"value0"		"sounds/venge_bubble_drowning.vsnd"
+							"value0"		"sounds/bubbles_test.vsnd"
 						}
 					}
 					"volume_min"
 					{
-						"value"		"5.000000"
+						"value"		"1.000000"
 					}
 					"volume_max"
 					{
-						"value"		"10.000000"
+						"value"		"1.000000"
 					}
 					"pitch_min"
 					{
@@ -223,15 +223,11 @@
 					}
 					"soundlevel_min"
 					{
-						"value"		"130.000000"
+						"value"		"90.000000"
 					}
 					"soundlevel_max"
 					{
-						"value"		"130.000000"
-					}
-					"spread_radius"
-					{
-						"value"		"600.000000"
+						"value"		"90.000000"
 					}
 				}
 			}

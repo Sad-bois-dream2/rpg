@@ -68,8 +68,9 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.6"
-        "AbilityCastRange"				"600"
+        "AbilityCastPoint"				"1"
+        "AnimationPlaybackRate"         "0.3"
+        "AbilityCastRange"				"800"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------

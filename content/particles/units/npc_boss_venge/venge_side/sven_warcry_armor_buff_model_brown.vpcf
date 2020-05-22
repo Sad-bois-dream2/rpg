@@ -3,18 +3,15 @@
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 1
-	m_flConstantRadius = 1.0
-	m_bShouldSort = false
+	m_flConstantRadius = 2.25
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderModels"
-			m_flAnimationRate = 0.0
-			m_bOrientZ = true
 			m_ModelList = 
 			[
 				{
-					m_model = resource:"models/particle/meteor.vmdl"
+					m_model = resource:"models/props_gameplay/status_shield.vmdl"
 				},
 			]
 			m_bAnimated = true
@@ -23,16 +20,8 @@
 			m_vecColorScale = 
 			{
 				m_nType = "PVEC_TYPE_LITERAL_COLOR"
-				m_LiteralColor = [ 255, 255, 255 ]
-			}
-		},
-		{
-			_class = "C_OP_RenderDeferredLight"
-			m_vecColorScale = 
-			{
-				m_nType = "PVEC_TYPE_LITERAL_COLOR"
 				m_vLiteralValue = [ 0.0, 0.0, 0.0 ]
-				m_LiteralColor = [ 0, 206, 209, 255 ]
+				m_LiteralColor = [ 210, 105, 30, 255 ]
 				m_nVectorAttribute = 6
 				m_vVectorAttributeScale = [ 1.0, 1.0, 1.0 ]
 				m_nControlPoint = 0
@@ -176,63 +165,70 @@
 					m_Stops = [  ]
 				}
 			}
-			m_nColorBlendType = "PARTICLE_COLOR_BLEND_REPLACE"
-			m_flRadiusScale = 3.0
-			m_flStartFalloff = 1.0
-			m_hTexture = resource:"materials/particle/sparks/meteorite_blue.vtex"
 		},
 	]
 	m_Operators = 
 	[
 		{
-			_class = "C_OP_BasicMovement"
+			_class = "C_OP_OscillateScalarSimple"
+			m_nField = "3"
+			m_Rate = 0.5
+			m_Frequency = 0.75
+			m_flOscAdd = 0.0
 		},
 		{
-			_class = "C_OP_Decay"
+			_class = "C_OP_PositionLock"
+			m_nControlPointNumber = 1
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flEndTime = 5.0
+			m_flBias = 0.75
+			m_nOpEndCapState = 0
+			m_flStartScale = 2.0
+			m_flEndScale = 2.0
+		},
+		{
+			_class = "C_OP_AlphaDecay"
 			m_nOpEndCapState = 1
 		},
 		{
-			_class = "C_OP_SetControlPointsToParticle"
-			m_nFirstControlPoint = 3
-			m_bSetOrientation = true
+			_class = "C_OP_RampScalarLinearSimple"
+			m_flEndTime = 9999.0
+			m_Rate = -8.0
+			m_nField = "16"
+			m_nOpEndCapState = 1
 		},
 		{
-			_class = "C_OP_RemapCPOrientationToYaw"
-			m_nCP = 3
+			_class = "C_OP_BasicMovement"
 		},
 		{
-			_class = "C_OP_SpinUpdate"
-		},
-		{
-			_class = "C_OP_RemapCPtoVector"
-			m_nCPInput = 60
-			m_nFieldOutput = "6"
-			m_vInputMax = [ 255.0, 255.0, 255.0 ]
-			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
-			m_flOpStrength = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 62
-				m_nVectorComponent = 0
-				m_nMapType = "PF_MAP_TYPE_REMAP"
-				m_flInput0 = 0.0
-				m_flInput1 = 1.0
-				m_flOutput0 = 0.0
-				m_flOutput1 = 1.0
-			}
+			_class = "C_OP_ClampScalar"
+			m_flOutputMin = 0.5
+			m_flOutputMax = 2.5
 		},
 	]
 	m_Initializers = 
 	[
 		{
-			_class = "C_INIT_CreateWithinSphere"
+			_class = "C_INIT_RandomScalar"
+			m_flMin = 1.2
+			m_flMax = 1.2
+			m_nFieldOutput = "20"
 		},
 		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_flOutputMax = 100000.0
-			m_nFieldOutput = "1"
-			m_flInputMax = 100000.0
-			m_nCPInput = 2
+			_class = "C_INIT_CreateWithinSphere"
+			m_nControlPointNumber = 1
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMax = 1.0
+			m_fLifetimeMin = 1.0
+		},
+		{
+			_class = "C_INIT_PositionOffset"
+			m_OffsetMin = [ 0.0, 0.0, 150.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 150.0 ]
 		},
 	]
 	m_Emitters = 
@@ -246,79 +242,13 @@
 			}
 		},
 	]
-	m_Constraints = 
-	[
-		{
-			_class = "C_OP_ConstrainDistanceToPath"
-			m_flTravelTime = 1.3
-			m_flMaxDistance1 = 0.0
-			m_flMaxDistance0 = 0.0
-			m_PathParameters = 
-			{
-				m_nEndControlPointNumber = 1
-			}
-		},
-	]
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly_light.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly_smoke.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly_streak.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly_smoke_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly_lens.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_fly_haze.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_fly_glow_ob.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_fly_sparks.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_land_flash.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_fly_glow_ob.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_fly_fire.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_fall/venge_fall_land_beam.vpcf"
-			m_bEndCap = true
+			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_side/sven_warcry_armor_buff_model_glow_brown.vpcf"
 		},
 	]
-	m_PreEmissionOperators = 
-	[
-		{
-			_class = "C_OP_StopAfterCPDuration"
-			m_flDuration = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 2
-				m_nVectorComponent = 0
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 1.0
-			}
-		},
-		{
-			_class = "C_OP_HSVShiftToCP"
-			m_DefaultHSVColor = [ 106, 18, 13, 255 ]
-		},
-	]
-	m_nBehaviorVersion = 4
-	m_nFirstMultipleOverride_BackwardCompat = 1
+	m_nBehaviorVersion = 5
 	m_controlPointConfigurations = 
 	[
 		{
@@ -326,51 +256,10 @@
 			m_drivers = 
 			[
 				{
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 2
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 3
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 60
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 50.0, 255.0, 50.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 61
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 62
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
 					m_entityName = "self"
 				},
 			]

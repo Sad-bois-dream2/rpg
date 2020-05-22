@@ -29,6 +29,234 @@ function IsUnitInProximity(start_point, end_point, target_position, ice_wall_rad
     -- Is the distance less then our "area of effect" radius? true/false
     return distance:Length2D() <= ice_wall_radius
 end
+
+
+
+---------------------
+--venge_missile modifier
+---------------------
+venge_missile = class({
+    GetAbilityTextureName = function(self)
+        return "venge_missile"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_venge_missile"
+    end,
+})
+
+function venge_missile:ExplodeFX(ele, target, radius)
+    --visual
+    local position = target:GetAbsOrigin()
+    local particle = ParticleManager:CreateParticle(ele, PATTACH_POINT_FOLLOW, target)
+    ParticleManager:SetParticleControl(particle, 0, position)
+    ParticleManager:SetParticleControl(particle, 1, position)
+    ParticleManager:SetParticleControl(particle, 2, Vector(radius, 0, 0))
+    ParticleManager:ReleaseParticleIndex(particle)
+end
+
+
+function venge_missile:ApplyMoondaze(enemy, main_target, parent)
+    self.duration = self:GetSpecialValueFor("duration")
+    self.radius = self:GetSpecialValueFor("radius")
+    local displacement = enemy:GetAbsOrigin() - main_target:GetAbsOrigin()
+    local distance = displacement:Length2D()
+    local splash_max = self:GetSpecialValueFor("splash_max")*0.01
+    local splash_min = self:GetSpecialValueFor("splash_min")*0.01
+    --slow use a stack counter
+    local slow_max = self:GetSpecialValueFor("slow_max")
+    local slow_min = self:GetSpecialValueFor("slow_min")
+    local AA = parent:GetAttackDamage()
+    local slope_damage = (splash_max -splash_min)/self.radius
+    local slope_speed = (slow_max - slow_min)/self.radius
+    --near radius max damage min slow
+    if distance < 300 then
+        distance = 0
+    end
+    local damage = AA * (splash_max - slope_damage* distance)
+    local stacks = slow_min + slope_speed * distance
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = enemy
+    modifierTable.caster = parent
+    modifierTable.modifier_name = "modifier_venge_missile_slow"
+    modifierTable.duration = self.duration
+    modifierTable.stacks = stacks
+    modifierTable.max_stacks = 200
+    GameMode:ApplyStackingDebuff(modifierTable)
+    local damageTable = {}
+    damageTable.caster = parent
+    damageTable.target = enemy
+    damageTable.ability = self
+    damageTable.damage = damage
+    damageTable.physdmg = true
+    GameMode:DamageUnit(damageTable)
+    if parent:HasModifier("modifier_venge_side_fire") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_frost") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.frostdmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_earth") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.earthdmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_void") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.voiddmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_holy") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.holydmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_nature") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if parent:HasModifier("modifier_venge_side_inferno") then
+        damageTable = {}
+        damageTable.caster = parent
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+modifier_venge_missile = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+function modifier_venge_missile:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+function modifier_venge_missile:OnAttackLanded(keys)
+    --start cd
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.radius = self.ability:GetSpecialValueFor("radius")
+    if (keys.attacker == self.parent) then
+
+        -- Find all nearby enemies
+        local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
+                keys.target:GetAbsOrigin(),
+                nil,
+                self.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+
+        for _, enemy in pairs(enemies) do
+            self.ability:ApplyMoondaze(enemy, keys.target, self.parent)
+        end
+        local ele_phys ="particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf"
+        keys.target:EmitSound("Hero_KeeperOfTheLight.BlindingLight")
+        self.ability:ExplodeFX(ele_phys, keys.target, self.radius)
+    end
+end
+
+LinkLuaModifier("modifier_venge_missile", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_missile_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_drow_frost_arrow.vpcf"
+    end,
+    DeclareFunctions = function(self)
+        return {MODIFIER_PROPERTY_TURN_RATE_PERCENTAGE} -- increase by percentage
+    end
+})
+
+function modifier_venge_missile_slow:OnCreated()
+    if not IsServer() then
+        return
+    end
+end
+
+function modifier_venge_missile_slow:GetModifierTurnRate_Percentage() --% add to current turnrate
+    self.stacks = self:GetStackCount() -- 1% slow each stack
+    self.turn_rate_slow = -self.stacks
+    --if self.turn_rate_slow < -95 then -- max turn rate slow 95% -- seems like turn rate cant be 0 so prolly dont need this
+        --self.turn_rate_slow = -95
+    --end
+    return self.turn_rate_slow
+end
+
+function modifier_venge_missile_slow:GetMoveSpeedPercentBonus()
+    return self:GetStackCount()* -0.01
+end
+
+LinkLuaModifier("modifier_venge_missile_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
 --------------
 --venge sky
 ---------------
@@ -139,8 +367,732 @@ function venge_sky:OnSpellStart()
         end)
     end
 end
+
+------------
+--venge side
+------------
+venge_side = class({
+    GetAbilityTextureName = function(self)
+        return "venge_side"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_venge_side"
+    end
+})
+
+
+function venge_side:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.already_infused  = 0
+    self.max_infuse = self:GetSpecialValueFor("max_infuse")
+    self.infuse_modifier =
+    {
+        "modifier_venge_side_fire",
+        "modifier_venge_side_frost",
+        "modifier_venge_side_earth",
+        "modifier_venge_side_void",
+        "modifier_venge_side_holy",
+        "modifier_venge_side_nature",
+        "modifier_venge_side_inferno"
+
+    }
+end
+
+function venge_side:InfuseFX(chosen)
+    if chosen == "modifier_venge_side_fire" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/econ/items/lina/lina_ti7/lina_spell_light_strike_array_ti7.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_void" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_nevermore/nevermore_wings.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_frost" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_holy" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_chen/chen_holy_persuasion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_earth" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_nature" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    elseif chosen == "modifier_venge_side_inferno" then
+    self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/heroes_underlord/underlord_firestorm_pre.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    end
+    ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+end
+
+function venge_side:Infuse()
+    if (not IsServer()) then
+        return
+    end
+    if self.already_infused < self.max_infuse then
+        local caster = self:GetCaster()
+        local number = RandomInt(1, #self.infuse_modifier)
+        local chosen = self.infuse_modifier[number]
+        table.remove(self.infuse_modifier,number) -- dont pepeg and  infuse same ele
+        self.already_infused = self.already_infused + 1
+        self:InfuseFX(chosen)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = chosen
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+modifier_venge_side = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_TAKEDAMAGE }
+    end
+})
+
+function modifier_venge_side:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.parent = self:GetParent()
+    self.ability = self:GetAbility()
+    self.health_start_counting_point = 1
+    Timers:CreateTimer(0.1,function() -- seem like difficulty fuck this up with max health manipulation or get 0 if call too fast so 0.1 delay
+        self.health_per_infuse = self.ability:GetSpecialValueFor("health_per_infuse") * 0.01
+        self.Max_Health = self.parent:GetMaxHealth()
+    end)
+end
+
+function modifier_venge_side:OnTakeDamage(keys)
+    if (not IsServer()) then
+        return
+    end
+    --each time damage is taken, compare health loss proportion to health distance to next triggering point
+    --so if health change 1 => 0.87 this will trigger infuse because 0.13> 0.12 and set new trigger point to 0.88, the 0.87 have 0.01 < 0.12 wont trigger next infusion
+    --however if 1=>0.75 this will trigger 1 infuse 0.25 > 0.12 then 0.88-0.75=0.13 still > 0.12 another infuse > double infusiong in one damage instance
+    if keys.unit == self.parent then
+        self.health_loss = self.health_start_counting_point  - (self.parent:GetHealth()/self.Max_Health)
+        --print(self.health_per_infuse)
+        --print(self.health_loss)
+        --print(self.health_start_counting_point)
+        Timers:CreateTimer(0, function()
+            if self.health_loss > self.health_per_infuse then -- loop to check if a big damage instance triggers more than one infusion
+                self.ability:Infuse()
+                self.health_start_counting_point = self.health_start_counting_point - self.health_per_infuse
+                self.health_loss = self.health_start_counting_point  - (self.parent:GetHealth()/self.Max_Health)
+                return 0.1
+            end
+        end)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+modifier_venge_side_fire = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_fall:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
+    end
+})
+
+function modifier_venge_side_fire:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.as = self.ability:GetSpecialValueFor("fire_as") *0.01
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+end
+
+function modifier_venge_side_fire:GetFireProtectionBonus()
+    return self.resist
+end
+
+function modifier_venge_side_fire:GetAttackSpeedPercentBonus()
+    return self.as
+end
+
+LinkLuaModifier("modifier_venge_side_fire", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_frost = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_tide:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+
+})
+
+function modifier_venge_side_frost:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.parent = self:GetParent()
+    self.buff_fx = ParticleManager:CreateParticle("particles/units/heroes/hero_ancient_apparition/ancient_apparition_chilling_touch_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+    ParticleManager:SetParticleControlEnt(self.buff_fx, 0, self:GetParent(), PATTACH_ABSORIGIN_FOLLOW, "attach_attack1", self:GetParent():GetAbsOrigin(), true)
+    self:AddParticle(self.buff_fx, false, false, -1, false, false)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_frost") then
+            ParticleManager:DestroyParticle(self.buff_fx, false)
+            ParticleManager:ReleaseParticleIndex(self.buff_fx)
+        end
+    end)
+end
+
+function modifier_venge_side_frost:GetFrostProtectionBonus()
+    return self.resist
+end
+-- any damage preemptively instance apply slow
+---@param damageTable DAMAGE_TABLE
+function modifier_venge_side_frost:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_venge_side_frost")
+    if (damageTable.damage > 0 and modifier ) then
+        local modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_venge_side_frost_slow"
+        modifierTable.duration = 4  --modifier:GetAbility():GetSpecialValueFor("duration")
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+function modifier_venge_side_frost:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.buff_fx, false)
+        ParticleManager:ReleaseParticleIndex(self.buff_fx)
+    end
+end
+
+
+
+LinkLuaModifier("modifier_venge_side_frost", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_frost_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    GetTexture = function(self)
+        return venge_tide:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_winter_wyvern/wyvern_arctic_burn_slow.vpcf"
+    end
+})
+
+function modifier_venge_side_frost_slow:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.slow = self.ability:GetSpecialValueFor("frost_slow") *-0.01
+end
+
+function modifier_venge_side_frost_slow:GetAttackSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_venge_side_frost_slow:GetSpellHasteBonus()
+    return self.slow
+end
+LinkLuaModifier("modifier_venge_side_frost_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_earth = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_quake:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+})
+
+function modifier_venge_side_earth:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.dmg_reduction = self.ability:GetSpecialValueFor("earth_dmg_reduction") * 0.01
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.parent = self:GetParent()
+    self.buff_fx = ParticleManager:CreateParticle("particles/units/npc_boss_venge/venge_side/sven_warcry_buff_brown.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(self.buff_fx, 0, self:GetParent(), PATTACH_POINT_FOLLOW, nil, self:GetParent():GetAbsOrigin(), true)
+    ParticleManager:SetParticleControlEnt(self.buff_fx, 1, self:GetParent(), PATTACH_OVERHEAD_FOLLOW, nil, self:GetParent():GetAbsOrigin(), true)
+    self:AddParticle(self.buff_fx, false, false, -1, false, false)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_earth") then
+            ParticleManager:DestroyParticle(self.buff_fx, false)
+            ParticleManager:ReleaseParticleIndex(self.buff_fx)
+        end
+    end)
+end
+
+function modifier_venge_side_earth:GetEarthProtectionBonus()
+    return self.resist
+end
+
+function modifier_venge_side_earth:GetDamageReductionBonus()
+    return self.dmg_reduction
+end
+
+function modifier_venge_side_earth:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.buff_fx, false)
+        ParticleManager:ReleaseParticleIndex(self.buff_fx)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side_earth", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_void = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_mind_control:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+})
+
+function modifier_venge_side_void:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.parent = self:GetParent()
+    local fx = "particles/units/npc_boss_venge/venge_side/invoker_apex_wex_orb_ring.vpcf"
+    self.buff_fx = ParticleManager:CreateParticle(fx, PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+    ParticleManager:SetParticleControlEnt(self.buff_fx, 0, self:GetParent(),PATTACH_ABSORIGIN_FOLLOW, nil, self:GetParent():GetAbsOrigin(), true)
+    ParticleManager:SetParticleControlEnt(self.buff_fx, 3, self:GetParent(),PATTACH_ABSORIGIN_FOLLOW, nil, self:GetParent():GetAbsOrigin(), true)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_void") then
+            ParticleManager:DestroyParticle(self.buff_fx, false)
+            ParticleManager:ReleaseParticleIndex(self.buff_fx)
+        end
+    end)
+
+end
+
+
+function modifier_venge_side_void:GetVoidProtectionBonus()
+    return self.resist
+end
+
+-- any damage instance apply manaburn after damage is taken
+---@param damageTable DAMAGE_TABLE
+function modifier_venge_side_void:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_venge_side_void")
+    if (damageTable.damage > 0 and modifier ) then
+        local Max_Mana = damageTable.victim:GetMaxMana()
+        local Mana = damageTable.victim:GetMana()
+        local burn = Max_Mana * modifier:GetAbility():GetSpecialValueFor("void_mana_burn")*0.01
+        if burn > Mana then
+            burn = Mana
+        end
+        local damage = burn * modifier:GetAbility():GetSpecialValueFor("void_per_burn")*0.01
+        damageTable.victim:ReduceMana(burn)
+        damageTable.victim:EmitSound("Hero_Antimage.ManaBreak")
+        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        ParticleManager:SetParticleControl(manaburn_pfx, 0, damageTable.victim:GetAbsOrigin() )
+        ParticleManager:ReleaseParticleIndex(manaburn_pfx)
+        --deal another instance of damage
+        damageTable.damage = damage
+        damageTable.voiddmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+function modifier_venge_side_void:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.buff_fx, false)
+        ParticleManager:ReleaseParticleIndex(self.buff_fx)
+    end
+end
+LinkLuaModifier("modifier_venge_side_void", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_holy = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+    GetTexture = function(self)
+        return venge_moonify:GetAbilityTextureName()
+    end,
+})
+
+function modifier_venge_side_holy:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.particle_wings = "particles/units/heroes/hero_omniknight/omniknight_guardian_angel_omni.vpcf"
+    self.particle_wings_fx = ParticleManager:CreateParticle(self.particle_wings, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControl(self.particle_wings_fx, 0, self.parent:GetAbsOrigin())
+    ParticleManager:SetParticleControlEnt(self.particle_wings_fx, 5, self.parent, PATTACH_POINT_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+    self:AddParticle(self.particle_wings_fx, false, false, -1, false, false)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_holy") then
+            ParticleManager:DestroyParticle(self.particle_wings_fx, false)
+            ParticleManager:ReleaseParticleIndex(self.particle_wings_fx)
+        end
+    end)
+end
+
+function modifier_venge_side_holy:GetHolyProtectionBonus()
+    return self.resist
+end
+
+-- any damage preemptively instance apply miss and fumble
+---@param damageTable DAMAGE_TABLE
+function modifier_venge_side_holy:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_venge_side_holy")
+    if (damageTable.damage > 0 and modifier ) then
+        local modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_venge_side_holy_miss"
+        modifierTable.duration = 4  --modifier:GetAbility():GetSpecialValueFor("duration")
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+function modifier_venge_side_holy:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.particle_wings_fx, false)
+        ParticleManager:ReleaseParticleIndex(self.particle_wings_fx)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side_holy", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_holy_miss = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    DeclareFunctions = function(self)
+        return {MODIFIER_PROPERTY_MISS_PERCENTAGE,
+                MODIFIER_EVENT_ON_ABILITY_START}
+    end,
+    GetTexture = function(self)
+        return venge_moonify:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_keeper_of_the_light/keeper_dazzling_debuff.vpcf"
+    end,
+})
+
+function modifier_venge_side_holy_miss:OnCreated(params)
+    if (not IsServer()) then
+        return
+    end
+    self.miss_chance = self:GetAbility():GetSpecialValueFor("holy_miss")
+    self.silence = self:GetAbility():GetSpecialValueFor("holy_silence")
+    self.parent = self:GetParent()
+    self.caster = self:GetCaster()
+end
+
+function modifier_venge_side_holy_miss:GetModifierMiss_Percentage()
+    return self.miss_chance
+end
+
+function modifier_venge_side_holy_miss:OnAbilityStart(keys)
+    if (not IsServer()) then
+        return
+    end -- cancel spellcast with silence
+    if keys.unit == self.parent and RollPercentage(self.miss_chance)  then
+        local modifierTable = {}
+        modifierTable.ability = self:GetAbility()
+        modifierTable.target = self.parent
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_venge_side_holy_silence"
+        modifierTable.duration = self.silence
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side_holy_miss", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_holy_silence = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_skywrath_mage/skywrath_mage_ancient_seal_debuff.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end,
+    GetTexture = function(self)
+        return venge_moonify:GetAbilityTextureName()
+    end
+})
+
+function modifier_venge_side_holy_silence:CheckState()
+    local state = { [MODIFIER_STATE_SILENCED] = true, }
+    return state
+end
+
+LinkLuaModifier("modifier_venge_side_holy_silence", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_nature = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_root:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+})
+
+function modifier_venge_side_nature:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.regen = self.ability:GetSpecialValueFor("nature_regen") * 0.01
+    self.parent = self:GetParent()
+    local Max_Health = self.parent:GetMaxHealth()
+    self.regen_final = Max_Health * self.regen + 1
+    local armor = "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
+    self.healFX = ParticleManager:CreateParticle(armor, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(self.healFX, 1, self:GetParent(), PATTACH_ABSORIGIN_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
+    self:AddParticle(self.healFX, false, false, -1, false, false)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_nature") then
+            ParticleManager:DestroyParticle(self.healFX , false)
+            ParticleManager:ReleaseParticleIndex(self.healFX )
+        end
+    end)
+end
+
+function modifier_venge_side_nature:GetNatureProtectionBonus()
+    return self.resist
+end
+
+function modifier_venge_side_nature:GetHealthRegenerationBonus()
+    return self.regen_final
+end
+
+function modifier_venge_side_nature:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.healFX, false)
+        ParticleManager:ReleaseParticleIndex(self.healFX)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side_nature", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+modifier_venge_side_inferno = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_fel:GetAbilityTextureName()
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end,
+})
+
+function modifier_venge_side_inferno:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.resist = self.ability:GetSpecialValueFor("resist") * 0.01
+    self.parent = self:GetParent()
+    local necroflame = "particles/econ/items/necrolyte/necro_ti9_immortal/necro_ti9_immortal_loadout_steam.vpcf"
+    self.fx = ParticleManager:CreateParticle(necroflame, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControlEnt(self.fx, 1, self.parent, PATTACH_ABSORIGIN_FOLLOW, "attach_hitloc", self.parent:GetAbsOrigin(), true)
+    Timers:CreateTimer(6,function()
+        if not self.parent:HasModifier("modifier_venge_side_inferno") then
+            ParticleManager:DestroyParticle(self.fx, false)
+            ParticleManager:ReleaseParticleIndex(self.fx)
+        end
+    end)
+end
+
+function modifier_venge_side_inferno:GetInfernoProtectionBonus()
+    return self.resist
+end
+
+function modifier_venge_side_inferno:OnDeath(params)
+    if (params.unit == self.parent) then
+        ParticleManager:DestroyParticle(self.fx, false)
+        ParticleManager:ReleaseParticleIndex(self.fx)
+    end
+end
+-- any damage preemptively instance apply amp
+---@param damageTable DAMAGE_TABLE
+function modifier_venge_side_inferno:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_venge_side_inferno")
+    if (damageTable.damage > 0 and modifier ) then
+        local modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_venge_side_inferno_amp"
+        modifierTable.duration = 4  --modifier:GetAbility():GetSpecialValueFor("duration")
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = 99999
+        GameMode:ApplyStackingDebuff(modifierTable)
+    end
+end
+
+LinkLuaModifier("modifier_venge_side_inferno", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_side_inferno_amp = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    GetTexture = function(self)
+        return venge_side:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_dazzle/dazzle_armor_enemy_shield.vpcf"
+    end,
+    GetEffectAttachType =  function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end
+})
+
+function modifier_venge_side_inferno_amp:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.amp = self.ability:GetSpecialValueFor("inferno_amp") *-0.01 * (self:GetStackCount()+1)
+    self.armor_reduce = self.ability:GetSpecialValueFor("inferno_armor_reduce") * (self:GetStackCount()+1) * -1
+end
+
+function modifier_venge_side_inferno_amp:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
+    self:OnCreated()
+end
+
+
+
+function modifier_venge_side_inferno_amp:GetDamageReductionBonus()
+    return self.amp
+end
+
+function modifier_venge_side_inferno_amp:GetArmorBonus()
+    return self.armor_reduce
+end
+
+LinkLuaModifier("modifier_venge_side_inferno_amp", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+
 --------
---venge moonfall
+--venge sky fall
 ---------
 venge_fall = class({
     GetAbilityTextureName = function(self)
@@ -180,8 +1132,16 @@ function venge_fall:OnSpellStart()
         local caster 			= self:GetCaster()
         local ability 			= self
         local radius = self:GetSpecialValueFor("range")
-        caster:EmitSound("vengefulspirit_vng_attack_08")
-
+            caster:EmitSoundParams("vengefulspirit_vng_attack_08", 1.0, 2.2, 0)
+        if not caster:HasModifier("modifier_venge_side_fire") then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_venge_side_fire"
+            modifierTable.duration = 5
+            GameMode:ApplyBuff(modifierTable)
+        end
         --find enemies
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
@@ -205,6 +1165,9 @@ function venge_fall:OnSpellStart()
                     endTime = 0.1,
                     callback = function()
                         fired_meteors = fired_meteors + 1
+                        if not enemy:IsAlive() then
+                            return
+                        end
                         target_point 		= enemy:GetAbsOrigin()
                         local new_target_point = target_point + Vector(math.random(-700, 700),math.random(-700, 700),0 )
                         venge_fall:CastMeteor(caster, ability, new_target_point, number_of_meteors)
@@ -257,9 +1220,7 @@ function modifier_venge_fall:OnCreated(kv)
         self.chaos_meteor_burn_dps_inverval		= self.ability:GetSpecialValueFor("burn_dps_interval")
         self.chaos_meteor_damage_interval		= self.ability:GetSpecialValueFor("damage_interval")
         self.chaos_meteor_area_of_effect 		= self.ability:GetSpecialValueFor("area_of_effect")
-        --self.location_difference_normalized 	= (self.target_point - self.caster_location_ground):Normalized()
         self.chaos_meteor_land_time 			= self.ability:GetSpecialValueFor("land_time")
-        --self.chaos_meteor_velocity 				= self.location_difference_normalized * self.chaos_meteor_travel_speed
         self.chaos_meteor_duration 				= self.chaos_meteor_travel_distance / self.chaos_meteor_travel_speed
 
         -- Play Chaos Meteor Sounds
@@ -268,7 +1229,7 @@ function modifier_venge_fall:OnCreated(kv)
         self.meteor_dummy = CreateModifierThinker(self.caster, self.ability, "modifier_venge_fall_thinker", {}, self.target_point, self.caster:GetTeamNumber(), false)
         self.meteor_dummy:EmitSoundParams("Hero_Invoker.ChaosMeteor.Loop",1.0, 0.2, 0)
 
-        --need to random velocity here and use later to make a match animation
+        --need to random velocity here and use later to make a matching animation
         local direction = Vector(math.random(-100,100), math.random(-100,100), 0):Normalized()
         self.chaos_meteor_velocity 		        = direction * self.chaos_meteor_travel_speed
 
@@ -304,8 +1265,7 @@ function modifier_venge_fall:OnRemoved(kv)
         -- Meteor Projectile object
         local meteor_projectile_obj =
         {
-            EffectName 					= "particles/units/npc_boss_venge/venge_fall/venge_fall.vpcf",--"particles/units/heroes/hero_invoker/invoker_chaos_meteor.vpcf",
-            --"particles/hero/invoker/chaosmeteor/imba_invoker_chaos_meteor.vpcf",
+            EffectName 					= "particles/units/npc_boss_venge/venge_fall/venge_fall.vpcf",
             Ability 					= self.ability,
             vSpawnOrigin 				= self.target_point,
             fDistance 					= self.chaos_meteor_travel_distance,
@@ -351,17 +1311,6 @@ function venge_fall:OnProjectileHit_ExtraData(target, location, ExtraData)
         end
     end
 end
-----------
---modifier for storing velocity
------------
-modifier_venge_fall_velocity = class({})
-
-function modifier_venge_fall_velocity:OnCreated()
-    if not IsServer() then
-        return
-    end
-end
-
 
 --------------------------------------------------------------------------------------------------------------------
 -- Chaos Meteor modifier - applies burn debuff and damage. also hides dummy unit from game
@@ -450,7 +1399,6 @@ function modifier_venge_fall_aura:OnIntervalThink()
                         }
                 )
 
-
                 -- Apply meteor main dmg
                 local damageTable = {}
                 damageTable.ability 		= self.ability
@@ -479,9 +1427,6 @@ modifier_venge_fall_burn = class({
     end,
     RemoveOnDeath = function(self)
         return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
     end,
     GetTexture = function(self)
         return venge_fall:GetAbilityTextureName()
@@ -522,11 +1467,14 @@ end
 --------------------------------------------------------------------------------------------------------------------
 -- Chaos Meteor burn effect
 --------------------------------------------------------------------------------------------------------------------
-modifier_venge_fall_burn_effect = class({})
-function modifier_venge_fall_burn_effect:IsHidden() 		return true end
-function modifier_venge_fall_burn_effect:GetEffectName() return "particles/units/heroes/hero_phoenix/phoenix_fire_spirit_burn.vpcf" end
-
-
+modifier_venge_fall_burn_effect = class({
+    IsHidden = function(self)
+        return true
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_phoenix/phoenix_fire_spirit_burn.vpcf"
+    end,
+})
 
 --remove thinker
 modifier_venge_fall_thinker = class({})
@@ -538,17 +1486,8 @@ function modifier_venge_fall_thinker:OnDestroy()
     UTIL_Remove(self:GetParent())
 end
 
-
---------
---venge umbra
-----------
---local particle = "particles/units/heroes/hero_nyx_assassin/nyx_assassin_mana_burn.vpcf"
---local sound_cast ="Hero_NyxAssassin.ManaBurn.Target"
-
-
-
 --------------------
---venge mindcontrol
+--venge umbra
 ----------------------
 modifier_venge_mind_control_marked = class ({
     IsDebuff = function(self)
@@ -579,8 +1518,86 @@ end
 
 
 LinkLuaModifier( "modifier_venge_mind_control_marked", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE )
+--make the boi black, remove all mana and give void bonus on AA somehow putting black status fx on main function doesnt work
+modifier_venge_mind_control_black = class ({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return venge_mind_control:GetAbilityTextureName()
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/units/npc_boss_luna/luna_cruelty/luna_cruelty.vpcf"
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
 
+function modifier_venge_mind_control_black:OnCreated( kv )
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    local blackhand = "particles/units/heroes/hero_razor/razor_static_link_debuff.vpcf"
+    local aura = "particles/econ/courier/courier_hyeonmu_ambient/courier_hyeonmu_ambient_blue.vpcf"
+    self.pfx = ParticleManager:CreateParticle( blackhand, PATTACH_POINT_FOLLOW, self:GetParent())
+    self.afx = ParticleManager:CreateParticle( aura, PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+    ParticleManager:SetParticleControlEnt(self.afx, 0, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
+end
 
+function modifier_venge_mind_control_black:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    if keys.attacker == self.parent then
+        local proc = self.ability:GetSpecialValueFor("proc")
+        --print(proc)
+        local Max_Health = keys.target:GetMaxHealth()
+        local proc_final = proc * Max_Health * 0.01
+        --print(proc_final)
+        local damageTable = {}
+        damageTable.caster = keys.attacker
+        damageTable.target = keys.target
+        damageTable.ability = self.ability
+        damageTable.damage = proc_final
+        damageTable.voiddmg = true
+        GameMode:DamageUnit(damageTable)
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, keys.target)
+        ParticleManager:SetParticleControlEnt(bound_fx, 0, keys.target, PATTACH_POINT_FOLLOW, "attach_hitloc", keys.target:GetAbsOrigin(), true)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(bound_fx, false)
+            ParticleManager:ReleaseParticleIndex(bound_fx)
+        end)
+    end
+
+end
+
+function modifier_venge_mind_control_black:GetManaRegenerationBonus()
+    return -2
+end
+
+function modifier_venge_mind_control_black:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pfx, false)
+    ParticleManager:ReleaseParticleIndex(self.pfx)
+    ParticleManager:DestroyParticle(self.afx, false)
+    ParticleManager:ReleaseParticleIndex(self.afx)
+end
+
+LinkLuaModifier( "modifier_venge_mind_control_black", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE )
+
+--attack own allies and speed
 modifier_venge_mind_control = class ({
     IsDebuff = function(self)
         return true
@@ -593,7 +1610,7 @@ modifier_venge_mind_control = class ({
     end,
     GetTexture = function(self)
         return venge_mind_control:GetAbilityTextureName()
-    end, --tried to make this boi black but cant idk why
+    end,
 })
 
 
@@ -611,8 +1628,10 @@ function modifier_venge_mind_control:OnCreated( kv )
         self:GetParent():Interrupt()
         self:GetParent():SetIdleAcquire( true )
 
-        self:GetParent():AddNewModifier( self:GetCaster(), nil, "modifier_phased", { duration = -1 } )
-
+        self:GetParent():AddNewModifier( self:GetCaster(), nil, "modifier_phased", { duration = -1 } ) -- no idea why this is needed but i tried remove it and spell doenst work
+        --price to pay
+        self:GetParent():SetMana(0)
+        --find closest ally
         local hAllies = FindUnitsInRadius( self:GetParent():GetTeamNumber(),
                 self:GetParent():GetOrigin(),
                 nil,
@@ -626,7 +1645,7 @@ function modifier_venge_mind_control:OnCreated( kv )
             self.hDesiredTarget = hAllies[ 1 ]
             --print(hAllies[ 1 ]:GetUnitName())
             self:GetParent():SetForceAttackTargetAlly( self.hDesiredTarget )
-
+            --mark the ally that is targeted by charmed boi
             local modifierTable = {}
             modifierTable.ability = self:GetAbility()
             modifierTable.target = self.hDesiredTarget
@@ -656,15 +1675,6 @@ function modifier_venge_mind_control:OnCreated( kv )
                 modifierTable.duration = 3
                 GameMode:ApplyDebuff(modifierTable)
             end
-            --local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
-                    --self:GetCaster():GetAbsOrigin(),
-                    --nil,
-                    --30000,
-                    --DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    --DOTA_UNIT_TARGET_HERO,
-                    --DOTA_UNIT_TARGET_FLAG_NONE,
-                    --FIND_ANY_ORDER,
-                    --false)
             return
         end
     end
@@ -740,11 +1750,24 @@ end
 
 function venge_mind_control:OnSpellStart()
     if IsServer() then
+        Timers:CreateTimer(3,function()
         ParticleManager:DestroyParticle( self.nPreviewFX, false )
         ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+        end)
         self.projectile_speed = self:GetSpecialValueFor( "projectile_speed" )
         self.charm_duration = self:GetSpecialValueFor( "charm_duration" )
-        self:GetCaster():EmitSound("vengefulspirit_vng_kill_01")
+        local caster = self:GetCaster()
+        caster:EmitSoundParams("vengefulspirit_vng_kill_01", 1.0, 3.2, 0)
+        if not caster:HasModifier("modifier_venge_side_void") then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_venge_side_void"
+            modifierTable.duration = 5
+            GameMode:ApplyBuff(modifierTable)
+        end
+        GameMode:ApplyDebuff(modifierTable)
         local range = self:GetSpecialValueFor("range")
         local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
                 self:GetCaster():GetAbsOrigin(),
@@ -775,7 +1798,7 @@ function venge_mind_control:OnSpellStart()
         ProjectileManager:CreateTrackingProjectile( info )
 
         StopSoundOn( "DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
-        EmitSoundOn( "Hero_ShadowDemon.Disruption", self:GetCaster() )
+        --EmitSoundOn( "Hero_ShadowDemon.Disruption", self:GetCaster() )
     end
 end
 
@@ -786,15 +1809,26 @@ function venge_mind_control:OnProjectileHit( hTarget, vLocation )
             modifierTable.ability = self
             modifierTable.target = hTarget
             modifierTable.caster = self:GetCaster()
+            modifierTable.modifier_name = "modifier_venge_mind_control_black"
+            modifierTable.duration = self.charm_duration
+            GameMode:ApplyDebuff(modifierTable)
+            modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = hTarget
+            modifierTable.caster = self:GetCaster()
             modifierTable.modifier_name = "modifier_venge_mind_control"
             modifierTable.duration = self.charm_duration
             GameMode:ApplyDebuff(modifierTable)
+            hTarget:EmitSound("Hero_Necrolyte.SpiritForm.Cast")
             local hit = "particles/units/heroes/hero_nevermore/nevermore_loadout.vpcf"
             local bound_fx = ParticleManager:CreateParticle(hit, PATTACH_POINT_FOLLOW,  hTarget)
             Timers:CreateTimer(2.0, function()
                 ParticleManager:DestroyParticle(bound_fx, false)
                 ParticleManager:ReleaseParticleIndex(bound_fx)
             end)
+            if hTarget:HasModifier("modifier_venge_bubble")then
+                hTarget:ForceKill(false)
+            end
         end
     end
 end
@@ -802,6 +1836,7 @@ end
 -----------------
 --bubble
 -------------------
+
 modifier_venge_bubble = class({
     IsDebuff = function(self)
         return true
@@ -813,7 +1848,7 @@ modifier_venge_bubble = class({
         return false
     end,
     GetStatusEffectName = function(self)
-        return "particles/econ/events/ti7/fountain_regen_ti7_bubbles.vpcf"
+        return "particles/status_fx/status_effect_morphling_morph_target.vpcf"--
     end,
     GetTexture = function(self)
         return venge_tide:GetAbilityTextureName()
@@ -831,6 +1866,8 @@ function modifier_venge_bubble:OnCreated( kv )
     self.bubble_damage = self:GetAbility():GetSpecialValueFor( "bubble_damage" ) * Max_Health * 0.01
 
     self.hBubble = CreateUnitByName( "npc_boss_venge_bubble", self:GetParent():GetAbsOrigin(), true, self:GetCaster(), self:GetCaster(), self:GetCaster():GetTeamNumber() )
+    local vector = self.parent:GetAbsOrigin()-self:GetCaster():GetAbsOrigin()
+    self.hBubble:SetForwardVector(vector)
     --self.hBubble:AddNewModifier( self:GetCaster(), self, "modifier_venge_bubble_passive", { duration = -1 })
     local modifierTable = {}
     modifierTable.ability = self:GetAbility()
@@ -839,8 +1876,14 @@ function modifier_venge_bubble:OnCreated( kv )
     modifierTable.modifier_name = "modifier_venge_bubble_passive"
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
-    self.drown = "g.venge_bubble_drowning" --custom bubble sound doesnt work
-    self.parent:EmitSound(self.drown)
+    self.drown = "Bubbles.Test"
+    Timers:CreateTimer(0, function()
+        if self.parent:HasModifier("modifier_venge_bubble") then
+            self.parent:EmitSoundParams(self.drown, 1.0, 3.2, 0)
+            return 4
+        end
+    end)
+
     self:StartIntervalThink( self.bubble_tick )
 
     --visual
@@ -914,18 +1957,32 @@ modifier_venge_bubble_passive = class({
     IsPurgable = function(self)
         return false
     end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_DEATH,
                  MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_MAGICAL,
                  MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PHYSICAL,
                  MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PURE,
-                 MODIFIER_EVENT_ON_ATTACKED}
-    end
+                 MODIFIER_EVENT_ON_ATTACKED,
+                 MODIFIER_PROPERTY_MODEL_SCALE,
+                }
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/econ/events/ti7/fountain_regen_ti7_bubbles.vpcf"
+    end,
 })
 
 function modifier_venge_bubble_passive:OnCreated( kv )
     if IsServer() then
         self.parent = self:GetParent()
+        Timers:CreateTimer(0, function()
+            if self.parent:IsAlive() then
+                self.parent:StartGesture(ACT_DOTA_CAST_ABILITY_5)
+                return 1
+            end
+        end)
         self.hit_count				= self:GetAbility():GetSpecialValueFor("hit_count")
         self.health_increments		= self.parent:GetMaxHealth() / self.hit_count
         self.nFXIndex = ParticleManager:CreateParticle( "particles/units/npc_boss_venge/venge_tide/venge_bubble.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent )
@@ -985,10 +2042,14 @@ function modifier_venge_bubble_passive:OnAttacked(keys)
             if self.parent:GetHealth() <= 0 then
                 self.parent:Kill(nil, keys.attacker)
                 -- This needs to be called to have the proper particle removal
-                self:Destroy()
+
             end
         end
     end
+end
+
+function modifier_venge_bubble_passive:GetModifierModelScale()
+    return -40
 end
 
 function modifier_venge_bubble_passive:CheckState()
@@ -1009,12 +2070,12 @@ end
 function modifier_venge_bubble_passive:OnDeath( params )
     if IsServer() then
         if params.unit == self:GetParent() then
-
             ParticleManager:DestroyParticle(self.nFXIndex, false)
             ParticleManager:ReleaseParticleIndex(self.nFXIndex)
+
             self.pop = "particles/econ/taunts/snapfire/snapfire_taunt_bubble_pop.vpcf"
             self.pop_fx = ParticleManager:CreateParticle( self.pop, PATTACH_ABSORIGIN_FOLLOW, self.parent )
-            Timers:CreateTimer(1, function()
+            Timers:CreateTimer(0.3, function()
                 ParticleManager:DestroyParticle(self.pop_fx, false)
                 ParticleManager:ReleaseParticleIndex(self.pop_fx)
             end)
@@ -1043,7 +2104,7 @@ end
 function venge_tide:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
-        EmitSoundOn("vengefulspirit_vng_spawn_07", self:GetCaster())
+        self:GetCaster():EmitSoundParams("vengefulspirit_vng_spawn_07", 1.0, 3.2, 0)
         self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
     end
 
@@ -1094,12 +2155,22 @@ function venge_tide:OnSpellStart()
         self.cast_range = self:GetSpecialValueFor( "range" )
         local number = self:GetSpecialValueFor("number")
         local counter = 0
+        local caster = self:GetCaster()
+        if not caster:HasModifier("modifier_venge_side_frost") then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_venge_side_frost"
+            modifierTable.duration = 5
+            GameMode:ApplyBuff(modifierTable)
+        end
         Timers:CreateTimer(0, function()
             if counter < number then
                 self:ShootSet()
                 self:GetCaster():EmitSound("Hero_Morphling.Waveform")
                 counter = counter + 1
-                return 1
+                return 1.5
             end
         end)
     end
@@ -1359,10 +2430,6 @@ modifier_venge_moonify_aura = class({
     end,
 })
 
---function modifier_venge_moonify_aura:GetEffectName()
-    --return "particles/units/heroes/hero_keeper_of_the_light/keeper_dazzling_debuff.vpcf"
---end
-
 -- Doesn't feel like this is working for some reason
 function modifier_venge_moonify_aura:GetStatusEffectName()
     return "particles/status_fx/status_effect_keeper_dazzle.vpcf"
@@ -1415,12 +2482,11 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
         local caster_location = self.caster:GetAbsOrigin()
         local current_location = self.parent:GetAbsOrigin()
         self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt
-        --local isTraversable = GridNav:IsTraversable(expected_location)
-        --local isBlocked = GridNav:IsBlocked(expected_location)
-        --local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.parent:GetHullRadius(), true)
-        --local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
         local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
-        if ( distance_to_caster > 350 ) then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
+        if ( distance_to_caster > 350 ) and self.parent:HasModifier("modifier_venge_bubble") then
+            self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
+            self.parent:SetAbsOrigin(self.expected_location)
+        elseif ( distance_to_caster > 350 ) and not self.parent:HasModifier("modifier_venge_bubble") then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
             self.parent:SetAbsOrigin(self.expected_location)
             local damageTable = {}
             damageTable.caster = self.caster
@@ -1429,7 +2495,7 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
             damageTable.damage = self.damage
             damageTable.earthdmg = true
             GameMode:DamageUnit(damageTable)
-        elseif ( distance_to_caster <= 350 and distance_to_caster > 100 ) then
+        elseif ( distance_to_caster <= 350 and distance_to_caster > 100 and not self.parent:HasModifier("modifier_venge_bubble") ) then
             self.parent:SetAbsOrigin(self.expected_location)
             local damageTable = {}
             damageTable.caster = self.caster
@@ -1469,7 +2535,7 @@ modifier_venge_moonify_hide = class({
         return false
     end,
     GetStatusEffectName = function(self)
-        return "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
+        return "particles/econ/items/effigies/status_fx_effigies/status_effect_effigy_frosty_l2_dire.vpcf"
     end,
 
 })
@@ -1507,13 +2573,15 @@ function modifier_venge_moonify_hide:OnCreated()
     Timers:CreateTimer(self.duration, function()
         self.expire = true
         --particle
-        self.ppfx = ParticleManager:CreateParticle("particles/frostivus_herofx/juggernaut_omnislash_ascension.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
-        Timers:CreateTimer(1.5, function()
-            ParticleManager:DestroyParticle(self.ppfx, false)
-            ParticleManager:ReleaseParticleIndex(self.ppfx)
-        end)
+        if self.parent:HasModifier("modifier_venge_moonify_hide") then
+            self.ppfx = ParticleManager:CreateParticle("particles/frostivus_herofx/juggernaut_omnislash_ascension.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+            Timers:CreateTimer(1.5, function()
+                ParticleManager:DestroyParticle(self.ppfx, false)
+                ParticleManager:ReleaseParticleIndex(self.ppfx)
+            end)
+        end
         --showing countdown
-        local counter ="particles/units/heroes/hero_abaddon/abaddon_curse_counter_stack.vpcf"
+        local counter ="particles/units/npc_boss_venge/venge_moonify/countdown.vpcf"
         local tick = 1
         self.delay = 10
         --death if not rescued
@@ -1522,13 +2590,15 @@ function modifier_venge_moonify_hide:OnCreated()
                 self.parent:EmitSound("Hero_DarkWillow.Ley.Count")
                 self.delay = self.delay - tick
                 --countdown particle
-                self.pidx = ParticleManager:CreateParticle(counter, PATTACH_OVERHEAD_FOLLOW, self.parent)
-                ParticleManager:SetParticleControl(self.pidx, 0, Vector(0, math.max(0, 0, 300)))
-                ParticleManager:SetParticleControl(self.pidx, 1, Vector(0, math.max(0, math.floor(self.delay)), 0))
-                Timers:CreateTimer(0.8, function()
-                    ParticleManager:DestroyParticle(self.pidx, false)
-                    ParticleManager:ReleaseParticleIndex(self.pidx)
-                end)
+                if self.delay > 0 then
+                    self.pidx = ParticleManager:CreateParticle(counter, PATTACH_OVERHEAD_FOLLOW, self.parent)
+                    ParticleManager:SetParticleControl(self.pidx, 0, Vector(0, math.max(0, 0, 300)))
+                    ParticleManager:SetParticleControl(self.pidx, 1, Vector(0, math.max(0, math.floor(self.delay)), 0))
+                    Timers:CreateTimer(0.8, function()
+                        ParticleManager:DestroyParticle(self.pidx, false)
+                        ParticleManager:ReleaseParticleIndex(self.pidx)
+                    end)
+                end
                 --kill that no friend boi
                 if self.parent:HasModifier("modifier_venge_moonify_hide") and self.expire == true and self.alive == false and self.delay < 1 then
                     self.parent:ForceKill(false)
@@ -1629,11 +2699,11 @@ venge_moonify = class({
     end,
 })
 
-function venge_mind_control:IsRequireCastbar()
+function venge_moonify:IsRequireCastbar()
     return true
 end
 
-function venge_mind_control:IsInterruptible()
+function venge_moonify:IsInterruptible()
     return false
 end
 
@@ -1645,7 +2715,7 @@ function venge_moonify:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
 
-        self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_chen/chen_holy_persuasion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+        self.nPreviewFX = ParticleManager:CreateParticle("particles/units/heroes/hero_chen/chen_holy_persuasion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
     end
 
     return true
@@ -1657,7 +2727,15 @@ function venge_moonify:OnSpellStart()
     ParticleManager:DestroyParticle( self.nPreviewFX, false )
     ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
     self.caster		= self:GetCaster()
-
+    if not self.caster:HasModifier("modifier_venge_side_holy") then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_venge_side_holy"
+        modifierTable.duration = 5
+        GameMode:ApplyBuff(modifierTable)
+    end
     self.position	= self:GetCursorPosition()
     self:GetCaster():EmitSound("vengefulspirit_vng_attack_02")
     -- AbilitySpecials
@@ -1672,37 +2750,651 @@ function venge_moonify:OnSpellStart()
     -- Calculate total duration that the wisp will be present for using on and off durations
     -- The initial off duration + total amount of time it's on + total amount of time it's off minus one instance
     self.duration = self.off_duration_initial + (self.on_duration * self.on_count) + (self.off_duration * (self.on_count - 1))+0.5
+    --if more than 1 enemy full version moonify
+    if HeroList:GetHeroCount() > 1 then
+        local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
+                self:GetCaster():GetAbsOrigin(),
+                nil,
+                self.range,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        if (#enemies > 0) then
+            self.target = enemies[1] --random one
+        else
+            return
+        end
 
-    local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
-            self:GetCaster():GetAbsOrigin(),
-            nil,
-            self.range,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    if (#enemies > 0) then
-        self.target = enemies[1] --random one
-    else
-        return
+        -- hide the moonified boi and make him invul
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.target
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_venge_moonify_hide"
+        modifierTable.duration =  -1
+        GameMode:ApplyDebuff(modifierTable)
+        self.target:EmitSound("Hero_Grimstroke.InkCreature.Spawn")
+    else -- solo version
+        self.moon = CreateUnitByName("npc_dota_ignis_fatuus", self.caster:GetAbsOrigin(), true, self.caster, self.caster, self.caster:GetTeamNumber())
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.moon
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_venge_moonify"
+        modifierTable.duration =  self.duration
+        GameMode:ApplyBuff(modifierTable)
     end
-
-    -- hide the moonified boi and make him invul
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = self.target
-    modifierTable.caster = self.caster
-    modifierTable.modifier_name = "modifier_venge_moonify_hide"
-    modifierTable.duration =  -1
-    GameMode:ApplyDebuff(modifierTable)
-    self.target:EmitSound("Hero_Grimstroke.InkCreature.Spawn")
 end
 
---if (IsServer() and not GameMode.ZONE1_BOSS_VENGE) then
+---------------------
+-- venge_quake
+---------------------
+
+
+-- Epicenter modifier
+modifier_venge_quake_pulse = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_earth_spirit_petrify.vpcf"
+    end,
+})
+
+function modifier_venge_quake_pulse:OnCreated()
+    if IsServer() then
+        -- Ability properties
+        self.caster = self:GetCaster()
+        self.ability = self:GetAbility()
+        self.parent = self:GetParent()
+        --self.sound_epicenter = "Ability.SandKing_Epicenter"
+        self.particle_epicenter = "particles/units/heroes/hero_sandking/sandking_epicenter.vpcf"
+
+        -- Ability specials
+        self.pulse_count = self.ability:GetSpecialValueFor("pulse_count")
+        self.damage = self.ability:GetSpecialValueFor("damage")
+        self.slow_duration = self.ability:GetSpecialValueFor("slow_duration")
+        self.base_radius = self.ability:GetSpecialValueFor("base_radius")
+        self.pulse_radius_increase = self.ability:GetSpecialValueFor("pulse_radius_increase")
+        self.max_pulse_radius = self.ability:GetSpecialValueFor("max_pulse_radius")
+        self.epicenter_duration = self.ability:GetSpecialValueFor("epicenter_duration")
+        self.projectile_speed = self.ability:GetSpecialValueFor("projectile_speed")
+        self.range = self.ability:GetSpecialValueFor("range")
+        -- Play epicenter sound
+        --EmitSoundOn(self.sound_epicenter, self.caster)
+
+        -- Assign radius and pulse count
+        self.radius = self.base_radius
+        self.pulses = 0
+
+        -- Decide the distribution of pulses over the duration of the epicenter
+        self.pulse_interval = self.epicenter_duration / self.pulse_count
+
+        -- Start thinking
+        self:StartIntervalThink(self.pulse_interval)
+    end
+end
+
+function modifier_venge_quake_pulse:OnIntervalThink()
+    if IsServer() then
+        -- Increment pulse count
+        self.pulses = self.pulses + 1
+        EmitSoundOn("Hero_ElderTitan.EchoStomp", self.parent)
+
+        -- Add particle
+        self.particle_epicenter_fx = ParticleManager:CreateParticle(self.particle_epicenter, PATTACH_ABSORIGIN_FOLLOW, self.parent)
+        ParticleManager:SetParticleControl(self.particle_epicenter_fx, 0, self.parent:GetAbsOrigin())
+        ParticleManager:SetParticleControl(self.particle_epicenter_fx, 1, Vector(self.radius, self.radius, 1))
+        ParticleManager:ReleaseParticleIndex(self.particle_epicenter_fx)
+
+        -- Find all nearby enemies in the damage radius
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.parent:GetAbsOrigin(),
+                nil,
+                self.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+
+        for _,enemy in pairs(enemies) do
+            if enemy ~= self.parent then
+                --earthquake ground wave
+                -- Deal damage
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = enemy
+                damageTable.ability = self.ability
+                damageTable.damage = self.damage
+                damageTable.earthdmg = true
+                GameMode:DamageUnit(damageTable)
+                -- Apply Epicenter slow
+                local modifierTable = {}
+                modifierTable.ability = self.ability
+                modifierTable.target = enemy
+                modifierTable.caster = self.caster
+                modifierTable.modifier_name = "modifier_venge_quake_slow"
+                modifierTable.duration = self.slow_duration
+                GameMode:ApplyBuff(modifierTable)
+
+                --rock projectile
+
+                local vDir = enemy:GetAbsOrigin() - self:GetParent():GetOrigin()
+                vDir.z = 0.0
+                vDir = vDir:Normalized()
+
+                local info = {
+                    EffectName = "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf",
+                    Ability = self.ability,
+                    vSpawnOrigin = self:GetParent():GetOrigin(),
+                    fStartRadius = 250,
+                    fEndRadius = 250,
+                    vVelocity = vDir * self.projectile_speed,
+                    fDistance = self.range,
+                    Source = self:GetCaster(),
+                    iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    iUnitTargetType = DOTA_UNIT_TARGET_HERO ,
+                }
+                ProjectileManager:CreateLinearProjectile( info )
+            end
+        end
+        -- Increase radius
+        self.radius = self.radius + self.pulse_radius_increase
+
+        -- If the new radius is above the maximum, set as the maximum instead
+        if self.radius > self.max_pulse_radius then
+            self.radius = self.max_pulse_radius
+        end
+
+        -- If there are no more pulses left, remove the modifier
+        if self.pulses >= self.pulse_count then
+            --StopSoundOn(self.sound_epicenter, self.caster)
+            self:Destroy()
+        end
+    end
+end
+LinkLuaModifier("modifier_venge_quake_pulse", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+-- Epicenter Slow modifier
+modifier_venge_quake_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    GetTexture = function(self)
+        return venge_quake:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN_FOLLOW
+    end
+})
+
+function modifier_venge_quake_slow:OnCreated()
+    -- Ability properties
+    self.caster = self:GetCaster()
+    self.ability = self:GetAbility()
+
+    -- Ability specials
+    self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+end
+
+function modifier_venge_quake_slow:GetAttackSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_venge_quake_slow:GetMoveSpeedPercentBonus()
+    return self.slow
+end
+
+function modifier_venge_quake_slow:GetSpellHasteBonus()
+    return self.slow
+end
+LinkLuaModifier("modifier_venge_quake_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+venge_quake = class({
+    GetAbilityTextureName = function(self)
+        return "venge_quake"
+    end,
+})
+
+function venge_quake:IsRequireCastbar()
+    return true
+end
+
+function venge_quake:IsInterruptible()
+    return false
+end
+
+function venge_quake:OnProjectileHit_ExtraData(target)
+    local caster = self:GetCaster()
+    local damage = self:GetSpecialValueFor("damage")
+    if target then
+        if not target:HasModifier("modifier_venge_quake_pulse") then
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = target
+            damageTable.ability = self
+            damageTable.damage = damage * 3
+            damageTable.earthdmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+end
+
+function venge_quake:OnAbilityPhaseStart()
+    if IsServer() then
+        EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
+
+        self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    end
+    return true
+end
+
+
+function venge_quake:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle( self.nPreviewFX, false )
+    ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+    local caster = self:GetCaster()
+    caster:EmitSoundParams("vengefulspirit_vng_ability_08", 1.0, 2.2, 0)
+    if not caster:HasModifier("modifier_venge_side_earth") then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_venge_side_earth"
+        modifierTable.duration = 5
+        GameMode:ApplyBuff(modifierTable)
+    end
+    local range = self:GetSpecialValueFor("range")
+    self.epicenter_duration = self:GetSpecialValueFor("epicenter_duration")
+    if HeroList:GetHeroCount() > 1 then
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                caster:GetAbsOrigin(),
+                nil,
+                range,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        if (#enemies > 0) then
+            self.target = enemies[1] --random one
+        else
+            return
+        end
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_venge_quake_pulse"
+        modifierTable.duration = self.epicenter_duration
+        GameMode:ApplyDebuff(modifierTable)
+    else
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_venge_quake_pulse"
+        modifierTable.duration = self.epicenter_duration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+---------------------
+-- venge_root
+---------------------
+
+modifier_venge_root = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN
+    end,
+})
+
+function modifier_venge_root:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.caster = self:GetCaster()
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    self.dot = self:GetAbility():GetSpecialValueFor("dot")
+    self.tick = 1 --self:GetAbility():GetSpecialValueFor("tick")
+    self:StartIntervalThink(self.tick)
+end
+
+function modifier_venge_root:CheckState()
+    local state = {
+        [MODIFIER_STATE_ROOTED] = true
+    }
+    return state
+end
+
+function modifier_venge_root:OnIntervalThink()
+    local damageTable = {}
+    damageTable.ability = self.ability
+    damageTable.caster = self.caster
+    damageTable.target = self.parent
+    damageTable.damage = self.dot
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+    local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
+    local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
+    treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
+    treant:AddNewModifier(self.caster, self.ability, "modifier_venge_root_ignore_aggro_buff", { duration = -1, target = self.parent})
+    treant:EmitSound("Hero_Furion.TreantSpawn")
+end
+
+LinkLuaModifier("modifier_venge_root", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+modifier_venge_root_ignore_aggro_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_venge_root_ignore_aggro_buff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    if (not keys or keys.target) then
+        self:Destroy()
+    end
+    self.target = keys.target
+end
+
+function modifier_venge_root_ignore_aggro_buff:GetIgnoreAggroTarget()
+    return self.target
+end
+
+LinkLuaModifier("modifier_venge_root_ignore_aggro_buff", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+-- ability class
+venge_root = class({
+    GetAbilityTextureName = function(self)
+        return "venge_root"
+    end,
+})
+
+function venge_root:IsRequireCastbar()
+    return true
+end
+
+function venge_root:IsInterruptible()
+    return false
+end
+
+function venge_root:OnAbilityPhaseStart()
+    if IsServer() then
+        EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
+        self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    end
+    return true
+end
+
+function venge_root:OnSpellStart()
+    if IsServer() then
+        -- Ability properties
+        Timers:CreateTimer(3, function()
+            ParticleManager:DestroyParticle( self.nPreviewFX, false )
+            ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+        end)
+        local tree = "particles/units/heroes/hero_treant/treant_overgrowth_cast_tree.vpcf"
+        self.fx = ParticleManager:CreateParticle( tree, PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+        Timers:CreateTimer(3, function()
+            ParticleManager:DestroyParticle( self.fx, false )
+            ParticleManager:ReleaseParticleIndex(self.fx)
+        end)
+        self.caster = self:GetCaster()
+        if not self.caster:HasModifier("modifier_venge_side_nature") then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_venge_side_nature"
+            modifierTable.duration = 5
+            GameMode:ApplyBuff(modifierTable)
+        end
+        local sound_cast = "Hero_Treant.Overgrowth.Cast"
+        -- Ability specials
+        local radius = self:GetSpecialValueFor("range")
+        local duration = self:GetSpecialValueFor("duration")
+
+        -- Play cast sound
+        EmitSoundOn(sound_cast, self.caster)
+
+        -- Find all nearby enemies
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.caster:GetAbsOrigin(),
+                nil,
+                radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+
+        for _, enemy in pairs(enemies) do
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_venge_root"
+            modifierTable.duration = duration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+    end
+end
+
+------------------
+--venge fel
+-------------------
+--modifier
+-- Damage amp modifier
+modifier_venge_fel = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    GetTexture = function(self)
+        return venge_fel:GetAbilityTextureName()
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast_debuff.vpcf"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end
+})
+
+function modifier_venge_fel:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.parent = self:GetParent()
+    self.caster = self:GetCaster()
+    self.damage = self.ability:GetSpecialValueFor("dot")
+    --print(self.damage)
+    self.amp = self.ability:GetSpecialValueFor("amp") * -0.01
+    --print(self.amp)
+    self.interval = 1
+    self:StartIntervalThink(self.interval )
+end
+
+function modifier_venge_fel:GetDamageReductionBonus()
+    return self.amp
+end
+
+function modifier_venge_fel:OnIntervalThink()
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.parent
+    damageTable.ability = self.ability
+    damageTable.damage = self.damage
+    damageTable.infernodmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+LinkLuaModifier("modifier_venge_fel", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+--active
+venge_fel = class({
+    GetAbilityTextureName = function(self)
+        return "venge_fel"
+    end,
+})
+
+function venge_fel:IsRequireCastbar()
+    return true
+end
+
+function venge_fel:IsInterruptible()
+    return false
+end
+
+function venge_fel:OnAbilityPhaseStart()
+    if IsServer() then
+        EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
+        self:GetCaster():EmitSoundParams("vengefulspirit_vng_kill_07", 1.0, 2.2, 0)
+        self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/heroes_underlord/underlord_firestorm_pre.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
+    end
+    return true
+end
+
+function venge_fel:OnSpellStart()
+    if IsServer() then
+        ParticleManager:DestroyParticle( self.nPreviewFX, false )
+        ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+        self.projectile_speed = self:GetSpecialValueFor("projectile_speed")
+        self.duration = self:GetSpecialValueFor("duration")
+        self.caster = self:GetCaster()
+        if not self.caster:HasModifier("modifier_venge_side_inferno") then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_venge_side_inferno"
+            modifierTable.duration = 5
+            GameMode:ApplyBuff(modifierTable)
+        end
+
+        local range = self:GetSpecialValueFor("range")
+        local number = self:GetSpecialValueFor("number")
+        local counter= 0
+        Timers:CreateTimer(0,function()
+            if counter < number then
+                local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                        self.caster:GetAbsOrigin(),
+                        nil,
+                        range,
+                        DOTA_UNIT_TARGET_TEAM_ENEMY,
+                        DOTA_UNIT_TARGET_HERO,
+                        DOTA_UNIT_TARGET_FLAG_NONE,
+                        FIND_ANY_ORDER,
+                        false)
+                if (#enemies > 0) then
+                    self.target = enemies[1] --random one
+                else
+                    return
+                end
+                local info = {
+                    Target = self.target,
+                    Source = self.caster,
+                    Ability = self,
+                    EffectName = "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast.vpcf",
+                    iMoveSpeed = self.projectile_speed,
+                    bDodgeable = true,
+                }
+
+                ProjectileManager:CreateTrackingProjectile( info )
+                self.caster:EmitSoundParams("Hero_SkeletonKing.Hellfire_Blast", 1.0, 0.4, 0)
+                counter = counter +1
+                return 0.2
+            end
+        end)
+        StopSoundOn( "DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
+    end
+end
+
+function venge_fel:OnProjectileHit( hTarget, vLocation )
+    if IsServer() then
+        if hTarget then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = hTarget
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_venge_fel"
+            modifierTable.duration = self.duration
+            GameMode:ApplyDebuff(modifierTable)
+            hTarget:EmitSound("Hero_SkeletonKing.Hellfire_BlastImpact")
+        end
+    end
+end
+if (IsServer() and not GameMode.ZONE1_BOSS_VENGE) then
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_bubble_passive, 'OnTakeDamage'))
-    --GameMode.ZONE1_BOSS_VENGE = true
---end
+    --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_moonify, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_frost, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_void, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_holy, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_inferno, 'OnTakeDamage'))
+    GameMode.ZONE1_BOSS_VENGE = true
+end
 
 
 

@@ -83,7 +83,7 @@ function modifier_luna_void:OnAttackLanded(keys)
                     damageTable.caster = keys.attacker
                     damageTable.target = enemy
                     damageTable.ability = self.ability
-                    damageTable.damage = damage*0.001
+                    damageTable.damage = damage
                     damageTable.voiddmg = true
                     GameMode:DamageUnit(damageTable)
                 end
@@ -427,6 +427,18 @@ function luna_wave:IsInterruptible()
     return false
 end
 
+function luna_wave:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+        ParticleManager:ReleaseParticleIndex(self.bound_fx)
+    end
+
+    return true
+end
+
 function luna_wave:OnSpellStart()
     local range = self:GetSpecialValueFor("range")
     local caster = self:GetCaster()
@@ -584,7 +596,7 @@ function modifier_luna_wax_wane:OnIntervalThink()
         modifierTable.stacks = 1
         modifierTable.max_stacks = 5
         GameMode:ApplyStackingBuff(modifierTable)
-        if RollPercentage(35) then
+        if RollPercentage(35) and self.parent:IsAlive() then
             local responses =
             {
                 "luna_luna_levelup_01",
@@ -592,11 +604,13 @@ function modifier_luna_wax_wane:OnIntervalThink()
                 "luna_luna_levelup_05",
                 "luna_luna_levelup_06",
                 "luna_luna_levelup_07",
-                "luna_luna_levelup_09","luna_luna_levelup_10",
+                "luna_luna_levelup_09",
+                "luna_luna_levelup_10",
                 "luna_luna_attack_13"
 
             }
-            self:GetCaster():EmitSound(responses[RandomInt(1, #responses)]) end
+            self:GetCaster():EmitSound(responses[RandomInt(1, #responses)])
+        end
         Timers:CreateTimer(5, function()
             modifierTable = {}
             modifierTable.ability = self
@@ -1030,6 +1044,18 @@ function luna_orbs:IsInterruptible()
     return false
 end
 
+function luna_orbs:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_transversant_spectral_dagger_path_owner_impact.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+        ParticleManager:ReleaseParticleIndex(self.bound_fx)
+    end
+
+    return true
+end
+
 function luna_orbs:OnSpellStart()
     -- Ability properties
     local caster = self:GetCaster()
@@ -1072,9 +1098,6 @@ function luna_orbs:LaunchProjectile(source, target)
                               bDodgeable = false,
                               bVisibleToEnemies = true,
                               bReplaceExisting = false,
-                              bProvidesVision = true,
-                              iVisionRadius = 300,
-                              iVisionTeamNumber = caster:GetTeamNumber(),
     }
 
     ProjectileManager:CreateTrackingProjectile(chain_frost_projectile)
@@ -1149,9 +1172,6 @@ function luna_orbs:OnProjectileHit_ExtraData(target, data)
                                       bDodgeable = false,
                                       bVisibleToEnemies = true,
                                       bReplaceExisting = false,
-                                      bProvidesVision = true,
-                                      iVisionRadius = 300,
-                                      iVisionTeamNumber = caster:GetTeamNumber(),
 
             }
             ProjectileManager:CreateTrackingProjectile(chain_frost_projectile)
@@ -1325,7 +1345,7 @@ function modifier_luna_bound_buff:OnTakeDamage(damageTable)
         local damage = burn * void_per_burn
         damageTable.victim:ReduceMana(burn)
         damageTable.victim:EmitSound("Hero_Antimage.ManaBreak")
-        local manaburn_pfx = ParticleManager:CreateParticle("particles/generic_gameplay/generic_manaburn.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
         ParticleManager:SetParticleControl(manaburn_pfx, 0, damageTable.victim:GetAbsOrigin() )
         ParticleManager:ReleaseParticleIndex(manaburn_pfx)
 

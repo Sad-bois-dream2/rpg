@@ -4,9 +4,9 @@
         {
             // General
             "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-            "Model"           "models/particle/sphere.vmdl"  // Model.
+            "Model"           "models/heroes/morphling/morphling.vmdl"//"models/particle/sphere.vmdl"  // Model.
             "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-            "Level"           "0"
+            "Level"           "30"
             "UnitLabel"         "healing_ward"
 
             // Abilities

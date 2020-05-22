@@ -170,19 +170,25 @@ function lycan_wound:ApplyDamageAndDebuff(target, caster)
     EmitSoundOn("hero_bloodseeker.rupture", target)
 end
 
+function lycan_wound:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    end
+
+    return true
+end
+
 function lycan_wound:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
-    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
-    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
-    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(bound_fx, false)
-        ParticleManager:ReleaseParticleIndex(bound_fx)
-    end)
+    ParticleManager:DestroyParticle(self.bound_fx, false)
+    ParticleManager:ReleaseParticleIndex(self.bound_fx)
     self:ApplyDamageAndDebuff(target, caster)
     if caster:HasModifier("modifier_lycan_transform") then
         caster:EmitSound("lycan_lycan_wolf_attack_08")
@@ -382,17 +388,26 @@ function lycan_lupine:LupineAoe(caster, aoe, strikepos, damage)
     end
 end
 
+
+function lycan_lupine:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    end
+
+    return true
+end
+
 function lycan_lupine:OnSpellStart()
     if not IsServer() then
         return
     end
     local caster = self:GetCaster()
-    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
-    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
-    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
     Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(bound_fx, false)
-        ParticleManager:ReleaseParticleIndex(bound_fx)
+        ParticleManager:DestroyParticle(self.bound_fx, false)
+        ParticleManager:ReleaseParticleIndex(self.bound_fx)
     end)
     --random explosion
     local pos = caster:GetAbsOrigin()
@@ -490,19 +505,21 @@ function modifier_lycan_wolf_form:OnCreated()
     self.ability = self:GetAbility()
 end
 
-function modifier_lycan_wolf_form:OnTakeDamage()
+function modifier_lycan_wolf_form:OnTakeDamage(keys)
     if (not IsServer()) then
         return
     end
-    if self.parent:HasModifier("modifier_lycan_transform") then
-        -- already transform ? destroy hp check buff
-        self:Destroy()
-        return
-    end
-    self.hp_pct = self.parent:GetHealth() / self.parent:GetMaxHealth()
-    if self.hp_pct <= self.hp_threshold then
-        -- hp drop below threshold = transform
-        self.ability:Transform()
+    if keys.unit == self.parent then
+        if self.parent:HasModifier("modifier_lycan_transform") then
+            -- already transform ? destroy hp check buff
+            self:Destroy()
+            return
+        end
+        self.hp_pct = self.parent:GetHealth() / self.parent:GetMaxHealth()
+        if self.hp_pct <= self.hp_threshold then
+            -- hp drop below threshold = transform
+            self.ability:Transform()
+        end
     end
 end
 
@@ -519,9 +536,6 @@ modifier_lycan_transform = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
         return false
     end,
 
@@ -926,6 +940,19 @@ function lycan_agility:Blink(target, caster)
     caster:SetForwardVector(direction)
 end
 
+
+function lycan_agility:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+    end
+
+    return true
+end
+
+
 function lycan_agility:OnSpellStart()
     if not IsServer() then
         return
@@ -935,13 +962,8 @@ function lycan_agility:OnSpellStart()
     local caster = self:GetCaster()
     local sound = "lycan_lycan_attack_05"
     EmitSoundOn(sound, caster)
-    local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
-    local bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
-    ParticleManager:SetParticleControlEnt(bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(bound_fx, false)
-        ParticleManager:ReleaseParticleIndex(bound_fx)
-    end)
+    ParticleManager:DestroyParticle(self.bound_fx, false)
+    ParticleManager:ReleaseParticleIndex(self.bound_fx)
     --apply ignore aggro
     local modifierTable = {}
     modifierTable.ability = self
@@ -1293,6 +1315,7 @@ function modifier_lycan_bleeding_heal_reduced:OnCreated()
     if not IsServer() then
         return
     end
+    --not fixing because already working first loop getstack count = 0 then get +1, every loop after get stacks - 1 but alse get +1
     self.heal_reduced = self:GetAbility():GetSpecialValueFor("heal_reduced") * (self:GetStackCount() + 1) * -0.01
 end
 
