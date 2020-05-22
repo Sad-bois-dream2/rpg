@@ -7,7 +7,7 @@
         <include src="file://{resources}/scripts/windows/heroselection_setup.js"/>
     </scripts>
     <Panel class="Root" hittest="true">
-        <Panel class="HeroSelectionSetup">
+        <Panel class="HeroSelectionTopBar">
             <Panel class="PlayerHeroes">
                 <Panel class="HeroContainer">
                     <Panel id="HeroColor0" class="HeroColor" />

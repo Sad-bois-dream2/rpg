@@ -6,9 +6,20 @@
     <scripts>
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
-    <Panel class="Root" hittest="true">
+    <Panel class="Root" hittest="false">
+        <Panel class="HeroSelection" />
+        <Panel class="HeroControls">
+            <Label class="HeroName" text="Hero Name" />
+            <Panel class="HeroControlsButtons">
+                <Panel class="WindowButton HeroControlsButton">
+                    <Label text="CREATE NEW" />
+                </Panel>
+                <Panel class="WindowButton HeroControlsButton">
+                    <Label text="LOAD EXISTING" />
+                </Panel>
+            </Panel>
+        </Panel>
         <Panel class="AvailableHeroesContainer">
-            <Panel class="SaveLoadSlots" />
             <Panel id="AvailableHeroes" />
         </Panel>
     </Panel>
