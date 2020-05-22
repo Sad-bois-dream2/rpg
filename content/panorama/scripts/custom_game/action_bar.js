@@ -14,17 +14,28 @@ function OnPortraitClick() {
 		var message;
 		var IsDead = (Entities.GetHealth(hero) < 1);
 		if(LOCAL_PLAYER_HERO == hero) {
-			message = "I am " + (IsDead ? "dead and will ressurect in " + (Players.GetRespawnSeconds(Entities.GetPlayerOwnerID(hero)) + " seconds") : "still alive") + ".";
+		    message = IsDead ? "#DOTA_Chat_Self_is_dead" : "#DOTA_Chat_Self_is_alive";
 		} else {
-			message = "Ally " + $.Localize("#" + Entities.GetUnitName(hero)) + " is " + (IsDead ? "dead and will ressurect in " + Players.GetRespawnSeconds(Entities.GetPlayerOwnerID(hero)) + " seconds" : "still alive") + ".";
+			message = IsDead ? "#DOTA_Chat_Ally_is_dead" : "#DOTA_Chat_Ally_is_alive";
 		}
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+		    {
+		        "name" : "%HERO%",
+		        "value" : "#" + Entities.GetUnitName(hero)
+		    },
+		    {
+		        "name" : "%TIME%",
+		        "value" : Players.GetRespawnSeconds(Entities.GetPlayerOwnerID(hero))
+		    }
+		];
+		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message, "args": JSON.stringify(args)});
 	}
 }
 
 
 function OnHPBarClick() {
 	var IsAltDown = GameUI.IsAltDown();
+    var IsCtrlDown = GameUI.IsControlDown();
 	if(IsAltDown) {
         var hero = Players.GetLocalPlayerPortraitUnit();
 		var player = Players.GetLocalPlayer();
@@ -34,11 +45,25 @@ function OnHPBarClick() {
 		hpPercent = Math.round(hpPercent * 100) / 100;
 		var message;
 		if(LOCAL_PLAYER_HERO == hero) {
-			message = "I have " + currentHp + " (" + hpPercent + "%) health left.";
+			message = IsCtrlDown ? "#DOTA_Chat_Self_health_healing" : "#DOTA_Chat_Self_health"
 		} else {
-			message = "Ally " + $.Localize("#" + Entities.GetUnitName(hero)) + " have " + currentHp + " (" + hpPercent + "%) health left.";
+			message = IsCtrlDown ? "#DOTA_Chat_Ally_health_healing" : "#DOTA_Chat_Ally_health"
 		}
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+            {
+                "name" : "%HERO%",
+                "value" : "#" + Entities.GetUnitName(hero)
+            },
+            {
+                "name" : "%CURRENTHP%",
+                "value" : currentHp
+            },
+        	{
+        	    "name" : "%HPPERCENT%",
+        		"value" : hpPercent
+        	}
+        ];
+		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message, "args": JSON.stringify(args)});
 	}
 }
 
@@ -53,11 +78,25 @@ function OnMPBarClick() {
 		mpPercent = Math.round(mpPercent * 100) / 100;
 		var message;
 		if(LOCAL_PLAYER_HERO == hero) {
-			message = "I have " + currentMp + " (" + mpPercent + "%) mana left.";
+			message = "#DOTA_Chat_Self_mana"
 		} else {
-			message = "Ally " + $.Localize("#" + Entities.GetUnitName(hero)) + " have " + currentMp + " (" + mpPercent + "%) mana left.";
+			message = "#DOTA_Chat_Ally_mana"
 		}
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+            {
+                "name" : "%HERO%",
+                "value" : "#" + Entities.GetUnitName(hero)
+            },
+            {
+                "name" : "%CURRENTMP%",
+                "value" : currentMp
+            },
+        	{
+        	    "name" : "%MPPERCENT%",
+        		"value" : mpPercent
+        	}
+        ];
+		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message, "args": JSON.stringify(args)});
 	}
 }
 
@@ -76,19 +115,29 @@ function OnExpBarClick() {
 		}
 		var message;
 		if(LOCAL_PLAYER_HERO == hero) {
-			if(maxExp == 0) {
-				message = "I have maximum level.";
-			} else {
-				message = "I need " + (maxExp-currentExp) + " (" + expPercent + "%) XP for next level.";
-			}
+			message = maxExp == 0 ? "#DOTA_Chat_Self_maxlevel" : "#DOTA_Chat_Self_needxp"
 		} else {
-			if(maxExp == 0) {
-				message = "Ally " + $.Localize("#" + Entities.GetUnitName(hero)) + " have maximum level.";
-			} else {
-				message = "Ally " + $.Localize("#" + Entities.GetUnitName(hero)) + " need " + (maxExp-currentExp) + " (" + expPercent + "%) XP for next level.";
-			}
+			message = maxExp == 0 ? "#DOTA_Chat_Ally_maxlevel" : "#DOTA_Chat_Ally_needxp"
 		}
-		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message});
+		var args = [
+            {
+                "name" : "%HERO%",
+                "value" : "#" + Entities.GetUnitName(hero)
+            },
+            {
+                "name" : "%XP%",
+                "value" : (maxExp-currentExp)
+            },
+        	{
+        	    "name" : "%EXPPERCENT%",
+        		"value" : expPercent
+        	},
+        	{
+        	    "name" : "%NEXTLEVEL%",
+        		"value" : Entities.GetLevel(hero) + 1
+        	}
+        ];
+        GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message, "args": JSON.stringify(args)});
 	}
 }
 

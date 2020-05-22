@@ -1,0 +1,16 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/item_drops.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/dropped_item.js" />
+    </scripts>
+    <Panel class="DropItemContainer" onmouseactivate="OnClick()" onmouseover="OnMouseOver()" onmouseout="OnMouseOut()">
+        <DOTAItemImage id="DropItemIcon" class="DropItemIcon" showtooltip="false" itemname="item_claymore_custom" scaling="stretch-to-fit-preserve-aspect" />
+        <Image class="DropItemArrow" scaling="stretch-to-fit-preserve-aspect" src="s2r://panorama/images/control_icons/double_arrow_right_png.vtex"/>
+        <Panel class="DropItemHeroContainer">
+            <DOTAHeroImage id="DropItemHeroContainerIcon" class="DropItemHeroContainerIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+            <Label id="DropItemHeroContainerLabel" html="true" class="DropItemHeroContainerLabel" text="Player Name" />
+        </Panel>
+    </Panel>
+</root>

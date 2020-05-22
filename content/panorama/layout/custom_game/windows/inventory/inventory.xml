@@ -3,12 +3,14 @@
 		<include src="file://{resources}/styles/windows/basic_window.css" />
 		<include src="file://{resources}/styles/windows/item_tooltip.css" />
 		<include src="file://{resources}/styles/windows/inventory_window.css" />
+		<include src="file://{resources}/styles/custom_game/item_drops.css"/>
 	</styles>
 	<scripts>
-		<include src="file://{resources}/scripts/windows/inventory.js" />
 		<include src="file://{resources}/scripts/windows/basic_window.js" />
+		<include src="file://{resources}/scripts/windows/inventory.js" />
 	</scripts>
 	<Panel class="Root" hittest="false">
+		<Panel id="DropContainer" />
 		<Panel id="MainWindow" class="Window" style="width: 854px; height: 770px; visibility: collapse;">
 			<Panel class="WindowContent">
 				<Panel class="HeroContainer">
