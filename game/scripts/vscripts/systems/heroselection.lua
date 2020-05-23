@@ -15,6 +15,7 @@ function HeroSelection:Init()
     HeroSelection.STATE_SELECTED = 0
     HeroSelection.STATE_PICKED = 1
     HeroSelection.pickTimeEnded = false
+    ListenToGameEvent('game_rules_state_change', Dynamic_Wrap(HeroSelection, 'OnGameStateChanged'), nil)
     HeroSelection:InitPanaromaEvents()
 end
 
@@ -22,8 +23,13 @@ function HeroSelection:IsEnded()
     return HeroSelection.pickTimeEnded
 end
 
+function HeroSelection:OnGameStateChanged()
+    if GameRules:State_Get() == DOTA_GAMERULES_STATE_HERO_SELECTION then
+        HeroSelection:OnAllPlayersSelectedHero()
+    end
+end
+
 function HeroSelection:OnAllPlayersSelectedHero()
-    GameRules:FinishCustomGameSetup()
     for i = 0, PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS) - 1 do
         if(not HeroSelection.playerHeroes["player"..i]) then
             HeroSelection.playerHeroes["player"..i] = {}
@@ -35,6 +41,7 @@ function HeroSelection:OnAllPlayersSelectedHero()
             player:SetSelectedHero(HeroSelection.playerHeroes["player"..i].hero)
         end
     end
+    HeroSelection.pickTimeEnded = true
 end
 
 function HeroSelection:InitPanaromaEvents()
@@ -66,6 +73,7 @@ function HeroSelection:OnHeroPickedRequest(event)
     HeroSelection.playerHeroes["player" .. event.PlayerID].playerId = event.PlayerID
     CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_picked_from_server", { hero = event.hero, player_id = event.PlayerID })
     if (GetTableSize(HeroSelection.playerHeroes) >= PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS)) then
+        GameRules:FinishCustomGameSetup()
         HeroSelection:OnAllPlayersSelectedHero()
     end
 end
