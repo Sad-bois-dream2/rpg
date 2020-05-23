@@ -66,6 +66,82 @@
     padding-right: 2px;
 }
 
+.HeroStats {
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	width: 300px;
+	height: 250px;
+	vertical-align: center;
+	horizontal-align: right;
+	border: 1px solid gray;
+	border-radius: 5px;
+	margin-right: 100px;
+	flow-children: down;
+}
+
+.HeroRolesLabel {
+    font-size: 20px;
+    text-align: center;
+	vertical-align: top;
+	horizontal-align: center;
+	color: white;
+	text-transform: uppercase;
+	margin-top: 20px;
+	text-overflow: shrink;
+	width: fill-parent-flow(1.0);
+	height: 20px;
+	margin-bottom: 10px;
+}
+
+.HeroStatLabel {
+    font-size: 14px;
+    text-align: center;
+	vertical-align: top;
+	horizontal-align: center;
+	color: white;
+	text-transform: uppercase;
+	text-overflow: shrink;
+	width: fill-parent-flow(1.0);
+	height: 20px;
+	margin-bottom: 2px;
+}
+
+.HeroStat {
+    width: fill-parent-flow(1.0);
+    height: 16px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    flow-children: right;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.HeroStatChild {
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
+    padding-top: 2px;
+    padding-right: 2px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    border-radius: 5px;
+    margin-right: 5px;
+    border: 1px solid gray;
+}
+
+.HeroStatChild.selected {
+	background-image: none;
+    background-color: gradient( linear, 0% 100%, 0% 0%, from( #5A615Ecc ), to( #879695cc ));
+}
+
+.HeroStatChild.last {
+    margin-right: 0px;
+}
+
 #TimerLabel {
     color: white;
     font-size: 20px;
