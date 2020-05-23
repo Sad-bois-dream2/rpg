@@ -363,3 +363,24 @@
 .Hidden {
     visibility: collapse;
 }
+
+#SaveSlotsWindow {
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    vertical-align: center;
+    horizontal-align: center;
+	width: 500px;
+    height: 400px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.SaveSlotsTitleLabel {
+    color: white;
+    horizontal-align: center;
+    font-size: 20px;
+    margin-top: 15px;
+    text-transform: uppercase;
+}
