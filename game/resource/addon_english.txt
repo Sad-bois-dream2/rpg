@@ -850,7 +850,7 @@
         "DOTA_Chat_Ally_level"		"Ally %HERO% have <font color='#DAAF01'>Level %LEVEL%</font>."
         "DOTA_Chat_Ally_needxp"		"Ally %HERO% need <font color='#DAAF01'>%XP% (%EXPPERCENT%%) XP</font> to reach <font color='#DAAF01'>Level %NEXTLEVEL%</font>."
         "DOTA_Chat_Enemy_is_alive"		"Enemy %ENEMY% is still alive."
-        "DOTA_Chat_Enemy_health"		"Enemy %ENEMY% have <font color='#00FF00'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
+        "DOTA_Chat_Enemy_health"		"Enemy %ENEMY% have <font color='#b7234a'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
         "DOTA_Chat_Enemy_mana"		"Enemy %ENEMY% have <font color='#257FF6'>%CURRENTMP% (%MPPERCENT%%)</font> mana left."
         "DOTA_HeroSelection_CreateHero"		"CREATE NEW"
         "DOTA_HeroSelection_LoadHero"		"LOAD EXISTING"
