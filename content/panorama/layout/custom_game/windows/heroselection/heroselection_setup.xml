@@ -36,20 +36,7 @@
                 </Panel>
             </Panel>
             <Label id="TimerLabel" text="#custom_game_team_select_timer"/>
-        </Panel>
-        <Panel class="lds-default">
-            <Panel class="dot1"/>
-            <Panel class="dot2"/>
-            <Panel class="dot3"/>
-            <Panel class="dot4"/>
-            <Panel class="dot5"/>
-            <Panel class="dot6"/>
-            <Panel class="dot7"/>
-            <Panel class="dot8"/>
-            <Panel class="dot9"/>
-            <Panel class="dot10"/>
-            <Panel class="dot11"/>
-            <Panel class="dot12"/>
+            <Label id="SelectedHeroName" text="Hero Name" />
         </Panel>
     </Panel>
 </root>

@@ -9,7 +9,7 @@ function CheckPlayerState() {
 
 function OnPlayerLoaded(event) {
     playerLoaded = true;
-    $("#AddonLoadingRoot").BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection.xml",false,false);
+    $("#Container").BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection.xml",false,false);
 }
 
 (function(){

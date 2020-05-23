@@ -6,10 +6,23 @@
     <scripts>
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
-    <Panel class="Root" hittest="false">
-        <Panel class="HeroSelection" />
+    <Panel class="Root HeroSelection" hittest="false">
+        <DOTAScenePanel id="HeroSelectionScreen" onload="AddStyle( Spinner, Hidden )" antialias="true" renderdeferred="false" map="hero_selection" particleonly="false" light="npc_dota_hero_crystal_maiden_light" camera="npc_dota_hero_crystal_maiden"/>
+        <Panel id="Spinner" class="lds-default">
+            <Panel class="dot1"/>
+            <Panel class="dot2"/>
+            <Panel class="dot3"/>
+            <Panel class="dot4"/>
+            <Panel class="dot5"/>
+            <Panel class="dot6"/>
+            <Panel class="dot7"/>
+            <Panel class="dot8"/>
+            <Panel class="dot9"/>
+            <Panel class="dot10"/>
+            <Panel class="dot11"/>
+            <Panel class="dot12"/>
+        </Panel>
         <Panel class="HeroControls">
-            <Label class="HeroName" text="Hero Name" />
             <Panel class="HeroControlsButtons">
                 <Panel class="WindowButton HeroControlsButton">
                     <Label text="CREATE NEW" />

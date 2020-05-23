@@ -50,4 +50,6 @@ function UpdateHeroColors() {
 	UpdateTimer();
 	UpdateHeroColors();
 	HideDefaultUI();
+	var parent = $.GetContextPanel().GetParent();
+	parent.style.marginLeft = "0px";
 })();

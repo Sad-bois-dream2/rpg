@@ -92,7 +92,6 @@
   height: 80px;
   vertical-align: center;
   horizontal-align: center;
-  margin-right: 40px;
 }
 
 .lds-default .dot1 {
@@ -312,14 +311,16 @@
 .HeroControls {
     vertical-align: center;
     horizontal-align: center;
-    margin-top: 350px;
     flow-children: down;
-    width: 200px;
+    width: fit-children;
+    margin-top: 350px;
 }
 
 .HeroControlsButtons {
     margin-top: 20px;
     flow-children: down;
+    width: 200px;
+    horizontal-align: center;
 }
 
 .HeroControlsButton {
@@ -333,9 +334,32 @@
     margin-bottom: 10px;
 }
 
-.HeroName {
+#SelectedHeroName {
     color: white;
     font-size: 20px;
     text-align: center;
     width: fill-parent-flow(1.0);
+    margin-top: 50px;
+}
+
+#HeroSelectionScreen {
+    width: 100%;
+    height: 100%;
+}
+
+.WindowButton {
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+}
+
+.WindowButton:hover {
+    opacity: 1;
+    border: 1px solid gold;
+    horizontal-align: center;
+}
+
+.Hidden {
+    visibility: collapse;
 }

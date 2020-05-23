@@ -6,6 +6,6 @@
     <include src="file://{resources}/scripts/custom_game/custom_loading_screen.js" />
   </scripts>
   <Panel>
-    <Panel id="AddonLoadingRoot" />
+    <Panel id="Container" class="LoadingScreen"/>
   </Panel>
 </root>
