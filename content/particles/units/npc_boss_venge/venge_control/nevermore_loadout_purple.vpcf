@@ -1,0 +1,41 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 1
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/heroes/hero_nevermore/nevermore_loadout_swirl.vpcf"
+		},
+		{
+			m_flDelay = 1.0
+			m_ChildRef = resource:"particles/units/heroes/hero_nevermore/nevermore_loadout_streak.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_control/nevermore_loadout_ember_swirl_purple.vpcf"
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "loadout"
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/shadow_fiend/shadow_fiend.vmdl"
+				m_bAnimationNonLooping = true
+			}
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_ABSORIGIN_FOLLOW"
+					m_entityName = "self"
+					m_attachmentName = "attach_hitloc"
+					m_vecOffset = [ null, null, null ]
+					m_angOffset = [ null, null, null ]
+				},
+			]
+		},
+	]
+}
