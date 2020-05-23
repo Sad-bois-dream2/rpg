@@ -1,6 +1,256 @@
 local LinkedModifiers = {}
 
 --------------------------------------------------------------------------------
+-- Phantom Barrage modifiers
+
+modifier_phantom_ranger_phantom_barrage_charges = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DestroyOnExpire = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_phantom_barrage_charges"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_barrage_charges:OnTooltip()
+    return self:GetStackCount()
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_barrage_charges:OnCreated()
+
+    if not IsServer() then return end
+    self.ability = self:GetAbility()
+    self.thinkIntervalChanged = false
+    self:SetStackCount(0)
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_barrage_charges:OnIntervalThink()
+
+    self:IncrementStackCount()
+    if self:GetStackCount() < self.ability.maxCharges then
+    
+        self:SetDuration(self.ability.chargeCd, true)
+        if (self.thinkInterval ~= self.ability.chargeCd) then 
+
+            self.thinkIntervalChanged = false
+            self:StartIntervalThink(self.ability.chargeCd) 
+
+        end
+
+    else
+
+        self:SetDuration(-1, true)
+        self:StartIntervalThink(-1)
+
+    end
+
+
+end
+
+--------------------------------------------------------------------------------
+-- Phantom Barrage
+
+phantom_ranger_phantom_barrage = class({
+    GetAbilityTextureName = function(self)  
+        return "phantom_ranger_phantom_barrage"
+    end
+})
+
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_barrage:GetIntrinsicModifierName()
+    return "modifier_phantom_ranger_phantom_barrage_charges"
+end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_barrage:OnUpgrade()
+
+    if not IsServer() then return end
+    self.caster = self:GetCaster()
+    self.chargeCd = self:GetSpecialValueFor("charge_restore_time")
+    self.maxCharges = self:GetSpecialValueFor("max_charges")
+    -- Endless Munitions - talent 35 variables
+    self.talent35_baseCdr = 0.25
+    self.talent35_cdrPerLevel = 0.25
+
+    local modifier = self.caster:FindModifierByName("modifier_phantom_ranger_phantom_barrage_charges")
+
+    if (modifier and (modifier:GetDuration() == -1) and (modifier:GetStackCount() < self.maxCharges)) then
+
+        modifier:SetDuration(self.chargeCd, true)
+        modifier:StartIntervalThink(self.chargeCd)
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_barrage:OnSpellStart(source)
+
+    self.caster = self:GetCaster()
+    self.damage = self:GetSpecialValueFor("damage")
+    local radius = self:GetSpecialValueFor("radius")
+    local duration = self:GetSpecialValueFor("phantom_barrage_duration")
+    local projectileSpeed = self:GetSpecialValueFor("projectile_speed")
+    source = source or self.caster
+    local fromPhantom = (source ~= self.caster)
+
+    local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), source:GetAbsOrigin(), nil, radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+    if (#enemies > 0) then
+
+        local target 
+        local closestNormalEnemy
+        for i = 1, #enemies do
+
+            if (Enemies:IsBoss(enemies[i]) or Enemies:IsElite(enemies[i])) then 
+
+                target = enemies[i]
+                break
+
+            else
+
+                closestNormalEnemy = closestNormalEnemy or enemies[i]
+
+            end
+
+        end
+
+        target = target or closestNormalEnemy
+        local projectile = {
+            Target = target,
+            Source = source,
+            Ability = self,
+            EffectName = "particles/units/heroes/hero_bane/bane_projectile.vpcf",
+            bDodgeable = false,
+            bProvidesVision = false,
+            iMoveSpeed = projectileSpeed,
+            ExtraData = { fromsummon = fromPhantom }
+        }
+        ProjectileManager:CreateTrackingProjectile(projectile)
+        source:EmitSound("Hero_Bane.Attack")
+
+    end
+
+    local charges = self.caster:FindModifierByName("modifier_phantom_ranger_phantom_barrage_charges")
+    if (charges) then
+        -- Start by ending cooldown before checking for remaining charges
+        self:EndCooldown()
+        -- If charges are at max, start the modifier countdown
+        local chargeCount = charges:GetStackCount()
+        if (chargeCount == self.maxCharges) then
+
+            charges:SetDuration(self.chargeCd, true)
+            charges:StartIntervalThink(self.chargeCd)
+
+        -- If only one charge left, start the cooldown equivalent to remaining modifier time
+        elseif chargeCount <= 1 then
+
+             self:StartCooldown(charges:GetRemainingTime())
+
+        end
+
+    end            
+    -- Consume a charge
+    charges:DecrementStackCount()
+
+end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_barrage:OnProjectileHit_ExtraData(target, location, ExtraData)
+
+    if (target and not target:IsNull()) then
+
+        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true, fromsummon = ExtraData.fromsummon })
+        target:EmitSound("Hero_Bane.ProjectileImpact")
+        local talent35_level = TalentTree:GetHeroTalentLevel(self.caster, 35)
+        if (talent35_level > 0 and (Enemies:IsBoss(target) or Enemies:IsElite(target))) then 
+
+            local reduction = self.talent35_baseCdr + talent35_level * self.talent35_cdrPerLevel
+            self:ReduceChargeCooldown(reduction)
+
+        end
+
+    end
+
+    return false
+
+end
+
+--------------------------------------------------------------------------------
+
+function phantom_ranger_phantom_barrage:ReduceChargeCooldown(reduction)
+
+    if (reduction and reduction > 0) then
+
+        local charges = self.caster:FindModifierByName("modifier_phantom_ranger_phantom_barrage_charges")
+        local remainingTime = charges:GetRemainingTime()
+        if (self:IsCooldownReady()) then
+
+            if (remainingTime > reduction) then
+
+                local resultCd = remainingTime - reduction
+                charges:StartIntervalThink(resultCd)
+                charges:SetDuration(resultCd, true)
+                charges.thinkIntervalChanged = true                
+
+            else
+
+                charges:OnIntervalThink()
+
+            end
+
+        else 
+
+            if (remainingTime > reduction) then 
+
+                local resultCd = remainingTime - reduction
+                GameMode:ReduceAbilityCooldown({ reduction = reduction, ability = "phantom_ranger_phantom_barrage", isflat = true, target = self.caster })
+                charges:StartIntervalThink(resultCd)
+                charges:SetDuration(resultCd, true)
+                charges.thinkIntervalChanged = true
+
+            else
+
+                self:EndCooldown()
+                charges:OnIntervalThink()
+
+            end
+
+        end
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
 -- Phantom of Vengeance modifiers 
 
 modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
@@ -46,7 +296,7 @@ modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
     end,
     DeclareFunctions = function(self)
     return { MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN }
-end
+    end
 })
 
 LinkedModifiers["modifier_phantom_ranger_phantom_of_vengeance_phantom"] = LUA_MODIFIER_MOTION_NONE
@@ -70,20 +320,14 @@ end
 phantom_ranger_phantom_of_vengeance = class({
     GetAbilityTextureName = function(self)	
         return "phantom_ranger_phantom_of_vengeance"
+    end,
+    GetAssociatedSecondaryAbilities = function(self)
+        return "phantom_ranger_shadowstep"
+    end,
+    GetCastAnimation = function(self)
+        return ACT_DOTA_CAST_ABILITY_2
     end
 })
-
---------------------------------------------------------------------------------
-
- function phantom_ranger_phantom_of_vengeance:GetAssociatedSecondaryAbilities()
-     return "phantom_ranger_shadowstep"
- end
-
---------------------------------------------------------------------------------
-
- function phantom_ranger_phantom_of_vengeance:GetCastAnimation()
-     return ACT_DOTA_CAST_ABILITY_2
- end
 
 --------------------------------------------------------------------------------
 
@@ -122,7 +366,7 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
         Source = sourceUnit,
         vSpawnOrigin = source,
         Ability = self,
-        bDodgable = false,
+        bDodgeable = false,
         bProvidesVision = false,
         fDistance = distance,
         fStartRadius = radius,
@@ -180,6 +424,7 @@ function phantom_ranger_phantom_of_vengeance:OnProjectileHit_ExtraData(target, l
         end
 
     end
+    return false
 
 end
 
@@ -245,14 +490,11 @@ end
 phantom_ranger_shadowstep = class({
     GetAbilityTextureName = function(self)  
         return "phantom_ranger_shadowstep"
+    end,
+    GetAssociatedPrimaryAbilities = function(self)
+        return "phantom_ranger_phantom_of_vengeance"
     end
 })
-
---------------------------------------------------------------------------------
-
- function phantom_ranger_shadowstep:GetAssociatedPrimaryAbilities()
-     return "phantom_ranger_phantom_of_vengeance"
- end
 
 --------------------------------------------------------------------------------
 
@@ -318,6 +560,9 @@ modifier_phantom_ranger_black_arrow_debuff = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_black_arrow"
     end,
+     GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACKED }
     end
@@ -327,12 +572,13 @@ LinkedModifiers["modifier_phantom_ranger_black_arrow_debuff"] = LUA_MODIFIER_MOT
 
 --------------------------------------------------------------------------------
 
-function modifier_phantom_ranger_black_arrow_debuff:OnCreated()
+function modifier_phantom_ranger_black_arrow_debuff:OnCreated(params)
 
 	if not IsServer() then return end
 	self.caster = self:GetCaster()
 	self.target = self:GetParent()
 	self.ability = self:GetAbility()
+    self.fromsummon = params.fromsummon
 	self.damage = self.ability:GetSpecialValueFor("black_arrow_damage")
 	self.baneDamage = self.ability:GetSpecialValueFor("bane_damage")
 	self.baneDuration = self.ability:GetSpecialValueFor("bane_duration")
@@ -350,14 +596,13 @@ function modifier_phantom_ranger_black_arrow_debuff:OnIntervalThink()
 	if not IsServer() then return end
 	local hasBane = self.target:FindModifierByName("modifier_phantom_ranger_black_arrow_bane")
 	local finalDamage = Units:GetAttackDamage(self.caster) * self.damage / 100
-    finalDamage = finalDamage * self:GetStackCount()
 	if (hasBane) then
 
 		local baneStacks = hasBane:GetStackCount()
 		finalDamage = finalDamage * (1 + baneStacks * self.baneDamage / 100)
 
 	end
-	GameMode:DamageUnit({ caster = self.caster, target = self.target, ability = self.ability, damage = finalDamage, voiddmg = true })
+	GameMode:DamageUnit({ caster = self.caster, target = self.target, ability = self.ability, damage = finalDamage, voiddmg = true, fromsummon = self.fromsummon })
 
 end
 
@@ -366,9 +611,9 @@ end
 function modifier_phantom_ranger_black_arrow_debuff:OnAttacked(params)
 
 	if not IsServer() then return end
-	if (params.attacker == self.caster) then
+	if (params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster and params.target == self.target) then
 
-		GameMode:ApplyStackingDebuff({ caster = self.caster, target = params.target, ability = self.ability, modifier_name = "modifier_phantom_ranger_black_arrow_bane", duration = self.baneDuration, stacks = 1, max_stacks = self.baneMaxStacks }) 
+		GameMode:ApplyStackingDebuff({ caster = self.caster, target = self.target, ability = self.ability, modifier_name = "modifier_phantom_ranger_black_arrow_bane", duration = self.baneDuration, stacks = 1, max_stacks = self.baneMaxStacks }) 
 
 	end
 
@@ -414,29 +659,31 @@ end
 phantom_ranger_black_arrow = class({
     GetAbilityTextureName = function(self)	
         return "phantom_ranger_black_arrow"
+    end,
+    GetCastAnimation = function(self)
+        return ACT_DOTA_ATTACK
     end
 })
 
 --------------------------------------------------------------------------------
 
-function phantom_ranger_black_arrow:OnSpellStart(pSource, pTarget)
+function phantom_ranger_black_arrow:OnSpellStart(source, target)
 
 	self.caster = self:GetCaster()
 	local duration = self:GetSpecialValueFor("black_arrow_duration")
 	local phantomSpeed = self:GetSpecialValueFor("projectile_speed")
-	local source
-	local target
-	if (pSource) then source = pSource else source = self.caster end
-	if (pTarget) then target = pTarget else target = self:GetCursorTarget() end
+	source = source or self.caster
+	target = target or self:GetCursorTarget()
+    local fromPhantom = (source ~= self.caster)
 	local projectile = {
         Target = target,
         Source = source,
         Ability = self,
         EffectName = "particles/units/phantom_ranger/phantom_ranger_black_arrow.vpcf",
-        bDodgable = false,
+        bDodgeable = false,
         bProvidesVision = false,
         iMoveSpeed = phantomSpeed,
-        ExtraData = { duration = duration }
+        ExtraData = { duration = duration, fromsummon = fromPhantom }
     }
     ProjectileManager:CreateTrackingProjectile(projectile)
     source:EmitSound("Hero_DrowRanger.FrostArrows")
@@ -448,14 +695,7 @@ function phantom_ranger_black_arrow:OnProjectileHit_ExtraData(target, location, 
 
     if (target ~= nil) then
 
-        local modifier = GameMode:ApplyStackingDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_black_arrow_debuff", duration = ExtraData.duration, stacks = 1, max_stacks = 10})
-        Timers:CreateTimer(ExtraData.duration, function()
-
-            if (modifier ~= nil and not modifier:IsNull() and not self:IsNull() and not modifier:GetParent():IsNull() and not self.caster:IsNull()) then
-                modifier:DecrementStackCount()
-            end
-
-        end)
+        modifier = GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_black_arrow_debuff", duration = ExtraData.duration, modifier_params = { fromsummon = ExtraData.fromsummon } })
         target:EmitSound("Hero_ShadowDemon.DemonicPurge.Impact")
 
     end
@@ -476,13 +716,18 @@ LinkLuaModifier( "modifier_generic_orb_effect_lua", "generic/modifier_generic_or
 
 --------------------------------------------------------------------------------
 
-function phantom_ranger_void_arrows:GetIntrinsicModifierName()
-	return "modifier_generic_orb_effect_lua"
+function phantom_ranger_void_arrows:OnUpgrade()
+
+    if not IsServer() then return end
+    self.caster = self:GetCaster()
+    self.damage = self:GetSpecialValueFor("void_arrows_damage")
+
 end
 
 --------------------------------------------------------------------------------
 
-function phantom_ranger_void_arrows:OnSpellStart()
+function phantom_ranger_void_arrows:GetIntrinsicModifierName()
+	return "modifier_generic_orb_effect_lua"
 end
 
 --------------------------------------------------------------------------------
@@ -497,26 +742,29 @@ function phantom_ranger_void_arrows:GetManaCost(level)
 
 	local manaCost = self.BaseClass.GetManaCost(self, level)
 	if not IsServer() then return manaCost end
-	local caster = self:GetCaster()
-	local talent36Level = TalentTree:GetHeroTalentLevel(caster, 36)
-	local talent36PercentManaIncreasePerLevel = 100 
-	if (talent36Level > 0) then
-		return manaCost * (100 + talent36Level * talent36PercentManaIncreasePerLevel) / 100
+	if (not self.caster) then self.caster = self:GetCaster() end
+
+	self.talent36_level = TalentTree:GetHeroTalentLevel(self.caster, 36)
+	if (self.talent36_level > 0) then
+
+        local talent36_percentManaIncreasePerLevel = 100 
+		return manaCost * (100 + self.talent36_level * talent36_percentManaIncreasePerLevel) / 100
+
 	else 
+
 		return manaCost
+
 	end
+
 end
 
 --------------------------------------------------------------------------------
 
 function phantom_ranger_void_arrows:OnOrbImpact(params)
 
-	local caster = self:GetCaster()
-	local damage = self:GetSpecialValueFor("void_arrows_damage")
-	-- accounting for Power Addiction (talent 36) dmg increase
-	local talent36Level = TalentTree:GetHeroTalentLevel(caster, 36)
-	local talent36PercentDmgPerLevel = 100 / 3
-	if params.target ~= nil then GameMode:DamageUnit({ caster = caster, target = params.target, damage = damage * (1 + talent36Level * talent36PercentDmgPerLevel / 100), voiddmg = true, ability = self }) end
+	-- Power Addiction (talent 36) dmg increase
+	local talent36_percentDmgPerLevel = 100 / 3
+	if params.target ~= nil then GameMode:DamageUnit({ caster = self.caster, target = params.target, damage = self.damage * (1 + self.talent36_level * talent36_percentDmgPerLevel / 100), voiddmg = true, ability = self }) end
 	--local sound_cast = "Hero_ObsidianDestroyer.ArcaneOrb.Impact"
 	--EmitSoundOn( sound_cast, params.target )
 end
@@ -555,7 +803,17 @@ function modifier_phantom_ranger_hunters_focus_buff:OnCreated()
 	self.caster = self:GetParent()
     self.bonusAttackSpeed = MAXIMUM_ATTACK_SPEED
     self.bonusAttackDamage = self:GetAbility():GetSpecialValueFor("attack_damage") / 100
-    self.talent37Level = TalentTree:GetHeroTalentLevel(self.caster, 37)
+    self.talent37_level = TalentTree:GetHeroTalentLevel(self.caster, 37)
+    if (self.talent37_level > 0) then
+
+        -- Multishot - talent 37 variables 
+        self.talent37_baseExtraTargets = 1
+        self.talent37_extraTargetsPerLevel = 1
+        self.talent37_radius = 600
+        self.talent37_basePercentDmg = 0.45
+        self.talent37_percentDmgRegainedPerLevel = 0.1
+
+    end
 
 end
 
@@ -572,17 +830,17 @@ function modifier_phantom_ranger_hunters_focus_buff:GetAttackDamagePercentBonus(
 end
 
 --------------------------------------------------------------------------------
--- Multishot (talent 37) logic 
+-- Multishot - talent 37 damage reduction 
 
 function modifier_phantom_ranger_hunters_focus_buff:OnTakeDamage(damageTable)
 	
 	if not IsServer() then return end
 	local drow = damageTable.attacker
-	local talent37Level = TalentTree:GetHeroTalentLevel(drow, 37)
-	if (drow:HasModifier("modifier_phantom_ranger_hunters_focus_buff") and talent37Level > 0 and not damageTable.fromsummon and damageTable.damage > 0) then 
+    local modifier = drow:FindModifierByName("modifier_phantom_ranger_hunters_focus_buff")
 
-		local talent37PercentDmgRegainedPerLevel = 0.1
-		damageTable.damage = damageTable.damage * (0.45 + (talent37PercentDmgRegainedPerLevel * talent37Level))
+	if (modifier and modifier.talent37_level > 0 and not damageTable.fromsummon and damageTable.damage > 0) then 
+
+		damageTable.damage = damageTable.damage * (modifier.talent37_basePercentDmg + (modifier.talent37_percentDmgRegainedPerLevel * modifier.talent37_level))
 		return damageTable
 
 	end
@@ -590,19 +848,18 @@ function modifier_phantom_ranger_hunters_focus_buff:OnTakeDamage(damageTable)
 end
 
 --------------------------------------------------------------------------------
+-- Multishot - talent 37 extra targets
 
 function modifier_phantom_ranger_hunters_focus_buff:OnAttack(params)
 
 	if not IsServer() then return end
-	if self.talent37Level == 0 then return end
+	if self.talent37_level == 0 then return end
 	-- "Secondary arrows are not released upon attacking allies."
 	-- The "not params.no_attack_cooldown" clause seems to make sure the function doesn't trigger on PerformAttacks with that false tag so this thing doesn't crash
-	local talent37ExtraTargetsPerLevel = 1
-	local talent37Radius = 600
-	local extraTargets = 1 + self.talent37Level * talent37ExtraTargetsPerLevel
+	local extraTargets = self.talent37_baseExtraTargets + self.talent37_level * self.talent37_extraTargetsPerLevel
 	if (params.attacker == self.caster and params.target and params.target:GetTeamNumber() ~= self.caster:GetTeamNumber() and not params.no_attack_cooldown and not self.caster:PassivesDisabled()) then	
 
-		local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), params.target:GetAbsOrigin(), nil, talent37Radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES + DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE + DOTA_UNIT_TARGET_FLAG_NO_INVIS + DOTA_UNIT_TARGET_FLAG_NOT_ATTACK_IMMUNE, FIND_ANY_ORDER, false)
+		local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), params.target:GetAbsOrigin(), nil, self.talent37_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES + DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE + DOTA_UNIT_TARGET_FLAG_NO_INVIS + DOTA_UNIT_TARGET_FLAG_NOT_ATTACK_IMMUNE, FIND_ANY_ORDER, false)
 		local targetNumber = 0				
 		for _, enemy in pairs(enemies) do		
 
@@ -632,6 +889,64 @@ function phantom_ranger_hunters_focus:OnSpellStart()
     local caster = self:GetCaster()
     GameMode:ApplyBuff({ caster = caster, target = caster, ability = self, modifier_name = "modifier_phantom_ranger_hunters_focus_buff", duration = hunters_focus_duration })
     caster:EmitSound("Ability.Focusfire")
+
+end
+
+--------------------------------------------------------------------------------
+-- Talent 34 - Phantom Lord
+
+modifier_npc_dota_hero_drow_ranger_talent_34 = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_34"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_34:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    -- Death's Embrace - talent 39 variables
+    self.talent34_basePercentDmg = 0
+    self.talent34_percentDmgPerLevel = 10
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_34:OnTakeDamage(damageTable)
+
+    if not IsServer() then return end
+    if not damageTable.fromsummon then return end
+    local drow = damageTable.attacker
+    local target = damageTable.victim
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_34")
+
+    if (modifier) then
+
+        local talent34_level = TalentTree:GetHeroTalentLevel(drow, 34)
+        damageTable.damage = damageTable.damage * (100 + modifier.talent34_basePercentDmg + talent34_level * modifier.talent34_percentDmgPerLevel) / 100
+        
+        return damageTable
+    end
 
 end
 
@@ -670,6 +985,9 @@ function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Power Addiction - talent 36 varaibles
+    self.talent36_basePercentManaOnKill = 5
+    self.talent36_percentManaOnKillPerLevel = 5
 
 end
 
@@ -677,9 +995,8 @@ end
 
 function modifier_npc_dota_hero_drow_ranger_talent_36:GetManaRestore()
 
-	local talent36Level = TalentTree:GetHeroTalentLevel(self.caster, 36)
-	local talent36PercentManaOnKillPerLevel = 5
-	return 0.05 + (talent36Level * talent36PercentManaOnKillPerLevel / 100)
+	local talent36_level = TalentTree:GetHeroTalentLevel(self.caster, 36)
+	return (self.talent36_basePercentManaOnKill + talent36_level * self.talent36_percentManaOnKillPerLevel) / 100
 
 end
 
@@ -734,6 +1051,10 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_38"] = LUA_MODIFIER_M
 function modifier_npc_dota_hero_drow_ranger_talent_38:OnCreated()
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Sudden Vengeance - talent 38 variables
+    self.talent38_basePercentAd = 0
+    self.talent38_percentAdPerLevel = 40
+    self.talent38_radius = 300
 end
 
 --------------------------------------------------------------------------------
@@ -741,22 +1062,21 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_38:OnAbilityFullyCast(params)
 
     if not IsServer() then return end
-    if (params.ability:GetAbilityName() ~= "phantom_ranger_phantom_of_vengeance") then 
+    if not self.caster:HasAbility("phantom_ranger_phantom_of_vengeance") then return end
+    if (params.ability and params.ability:GetCaster() == self.caster and params.ability:GetAbilityName() ~= "phantom_ranger_phantom_of_vengeance") then 
 
-        local talent38Level = TalentTree:GetHeroTalentLevel(self.caster, 38)
-        local talent38PercentAdPerLevel = 40
-        local talent38Radius = 300
+        local talent38_level = TalentTree:GetHeroTalentLevel(self.caster, 38)
         local activePhantoms = FindActivePhantoms(self.caster)
         if (activePhantoms) then
 
             for _, phantom in pairs(activePhantoms) do
 
                 local emp_explosion_effect = ParticleManager:CreateParticle("particles/units/heroes/hero_invoker/invoker_emp_explode.vpcf",  PATTACH_ABSORIGIN, phantom)
-                ParticleManager:SetParticleControl(emp_explosion_effect, 1, Vector(talent38Radius, 0, 0))
+                ParticleManager:SetParticleControl(emp_explosion_effect, 1, Vector(self.talent38_radius, 0, 0))
                 phantom:EmitSound("Hero_Invoker.EMP.Discharge")
-                local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), phantom:GetAbsOrigin(), nil, talent38Radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+                local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), phantom:GetAbsOrigin(), nil, self.talent38_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
                 for _, enemy in pairs(enemies) do
-                    GameMode:DamageUnit({ caster = self.caster, target = enemy, ability = nil, damage = Units:GetAttackDamage(self.caster) * talent38Level * talent38PercentAdPerLevel / 100, voiddmg = true })
+                    GameMode:DamageUnit({ caster = self.caster, target = enemy, ability = nil, damage = Units:GetAttackDamage(self.caster) * talent38_level * self.talent38_percentAdPerLevel / 100, voiddmg = true })
                 end
 
             end
@@ -797,8 +1117,13 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_39"] = LUA_MODIFIER_M
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_39:OnCreated()
+
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Death's Embrace - talent 39 variables
+    self.talent39_basePercentDmg = 5
+    self.talent39_percentDmgPerLevel = 5
+
 end
 
 --------------------------------------------------------------------------------
@@ -807,13 +1132,14 @@ function modifier_npc_dota_hero_drow_ranger_talent_39:OnTakeDamage(damageTable)
 
 	if not IsServer() then return end
 	local drow = damageTable.attacker
+    if not drow:HasAbility("phantom_ranger_black_arrow") then return end
 	local target = damageTable.victim
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_39")
 
-	if (drow:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_39") and (target:HasModifier("modifier_phantom_ranger_shadow_waves_debuff") or target:HasModifier("modifier_phantom_ranger_black_arrow_debuff"))) then
+	if (modifier and (target:HasModifier("modifier_phantom_ranger_shadow_waves_debuff") or target:HasModifier("modifier_phantom_ranger_black_arrow_debuff"))) then
 
-		local talent39Level = TalentTree:GetHeroTalentLevel(drow, 39)
-		local talent39PercentDmgPerLevel = 5
-		damageTable.damage = damageTable.damage * (105 + talent39Level * talent39PercentDmgPerLevel) / 100
+		local talent39_level = TalentTree:GetHeroTalentLevel(drow, 39)
+		damageTable.damage = damageTable.damage * (100 + modifier.talent39_basePercentDmg + talent39_level * modifier.talent39_percentDmgPerLevel) / 100
 		
 		return damageTable
 	end
@@ -856,17 +1182,23 @@ function modifier_npc_dota_hero_drow_ranger_talent_40:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Frenetic - talent 40 variables
+    self.talent40_basePercentHeal = 0
+    self.talent40_percentHealPerLevel = 1
 
 end
 
 --------------------------------------------------------------------------------
 
-function modifier_npc_dota_hero_drow_ranger_talent_40:OnAbilityFullyCast()
+function modifier_npc_dota_hero_drow_ranger_talent_40:OnAbilityFullyCast(params)
 
     if not IsServer() then return end
-    local talent40Level = TalentTree:GetHeroTalentLevel(self.caster, 40)
-    local talent40PercentHealPerLevel = 1
-    GameMode:HealUnit({ caster = self.caster, target = self.caster, ability = nil, heal = self.caster:GetMaxHealth() * talent40Level * talent40PercentHealPerLevel / 100 })
+    if (params.ability and params.ability:GetCaster() == self.caster) then 
+
+        local talent40_level = TalentTree:GetHeroTalentLevel(self.caster, 40)
+        GameMode:HealUnit({ caster = self.caster, target = self.caster, ability = nil, heal = self.caster:GetMaxHealth() * (self.talent40_basePercentHeal + talent40_level * self.talent40_percentHealPerLevel) / 100 })
+
+    end
 
 end
 
@@ -904,6 +1236,10 @@ function modifier_npc_dota_hero_drow_ranger_talent_41:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Assassination - talent 41 variables
+    self.talent41_baseCdr = 0
+    self.talent41_cdrPerLevel = 0.05
+    self.talent41_cdrCap = 0.5
 
 end
 
@@ -912,20 +1248,22 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_41:OnAttackLanded(params)
 
     if not IsServer() then return end
-    if not (Enemies:IsElite(params.target) or Enemies:IsBoss(params.target)) then return end
-    local talent41Level = TalentTree:GetHeroTalentLevel(self.caster, 41)
-    local talent41CdrPerLevel = 0.05
-    for i = 0, self.caster:GetAbilityCount() do
+    if (params.attacker and params.target and not params.target:IsNull() and (Enemies:IsElite(params.target) or Enemies:IsBoss(params.target)) and params.attacker == self.caster) then
 
-        local ability = self.caster:GetAbilityByIndex(i)
-        if (ability) then
+        local talent41_level = TalentTree:GetHeroTalentLevel(self.caster, 41)
+        for i = 0, self.caster:GetAbilityCount() do
 
-            local cooldownTable = {}
-            cooldownTable.reduction = math.min(talent41Level * talent41CdrPerLevel, 0.5)
-            cooldownTable.ability = ability:GetAbilityName()
-            cooldownTable.isflat = true
-            cooldownTable.target = self.caster
-            GameMode:ReduceAbilityCooldown(cooldownTable)
+            local ability = self.caster:GetAbilityByIndex(i)
+            if (ability) then
+
+                local cooldownTable = {}
+                cooldownTable.reduction = math.min(self.talent41_baseCdr + talent41_level * self.talent41_cdrPerLevel, self.talent41_cdrCap)
+                cooldownTable.ability = ability:GetAbilityName()
+                cooldownTable.isflat = true
+                cooldownTable.target = self.caster
+                GameMode:ReduceAbilityCooldown(cooldownTable)
+
+            end
 
         end
 
@@ -936,6 +1274,110 @@ end
 --------------------------------------------------------------------------------
 -- Talent 42 - Phantom Wail
 
+modifier_npc_dota_hero_drow_ranger_talent_42 = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+    	return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_42"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_42:OnCreated()
+
+    if not IsServer() then return end
+    -- Phantom Wail - talent 42 variables
+    self.talent42_baseCd = 210
+    self.talent42_cdrPerLevel = 30
+    self.talent42_basePercentHpShield = 100
+    self.talent42_percentHpShieldPerLevel = 100
+    self.talent42_shieldDuration = 5
+    self.talent42_basePercentAd = 0
+    self.talent42_percentAdPerLevel = 100
+    self.talent42_radius = 500
+    self.talent42_ccDuration = 2
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
+
+	local drow = damageTable.victim
+	local shielded = drow:FindModifierByName("modifier_phantom_ranger_phantom_wail_shield")
+    if (shielded) then
+
+        local shieldAmount = shielded:GetStackCount()
+        if (damageTable.damage >= shieldAmount) then
+            
+            damageTable.damage = damageTable.damage - shieldAmount
+            shielded:Destroy()
+
+        else
+
+            shielded:SetStackCount(math.floor(shieldAmount - damageTable.damage))
+            damageTable.damage = 0
+        
+        end
+
+        return damageTable
+
+    end
+
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_42")
+    local coolingDown = drow:HasModifier("modifier_phantom_ranger_phantom_wail_cd")
+    if (modifier ~= nil and not coolingDown and damageTable.damage > 0 ) then
+
+       	local talent42_level = TalentTree:GetHeroTalentLevel(drow, 42)
+        local remainingHealth = drow:GetHealth() - damageTable.damage
+        if (remainingHealth < 1) then
+
+            drow:AddNewModifier(drow, nil, "modifier_phantom_ranger_phantom_wail_cd", { duration = modifier.talent42_baseCd - (talent42_level * modifier.talent42_cdrPerLevel) })
+            local shield = drow:AddNewModifier(drow, nil, "modifier_phantom_ranger_phantom_wail_shield", { duration = modifier.talent42_shieldDuration })
+            shield:SetStackCount(math.floor(drow:GetMaxHealth() * (modifier.talent42_basePercentHpShield + talent42_level * modifier.talent42_percentHpShieldPerLevel) / 100))	
+  
+            local enemies = FindUnitsInRadius(drow:GetTeamNumber(), drow:GetAbsOrigin(), nil, modifier.talent42_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+            for _, enemy in pairs(enemies) do
+
+               	GameMode:DamageUnit({ caster = drow, target = enemy, ability = nil, damage = Units:GetAttackDamage(drow) * (modifier.talent42_basePercentAd + talent42_level * modifier.talent42_percentAdPerLevel) / 100, voiddmg = true })
+               	-- local silence = GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_silence", duration = modifier.talent42_ccDuration })
+               	-- local disarm = GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_disarmed", duration = modifier.talent42_ccDuration })
+                -- silence.GetTexture = function () return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png" end
+                -- disarm.GetTexture = function () return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png" end
+                GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_phantom_ranger_phantom_wail_cc", duration = modifier.talent42_ccDuration })
+			
+			end
+
+            local pulse_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, drow)
+			ParticleManager:SetParticleControl(pulse_particle, 1, Vector(2400, 1, 0))
+			ParticleManager:ReleaseParticleIndex(pulse_particle)
+            drow:EmitSound("Hero_QueenOfPain.SonicWave")
+            damageTable.damage = 0
+            return damageTable
+
+        end
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
 
 modifier_phantom_ranger_phantom_wail_shield = class({
     IsDebuff = function(self)
@@ -970,97 +1412,6 @@ LinkedModifiers["modifier_phantom_ranger_phantom_wail_shield"] = LUA_MODIFIER_MO
 
 function modifier_phantom_ranger_phantom_wail_shield:OnTooltip()
     return self:GetStackCount()
-end
-
---------------------------------------------------------------------------------
-
-modifier_npc_dota_hero_drow_ranger_talent_42 = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetAttributes = function(self)
-    	return MODIFIER_ATTRIBUTE_PERMANENT
-    end
-})
-
-LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_42"] = LUA_MODIFIER_MOTION_NONE
-
---------------------------------------------------------------------------------
-
-function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
-
-	local drow = damageTable.victim
-	local shielded = drow:FindModifierByName("modifier_phantom_ranger_phantom_wail_shield")
-    if (shielded) then
-
-        local shieldAmount = shielded:GetStackCount()
-        if (damageTable.damage >= shieldAmount) then
-
-            damageTable.damage = damageTable.damage - shieldAmount
-            shielded:Destroy()
-
-        else
-
-            shielded:SetStackCount(math.floor(shieldAmount - damageTable.damage))
-            damageTable.damage = 0
-        
-        end
-
-        return damageTable
-
-    end
-
-    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_42")
-    local coolingDown = drow:HasModifier("modifier_phantom_ranger_phantom_wail_cd")
-    if (modifier ~= nil and not coolingDown and damageTable.damage > 0 ) then
-
-       	local talent42Level = TalentTree:GetHeroTalentLevel(drow, 42)
-        local remainingHealth = drow:GetHealth() - damageTable.damage
-        if (remainingHealth < 1) then
-
-           	local talent42CdrPerLevel = 30
-           	local talent42PercentHpShieldPerLevel = 100
-           	local talent42ShieldDuration = 5
-           	local talent42PercentAdPerLevel = 100
-           	local talent42Radius = 500
-           	local talent42CCduration = 2
-
-            drow:AddNewModifier(drow, nil, "modifier_phantom_ranger_phantom_wail_cd", { duration = 210 - (talent42Level * talent42CdrPerLevel) })
-            local shield = drow:AddNewModifier(drow, nil, "modifier_phantom_ranger_phantom_wail_shield", { duration = talent42ShieldDuration })
-            shield:SetStackCount(math.floor(drow:GetMaxHealth() * (1 + talent42Level * talent42PercentHpShieldPerLevel / 100)))	
-  
-            local enemies = FindUnitsInRadius(drow:GetTeamNumber(), drow:GetAbsOrigin(), nil, talent42Radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
-            for _, enemy in pairs(enemies) do
-
-               	GameMode:DamageUnit({ caster = drow, target = enemy, ability = nil, damage = Units:GetAttackDamage(drow) * talent42Level * talent42PercentAdPerLevel / 100, voiddmg = true })
-               	GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_silence", duration = talent42CCduration })
-               	GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_disarmed", duration = talent42CCduration })
-			
-			end
-
-            local pulse_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, drow)
-			ParticleManager:SetParticleControl(pulse_particle, 1, Vector(2400, 1, 0))
-			ParticleManager:ReleaseParticleIndex(pulse_particle)
-            drow:EmitSound("Hero_QueenOfPain.SonicWave")
-            damageTable.damage = 0
-            return damageTable
-
-        end
-
-    end
-
 end
 
 --------------------------------------------------------------------------------
@@ -1113,6 +1464,63 @@ function modifier_phantom_ranger_phantom_wail_cd:OnDeath(event)
 end
 
 --------------------------------------------------------------------------------
+
+modifier_phantom_ranger_phantom_wail_cc = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsStunDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png"
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_OVERRIDE_ANIMATION }
+    end,
+    GetEffectName = function(self)
+        return "particles/generic_gameplay/generic_stunned.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_phantom_wail_cc"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_wail_cc:CheckState()
+
+    return {
+        [MODIFIER_STATE_STUNNED] = true
+    }
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_phantom_ranger_phantom_wail_cc:GetOverrideAnimation(params)
+    return ACT_DOTA_DISABLED
+end
+
+--------------------------------------------------------------------------------
+
 -- Talent 43 - Hunter's Guile 
 
 modifier_npc_dota_hero_drow_ranger_talent_43 = class({
@@ -1147,19 +1555,29 @@ function modifier_npc_dota_hero_drow_ranger_talent_43:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Hunter's Guile - talent 43 variables
+    self.talent43_baseChance = 0
+    self.talent43_chancePerLevel = 20 / 3
+    self.talent43_stealthDuration = 1
+    self.talent43_cd = self.talent43_stealthDuration + 1.5
+    self.talent43_baseCritDmg = 25
+    self.talent43_critDmgPerLevel = 25
 
 end
 
 --------------------------------------------------------------------------------
 
-function modifier_npc_dota_hero_drow_ranger_talent_43:OnAttackLanded()
+function modifier_npc_dota_hero_drow_ranger_talent_43:OnAttackLanded(params)
 
     if not IsServer() then return end
-    local talent43Level = TalentTree:GetHeroTalentLevel(self.caster, 43)
-    local talent43ChancePerLevel = 20 / 3
-    local talent43StealthDuration = 1
-    local stealthProc = RollPercentage(talent43Level * talent43ChancePerLevel)
-    if (stealthProc and not self.caster:HasModifier("modifier_phantom_ranger_stealth")) then GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = talent43StealthDuration }) end
+    if (params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster and not self.caster:HasModifier("modifier_phantom_ranger_hunters_guile_stealth_cd")) then 
+
+        local talent43_level = TalentTree:GetHeroTalentLevel(self.caster, 43)
+        local stealthProc = RollPercentage(self.talent43_baseChance + talent43_level * self.talent43_chancePerLevel)
+        if not stealthProc then return end
+        GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = self.talent43_stealthDuration }) 
+        self.caster:AddNewModifier(self.caster, nil, "modifier_phantom_ranger_hunters_guile_stealth_cd", { duration = self.talent43_cd })
+    end
 
 end
 
@@ -1169,13 +1587,13 @@ function modifier_npc_dota_hero_drow_ranger_talent_43:OnTakeDamage(damageTable)
 
 	if not IsServer() then return end
 	local drow = damageTable.attacker
-	if (drow:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_43")) then
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_43")
+	if (modifier) then
 
-		local talent43Level = TalentTree:GetHeroTalentLevel(drow, 43)
+		local talent43_level = TalentTree:GetHeroTalentLevel(drow, 43)
 		if (drow:HasModifier("modifier_phantom_ranger_stealth") and not damageTable.fromsummon) then 
 
-			local talent43CritDmgPerLevel = 25
-			damageTable.crit = (125 + talent43CritDmgPerLevel * talent43Level) / 100
+			damageTable.crit = (100 + modifier.talent43_baseCritDmg + modifier.talent43_critDmgPerLevel * talent43_level) / 100
 			return damageTable
 
 		end
@@ -1183,6 +1601,31 @@ function modifier_npc_dota_hero_drow_ranger_talent_43:OnTakeDamage(damageTable)
 	end
 
 end
+
+--------------------------------------------------------------------------------
+
+modifier_phantom_ranger_hunters_guile_stealth_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_hunters_guile_stealth_cd"] = LUA_MODIFIER_MOTION_NONE
 
 --------------------------------------------------------------------------------
 -- Talent 44 - Herald of the Void
@@ -1216,6 +1659,12 @@ function modifier_npc_dota_hero_drow_ranger_talent_44:OnCreated()
 
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Herald of the Void - talent 44 variables
+    self.talent44_basePercentDmgPerAS = 0.01
+    self.talent44_percentDmgPerASPerLevel = 0.03
+    self.talent44_basePercentCritDmgPerAS = 0.01
+    self.talent44_percentCritDmgPerASPerLevel = 0.03
+    self.talent44_voidDmgCap = MAXIMUM_ATTACK_SPEED * (self.talent44_basePercentDmgPerAS + 3 * self.talent44_percentDmgPerASPerLevel)
 
 end
 
@@ -1223,9 +1672,8 @@ end
 
 function modifier_npc_dota_hero_drow_ranger_talent_44:GetVoidDamageBonus()
 	
-	local talent44Level = TalentTree:GetHeroTalentLevel(self.caster, 44)
-	local talent44PercentDmgPerLevel = 0.03
-	return math.min (((0.01 + talent44Level * talent44PercentDmgPerLevel) * Units:GetAttackSpeed(self.caster) / 100), 0.8)
+	local talent44_level = TalentTree:GetHeroTalentLevel(self.caster, 44)
+	return math.min(Units:GetAttackSpeed(self.caster) * (self.talent44_basePercentDmgPerAS + talent44_level * self.talent44_percentDmgPerASPerLevel) / 100, self.talent44_voidDmgCap / 100)
 
 end
 
@@ -1233,10 +1681,10 @@ end
 
 function modifier_npc_dota_hero_drow_ranger_talent_44:GetCriticalDamageBonus()
 	
-	local talent44Level = TalentTree:GetHeroTalentLevel(self.caster, 44)
-	local talent44PercentDmgPerLevel = 0.03
+	local talent44_level = TalentTree:GetHeroTalentLevel(self.caster, 44)
+	local talent44_percentDmgPerLevel = 0.03
 	local attackSpeed = Units:GetAttackSpeed(self.caster)
-	if (attackSpeed > 800) then return (0.01 + talent44Level * talent44PercentDmgPerLevel) * (Units:GetAttackSpeed(self.caster) - 800) / 100 else return 0 end
+	if (attackSpeed > MAXIMUM_ATTACK_SPEED) then return (Units:GetAttackSpeed(self.caster) - MAXIMUM_ATTACK_SPEED) * (self.talent44_basePercentCritDmgPerAS + talent44_level * self.talent44_percentCritDmgPerASPerLevel) / 100 else return 0 end
 
 end
 
@@ -1269,18 +1717,32 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_45"] = LUA_MODIFIER_M
 
 --------------------------------------------------------------------------------
 
+function modifier_npc_dota_hero_drow_ranger_talent_45:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    -- Cloak of Shadows - talent 45 variables
+    self.talent45_baseReducedDmgTaken = 20
+    self.talent45_reducedDmgTakenPerLevel = 10
+    self.talent45_baseStealthDuration = 0.75
+    self.talent45_stealthDurationPerLevel = 0.75
+    self.talent45_cd = 10
+
+end
+
+--------------------------------------------------------------------------------
+
 function modifier_npc_dota_hero_drow_ranger_talent_45:OnTakeDamage(damageTable)
 
 	if not IsServer() then return end
 	local drow = damageTable.victim
-	if (drow:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_45") and damageTable.damage > 0) then
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_45")
+	if (modifier and damageTable.damage > 0) then
 
-		local talent45Level = TalentTree:GetHeroTalentLevel(drow, 45)
+		local talent45_level = TalentTree:GetHeroTalentLevel(drow, 45)
 		if (drow:HasModifier("modifier_phantom_ranger_stealth")) then 
 
-			local talent45ReducedDmgTakenPerLevel = 10
-			local reducedDmgTaken = (20 + talent45Level * talent45ReducedDmgTakenPerLevel) / 100
-			if (TalentTree:GetHeroTalentLevel(drow, 51) > 0) then reducedDmgTaken = reducedDmgTaken / 5 end
+			local reducedDmgTaken = (moodifier.talent45_baseReducedDmgTaken + talent45_level * modifier.talent45_reducedDmgTakenPerLevel) / 100
 			damageTable.damage = damageTable.damage * (1 - reducedDmgTaken)
 			return damageTable
 
@@ -1322,8 +1784,14 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_47"] = LUA_MODIFIER_M
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_47:OnCreated()
+
     if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Mirage - talent 47 variables
+    self.talent47_duplicatableSpells = { "phantom_ranger_shadow_waves", "phantom_ranger_void_disciple", "phantom_ranger_phantom_barrage", "phantom_ranger_phantom_of_vengeance", "phantom_ranger_black_arrow" }
+    self.talent47_baseExtraDuration = 4
+    self.talent47_extraDurationPerLevel = 1
+
 end
 
 --------------------------------------------------------------------------------
@@ -1331,8 +1799,7 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_47:OnAbilityFullyCast(params)
 
     if not IsServer() then return end
-    local duplicatableSpells = { "phantom_ranger_phantom_of_vengeance" }
-    if (TableContains(duplicatableSpells, params.ability:GetAbilityName())) then 
+    if (params.ability and params.ability:GetCaster() == self.caster and TableContains(self.talent47_duplicatableSpells, params.ability:GetAbilityName())) then 
 
         local activePhantoms = FindActivePhantoms(self.caster, "modifier_phantom_ranger_soul_echo_phantom")
         if (activePhantoms) then
@@ -1341,9 +1808,9 @@ function modifier_npc_dota_hero_drow_ranger_talent_47:OnAbilityFullyCast(params)
             local behavior = params.ability:GetBehavior()
             for _, phantom in pairs(activePhantoms) do
 
-                if ( bit.band(behavior, bit.bor(DOTA_ABILITY_BEHAVIOR_POINT, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET)) ~= 0 ) then phantom:FaceTowards(params.ability:GetCursorPosition()) end                
-                params.ability.OnSpellStart(params.ability, phantom, nil)
-                phantom:ForcePlayActivityOnce(animation)
+                if ( bit.band(behavior, bit.bor(DOTA_ABILITY_BEHAVIOR_POINT, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET)) ~= 0 ) then phantom:FaceTowards(params.ability:GetCursorPosition()) end    
+                if animation then phantom:ForcePlayActivityOnce(animation) end            
+                params.ability.OnSpellStart(params.ability, phantom)
 
             end
 
@@ -1386,18 +1853,20 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_49"] = LUA_MODIFIER_M
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_49:OnCreated()
-    if (not IsServer()) then
-        return
-    end
+
+    if not IsServer() then return end
     self.caster = self:GetParent()
+    -- Master of the Cold Void - talent 49 variables
+    self.talent49_baseFrostDmg = 20
+    self.talent49_frostDmgPerLevel = 10
+
 end
 
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_49:GetFrostDamageBonus()
-	local talent49Level = TalentTree:GetHeroTalentLevel(self.caster, 49)
-	local talent49FrostDmgPerLevel = 10
-    return 0.2 + (talent49Level * talent49FrostDmgPerLevel / 100)
+	local talent49_level = TalentTree:GetHeroTalentLevel(self.caster, 49)
+    return (self.talent49_baseFrostDmg + talent49_level * self.talent49_frostDmgPerLevel) / 100
 end
 
 --------------------------------------------------------------------------------
@@ -1441,22 +1910,34 @@ LinkedModifiers["modifier_npc_dota_hero_drow_ranger_talent_50"] = LUA_MODIFIER_M
 
 --------------------------------------------------------------------------------
 
+function modifier_npc_dota_hero_drow_ranger_talent_50:OnCreated()
+
+    if not IsServer() then return end
+    -- Avatar of the Void - talent 50 variables
+    self.talent50_basePenetration = 55
+    self.talent50_penetrationPerLevel = 10
+
+end
+
+--------------------------------------------------------------------------------
+
 function modifier_npc_dota_hero_drow_ranger_talent_50:OnTakeDamage(damageTable)
 
 	if not IsServer() then return end
+    if not damageTable.voiddmg then return end
 	local drow = damageTable.attacker
-	if (drow:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_50") and damageTable.voiddmg) then
+    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_50")
+	if (modifier) then
 
 		local target = damageTable.victim
 		local targetVoidResist = 1 - Units:GetVoidProtection(target)
-		local talent50Level = TalentTree:GetHeroTalentLevel(drow, 50)
-		local talent50PenetrationPerLevel = 10
+		local talent50_level = TalentTree:GetHeroTalentLevel(drow, 50)
 		local voidPenetration = 0 
 
 		if (drow:HasModifier("modifier_phantom_ranger_stealth")) then
 			voidPenetration = 1
 		else
-			voidPenetration = (55 + talent50Level * talent50PenetrationPerLevel) / 100
+			voidPenetration = (modifier.talent50_basePenetration + talent50_level * modifier.talent50_penetrationPerLevel) / 100
 		end 
 
 		local resistBeforePenetration = 0 
@@ -1616,6 +2097,7 @@ end
 if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_34, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_39, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_43, 'OnTakeDamage'))

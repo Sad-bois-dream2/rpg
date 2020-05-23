@@ -138,11 +138,11 @@ function phantom_ranger_soul_echo:CreatePhantom()
     self.caster.phantom_ranger_soul_echo = self.caster.phantom_ranger_soul_echo or {}
     self.caster.phantom_ranger_soul_echo.phantom = phantom
     -- Talent 47 (Mirage) duration increase
-    local talent47Level = TalentTree:GetHeroTalentLevel(self.caster, 47)
-    if (talent47Level > 0) then
+    local modifier = self.caster:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_47")
+    if (modifier) then
 
-        local talent47ExtraDurationPerLevel = 1
-        self.duration = self.duration + 4 + talent47Level * talent47ExtraDurationPerLevel
+        local talent47_level = TalentTree:GetHeroTalentLevel(self.caster, 47)
+        self.duration = self.duration + modifier.talent47_baseExtraDuration + talent47_level * modifier.talent47_extraDurationPerLevel
 
     end
     Timers:CreateTimer(self.duration, function()
@@ -170,6 +170,63 @@ function phantom_ranger_soul_echo:OnSpellStart(unit, special_cast)
 end
 
 -- phantom_ranger_shadow_waves modifiers
+
+modifier_phantom_ranger_shadow_waves_silence_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_shadow_waves_silence_cd.png"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_shadow_waves_silence_cd"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+modifier_phantom_ranger_cloak_of_shadows_stealth_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_45.png"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_cloak_of_shadows_stealth_cd"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
 modifier_phantom_ranger_shadow_waves_debuff = class({
     IsDebuff = function(self)
         return true
@@ -223,28 +280,62 @@ phantom_ranger_shadow_waves = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_shadow_waves"
     end,
+    GetCastAnimation = function(self)
+        return ACT_DOTA_CAST_ABILITY_2
+    end
 })
 
-function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
-    if (not IsServer()) then
-        return
-    end
+function phantom_ranger_shadow_waves:OnUpgrade()
+
+    if not IsServer() then return end 
     self.caster = self:GetCaster()
-    EmitSoundOn("Hero_DrowRanger.Silence", self.caster)
     self.damageScaling = self:GetSpecialValueFor("void_damage") / 100
     self.silenceDuration = self:GetSpecialValueFor("silence_duration")
     self.duration = self:GetSpecialValueFor("duration")
     self.msSlow = self:GetSpecialValueFor("ms_slow") / 100
     self.asSlow = self:GetSpecialValueFor("as_slow") / 100
-    self.sphSlow = self:GetSpecialValueFor("sph_slow") / 100
+    self.sphSlow = self:GetSpecialValueFor("sph_slow") / 100 
+    self.talent51_level = TalentTree:GetHeroTalentLevel(self.caster, 51) 
+    -- Shadowcaster - talent 51 variables
+    self.talent51_baseCastTime = 2.2
+    self.talent51_reducedCastTimePerLevel = 0.2
+    self.talent51_cd = 0
+
+
+
+end
+
+function phantom_ranger_shadow_waves:OnAbilityPhaseStart()
+
+    if not IsServer() then return true end 
+    self.talent51_level = TalentTree:GetHeroTalentLevel(self.caster, 51) 
+    return true
+
+end
+
+function phantom_ranger_shadow_waves:OnSpellStart(sourceUnit, target)
+    if not IsServer() then return end
+    sourceUnit = sourceUnit or self.caster
+    target = target or self:GetCursorPosition()
+    local source = sourceUnit:GetAbsOrigin()
+    local fromPhantom = (sourceUnit ~= self.caster)
+    EmitSoundOn("Hero_DrowRanger.Silence", sourceUnit)
+    if target == source then
+
+        self.caster:SetCursorPosition(target + sourceUnit:GetForwardVector())
+        target = self:GetCursorPosition()
+
+    end
+
+    local targetVector = target - source
     local info = {
         Ability = self,
         EffectName = "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf",
-        vSpawnOrigin = self.caster:GetAbsOrigin(),
+        vSpawnOrigin = source,
         fDistance = 800,
         fStartRadius = 400,
         fEndRadius = 400,
-        Source = self.caster,
+        Source = sourceUnit,
         bHasFrontalCone = false,
         bReplaceExisting = false,
         iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -252,60 +343,105 @@ function phantom_ranger_shadow_waves:OnSpellStart(unit, special_cast)
         iUnitTargetType = DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
         fExpireTime = GameRules:GetGameTime() + 10.0,
         bDeleteOnHit = true,
-        vVelocity = self.caster:GetForwardVector() * 1800,
+        vVelocity = targetVector:Normalized() * 1800,
         bProvidesVision = true,
         iVisionRadius = 500,
-        iVisionTeamNumber = self.caster:GetTeamNumber()
+        iVisionTeamNumber = self.caster:GetTeamNumber(),
+        ExtraData = { fromsummon = fromPhantom }
     }
     ProjectileManager:CreateLinearProjectile(info)
     print("Launch projectile")
     -- Cloak of Shadows (talent 45) logic
-    local talent45Level = TalentTree:GetHeroTalentLevel(self.caster, 45)
-    if (talent45Level > 0) then
+    local modifier = self.caster:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_45")
+    local stealthCoolingDown = self.caster:FindModifierByName("modifier_phantom_ranger_cloak_of_shadows_stealth_cd")
+    if (modifier and not stealthCoolingDown) then
 
-        local talent45StealthDurationPerLevel = 1
-        local talent45StealthDuration = 2 + talent45Level * talent45StealthDurationPerLevel
-        GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = talent45StealthDuration }) 
+        local talent45_level = TalentTree:GetHeroTalentLevel(self.caster, 45)
+        local stealthDuration = modifier.talent45_baseStealthDuration + talent45_level * modifier.talent45_stealthDurationPerLevel
+        GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = nil, modifier_name = "modifier_phantom_ranger_stealth", duration = stealthDuration })
+        self.caster:AddNewModifier(self.caster, nil, "modifier_phantom_ranger_cloak_of_shadows_stealth_cd", { duration = modifier.talent45_cd }) 
 
     end
 end
 
-function phantom_ranger_shadow_waves:OnProjectileHit(target, location)
+function phantom_ranger_shadow_waves:OnProjectileHit_ExtraData(target, location, ExtraData)
+
     if (target ~= nil) then
-        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damageScaling , voiddmg = true })
+
+        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damageScaling , voiddmg = true, fromsummon = ExtraData.fromsummon })
         target:EmitSound("Hero_ShadowDemon.ShadowPoison.Impact")
         GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_shadow_waves_debuff", duration = self.duration })
-        GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })
+        if not (self.talent51_level > 0) then
+
+            GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })
+
+        else
+
+            local silenceCoolingDown = target:FindModifierByName("modifier_phantom_ranger_shadow_waves_silence_cd")
+            local silenceCd = self:GetOriginalCooldown(self:GetLevel() - 1) * Units:GetCooldownReduction(self.caster)
+            if (not silenceCoolingDown) then 
+
+                GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })
+                target:AddNewModifier(self.caster, self, "modifier_phantom_ranger_shadow_waves_silence_cd", { duration = silenceCd })
+
+            end
+
+        end
+
     end
+
     return false
+
 end
 
--- Shadowcaster (talent 51) cast point stuff
+-- Shadowcaster (talent 51) cast point and cdr stuff
 
 function phantom_ranger_shadow_waves:GetCastPoint()
+
     if not IsServer() then return self.BaseClass.GetCastPoint(self) end
-    local talent51Level = TalentTree:GetHeroTalentLevel(self.caster, 51)
-    local talent51ReducedCastTimePerLevel = 0.2
-    if (talent51Level > 0) then
-        return (2.2 - talent51Level * talent51ReducedCastTimePerLevel)
+    if not self.talent51_level then self.talent51_level = TalentTree:GetHeroTalentLevel(self.caster, 51) end
+    if (self.talent51_level > 0) then
+
+        return (self.talent51_baseCastTime - self.talent51_level * self.talent51_reducedCastTimePerLevel)
+
     else
+
         return self.BaseClass.GetCastPoint(self)
+
     end
+
 end
 
 function phantom_ranger_shadow_waves:IsRequireCastbar()
+
     if not IsServer() then return end
-    return (TalentTree:GetHeroTalentLevel(self.caster, 51) > 0)
+    if not self.talent51_level then self.talent51_level = TalentTree:GetHeroTalentLevel(self.caster, 51) end
+    return (self.talent51_level > 0)
+
 end
 
 function phantom_ranger_shadow_waves:GetCooldown(level)
+
     if not IsServer() then return self.BaseClass.GetCooldown(self, level) end
-    local talent51Cd = 0
-    if (TalentTree:GetHeroTalentLevel(self.caster, 51) > 0) then
-        return talent51Cd
+    if not self.talent51_level then self.talent51_level = TalentTree:GetHeroTalentLevel(self.caster, 51) end
+    if (self.talent51_level > 0) then
+
+        return self.talent51_cd
+
     else
+
         return self.BaseClass.GetCooldown(self, level)
+
     end
+
+end
+
+function phantom_ranger_shadow_waves:GetOriginalCooldown(level)
+
+    local baseCd = 20
+    local cdrPerLevel = 0
+    return baseCd - level * cdrPerLevel
+
 end
 
 -- phantom_ranger_phantom_harmonic modifiers
@@ -340,6 +476,9 @@ function modifier_phantom_ranger_phantom_harmonic:OnCreated(kv)
     self.caster = self:GetParent()
     self.casterTeam = self.caster:GetTeam()
     self.ability = self:GetAbility()
+    -- Deadly Vibration - talent 48 variables
+    self.talent48_baseChanceIncrease = 10 
+    self.talent48_chanceIncreasePerLevel = 10
 end
 
 function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
@@ -348,11 +487,10 @@ function modifier_phantom_ranger_phantom_harmonic:OnAttackLanded(kv)
         local target = kv.target
 
             if (attacker and target and not target:IsNull() and attacker == self.caster) then
-            -- acoount for Deadly Vibration (talent 48) increased chance to proc
-            local talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
-            local talent48ChanceIncreasePerLevel = 10
+            -- Deadly Vibration (talent 48) increased chance to proc
+            local talent48_level = TalentTree:GetHeroTalentLevel(self.caster, 48)
             local bonusProcChance = 0
-            if (talent48Level > 0) then bonusProcChance = 10 + talent48ChanceIncreasePerLevel * talent48Level end 
+            if (talent48_level > 0) then bonusProcChance = self.talent48_baseChanceIncrease + self.talent48_chanceIncreasePerLevel * talent48_level end 
             if (not RollPercentage(self.ability.proc_chance + bonusProcChance)) then
 
                 return
@@ -404,57 +542,47 @@ LinkedModifiers["modifier_phantom_ranger_phantom_harmonic_stacks"] = LUA_MODIFIE
 function modifier_phantom_ranger_phantom_harmonic_stacks:OnCreated()
 
     if not IsServer() then return end
-    self.caster = self:GetParent()
-    self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
-    self.talent48Level = TalentTree:GetHeroTalentLevel(self.caster, 48)
-    self.talent48PercentAdPerStack, self.talent48PercentArmorPerStack, self.talent48ResistsPerStack = 3, 3, 3
-    -- self.talent48PercentSpellDmgPerStack = 3
+    local caster = self:GetParent()
+    self.talent48_level = TalentTree:GetHeroTalentLevel(caster, 48)
+    --Deadly Vibration - talent 48 variables
+    self.talent48_percentAdPerStack, self.talent48_percentArmorPerStack, self.talent48_resistsPerStack = 3, 3, 3
 
-end
-
-function modifier_phantom_ranger_phantom_harmonic_stacks:OnRefresh()
-    if not IsServer() then return end
-    self.stacks = self.caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetAttackDamagePercentBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48PercentAdPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_percentAdPerStack / 100 else return 0 end
 end
 
--- function modifier_phantom_ranger_phantom_harmonic_stacks:GetSpellDamageBonus()
---     if (self.talent48Level > 0) then return self.stacks * self.talent48PercentSpellDmgPerStack / 100 end
--- end
-
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetArmorPercentBonus()
-   if (self.talent48Level > 0) then return self.stacks * self.talent48PercentArmorPerStack / 100 else return 0 end
+   if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_percentArmorPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetFireProtectionBonus()
-   if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+   if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetFrostProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetEarthProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetVoidProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetHolyProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetNatureProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 function modifier_phantom_ranger_phantom_harmonic_stacks:GetInfernoProtectionBonus()
-    if (self.talent48Level > 0) then return self.stacks * self.talent48ResistsPerStack / 100 else return 0 end
+    if (self.talent48_level > 0) then return self:GetStackCount() * self.talent48_resistsPerStack / 100 else return 0 end
 end
 
 -- phantom_ranger_phantom_harmonic
@@ -554,7 +682,7 @@ function phantom_ranger_phantom_harmonic:CreateBounceProjectile(source, target, 
         Source = source,
         Ability = ability,
         EffectName = "particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_proj.vpcf",
-        bDodgable = false,
+        bDodgeable = false,
         bProvidesVision = false,
         iMoveSpeed = 800,
         ExtraData = extraData
@@ -567,14 +695,16 @@ phantom_ranger_void_disciple = class({
     GetAbilityTextureName = function(self)
         return "phantom_ranger_void_disciple"
     end,
+     GetCastAnimation = function(self)
+        return ACT_DOTA_CAST_ABILITY_3
+    end
 })
 
-function phantom_ranger_void_disciple:OnSpellStart(unit, special_cast)
-    if (not IsServer()) then
-        return
-    end
+function phantom_ranger_void_disciple:OnSpellStart(source)
+    if not IsServer() then return end
     local caster = self:GetCaster()
-    local casterPosition = caster:GetAbsOrigin()
+    source = source or caster
+    local casterPosition = source:GetAbsOrigin()
     local harmonicStacks = caster:GetModifierStackCount("modifier_phantom_ranger_phantom_harmonic_stacks", caster)
     local harmonicAbility = caster:FindAbilityByName("phantom_ranger_phantom_harmonic")
     if (harmonicStacks > 0 and harmonicAbility and harmonicAbility:GetLevel() > 0) then
