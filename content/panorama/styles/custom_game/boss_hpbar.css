@@ -135,6 +135,7 @@
 	vertical-align: center;
 	font-size: 15px;
 	font-family: platformfont;
+	color: white;
 }
 
 #CooldownOverlay
@@ -205,10 +206,10 @@
 
 .BossModifiersPanel
 {
-    width: 100%;
+    width: 565px;
     height: fit-children;
-    margin-top: 145px;
-    margin-left: 25px;
+    margin-top: 110px;
+    margin-left: 70px;
     flow-children: down;
 }
 
@@ -223,6 +224,8 @@
 .buff_list .BuffRoot, .debuff_list .BuffRoot
 {
 	transform: rotateX(0deg);
+	width: 42px;
+	height: 42px;
 }
 
 .BossStats
@@ -246,14 +249,13 @@
     width: 16px;
     height: 16px;
     vertical-align: center;
-	margin-right: 2px;
 }
 
 .BossStatsLabel Label
 {
     vertical-align: center;
 	color: white;
-	font-size: 14px;
+	font-size: 12px;
 	font-family: platformfont;
 	text-overflow: shrink;
 	height: 16px;
@@ -270,4 +272,6 @@
 	background-size: 100% 100%;
 	horizontal-align: right;
 	vertical-align: top;
+	margin-top: 4px;
+	margin-right: 5px;
 }
