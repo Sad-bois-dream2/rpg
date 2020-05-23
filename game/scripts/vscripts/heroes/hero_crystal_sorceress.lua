@@ -47,6 +47,8 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
     if (not IsServer()) then
         return
     end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Target", self.target)
     local procChance = self:GetSpecialValueFor("proc_chance")
     if (RollPercentage(procChance)) then
