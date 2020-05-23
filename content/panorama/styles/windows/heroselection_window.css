@@ -66,7 +66,7 @@
     padding-right: 2px;
 }
 
-.HeroStats {
+#HeroStats {
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
@@ -79,6 +79,7 @@
 	border-radius: 5px;
 	margin-right: 100px;
 	flow-children: down;
+	visibility: collapse;
 }
 
 .HeroRolesLabel {

@@ -68,6 +68,7 @@ function OnHeroSelected(event) {
     $("#HeroIcon" + event.player_id).heroname = event.hero;
     if(event.player_id == Players.GetLocalPlayer()) {
         $("#SelectedHeroName").text = $.Localize("#" + event.hero);
+        $("#HeroStats").style.visibility = "visible";
         UpdateHeroStats(event.hero);
     }
 }

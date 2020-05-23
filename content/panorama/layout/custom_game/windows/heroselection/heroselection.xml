@@ -7,7 +7,7 @@
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
     <Panel class="Root HeroSelection" hittest="false">
-        <DOTAScenePanel id="HeroSelectionScreen" onload="OnHeroSelectionScreenLoaded()" antialias="true" renderdeferred="false" map="hero_selection" particleonly="false" light="global_light" camera="npc_dota_hero_crystal_maiden"/>
+        <DOTAScenePanel id="HeroSelectionScreen" onload="OnHeroSelectionScreenLoaded()" antialias="true" renderdeferred="false" map="hero_selection" particleonly="false" light="global_light" camera=""/>
         <Panel id="Spinner" class="lds-default">
             <Panel class="dot1"/>
             <Panel class="dot2"/>
