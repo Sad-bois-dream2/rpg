@@ -4,14 +4,18 @@ var latestSelectedHero;
 var heroPicked = true;
 var STATE_SELECTED = 0;
 var STATE_PICKED = 1;
+var heroNotSelected = true;
 
-function OnHeroSelected(hero) {
+function OnHeroSelected(hero, notPlaySound) {
     if(heroPicked) {
         return;
     }
 	ChangeHeroModel(hero);
 	latestSelectedHero = hero;
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero});
+	if(notPlaySound == true) {
+	    return;
+    }
     Game.EmitSound("General.SelectAction");
 }
 
@@ -24,6 +28,9 @@ function OnHeroSelectionScreenLoaded() {
     $("#AvailableHeroesContainer").style.visibility = "visible";
     $("#HeroControls").style.visibility = "visible";
     heroScreenLoaded = true;
+    if(heroNotSelected) {
+        OnHeroSelected(heroes[0], true);
+    }
 }
 
 function OnOpenLoadWindowButtonPressed() {
@@ -68,6 +75,7 @@ function OnStateDataReceived(event) {
         if(state == STATE_PICKED && playerId == localPlayerId) {
             latestSelectedHero = playerHero;
             picked = true;
+            heroNotSelected = false;
         }
     });
     heroPicked = picked;
