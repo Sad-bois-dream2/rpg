@@ -257,6 +257,7 @@ function modifier_treant_hook_thinker:OnDestroy()
     end
     UTIL_Remove(self:GetParent())
 end
+LinkLuaModifier("modifier_treant_hook_thinker", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 ----------------
 -- treant flux
 ----------------

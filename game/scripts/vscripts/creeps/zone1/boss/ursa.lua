@@ -125,8 +125,10 @@ modifier_ursa_rend_armor = class({
     end,
     GetEffectAttachType = function(self)
         return PATTACH_OVERHEAD_FOLLOW
+    end,
+    GetTexture = function(self)
+        return ursa_rend:GetAbilityTextureName()
     end
-
 })
 
 function modifier_ursa_rend_armor:OnCreated()
@@ -357,15 +359,10 @@ modifier_ursa_fury = class({
     GetTexture = function(self)
         return ursa_fury:GetAbilityTextureName()
     end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_overpower.vpcf"
+    end
 })
-
-function modifier_ursa_fury:GetEffectAttachType()
-    return PATTACH_ABSORIGIN_FOLLOW
-end
-
-function modifier_ursa_fury:GetStatusEffectName()
-    return "particles/status_fx/status_effect_overpower.vpcf"
-end
 
 function modifier_ursa_fury:OnCreated()
     if not IsServer() then
@@ -764,6 +761,7 @@ function ursa_slam:OnSpellStart()
         self.caster = self:GetCaster()
         local sound_cast = "Hero_Ursa.Earthshock"
         local earthshock_particle = "particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7.vpcf"
+        local aoe_particle = "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf"
         -- Ability specials
         local radius = self:GetSpecialValueFor("radius")
         local damage = self:GetSpecialValueFor("damage")
@@ -779,20 +777,12 @@ function ursa_slam:OnSpellStart()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
-        --bigger aoe
-        if self:GetLevel() == 2 then
-            local earthshock_particle_fx2 = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale4_1000.vpcf", PATTACH_ABSORIGIN, self.caster)
-            Timers:CreateTimer(5.0, function()
-                ParticleManager:DestroyParticle(earthshock_particle_fx2, false)
-                ParticleManager:ReleaseParticleIndex(earthshock_particle_fx2)
-            end)
-        elseif self:GetLevel() ==3 then
-            local earthshock_particle_fx3 =ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale6_1500.vpcf", PATTACH_ABSORIGIN, self.caster)
-            Timers:CreateTimer(5.0, function()
-                ParticleManager:DestroyParticle(earthshock_particle_fx3, false)
-                ParticleManager:ReleaseParticleIndex(earthshock_particle_fx3)
-            end)
-        end
+        local aoe_particle_fx = ParticleManager:CreateParticle(aoe_particle, PATTACH_ABSORIGIN, self.caster)
+        ParticleManager:SetParticleControl(aoe_particle_fx, 2, Vector(radius, radius, 225))
+        Timers:CreateTimer(3.0, function()
+            ParticleManager:DestroyParticle(aoe_particle_fx, false)
+            ParticleManager:ReleaseParticleIndex(aoe_particle_fx)
+        end)
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -870,7 +860,7 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") * -0.01
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow") * -0.01
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow") * - 0.01
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
 end
 
@@ -902,7 +892,7 @@ function modifier_ursa_hunt_blue:OnCreated()
         return
     end
 end
-
+LinkLuaModifier("modifier_ursa_hunt_blue", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
 --real buff
 modifier_ursa_hunt_buff_stats = class({
     IsDebuff = function(self)
