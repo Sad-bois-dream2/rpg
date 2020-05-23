@@ -274,11 +274,12 @@
   }
 }
 
-.AvailableHeroesContainer {
+#AvailableHeroesContainer {
     vertical-align: bottom;
     horizontal-align: right;
     flow-children: down;
     width: 700px;
+    visibility: collapse;
 }
 
 #AvailableHeroes {
@@ -308,12 +309,13 @@
     height: 56px;
 }
 
-.HeroControls {
+#HeroControls {
     vertical-align: center;
     horizontal-align: center;
     flow-children: down;
     width: fit-children;
     margin-top: 350px;
+    visibility: collapse;
 }
 
 .HeroControlsButtons {
