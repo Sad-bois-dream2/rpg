@@ -2,7 +2,8 @@ var heroes = [];
 var heroScreenLoaded = false;
 
 function OnHeroSelected(hero) {
-	$.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0.5);
+	$.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero});
 }
 
 function OnHeroSelectionScreenLoaded() {

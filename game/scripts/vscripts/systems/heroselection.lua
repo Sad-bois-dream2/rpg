@@ -17,10 +17,18 @@ end
 function HeroSelection:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_hero_selection_check_state", Dynamic_Wrap(HeroSelection, 'OnCheckStateRequest'))
     CustomGameEventManager:RegisterListener("rpg_hero_selection_get_heroes", Dynamic_Wrap(HeroSelection, 'OnGetHeroesRequest'))
+    CustomGameEventManager:RegisterListener("rpg_hero_selection_hero_selected", Dynamic_Wrap(HeroSelection, 'OnHeroSelectedRequest'))
+end
+
+function HeroSelection:OnHeroSelectedRequest(event)
+    if (not event or not event.PlayerID) then
+        return
+    end
+    CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_selected_from_server", { hero = event.hero, player_id = event.PlayerID })
 end
 
 function HeroSelection:OnGetHeroesRequest(event)
-    if (not event.PlayerID) then
+    if (not event or not event.PlayerID) then
         return
     end
     local player = PlayerResource:GetPlayer(event.PlayerID)

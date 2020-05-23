@@ -1,3 +1,16 @@
+function OnHeroSelected(event) {
+    $("#HeroIcon" + event.player_id).heroname = event.hero;
+    if(event.player_id == Players.GetLocalPlayer()) {
+        $("#SelectedHeroName").text = $.Localize("#" + event.hero);
+    }
+}
+
+function OnHeroPicked(event) {
+    var heroIcon = $("#HeroIcon" + event.player_id);
+    heroIcon.heroname = event.hero;
+    heroIcon.SetHasClass("notpicked", false);
+}
+
 function UpdateTimer()
 {
 	var gameTime = Game.GetGameTime();
@@ -46,10 +59,14 @@ function UpdateHeroColors() {
     }
 }
 
+function FixGameSetupWindow() {
+	$.GetContextPanel().GetParent().style.marginLeft = "0px";
+}
+
 (function() {
 	UpdateTimer();
 	UpdateHeroColors();
 	HideDefaultUI();
-	var parent = $.GetContextPanel().GetParent();
-	parent.style.marginLeft = "0px";
+    FixGameSetupWindow();
+	GameEvents.Subscribe("rpg_hero_selection_hero_selected_from_server", OnHeroSelected);
 })();
