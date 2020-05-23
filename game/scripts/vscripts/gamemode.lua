@@ -118,17 +118,19 @@ end
   is useful for starting any game logic timers/thinkers, beginning the first round, etc.
 ]]
 function GameMode:OnGameInProgress()
-    if (BAREBONES_DEBUG_SPEW) then
-        -- sad bois for testing all stuff in game
-        CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
-        CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
-    end
-    -- Trainer
-    CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
-        dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
+    Timers:CreateTimer(3.0, function()
+        if (BAREBONES_DEBUG_SPEW) then
+            -- sad bois for testing all stuff in game
+            CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
+            CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
+        end
+        -- Trainer
+        CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
+            dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
+        end)
+        -- Vision in village
+        CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
     end)
-    -- Vision in village
-    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game
@@ -142,6 +144,11 @@ function GameMode:InitGameMode()
     GameModeEntity:SetFogOfWarDisabled(false)
     GameModeEntity:SetBuybackEnabled(false)
     GameModeEntity:SetDamageFilter(Dynamic_Wrap(GameMode, "DamageFilter"), self)
+    GameRules:SetHeroSelectionTime(0)
+    GameRules:SetHeroSelectPenaltyTime(0)
+    GameRules:SetPreGameTime(0)
+    GameRules:SetStrategyTime(0)
+    GameRules:SetShowcaseTime(0)
     DebugPrint('[BAREBONES] Done loading gamemode!\n\n')
 end
 

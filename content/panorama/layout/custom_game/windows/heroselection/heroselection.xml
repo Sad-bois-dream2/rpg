@@ -24,16 +24,16 @@
         </Panel>
         <Panel id="HeroControls">
             <Panel class="HeroControlsButtons">
-                <Panel class="WindowButton HeroControlsButton">
+                <Panel class="WindowButton HeroControlsButton" onactivate="OnPickHeroButtonPressed()">
                     <Label text="#DOTA_HeroSelection_CreateHero" />
                 </Panel>
-                <Panel class="WindowButton HeroControlsButton" onactivate="RemoveStyle( SaveSlotsWindow, Hidden)">
+                <Panel class="WindowButton HeroControlsButton" onactivate="OnOpenLoadWindowButtonPressed()">
                     <Label text="#DOTA_HeroSelection_LoadHero" />
                 </Panel>
             </Panel>
         </Panel>
         <Panel id="SaveSlotsWindow" class="Hidden">
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="AddStyle( SaveSlotsWindow, Hidden)"/>
+            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="OnCloseLoadWindowButtonPressed()"/>
             <Label class="SaveSlotsTitleLabel" text="#DOTA_HeroSelection_SaveLoadTitle" />
         </Panel>
         <Panel id="AvailableHeroesContainer">

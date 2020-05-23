@@ -9,7 +9,9 @@ function CheckPlayerState() {
 
 function OnPlayerLoaded(event) {
     playerLoaded = true;
-    $("#Container").BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection.xml",false,false);
+    if(event.ended == 0) {
+        $("#Container").BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection.xml",false,false);
+    }
 }
 
 (function(){

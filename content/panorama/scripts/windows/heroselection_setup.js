@@ -63,6 +63,8 @@ var heroesData = {
 
 var MAX_STATS = 5;
 var tankStats, dpsStats, supportStats;
+var STATE_SELECTED = 0;
+var STATE_PICKED = 1;
 
 function OnHeroSelected(event) {
     $("#HeroIcon" + event.player_id).heroname = event.hero;
@@ -149,6 +151,32 @@ function FixGameSetupWindow() {
 	$.GetContextPanel().GetParent().style.marginLeft = "0px";
 }
 
+function OnStateDataReceived(event) {
+    var state = JSON.parse(event.state);
+    var localPlayerId = Players.GetLocalPlayer();
+    Object.entries(state).map(entry => {
+        var value = entry[1];
+        var playerId = value.playerId;
+        var playerHero = value.hero;
+        var state = value.state;
+        if(state == STATE_SELECTED) {
+            var event = {
+                "player_id" : playerId,
+                "hero" : playerHero
+            };
+            OnHeroSelected(event);
+        }
+        if(state == STATE_PICKED) {
+            var event = {
+                "player_id" : playerId,
+                "hero" : playerHero
+            };
+            OnHeroPicked(event);
+        }
+    });
+}
+
+
 (function() {
 	UpdateTimer();
 	UpdateHeroColors();
@@ -165,5 +193,10 @@ function FixGameSetupWindow() {
         dpsStats.push(dpsContainer.GetChild(i));
         supportStats.push(supportContainer.GetChild(i));
     }
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
 	GameEvents.Subscribe("rpg_hero_selection_hero_selected_from_server", OnHeroSelected);
+	GameEvents.Subscribe("rpg_hero_selection_hero_picked_from_server", OnHeroPicked);
+	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
 })();
+
+
