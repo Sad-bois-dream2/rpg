@@ -1,9 +1,15 @@
 var heroes = [];
 var heroScreenLoaded = false;
+var latestSelectedHero;
 
 function OnHeroSelected(hero) {
-	$.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
+	ChangeHeroModel(hero);
+	latestSelectedHero = hero;
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero});
+}
+
+function ChangeHeroModel(hero) {
+    $.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
 }
 
 function OnHeroSelectionScreenLoaded() {
@@ -32,8 +38,16 @@ function OnHeroesDataRecieved(event) {
     }
 }
 
+function FixAltTab() {
+    if(latestSelectedHero) {
+        ChangeHeroModel(latestSelectedHero);
+    }
+    $.Schedule( 0.1, FixAltTab );
+}
+
 (function() {
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes",{});
 	GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesDataRecieved);
 	WaitHeroScreenLoading();
+	FixAltTab();
 })();
