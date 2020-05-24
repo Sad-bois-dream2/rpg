@@ -32,6 +32,14 @@
     "Ability16"	""
 	"VisionDaytimeRange"        "1800"        // Range of vision during day light.
     "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+	"AttributePrimary"             "DOTA_ATTRIBUTE_AGILITY"
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "0"
+            "Support"   "5"
+            "Utility"   "0"
+        }
   }
 
   "rpg_dota_hero_doom_bringer"
@@ -56,6 +64,14 @@
     "Ability16"	""
 	"VisionDaytimeRange"        "1800"        // Range of vision during day light.
     "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+    "AttributePrimary"             "DOTA_ATTRIBUTE_STRENGTH"
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "0"
+            "Support"   "5"
+            "Utility"   "0"
+        }
   }
   
   "rpg_dota_hero_dark_willow"
@@ -81,5 +97,12 @@
 	"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
 	"VisionDaytimeRange"        "1800"        // Range of vision during day light.
     "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "0"
+            "Support"   "5"
+            "Utility"   "0"
+        }
   }
 }

@@ -352,11 +352,12 @@
 }
 
 #AvailableHeroesContainer {
-    vertical-align: bottom;
-    horizontal-align: right;
+    vertical-align: top;
+    horizontal-align: left;
     flow-children: down;
     width: 700px;
     visibility: collapse;
+    margin-top: 200px;
 }
 
 #AvailableHeroes {

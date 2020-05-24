@@ -3,7 +3,9 @@ if HeroSelection == nil then
 end
 
 function HeroSelection:Init()
-    HeroSelection.data = LoadKeyValues("scripts/npc/herolist.txt")
+    local heroesData = LoadKeyValues("scripts/npc/herolist.txt")
+    local heroesStatsData = LoadKeyValues("scripts/npc/npc_heroes_custom.txt")
+    PrintTable(heroesStatsData)
     local enabledHeroes = {}
     for hero, enabled in pairs(HeroSelection.data) do
         if (enabled == 1) then
