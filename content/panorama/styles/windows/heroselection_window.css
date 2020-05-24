@@ -72,7 +72,7 @@
 	background-position: 50% 50%;
 	background-size: 100% 100%;
 	width: 300px;
-	height: 250px;
+	height: 300px;
 	vertical-align: center;
 	horizontal-align: right;
 	border: 1px solid gray;
@@ -80,7 +80,7 @@
 	margin-right: 100px;
 	flow-children: down;
 	visibility: collapse;
-	margin-top: 80px;
+	margin-top: 100px;
 }
 
 .HeroNameContainer {
@@ -108,6 +108,28 @@
     vertical-align: center;
 }
 
+#HeroAbilitiesContainer {
+    height: fit-children;
+    flow-children: right;
+    margin-bottom: 10px;
+    horizontal-align: center;
+    vertical-align: center;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.HeroAbility {
+    width: 52px;
+    height: 52px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-right: 10px;
+}
+
+.HeroAbility.last {
+    margin-right: 0px;
+}
+
 .HeroRolesLabel {
     font-size: 20px;
     text-align: center;
@@ -122,51 +144,47 @@
 	margin-bottom: 10px;
 }
 
+.HeroStatImage {
+    width: 20px;
+    height: 20px;
+	horizontal-align: center;
+	margin-right: 5px;
+}
+
 .HeroStatLabel {
     font-size: 14px;
     text-align: center;
-	vertical-align: top;
-	horizontal-align: center;
 	color: white;
 	text-transform: uppercase;
 	text-overflow: shrink;
-	width: fill-parent-flow(1.0);
-	height: 20px;
-	margin-bottom: 2px;
+	margin-top: 3px;
+	margin-bottom: 5px;
+	horizontal-align: center;
 }
 
 .HeroStat {
-    width: fill-parent-flow(1.0);
-    height: 16px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 10px;
+    height: fit-children;
     flow-children: right;
-    padding-left: 10px;
-    padding-right: 10px;
+    horizontal-align: center;
 }
 
 .HeroStatChild {
-    width: fill-parent-flow(1.0);
-    height: fill-parent-flow(1.0);
-    padding-top: 2px;
-    padding-right: 2px;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+    width: 20px;
+    height: 20px;
+	background-image: url("s2r://panorama/images/hero_complexity_empty_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
-	background-size: 100% 100%;
-    border-radius: 5px;
-    margin-right: 5px;
-    border: 1px solid gray;
+	background-size: 90%;
+	margin-right: 10px;
 }
 
 .HeroStatChild.selected {
-	background-image: none;
-    background-color: gradient( linear, 0% 100%, 0% 0%, from( #5A615Ecc ), to( #879695cc ));
+	background-image: url("s2r://panorama/images/hero_complexity_full_png.vtex");
+    /*background-color: gradient( linear, 0% 100%, 0% 0%, from( #5A615Ecc ), to( #879695cc )); */
 }
 
 .HeroStatChild.last {
-    margin-right: 0px;
+    /*margin-right: 0px; */
 }
 
 #TimerLabel {

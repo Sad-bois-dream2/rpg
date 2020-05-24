@@ -20,7 +20,6 @@ function OnHeroSelected(hero, notPlaySound) {
     Game.EmitSound("General.SelectAction");
 }
 
-
 function ChangeHeroModel(hero) {
     $.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
 }

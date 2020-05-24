@@ -41,6 +41,12 @@
                     <DOTAHeroImage id="SelectedHeroIcon" heroname="npc_dota_hero_axe" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
                     <Label id="SelectedHeroName" text="" />
                 </Panel>
+                <Panel id="HeroAbilitiesContainer">
+                    <DOTAAbilityImage id="Ability0" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                    <DOTAAbilityImage id="Ability1" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                    <DOTAAbilityImage id="Ability2" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                    <DOTAAbilityImage id="Ability3" class="HeroAbility last" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                </Panel>
                 <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Tank" />
                 <Panel id="TankStat" class="HeroStat">
                     <Panel class="HeroStatChild"/>

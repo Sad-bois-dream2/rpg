@@ -11,6 +11,17 @@ function OnHeroSelected(event) {
         $("#SelectedHeroIcon").heroname = event.hero;
         $("#HeroStats").style.visibility = "visible";
         UpdateHeroStats(event.hero);
+        UpdateHeroAbilities(event.hero);
+    }
+}
+
+function UpdateHeroAbilities(hero) {
+    for(var i = 0; i < $("#HeroAbilitiesContainer").GetChildCount(); i++) {
+        var abilityName = heroesData[hero]["Ability" + i];
+        if(abilityName) {
+            var abilityPanel = $("#HeroAbilitiesContainer").GetChild(i);
+            abilityPanel.abilityname = abilityName;
+        }
     }
 }
 
@@ -126,22 +137,34 @@ function OnHeroesDataReceived(event) {
             if(heroes[i].Roles.Tank) {
                 heroesData[heroes[i].Name].tank = heroes[i].Roles.Tank;
             } else {
-                heroesData[heroes[i].Name].tank = 0
+                heroesData[heroes[i].Name].tank = 0;
             }
             if(heroes[i].Roles.DPS) {
                 heroesData[heroes[i].Name].dps = heroes[i].Roles.DPS;
             } else {
-                heroesData[heroes[i].Name].dps = 0
+                heroesData[heroes[i].Name].dps = 0;
             }
             if(heroes[i].Roles.Support) {
                 heroesData[heroes[i].Name].support = heroes[i].Roles.Support;
             } else {
-                heroesData[heroes[i].Name].support = 0
+                heroesData[heroes[i].Name].support = 0;
             }
             if(heroes[i].Roles.Utility) {
                 heroesData[heroes[i].Name].utility = heroes[i].Roles.Utility;
             } else {
-                heroesData[heroes[i].Name].utility = 0
+                heroesData[heroes[i].Name].utility = 0;
+            }
+        } else {
+            heroesData[heroes[i].Name].tank = 0;
+            heroesData[heroes[i].Name].dps = 0;
+            heroesData[heroes[i].Name].support = 0;
+            heroesData[heroes[i].Name].utility = 0;
+        }
+        for(var j = 0; j < 6; j++) {
+            if(heroes[i].Abilities[j]) {
+                heroesData[heroes[i].Name]["Ability"+j] = heroes[i].Abilities[j];
+            } else {
+                heroesData[heroes[i].Name]["Ability"+j] = "";
             }
         }
     }
