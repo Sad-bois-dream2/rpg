@@ -22,15 +22,19 @@
             <Panel class="dot11"/>
             <Panel class="dot12"/>
         </Panel>
-        <Panel id="HeroControls">
-            <Panel class="HeroControlsButtons">
-                <Panel class="WindowButton HeroControlsButton" onactivate="OnPickHeroButtonPressed()">
-                    <Label text="#DOTA_HeroSelection_CreateHero" />
-                </Panel>
-                <Panel class="WindowButton HeroControlsButton" onactivate="OnOpenLoadWindowButtonPressed()">
-                    <Label text="#DOTA_HeroSelection_LoadHero" />
-                </Panel>
+        <Panel id="HeroSlotsPanel">
+            <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                <Label text="+" class="HeroSlotNew"/>
             </Panel>
+            <!--<Panel class="HeroSlot">
+                <DOTAHeroImage heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                <Label text="Lv. 120"/>
+            </Panel>
+            <Panel class="HeroSlot">
+                <DOTAHeroImage heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                <Label text="Lv. 89"/>
+            </Panel> -->
         </Panel>
         <Panel id="SaveSlotsWindow" class="Hidden">
             <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="OnCloseLoadWindowButtonPressed()"/>

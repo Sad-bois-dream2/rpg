@@ -13,6 +13,7 @@ function OnHeroSelected(hero, notPlaySound) {
 	ChangeHeroModel(hero);
 	latestSelectedHero = hero;
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero});
+	UpdateSaveSlots(hero);
 	if(notPlaySound == true) {
 	    return;
     }
@@ -23,10 +24,18 @@ function ChangeHeroModel(hero) {
     $.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
 }
 
+function UpdateSaveSlots(hero) {
+    for(var i = 0; i < $("#HeroSlotsPanel").GetChildCount(); i++) {
+        var slot = $("#HeroSlotsPanel").GetChild(i);
+        var slotHeroImage = slot.FindChildTraverse('HeroSlotImage');
+        slotHeroImage.heroname = hero;
+    }
+}
+
 function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
     $("#AvailableHeroesContainer").style.visibility = "visible";
-    $("#HeroControls").style.visibility = "visible";
+    $("#HeroSlotsPanel").style.visibility = "visible";
     heroScreenLoaded = true;
     if(heroNotSelected) {
         OnHeroSelected(heroes[0].Name, true);
