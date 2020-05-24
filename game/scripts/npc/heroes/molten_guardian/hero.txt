@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_molten_guardian"
+    "npc_dota_hero_mars"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_mars"
         "Ability1"	"molten_guardian_scorching_clash"
         "Ability2"	"molten_guardian_volcanic_blow"
         "Ability3"	"molten_guardian_lava_skin"

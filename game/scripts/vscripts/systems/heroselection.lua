@@ -5,11 +5,10 @@ end
 function HeroSelection:Init()
     local heroesData = LoadKeyValues("scripts/npc/herolist.txt")
     local heroesStatsData = LoadKeyValues("scripts/npc/npc_heroes_custom.txt")
-    PrintTable(heroesStatsData)
     local enabledHeroes = {}
-    for hero, enabled in pairs(HeroSelection.data) do
+    for hero, enabled in pairs(heroesData) do
         if (enabled == 1) then
-            table.insert(enabledHeroes, hero)
+            table.insert(enabledHeroes, HeroSelection:BuildHeroEntry(hero, heroesStatsData))
         end
     end
     HeroSelection.data = enabledHeroes
@@ -19,6 +18,41 @@ function HeroSelection:Init()
     HeroSelection.pickTimeEnded = false
     ListenToGameEvent('game_rules_state_change', Dynamic_Wrap(HeroSelection, 'OnGameStateChanged'), nil)
     HeroSelection:InitPanaromaEvents()
+end
+
+function HeroSelection:BuildHeroEntry(heroName, kv)
+    local heroEntry = {
+        Roles = {
+            Tank = 0,
+            DPS = 0,
+            Support = 0,
+            Utility = 0
+        },
+        Attribute = DOTA_ATTRIBUTE_STRENGTH,
+        Name = heroName,
+        Abilities = {
+            [1] = "",
+            [2] = "",
+            [3] = "",
+            [4] = "",
+            [5] = "",
+            [6] = "",
+        }
+    }
+    if(not kv or not kv[heroName]) then
+        return heroEntry
+    end
+    if(kv[heroName].Roles) then
+        heroEntry.Roles.Tank = kv[heroName].Roles.Tank or 0
+        heroEntry.Roles.DPS = kv[heroName].Roles.DPS or 0
+        heroEntry.Roles.Support = kv[heroName].Roles.Support or 0
+        heroEntry.Roles.Utility = kv[heroName].Roles.Utility or 0
+    end
+    heroEntry.Attribute = kv[heroName].AttributePrimary or heroEntry.Attribute
+    for index = 1, 6 do
+        heroEntry.Abilities[index] = kv[heroName]["Ability"..index] or heroEntry.Abilities[index]
+    end
+    return heroEntry
 end
 
 function HeroSelection:IsEnded()

@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_chosen_invoker"
+    "npc_dota_hero_invoker"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_invoker"
         "Ability1"	"chosen_invoker_purification_brilliance"
         "Ability2"	"chosen_invoker_flare_array"
         "Ability3"	"chosen_invoker_photon_pulse"

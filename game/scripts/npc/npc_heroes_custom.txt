@@ -10,10 +10,9 @@
 
 "DOTAHeroes"
 {
-  "rpg_dota_hero_phantom_assassin"
+  "npc_dota_hero_phantom_assassin"
   {
     "AbilityLayout"     "6"
-	"override_hero"     "npc_dota_hero_phantom_assassin"
 	"Ability1"	"lina_dragon_slave"
 	"Ability2"	"lina_light_strike_array"
 	"Ability3"	"lina_fiery_soul"
@@ -42,10 +41,9 @@
         }
   }
 
-  "rpg_dota_hero_doom_bringer"
+  "npc_dota_hero_doom_bringer"
   {
     "AbilityLayout"     "6"
-	"override_hero"     "npc_dota_hero_doom_bringer"
 	"Ability1"	"lina_dragon_slave"
 	"Ability2"	"lina_light_strike_array"
 	"Ability3"	"lina_fiery_soul"
@@ -74,10 +72,9 @@
         }
   }
   
-  "rpg_dota_hero_dark_willow"
+  "npc_dota_hero_dark_willow"
   {
     "AbilityLayout"     "6"
-	"override_hero"     "npc_dota_hero_dark_willow"
 	"Ability1"	"lina_dragon_slave"
 	"Ability2"	"lina_light_strike_array"
 	"Ability3"	"lina_fiery_soul"

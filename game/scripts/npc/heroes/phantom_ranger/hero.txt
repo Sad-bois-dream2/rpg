@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-	"rpg_dota_hero_phantom_ranger"
+	"npc_dota_hero_drow_ranger"
 	{
 		"AbilityLayout" "6"
-		"override_hero" "npc_dota_hero_drow_ranger"
 		"Ability1"		"phantom_ranger_phantom_harmonic"
 		"Ability2"		"phantom_ranger_void_disciple"
 		"Ability3"		"phantom_ranger_soul_echo"

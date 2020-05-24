@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_npc_dota_hero_priestess_of_sacred_forest"
+    "npc_dota_hero_enchantress"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_enchantress"
         "Ability1"	"priestess_of_sacred_forest_herbaceous_essence"
         "Ability2"	"priestess_of_sacred_forest_thorny_protection"
         "Ability3"	"priestess_of_sacred_forest_twilight_breeze"

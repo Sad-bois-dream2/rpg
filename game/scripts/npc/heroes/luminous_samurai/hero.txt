@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_luminous_samurai"
+    "npc_dota_hero_juggernaut"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_juggernaut"
         "Ability1"	"luminous_samurai_bankai"
         "Ability2"	"luminous_samurai_jhana"
         "Ability3"	"luminous_samurai_light_iai_giri"

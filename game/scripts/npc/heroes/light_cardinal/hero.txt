@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_light_cardinal"
+    "npc_dota_hero_silencer"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_silencer"
         "Ability1"	"light_cardinal_piety"
         "Ability2"	"light_cardinal_purification"
         "Ability3"	"light_cardinal_sublimation"
