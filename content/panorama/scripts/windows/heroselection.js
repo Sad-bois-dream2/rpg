@@ -20,6 +20,7 @@ function OnHeroSelected(hero, notPlaySound) {
     Game.EmitSound("General.SelectAction");
 }
 
+
 function ChangeHeroModel(hero) {
     $.DispatchEvent('DOTAGlobalSceneSetCameraEntity', 'HeroSelectionScreen', hero, 0);
 }
@@ -83,6 +84,7 @@ function OnHeroesDataReceived(event) {
     }
 }
 
+
 function OnStateDataReceived(event) {
     var state = JSON.parse(event.state);
     var picked = false;
@@ -108,6 +110,7 @@ function FixAltTab() {
     $.Schedule( 0.1, FixAltTab );
 }
 
+
 (function() {
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes",{});
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
@@ -115,3 +118,4 @@ function FixAltTab() {
 	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
 	FixAltTab();
 })();
+

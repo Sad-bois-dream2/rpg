@@ -121,20 +121,27 @@ function OnStateDataReceived(event) {
 function OnHeroesDataReceived(event) {
     var heroes = JSON.parse(event.heroes);
     for(var i = 0; i < heroes.length; i++) {
-        var tank = 0, dps = 0, support = 0, utility = 0;
         heroesData[heroes[i].Name] = {}
         if(heroes[i].Roles) {
             if(heroes[i].Roles.Tank) {
                 heroesData[heroes[i].Name].tank = heroes[i].Roles.Tank;
+            } else {
+                heroesData[heroes[i].Name].tank = 0
             }
-            if(heroes[i].Roles.Tank) {
+            if(heroes[i].Roles.DPS) {
                 heroesData[heroes[i].Name].dps = heroes[i].Roles.DPS;
+            } else {
+                heroesData[heroes[i].Name].dps = 0
             }
-            if(heroes[i].Roles.Tank) {
+            if(heroes[i].Roles.Support) {
                 heroesData[heroes[i].Name].support = heroes[i].Roles.Support;
+            } else {
+                heroesData[heroes[i].Name].support = 0
             }
-            if(heroes[i].Roles.Tank) {
+            if(heroes[i].Roles.Utility) {
                 heroesData[heroes[i].Name].utility = heroes[i].Roles.Utility;
+            } else {
+                heroesData[heroes[i].Name].utility = 0
             }
         }
     }
@@ -159,8 +166,6 @@ function OnHeroesDataReceived(event) {
         supportStats.push(supportContainer.GetChild(i));
         utilityStats.push(utilityContainer.GetChild(i));
     }
-	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
-	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes",{});
 	GameEvents.Subscribe("rpg_hero_selection_hero_selected_from_server", OnHeroSelected);
 	GameEvents.Subscribe("rpg_hero_selection_hero_picked_from_server", OnHeroPicked);
 	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
