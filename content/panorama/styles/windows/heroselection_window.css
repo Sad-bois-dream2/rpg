@@ -80,6 +80,32 @@
 	margin-right: 100px;
 	flow-children: down;
 	visibility: collapse;
+	margin-top: 80px;
+}
+
+.HeroNameContainer {
+    height: fit-children;
+    flow-children: right;
+    horizontal-align: center;
+    vertical-align: center;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+#SelectedHeroIcon {
+    width: 32px;
+    height: 32px;
+    horizontal-align: center;
+    vertical-align: center;
+    margin-right: 3px;
+}
+
+#SelectedHeroName {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    horizontal-align: center;
+    vertical-align: center;
 }
 
 .HeroRolesLabel {
@@ -360,7 +386,28 @@
     margin-top: 200px;
 }
 
-#AvailableHeroes {
+.AvailableHeroesGroupContainer {
+	width: fill-parent-flow(1.0);
+    height: fit-children;
+    flow-children: right;
+    margin-left: 10px;
+}
+
+.AvailableHeroesGroupContainer Image {
+    width: 32px;
+    height: 32px;
+}
+
+.AvailableHeroesGroupContainer Label {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    vertical-align: center;
+    margin-left: 3px;
+    text-transform: uppercase;
+}
+
+#AvailableHeroesStrength, #AvailableHeroesAgility, #AvailableHeroesIntellect {
 	width: fill-parent-flow(1.0);
     height: fit-children;
     flow-children: right-wrap;
@@ -412,14 +459,6 @@
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 10px;
-}
-
-#SelectedHeroName {
-    color: white;
-    font-size: 20px;
-    text-align: center;
-    width: fill-parent-flow(1.0);
-    margin-top: 50px;
 }
 
 #HeroSelectionScreen {

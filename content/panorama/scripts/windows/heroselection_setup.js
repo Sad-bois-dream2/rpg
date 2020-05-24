@@ -1,12 +1,14 @@
 var MAX_STATS = 5;
-var tankStats, dpsStats, supportStats;
+var tankStats, dpsStats, supportStats, utilityStats;
 var STATE_SELECTED = 0;
 var STATE_PICKED = 1;
+var heroesData = {};
 
 function OnHeroSelected(event) {
     $("#HeroIcon" + event.player_id).heroname = event.hero;
     if(event.player_id == Players.GetLocalPlayer()) {
         $("#SelectedHeroName").text = $.Localize("#" + event.hero);
+        $("#SelectedHeroIcon").heroname = event.hero;
         $("#HeroStats").style.visibility = "visible";
         UpdateHeroStats(event.hero);
     }
@@ -22,10 +24,12 @@ function UpdateHeroStats(hero) {
     var tank = 0;
     var dps = 0;
     var support = 0;
+    var utility = 0;
     if(heroesData[hero]) {
         tank = heroesData[hero]["tank"];
         dps = heroesData[hero]["dps"];
         support = heroesData[hero]["support"];
+        utility = heroesData[hero]["utility"];
     }
     for(var i = 1; i <= MAX_STATS; i++) {
         var index = i - 1;
@@ -33,6 +37,7 @@ function UpdateHeroStats(hero) {
         tankStats[index].SetHasClass("selected", (statValue <= tank));
         dpsStats[index].SetHasClass("selected", (statValue <= dps));
         supportStats[index].SetHasClass("selected", (statValue <= support));
+        utilityStats[index].SetHasClass("selected", (statValue <= utility));
     }
 }
 
@@ -113,6 +118,27 @@ function OnStateDataReceived(event) {
     });
 }
 
+function OnHeroesDataReceived(event) {
+    var heroes = JSON.parse(event.heroes);
+    for(var i = 0; i < heroes.length; i++) {
+        var tank = 0, dps = 0, support = 0, utility = 0;
+        heroesData[heroes[i].Name] = {}
+        if(heroes[i].Roles) {
+            if(heroes[i].Roles.Tank) {
+                heroesData[heroes[i].Name].tank = heroes[i].Roles.Tank;
+            }
+            if(heroes[i].Roles.Tank) {
+                heroesData[heroes[i].Name].dps = heroes[i].Roles.DPS;
+            }
+            if(heroes[i].Roles.Tank) {
+                heroesData[heroes[i].Name].support = heroes[i].Roles.Support;
+            }
+            if(heroes[i].Roles.Tank) {
+                heroesData[heroes[i].Name].utility = heroes[i].Roles.Utility;
+            }
+        }
+    }
+}
 
 (function() {
 	UpdateTimer();
@@ -122,18 +148,23 @@ function OnStateDataReceived(event) {
     var tankContainer = $("#TankStat");
     var dpsContainer = $("#DpsStat");
     var supportContainer = $("#SupportStat");
+    var utilityContainer = $("#UtilityStat");
     tankStats = [];
     supportStats = [];
     dpsStats = [];
+    utilityStats = [];
     for(var i = 0; i < MAX_STATS; i++) {
         tankStats.push(tankContainer.GetChild(i));
         dpsStats.push(dpsContainer.GetChild(i));
         supportStats.push(supportContainer.GetChild(i));
+        utilityStats.push(utilityContainer.GetChild(i));
     }
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes",{});
 	GameEvents.Subscribe("rpg_hero_selection_hero_selected_from_server", OnHeroSelected);
 	GameEvents.Subscribe("rpg_hero_selection_hero_picked_from_server", OnHeroPicked);
 	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
+	GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesDataReceived);
 })();
 
 

@@ -36,9 +36,11 @@
                 </Panel>
             </Panel>
             <Label id="TimerLabel" text="#custom_game_team_select_timer"/>
-            <Label id="SelectedHeroName" text="" />
             <Panel id="HeroStats">
-                <Label class="HeroRolesLabel" text="#DOTA_HeroSelection_Stats" />
+                <Panel class="HeroNameContainer">
+                    <DOTAHeroImage id="SelectedHeroIcon" heroname="npc_dota_hero_axe" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label id="SelectedHeroName" text="" />
+                </Panel>
                 <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Tank" />
                 <Panel id="TankStat" class="HeroStat">
                     <Panel class="HeroStatChild"/>
@@ -63,6 +65,14 @@
                     <Panel class="HeroStatChild"/>
                     <Panel class="HeroStatChild last"/>
                  </Panel>
+                <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Utility" />
+                <Panel id="UtilityStat" class="HeroStat">
+                    <Panel class="HeroStatChild"/>
+                    <Panel class="HeroStatChild"/>
+                    <Panel class="HeroStatChild"/>
+                    <Panel class="HeroStatChild"/>
+                    <Panel class="HeroStatChild last"/>
+                </Panel>
             </Panel>
         </Panel>
     </Panel>

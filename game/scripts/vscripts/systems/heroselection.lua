@@ -70,7 +70,7 @@ function HeroSelection:OnAllPlayersSelectedHero()
         if(not HeroSelection.playerHeroes["player"..i]) then
             HeroSelection.playerHeroes["player"..i] = {}
             HeroSelection.playerHeroes["player"..i].playerId = i
-            HeroSelection.playerHeroes["player"..i].hero = HeroSelection.data[math.random(1, #HeroSelection.data)]
+            HeroSelection.playerHeroes["player"..i].hero = HeroSelection.data[math.random(1, #HeroSelection.data)].Name
         end
         local player = PlayerResource:GetPlayer(i)
         if(player) then

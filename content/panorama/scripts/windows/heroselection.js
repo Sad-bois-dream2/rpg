@@ -29,7 +29,7 @@ function OnHeroSelectionScreenLoaded() {
     $("#HeroControls").style.visibility = "visible";
     heroScreenLoaded = true;
     if(heroNotSelected) {
-        OnHeroSelected(heroes[0], true);
+        OnHeroSelected(heroes[0].Name, true);
     }
 }
 
@@ -53,12 +53,23 @@ function OnPickHeroButtonPressed() {
 }
 
 function OnHeroesDataReceived(event) {
-    var heroesContainer = $("#AvailableHeroes");
+    var heroesContainerStr = $("#AvailableHeroesStrength");
+    var heroesContainerAgi = $("#AvailableHeroesAgility");
+    var heroesContainerInt = $("#AvailableHeroesIntellect");
     heroes = JSON.parse(event.heroes);
     for(var i = 0; i < heroes.length; i++) {
-		var heroPanel = $.CreatePanel( "RadioButton", heroesContainer, heroes[i]);
+        var heroPanel;
+        if(heroes[i].Attribute == "DOTA_ATTRIBUTE_STRENGTH") {
+		    heroPanel = $.CreatePanel( "RadioButton", heroesContainerStr, heroes[i].Name);
+		}
+        if(heroes[i].Attribute == "DOTA_ATTRIBUTE_AGILITY") {
+		    heroPanel = $.CreatePanel( "RadioButton", heroesContainerAgi, heroes[i].Name);
+		}
+        if(heroes[i].Attribute == "DOTA_ATTRIBUTE_INTELLECT") {
+		    heroPanel = $.CreatePanel( "RadioButton", heroesContainerInt, heroes[i].Name);
+		}
         heroPanel.BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection_button.xml", false, false);
-        heroPanel.FindChildTraverse('HeroIcon').heroname = heroes[i];
+        heroPanel.FindChildTraverse('HeroIcon').heroname = heroes[i].Name;
         heroPanel.Data().OnHeroSelected = OnHeroSelected;
     }
 }

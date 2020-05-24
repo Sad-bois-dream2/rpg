@@ -37,7 +37,21 @@
             <Label class="SaveSlotsTitleLabel" text="#DOTA_HeroSelection_SaveLoadTitle" />
         </Panel>
         <Panel id="AvailableHeroesContainer">
-            <Panel id="AvailableHeroes" />
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Strength" />
+            </Panel>
+            <Panel id="AvailableHeroesStrength" />
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Agility" />
+            </Panel>
+            <Panel id="AvailableHeroesAgility" />
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Intelligence" />
+            </Panel>
+            <Panel id="AvailableHeroesIntellect" />
         </Panel>
     </Panel>
 </root>
