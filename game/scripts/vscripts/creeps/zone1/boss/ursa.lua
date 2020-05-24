@@ -197,8 +197,10 @@ function modifier_ursa_dash_motion:OnCreated(kv)
         if (self:ApplyHorizontalMotionController() == false) then
             self:Destroy()
         end
+        self:StartIntervalThink(0.1)
     end
 end
+
 
 function modifier_ursa_dash_motion:OnDestroy()
     if IsServer() then
@@ -223,11 +225,35 @@ function modifier_ursa_dash_motion:UpdateHorizontalMotion(me, dt)
         local isBlocked = GridNav:IsBlocked(expected_location)
         local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.caster:GetHullRadius(), true)
         local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
-        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range) then
+        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range ) then
             self.caster:SetAbsOrigin(expected_location)
             local particle_location = expected_location + Vector(0, 0, 100)
             ParticleManager:SetParticleControl(self.ability.particle, 0, particle_location)
             ParticleManager:SetParticleControl(self.ability.particle, 1, particle_location)
+            local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                    expected_location,
+                    nil,
+                    200,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_HERO,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                if (not TableContains(self.damagedEnemies, enemy)) then
+                    local damageTable = {}
+                    damageTable.caster = self.caster
+                    damageTable.target = enemy
+                    damageTable.ability = self.ability
+                    damageTable.damage = self.base_damage
+                    damageTable.physdmg = true
+                    GameMode:DamageUnit(damageTable)
+                    table.insert(self.damagedEnemies, enemy)
+                end
+            end
+        elseif ( traveled_distance < self.dash_range) then
+            expected_location = current_location - self.caster:GetForwardVector() * self.dash_speed * dt
+            self.caster:SetAbsOrigin(expected_location)
             local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                     expected_location,
                     nil,
@@ -327,9 +353,9 @@ function ursa_dash:OnSpellStart(unit, special_cast)
                 self.particle = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_dash/ursa_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
                 ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
-                caster:AddNewModifier(caster, self, "modifier_ursa_dash_motion", { Duration = -1 })
+                caster:AddNewModifier(caster, self, "modifier_ursa_dash_motion", { Duration = 2 })
                 counter = counter+1
-                return 2.0
+                return 3
                 end
             end)
     end

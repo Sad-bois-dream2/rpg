@@ -1069,8 +1069,8 @@ function modifier_venge_side_inferno_amp:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.amp = self.ability:GetSpecialValueFor("inferno_amp") *-0.01 * (self:GetStackCount()+1)
-    self.armor_reduce = self.ability:GetSpecialValueFor("inferno_armor_reduce") * (self:GetStackCount()+1) * -1
+    self.amp = self.ability:GetSpecialValueFor("inferno_amp") *-0.01
+    self.armor_reduce = self.ability:GetSpecialValueFor("inferno_armor_reduce")  * -1
 end
 
 function modifier_venge_side_inferno_amp:OnRefresh()
@@ -1083,11 +1083,11 @@ end
 
 
 function modifier_venge_side_inferno_amp:GetDamageReductionBonus()
-    return self.amp
+    return self.amp * self:GetStackCount()
 end
 
 function modifier_venge_side_inferno_amp:GetArmorBonus()
-    return self.armor_reduce
+    return self.armor_reduce * self:GetStackCount()
 end
 
 LinkLuaModifier("modifier_venge_side_inferno_amp", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1134,7 +1134,7 @@ function venge_fall:OnSpellStart()
         local caster 			= self:GetCaster()
         local ability 			= self
         local radius = self:GetSpecialValueFor("range")
-            caster:EmitSoundParams("vengefulspirit_vng_attack_08", 1.0, 2.2, 0)
+            caster:EmitSoundParams("vengefulspirit_vng_attack_08", 1.0, 4.2, 0)
         if not caster:HasModifier("modifier_venge_side_fire") then
             local modifierTable = {}
             modifierTable.ability = self
@@ -1191,13 +1191,17 @@ end
 function venge_fall:CastMeteor(caster, ability, target_point, number_of_meteors)
     if IsServer() then
         local chaos_meteor_land_time = ability:GetSpecialValueFor("land_time")
+        --self.R = math.random(255) --kv
+        --self.G = math.random(255) --kv
+        --self.B = math.random(255) --kv
 
         self.falling = CreateModifierThinker(
                 caster,
                 ability,
                 "modifier_venge_fall",
                 {
-                    duration = chaos_meteor_land_time
+                    duration = chaos_meteor_land_time,
+                    --R = self.R, G = self.G, B = self.B --kv
                 },
                 target_point,
                 caster:GetTeamNumber(),
@@ -1238,10 +1242,23 @@ function modifier_venge_fall:OnCreated(kv)
         -- Create start_point of the meteor 1000z up in the air! Meteors velocity is same while falling through the air as it is rolling on the ground.
         local chaos_meteor_fly_original_point = (self.target_point - (self.chaos_meteor_velocity * self.chaos_meteor_land_time)) + Vector(0, 0, 1000)
         --Create the particle effect consisting of the meteor falling from the sky and landing at the target point.
-        self.chaos_meteor_fly_particle_effect = ParticleManager:CreateParticle("particles/units/npc_boss_venge/venge_fall/venge_fall_fly.vpcf", PATTACH_ABSORIGIN, self.caster)
-        ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 0, chaos_meteor_fly_original_point)
-        ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 1, self.target_point)
+        self.chaos_meteor_fly_particle_effect = ParticleManager:CreateParticle("particles/units/npc_boss_venge/venge_fall/venge_fall_fly.vpcf", PATTACH_ABSORIGIN, self.caster)--"particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly.vpcf"
+        ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 0, chaos_meteor_fly_original_point) --  constraint distance starting point
+        ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 1, self.target_point) --constraint distance end point
         ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 2, Vector(self.chaos_meteor_land_time, 0, 0))
+        --ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 60, Vector(kv.R, kv.G, kv.B)) --rainbow color
+        --ParticleManager:SetParticleControl(self.chaos_meteor_fly_particle_effect, 61, Vector(1,0,0))
+
+        --rolling for rainbow
+        --Timers:CreateTimer(self.chaos_meteor_land_time, function()
+            --self.chaos_meteor_projectile = ParticleManager:CreateParticle("particles/units/npc_boss_venge/venge_fall/invoker_chaos_meteor_rolling.vpcf", PATTACH_POINT, self.caster)
+            --ParticleManager:SetParticleControl(self.chaos_meteor_projectile, 0, self.target_point) --origin location
+            --ParticleManager:SetParticleControl(self.chaos_meteor_projectile, 1, self.chaos_meteor_velocity) -- velocity
+            --ParticleManager:SetParticleControl(self.chaos_meteor_projectile, 4, Vector(self.chaos_meteor_duration,0,0)) --expire time
+            --ParticleManager:SetParticleControl(self.chaos_meteor_projectile, 60, Vector(kv.R, kv.G, kv.B))
+            --ParticleManager:SetParticleControl(self.chaos_meteor_projectile, 61, Vector(1,0,0))
+            --ParticleManager:ReleaseParticleIndex(self.chaos_meteor_projectile)
+        --end)
     end
 end
 
@@ -1267,7 +1284,7 @@ function modifier_venge_fall:OnRemoved(kv)
         -- Meteor Projectile object
         local meteor_projectile_obj =
         {
-            EffectName 					= "particles/units/npc_boss_venge/venge_fall/venge_fall.vpcf",
+            EffectName 					= "particles/units/npc_boss_venge/venge_fall/venge_fall.vpcf",--nil
             Ability 					= self.ability,
             vSpawnOrigin 				= self.target_point,
             fDistance 					= self.chaos_meteor_travel_distance,
@@ -1576,8 +1593,8 @@ function modifier_venge_mind_control_black:OnAttackLanded(keys)
 
 end
 
-function modifier_venge_mind_control_black:GetManaRegenerationBonus()
-    return -2
+function modifier_venge_mind_control_black:GetManaRegenerationPercentBonus()
+    return -1
 end
 
 function modifier_venge_mind_control_black:OnDestroy()
@@ -1752,7 +1769,7 @@ function venge_mind_control:OnSpellStart()
         self.projectile_speed = self:GetSpecialValueFor( "projectile_speed" )
         self.charm_duration = self:GetSpecialValueFor( "charm_duration" )
         local caster = self:GetCaster()
-        caster:EmitSoundParams("vengefulspirit_vng_kill_01", 1.0, 3.2, 0)
+        caster:EmitSoundParams("vengefulspirit_vng_kill_01", 1.0, 5.2, 0)
         if not caster:HasModifier("modifier_venge_side_void") then
             local modifierTable = {}
             modifierTable.ability = self
@@ -2113,7 +2130,7 @@ end
 function venge_tide:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
-        self:GetCaster():EmitSoundParams("vengefulspirit_vng_spawn_07", 1.0, 3.2, 0)
+        self:GetCaster():EmitSoundParams("vengefulspirit_vng_spawn_07", 1.0, 5.2, 0)
         self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
     end
 
@@ -2439,7 +2456,6 @@ modifier_venge_moonify_aura = class({
     end,
 })
 
--- Doesn't feel like this is working for some reason
 function modifier_venge_moonify_aura:GetStatusEffectName()
     return "particles/status_fx/status_effect_keeper_dazzle.vpcf"
 end
@@ -2500,7 +2516,7 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
             damageTable.target = self.parent
             damageTable.ability = self.ability
             damageTable.damage = self.damage
-            damageTable.earthdmg = true
+            damageTable.holydmg = true
             GameMode:DamageUnit(damageTable)
         elseif ( distance_to_caster > 350 ) and not self.parent:HasModifier("modifier_venge_bubble") then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
             self.parent:SetAbsOrigin(self.expected_location)
@@ -2509,7 +2525,7 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
             damageTable.target = self.parent
             damageTable.ability = self.ability
             damageTable.damage = self.damage
-            damageTable.earthdmg = true
+            damageTable.holydmg = true
             GameMode:DamageUnit(damageTable)
         elseif ( distance_to_caster <= 350 and distance_to_caster > 100 and not self.parent:HasModifier("modifier_venge_bubble") ) then
             self.parent:SetAbsOrigin(self.expected_location)
@@ -2518,17 +2534,17 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
             damageTable.target = self.parent
             damageTable.ability = self.ability
             damageTable.damage = self.damage*3
-            damageTable.earthdmg = true
+            damageTable.holydmg = true
             GameMode:DamageUnit(damageTable)
-        elseif ( distance_to_caster > 100) and self.parent:HasModifier("modifier_venge_bubble") then
+        elseif ( distance_to_caster > 90) and self.parent:HasModifier("modifier_venge_bubble") then
             self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
             self.parent:SetAbsOrigin(self.expected_location)
             local damageTable = {}
             damageTable.caster = self.caster
             damageTable.target = self.parent
             damageTable.ability = self.ability
-            damageTable.damage = self.damage
-            damageTable.earthdmg = true
+            damageTable.damage = self.damage*3
+            damageTable.holydmg = true
             GameMode:DamageUnit(damageTable)
             if distance_to_caster < 100 then
                 self:Destroy()
@@ -2767,7 +2783,7 @@ function venge_moonify:OnSpellStart()
         GameMode:ApplyBuff(modifierTable)
     end
     self.position	= self:GetCursorPosition()
-    self:GetCaster():EmitSound("vengefulspirit_vng_attack_02")
+    self:GetCaster():EmitSoundParams("vengefulspirit_vng_attack_02", 1.0, 5.2, 0)
     -- AbilitySpecials
     self.on_count				= self:GetSpecialValueFor("on_count")
     self.radius					= self:GetSpecialValueFor("radius")
@@ -3243,8 +3259,7 @@ function venge_root:OnSpellStart()
         local duration = self:GetSpecialValueFor("duration")
 
         -- Play cast sound
-        EmitSoundOn(sound_cast, self.caster)
-
+        self.caster:EmitSoundParams(sound_cast,1.0, 0.7, 0)
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -3347,7 +3362,7 @@ end
 function venge_fel:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
-        self:GetCaster():EmitSoundParams("vengefulspirit_vng_kill_07", 1.0, 2.2, 0)
+        self:GetCaster():EmitSoundParams("vengefulspirit_vng_kill_07", 1.0, 5.2, 0)
         self.nPreviewFX = ParticleManager:CreateParticle( "particles/units/heroes/heroes_underlord/underlord_firestorm_pre.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster() )
     end
     return true

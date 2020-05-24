@@ -844,7 +844,7 @@ function brood_kiss:IsRequireCastbar()
 end
 
 function brood_kiss:IsInterruptible()
-    return false
+    return true
 end
 
 

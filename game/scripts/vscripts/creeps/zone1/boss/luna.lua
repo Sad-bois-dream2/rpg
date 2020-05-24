@@ -424,7 +424,7 @@ function luna_wave:IsRequireCastbar()
 end
 
 function luna_wave:IsInterruptible()
-    return false
+    return true
 end
 
 function luna_wave:OnAbilityPhaseStart()

@@ -68,9 +68,9 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"1"
-        "AnimationPlaybackRate"         "0.3"
-        "AbilityCastRange"				"800"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.15"
+        "AbilityCastRange"				"1000"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -79,12 +79,12 @@
             "01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_range"				"800 1000 1200"
+				"dash_range"				"1200"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_speed"				"600 750 900"
+				"dash_speed"				"600 700 800"
 			}
 			"03"
 			{
@@ -133,7 +133,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastPoint"				"0.1"
-        "AbilityCastRange"				"600"
+        "AbilityCastRange"				"1200"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@
         "AnimationIgnoresModelScale"    "1"
         "AnimationPlaybackRate"         "0.2"
         "AbilityCastPoint"				"2"
-        "AbilityCastRange"				"1500"
+        "AbilityCastRange"				"1200"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
@@ -221,7 +221,7 @@
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"end_radius"				"600"
+   				"end_radius"				"450"
    			}
    			"07"
    			{

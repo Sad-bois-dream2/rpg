@@ -887,7 +887,7 @@ function lycan_agility:IsRequireCastbar()
 end
 
 function lycan_agility:IsInterruptible()
-    return false
+    return true
 end
 
 
@@ -944,9 +944,9 @@ end
 function lycan_agility:OnAbilityPhaseStart()
     if IsServer() then
         local caster = self:GetCaster()
-        local bound = "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
-        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_POINT_FOLLOW, caster)
-        ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
+        local bound = "particles/units/npc_boss_venge/venge_control/nevermore_loadout_purple.vpcf"
+        self.bound_fx = ParticleManager:CreateParticle(bound, PATTACH_ABSORIGIN, caster)
+        --ParticleManager:SetParticleControlEnt(self.bound_fx, 0, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", caster:GetAbsOrigin(), true)
     end
 
     return true

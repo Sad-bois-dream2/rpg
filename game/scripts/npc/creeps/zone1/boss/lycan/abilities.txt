@@ -107,8 +107,8 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastRange"              "1200"
-        "AnimationPlaybackRate"         "0.6"
-        "AbilityCastPoint"				"1"
+        "AnimationPlaybackRate"         "0.3"
+        "AbilityCastPoint"				"2"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"30"
@@ -141,7 +141,7 @@
 		"precache"
         	{
         	    "particle"      "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-        	    "particle"      "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        	    "particle"      "particles/units/npc_boss_venge/venge_control/nevermore_loadout_purple.vpcf"
         	    "soundfile"		"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
         	    "soundfile"     "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
         	}
@@ -167,7 +167,7 @@
 		"AbilityCastAnimation"			"ACT_DOTA_VICTORY"
         "AbilityCastRange"              "1500"
         "AnimationPlaybackRate"         "1"
-        "AbilityCastPoint"				"1"
+        "AbilityCastPoint"				"2"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"30"
@@ -354,8 +354,8 @@
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastRange"              "800 1000 1200"
-        "AnimationPlaybackRate"         "0.6"
-        "AbilityCastPoint"				"1"
+        "AnimationPlaybackRate"         "0.3"
+        "AbilityCastPoint"				"2"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------

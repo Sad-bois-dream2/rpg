@@ -160,7 +160,7 @@
    			"09"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"holy_silence"			    "0.8 1 1.2"
+   				"holy_silence"			    "0.5 0.6 0.7"
    			}
    			"10"
    			{
@@ -277,7 +277,7 @@
    			"08"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"travel_distance"			"1200 1350 1500"
+   				"travel_distance"			"1200 1400 1600"
    			}
    			"09"
    			{
@@ -661,8 +661,8 @@
     	// Casting
     	//-------------------------------------------------------------------------------------------------------------
     	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"1.67"
-        "AnimationPlaybackRate"         "0.28"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.23"
         "AbilityCastRange"				"2000"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
@@ -862,12 +862,12 @@
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"amp"	                    "10 15 20"
+   				"amp"	                    "15 20 25"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				        "15 45 135"
+   				"dot"				        "20 60 200"
    			}
    			"06"
    			{
