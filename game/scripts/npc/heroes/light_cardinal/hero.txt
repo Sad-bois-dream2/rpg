@@ -41,10 +41,10 @@
         "VisionNighttimeRange"      "1800"        // Range of vision at night time.
         "Roles"
         {
-            "Tank"  "5"
-            "DPS"   "0"
+            "Tank"  "0"
+            "DPS"   "2"
             "Support"   "5"
-            "Utility"   "0"
+            "Utility"   "2"
         }
     }
 }

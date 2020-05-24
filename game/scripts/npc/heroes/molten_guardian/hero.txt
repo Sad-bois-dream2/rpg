@@ -42,9 +42,9 @@
         "Roles"
         {
             "Tank"  "5"
-            "DPS"   "0"
-            "Support"   "5"
-            "Utility"   "0"
+            "DPS"   "2"
+            "Support"   "0"
+            "Utility"   "1"
         }
     }
 }

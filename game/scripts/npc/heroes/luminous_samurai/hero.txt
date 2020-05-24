@@ -43,7 +43,7 @@
         {
             "Tank"  "5"
             "DPS"   "0"
-            "Support"   "5"
+            "Support"   "0"
             "Utility"   "0"
         }
     }
