@@ -63,6 +63,20 @@ function HeroSelection:OnGetStateRequest(event)
     CustomGameEventManager:Send_ServerToPlayer(player, "rpg_hero_selection_get_state_from_server", { state = json.encode(HeroSelection.playerHeroes) })
 end
 
+function HeroSelection:IsAllPlayersPickedHero()
+    local totalPlayersCount = PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS)
+    local totalPlayersPickedHero = 0
+    for _, playerData in pairs(HeroSelection.playerHeroes) do
+        if(playerData.state == HeroSelection.STATE_PICKED) then
+            totalPlayersPickedHero = totalPlayersPickedHero + 1
+        end
+    end
+    if(totalPlayersPickedHero >= totalPlayersCount) then
+        return true
+    end
+    return false
+end
+
 function HeroSelection:OnHeroPickedRequest(event)
     if (not event or not event.PlayerID) then
         return
@@ -72,7 +86,7 @@ function HeroSelection:OnHeroPickedRequest(event)
     HeroSelection.playerHeroes["player" .. event.PlayerID].state = HeroSelection.STATE_PICKED
     HeroSelection.playerHeroes["player" .. event.PlayerID].playerId = event.PlayerID
     CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_picked_from_server", { hero = event.hero, player_id = event.PlayerID })
-    if (GetTableSize(HeroSelection.playerHeroes) >= PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS)) then
+    if (HeroSelection:IsAllPlayersPickedHero()) then
         GameRules:FinishCustomGameSetup()
         HeroSelection:OnAllPlayersSelectedHero()
     end
