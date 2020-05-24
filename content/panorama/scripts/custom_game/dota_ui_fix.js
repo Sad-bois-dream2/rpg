@@ -91,6 +91,5 @@ function StartCastbarFixTimer() {
     minimap.style.borderRadius = "10px";
     chatLinesContainer = base.FindChildTraverse('ChatLinesPanel');
     GameEvents.Subscribe("rpg_say_chat_message_from_server", OnChatMessageRequest);
-    AutoUpdateValues();
     StartCastbarFixTimer();
 })();
