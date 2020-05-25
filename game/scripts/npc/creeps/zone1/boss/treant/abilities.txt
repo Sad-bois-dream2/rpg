@@ -11,7 +11,9 @@
         "ScriptFile"					"creeps/zone1/boss/treant"
         "AbilityTextureName"			"treant_hook"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+ 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+ 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
 		"MaxLevel"						"3"
 
 		// Time
@@ -21,8 +23,8 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.3"
-
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"2000"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -36,22 +38,22 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"grow_speed"		        "1000 2000 4000"
+				"projectile_speed"		    "1000 2000 4000"
 			}
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"damage"					"500 1500 5000"
+				"damage"					"200 600 1800"
 			}
 			"04"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"stun_duration"					"5"
+				"stun"					    "2 3.5 5"
 			}
 			"05"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"taunt_duration"				"5"
+				"taunt"				        "5"
 			}
 		}
 			"precache"
@@ -59,10 +61,169 @@
                 "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
+                "particle"  "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
         	}
 	}
     //=================================================================================================================
-    // Treant : Sap seed
+    // Treant : Verdant Flux
+    //=================================================================================================================
+    "treant_flux"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/treant"
+        "AbilityTextureName"			"treant_flux"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+ 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+ 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+        // Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"200"
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   		   "01"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"radius"				    "300 400 500"
+            }
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"delay"		                "4"
+   			}
+   		    "03"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"total_time"				 "8 16 24"
+            }
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"pulse"				        "2 4 6"
+   			}
+   		    "05"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"pulse_interval"		    "4"
+            }
+            "06"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"mini_per_pulse"		    "10"
+            }
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"mini_interval"		        "0.1"
+   			}
+   		    "08"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"damage"				    "50 150 450"
+            }
+   		    "09"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"self_ms_slow"				"15 8 0"
+            }
+   		}
+		"precache"
+		{
+		    "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts"
+            "particle"  "particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf"
+            "particle"  "particles/units/npc_boss_treant/treant_flux/flux_explosion.vpcf"
+		}
+	}
+	//=================================================================================================================
+    // Treant : Leaf Storm
+    //=================================================================================================================
+    "treant_storm"
+    {
+            // General
+       		//-------------------------------------------------------------------------------------------------------------
+       		"BaseClass"						"ability_lua"
+            "ScriptFile"					"creeps/zone1/boss/treant"
+            "AbilityTextureName"			"treant_storm"
+            "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+            "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+     		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+     		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+       		"MaxLevel"						"3"
+
+
+       		// Time
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilityCooldown"				"30"
+
+            // Casting
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_5"
+            "AbilityCastPoint"				"0.5"
+            "AbilityCastRange"				"1500"
+
+
+    		// Special
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilitySpecial"
+    		{
+    			"01"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "range"                     "1500"
+    		    }
+    			"02"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "min_damage_range"          "300"
+    		    }
+                "03"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "min_damage"                "25 50 100"
+    		    }
+    			"03"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "increment_damage"          "0.25 0.5 1"
+    		    }
+    		    "04"
+    		    {
+    				"var_type"					"FIELD_FLOAT"
+                    "tick"                      "0.25"
+    		    }
+                "05"
+    		    {
+    				"var_type"					"FIELD_FLOAT"
+                    "duration"                  "8 10 12"
+    		    }
+    		}
+    		"precache"
+            {
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
+                "particle"  "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf"
+                "particle"  "particles/units/npc_boss_treant/treant_storm/wind.vpcf"
+            }
+        }
+
+    //=================================================================================================================
+    // Treant : Sap Seed
     //=================================================================================================================
     "treant_seed"
    	{
@@ -72,7 +233,9 @@
         "ScriptFile"					"creeps/zone1/boss/treant"
         "AbilityTextureName"			"treant_seed"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+ 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+ 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
    		"MaxLevel"						"3"
 
    		// Time
@@ -82,7 +245,8 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.3"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"1500"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -96,127 +260,96 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"target"			        "1 3 5"
+   				"number"			        "1 2 3 "
    			}
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"damage"	    	        "100 300 500"
+   				"damage"	    	        "50 150 450"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"mana_drain"			    "3 7 15"
+   				"mana_drain"			    "10 17 25"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"interval"	    	        "1.5"
+   				"slow"	    	            "50"
    			}
 
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "6"
+   				"duration"				    "3 4 5"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"tick"				        "1"
    			}
 
    		}
 		"precache"
 		{
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
+                "particle"  "particles/units/heroes/hero_treant/treant_leech_seed_damage_pulse.vpcf"
+                "particle"  "particles/units/heroes/hero_treant/treant_leech_seed.vpcf"
 		}
 	}
     //=================================================================================================================
-    // Treant : Sudden Growth
+    // Treant : One with the Forest
     //=================================================================================================================
-    "treant_growth"
+    "treant_one"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
         "ScriptFile"					"creeps/zone1/boss/treant"
-        "AbilityTextureName"			"treant_growth"
+        "AbilityTextureName"			"treant_one"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
    		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
    		"MaxLevel"						"3"
-
-
-   		// Time
-   		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"7 3 1"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
-   		    "01"
-             {
-               	"var_type"					"FIELD_FLOAT"
-               	"range"				        "2000"
-             }
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dmg_reflection_pct"		"5 7 9"
+   				"chance"			        "25 30 35"
    			}
-   		    "03"
-             {
-               	"var_type"					"FIELD_FLOAT"
-               	"duration"				    "3"
-             }
-   			"04"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"dot"				        "100 400 1000"
-   			}
-   		    "05"
-             {
-               	"var_type"					"FIELD_FLOAT"
-               	"chance"				    "20 30 40"
-             }
-
-
-   		}
-		"precache"
-		{
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
-
-
-		}
-	}
-    //=================================================================================================================
-    // Treant : Tree Bash
-    //=================================================================================================================
-    "treant_bash"
-    {
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/boss/treant"
-        "AbilityTextureName"			"treant_bash"
-        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"MaxLevel"						"3"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"20 18 15"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"					"FIELD_FLOAT"
-                "stun"               "2 4 7"
-		    }
-		}
-		"precache"
+            "03"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"dot"			            "100 300 1000"
+    		}
+            "04"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"duration"			        "2 3 4"
+    		}
+            "05"
+    		{
+    			"var_type"					"FIELD_FLOAT"
+    			"tick"			            "1"
+    		}
+    	}
+   		"precache"
         {
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_slardar.vsndevts"
+                "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
+                "particle"  "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
         }
-    }
+	}
 
     //=================================================================================================================
     // Treant : Ingrain
@@ -229,19 +362,59 @@
         "ScriptFile"					"creeps/zone1/boss/treant"
         "AbilityTextureName"			"treant_ingrain"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+   		"MaxLevel"						"3"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"regen"	    	            "0.5 1 2"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dmg_reduction"				"30 60 90"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"as_reduce"	    	        "40 20 0"
+   			}
+   		}
+   		   		"precache"
+                {
+                        "particle"  "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
+                }
+    }
+
+    //=================================================================================================================
+    // Treant : Regrowth
+    //=================================================================================================================
+    "treant_regrowth"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/treant"
+        "AbilityTextureName"			"treant_regrowth"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELLED"
    		"MaxLevel"						"3"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilityCooldown"				"30"
 
-   		// Casting
+		// Casting
         //-------------------------------------------------------------------------------------------------------------
-        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AnimationPlaybackRate"         "0.4"
+        "AbilityCastAnimation"			"ACT_DOTA_TELEPORT"
         "AnimationIgnoresModelScale"    "1"
-        "AbilityCastPoint"				"2.0"
+        "AbilityCastPoint"				"0.5"
+
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -249,68 +422,127 @@
    		{
    			"01"
    			{
-   				"var_type"					"FIELD_FLOAT"
-   				"heal"				        "20 35 50"
+   				"var_type"				"FIELD_FLOAT"
+   				"health_heal_pct"		"40 70 100"
    			}
-   			"02"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"regen"	    	            "0.5 1 2"
-   			}
-
-   		}
-   				"precache"
-                		{
-                        "soundfile" "soundevents/voscripts/game_sounds_vo_treant.vsndevts"
-                		}
-    }
-
-    //=================================================================================================================
-    // Treant : Fertilize
-    //=================================================================================================================
-    "treant_fertilize"
-   	{
-   		// General
-   		//-------------------------------------------------------------------------------------------------------------
-   		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/zone1/boss/treant"
-        "AbilityTextureName"			"treant_hunt"
-        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-   		"MaxLevel"						"3"
-
-   		// Time
-   		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"8 6 4"
-
-   		// Special
-   		//-------------------------------------------------------------------------------------------------------------
-   		"AbilitySpecial"
-   		{
-   			"01"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"range"				        "1500"
-   			}
-   			"02"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"number"			        "1 2 3"
-   			}
-            "03"
-    		{
-    			"var_type"					"FIELD_FLOAT"
-    			"duration"			        "30"
-    		}
-            "04"
-    		{
-    			"var_type"					"FIELD_FLOAT"
-    			"spawn_interval"			"8 6 4"
-    		}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				    "0.1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"channel_time"			"3.0"
+			}
     	}
    		"precache"
         {
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
         }
 	}
+    //=================================================================================================================
+	// Treant : Solar beam
+	//=================================================================================================================
+	"treant_beam"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone1/boss/treant"
+        "AbilityTextureName"			"treant_beam"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+ 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+ 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		"MaxLevel"						"3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"2600"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+   		    "01"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"radius"				    "2600"
+             }
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "3000 10000 30000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"		    "3000"
+   			}
+   		    "04"
+            {
+               	"var_type"					"FIELD_FLOAT"
+               	"travel_distance"		    "2600"
+            }
+            "05"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"start_radius"				"125"
+             }
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"end_radius"				"125"
+   			}
+
+
+		}
+			"precache"
+        	{
+                "soundfile" "soundevents/voscripts/game_sounds_vo_invoker.vsndevts"
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_furion.vsndevts"
+                "particle"  "particles/units/npc_boss_treant/treant_beam/sun_charge.vpcf"
+                "particle"  "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_channel_ti6.vpcf"
+                "particle"  "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_ti6.vpcf"
+        	}
+	}
+    //=================================================================================================================
+    // Treant : Entangling root
+    //=================================================================================================================
+    "treant_root"
+       {
+          // General
+          //-------------------------------------------------------------------------------------------------------------
+          "BaseClass"                   "ability_lua"
+          "ScriptFile"                  "creeps/zone1/boss/treant"
+          "AbilityTextureName"          "treant_root"
+          "AbilityType"                 "DOTA_ABILITY_TYPE_BASIC"
+          "AbilityBehavior"             "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+          "MaxLevel"                    "3"
+
+          // Special
+          //-------------------------------------------------------------------------------------------------------------
+          "AbilitySpecial"
+          {
+             "01"
+             {
+                "var_type"             "FIELD_FLOAT"
+                "duration"                "3"
+             }
+          }
+          "precache"
+       {
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
+                "particle"  "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+
+       }
+    }
 }
+

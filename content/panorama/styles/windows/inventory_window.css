@@ -32,14 +32,34 @@
 {
 	width: 77px;
 	height: 57px;
-	margin: 10px; /* change that in OnInventorySlotDragEnd too (slotSpacingX/Y) */
+	margin: 10px; /* change that in OnInventorySlotDragEnd (inventory.js) too (slotSpacingX/Y) */
 	border: 1px solid gray;
 	border-radius: 5px;
 }
 
-.InventoryEquippedSlot Label 
+.InventoryEquippedSlot.Drag
+{
+	border: 1px solid gold;
+}
+
+.InventoryEquippedSlot Label
 {
 	visibility: collapse;
+}
+
+.InventoryEquippedSlot.Alt Label
+{
+	visibility: visible;
+	width: 100%;
+	text-align: center;
+	horizontal-align: center;
+	vertical-align: bottom;
+	background-color: black;
+	text-transform: uppercase;
+	text-overflow: shrink;
+	height: fit-children;
+	color: white;
+	font-family: platformfont;
 }
 
 .InventoryEquippedSlot.empty #InventoryEquippedSlotImage0,
@@ -325,8 +345,7 @@
 
 #ConflictDialogPanel 
 {
-	width: 620px; 
-	min-height: 350px;
+	width: fit-children;
 	height: fit-children;
 	border: 1px solid gray;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
@@ -357,6 +376,7 @@
 	margin: 5px;
 	margin-left: 35px;
 }
+
 #ConflictDialogPanel .ItemPanel .Item .ItemTooltipDescription .ItemTooltipLabel
 {
 	min-height: 140px;
@@ -397,9 +417,9 @@
 	flow-children: right;
 }
 
-#npc_dota_hero_axe, #npc_dota_hero_underlord, #npc_dota_hero_mars, #npc_dota_hero_doom_bringer,
-#npc_dota_hero_phantom_assassin, #npc_dota_hero_juggernaut, #npc_dota_hero_drow_ranger, #npc_dota_hero_windrunner,
-#npc_dota_hero_silencer, #npc_dota_hero_enchantress, #npc_dota_hero_crystal_maiden, #npc_dota_hero_invoker
+.ItemTooltipLabel
 {
-	visibility: collapse;
+    color: white;
+	font-family: platformfont;
+	font-size: 16px;
 }

@@ -50,13 +50,34 @@
 
 .ItemTooltipInfoContainer
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	flow-children: right;
+}
+
+.ItemTooltipStatsContainer
+{
+	width: fill-parent-flow(1.0);
+	flow-children: down;
+	margin-top: 5px;
+}
+
+.ItemTooltipStatsContainer Label
+{
+	width: fill-parent-flow(1.0);
+	text-align: left;
+	vertical-align: center;
+	horizontal-align: left;
+	overflow: clip squish;
+	height: 20px;
+	color: white;
+	font-size: 16px;
+	font-family: platformfont;
+	margin-bottom: 2px;
 }
 
 .ItemTooltipRarityLabel
 {
-	max-width: 190px;
+	width: fill-parent-flow(1.0);
 	overflow: clip squish;
 	height: 20px;
 	color: grey;
@@ -64,27 +85,42 @@
 	font-family: platformfont;
 	vertical-align: center;
 	horizontal-align: left;
+	text-align: left;
 	margin-top: 1px;
 }
 
 .ItemTooltipTypeLabel 
 {
+	width: fill-parent-flow(1.0);
 	color: grey;
 	font-size: 16px;
 	font-family: platformfont;
 	vertical-align: center;
 	horizontal-align: right;
+	text-align: right;
 	margin-right: 2px;
 }
 
 .ItemTooltipLabel 
 {
+	width: fill-parent-flow(1.0);
 	color: white;
 	font-size: 14px;
 	font-family: platformfont;
 	horizontal-align: center;
 	vertical-align: center;
-	margin-top: 10px;
+	margin-top: 5px;
+}
+
+.ItemTooltipQualityLabel
+{
+	width: fill-parent-flow(1.0);
+	color: white;
+	font-size: 16px;
+	font-family: platformfont;
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: left;
 }
 
 .ItemTooltipHeader 

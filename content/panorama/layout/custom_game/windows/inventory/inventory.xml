@@ -1,14 +1,16 @@
 <root>
 	<styles>
 		<include src="file://{resources}/styles/windows/basic_window.css" />
-		<include src="file://{resources}/styles/windows/inventory_window.css" />
 		<include src="file://{resources}/styles/windows/item_tooltip.css" />
+		<include src="file://{resources}/styles/windows/inventory_window.css" />
+		<include src="file://{resources}/styles/custom_game/item_drops.css"/>
 	</styles>
 	<scripts>
-		<include src="file://{resources}/scripts/windows/inventory.js" />
 		<include src="file://{resources}/scripts/windows/basic_window.js" />
+		<include src="file://{resources}/scripts/windows/inventory.js" />
 	</scripts>
 	<Panel class="Root" hittest="false">
+		<Panel id="DropContainer" />
 		<Panel id="MainWindow" class="Window" style="width: 854px; height: 770px; visibility: collapse;">
 			<Panel class="WindowContent">
 				<Panel class="HeroContainer">
@@ -17,60 +19,60 @@
 						<Panel id="LeftItemSlots" class="LeftItemSlots">
 							<Panel id="InventoryEquippedSlot0" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(0)" onmouseover="ShowEquippedItemTooltip(0)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage0" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_claymore"/>
-								<Label text="Main hand"/>
+								<Label text="#DOTA_Inventory_slot_mainhand"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot1" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(1)" onmouseover="ShowEquippedItemTooltip(1)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage1" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_chainmail"/>
-								<Label text="Body"/>
+								<Label text="#DOTA_Inventory_slot_body"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot2" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(2)" onmouseover="ShowEquippedItemTooltip(2)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage2" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_inventory_legs_background"/>
-								<Label text="Legs"/>
+								<Label text="#DOTA_Inventory_slot_legs"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot3" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(3)" onmouseover="ShowEquippedItemTooltip(3)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage3" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_boots"/>
-								<Label text="Boots"/>
+								<Label text="#DOTA_Inventory_slot_boots"/>
 							</Panel>
 						</Panel>
 						<Panel id="RightItemSlots" class="RightItemSlots">
 							<Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)" onmouseover="ShowEquippedItemTooltip(5)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage5" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_poor_mans_shield"/>
-								<Label text="Off hand"/>
+								<Label text="#DOTA_Inventory_slot_offhand"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot6" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(6)" onmouseover="ShowEquippedItemTooltip(6)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage6" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_cloak"/>
-								<Label text="Cape"/>
+								<Label text="#DOTA_Inventory_slot_cape"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot7" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(7)" onmouseover="ShowEquippedItemTooltip(7)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage7" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shivas_guard"/>
-								<Label text="Shoulders"/>
+								<Label text="#DOTA_Inventory_slot_shoulder"/>
 							</Panel>
 							<Panel id="InventoryEquippedSlot8" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(8)" onmouseover="ShowEquippedItemTooltip(8)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage8" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_gloves"/>
-								<Label text="Gloves"/>
+								<Label text="#DOTA_Inventory_slot_gloves"/>
 							</Panel>
 						</Panel>
 						<Panel id="MiddleItemSlots" class="MiddleItemSlots">
 							<Panel id="InventoryEquippedSlot4" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(4)" onmouseover="ShowEquippedItemTooltip(4)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage4" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_helm_of_iron_will"/>
-								<Label text="Helmet"/>
+								<Label text="#DOTA_Inventory_slot_helmet"/>
 							</Panel>
 						</Panel>
 						<Panel id="MiddleItemSlotsFromBottom" class="MiddleItemSlots FromBottom">
 							<Panel class="LeftRings">
 								<Panel id="InventoryEquippedSlot9" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(9)" onmouseover="ShowEquippedItemTooltip(9)" onmouseout="HideItemTooltip()" showtooltip="false">
 									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage9" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_ring_of_protection"/>
-									<Label text="Ring1"/>
+									<Label text="#DOTA_Inventory_slot_ring"/>
 								</Panel>
 							</Panel>
 							<Panel id="InventoryEquippedSlot10" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(10)" onmouseover="ShowEquippedItemTooltip(10)" onmouseout="HideItemTooltip()" showtooltip="false">
 								<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage10" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_belt_of_strength"/>
-								<Label text="Belt"/>
+								<Label text="#DOTA_Inventory_slot_belt"/>
 							</Panel>
 							<Panel class="RightRings">
 								<Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)" onmouseover="ShowEquippedItemTooltip(11)" onmouseout="HideItemTooltip()" showtooltip="false">
 									<DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage11" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shadow_amulet"/>
-									<Label text="Ring2"/>
+									<Label text="#DOTA_Inventory_slot_amulet"/>
 								</Panel>
 							</Panel>
 						</Panel>
@@ -245,15 +247,17 @@
 					<DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
 				</Panel>
 				<Panel class="ItemTooltipName">
-					<Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+					<Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Item name" />
 				</Panel>
 			</Panel>
 			<Panel class="ItemTooltipDescription">
 				<Panel class="ItemTooltipInfoContainer">
-					<Label id="ItemTooltipRarityLabel" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
-					<Label id="ItemTooltipTypeLabel" html="true" class="ItemTooltipTypeLabel"  text="Ring" />
+					<Label id="ItemTooltipRarityLabel" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
+					<Label id="ItemTooltipTypeLabel" html="true" class="ItemTooltipTypeLabel"  text="Item type" />
 				</Panel>
-				<Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8" />
+				<Label id="ItemTooltipQualityLabel" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
+				<Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description" />
+				<Panel id="ItemTooltipStatsContainer" class="ItemTooltipStatsContainer" />
 			</Panel>
 		</Panel>
 		<Panel id="ConflictDialogPanel">
@@ -268,15 +272,17 @@
 							<DOTAItemImage id="ItemTooltipImage1" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
 						</Panel>
 						<Panel class="ItemTooltipName">
-							<Label id="ItemTooltipNameLabel1" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+							<Label id="ItemTooltipNameLabel1" html="true" class="ItemTooltipNameLabel" text="Item name" />
 						</Panel>
 					</Panel>
 					<Panel class="ItemTooltipDescription">
 						<Panel class="ItemTooltipInfoContainer">
-							<Label id="ItemTooltipRarityLabel1" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
-							<Label id="ItemTooltipTypeLabel1" html="true" class="ItemTooltipTypeLabel" text="Ring" />
+							<Label id="ItemTooltipRarityLabel1" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
+							<Label id="ItemTooltipTypeLabel1" html="true" class="ItemTooltipTypeLabel" text="Item type" />
 						</Panel>
-						<Label id="ItemTooltipLabel1" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8" />
+						<Label id="ItemTooltipQualityLabel1" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
+						<Label id="ItemTooltipLabel1" class="ItemTooltipLabel" html="true" text="Item description" />
+						<Panel id="ItemTooltipStatsContainer1" class="ItemTooltipStatsContainer" />
 					</Panel>
 				</Panel>
 				<Panel class="Item">
@@ -285,15 +291,17 @@
 							<DOTAItemImage id="ItemTooltipImage2" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
 						</Panel>
 						<Panel class="ItemTooltipName">
-							<Label id="ItemTooltipNameLabel2" html="true" class="ItemTooltipNameLabel" text="Great ring of powerlessness" />
+							<Label id="ItemTooltipNameLabel2" html="true" class="ItemTooltipNameLabel" text="Item name" />
 						</Panel>
 					</Panel>
 					<Panel class="ItemTooltipDescription">
 						<Panel class="ItemTooltipInfoContainer">
-							<Label id="ItemTooltipRarityLabel2" html="true" class="ItemTooltipRarityLabel" text="Cursed Legendary" />
-							<Label id="ItemTooltipTypeLabel2" html="true" class="ItemTooltipTypeLabel" text="Ring" />
+							<Label id="ItemTooltipRarityLabel2" html="true" class="ItemTooltipRarityLabel" text="Item rarity" />
+							<Label id="ItemTooltipTypeLabel2" html="true" class="ItemTooltipTypeLabel" text="Item type" />
 						</Panel>
-						<Label id="ItemTooltipLabel2" class="ItemTooltipLabel" html="true" text="Gives 110 attack speed and 30 movement speed, but reduces your armor by 8 and silences you.\nAttack Speed Bonus: 110\nMove Speed Bonus: 30\nArmor Reduction: 8\nVery looooooooooooooong123\nVery looooooooooooooong123" />
+						<Label id="ItemTooltipQualityLabel2" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%" />
+						<Label id="ItemTooltipLabel2" class="ItemTooltipLabel" html="true" text="Item description" />
+						<Panel id="ItemTooltipStatsContainer2" class="ItemTooltipStatsContainer" />
 					</Panel>
 				</Panel>
 			</Panel>

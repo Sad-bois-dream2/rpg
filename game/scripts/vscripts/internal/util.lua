@@ -1,21 +1,11 @@
 function DebugPrint(...)
-    local spew = Convars:GetInt('barebones_spew') or -1
-    if spew == -1 and BAREBONES_DEBUG_SPEW then
-        spew = 1
-    end
-
-    if spew == 1 then
+    if BAREBONES_DEBUG_SPEW == true then
         print(...)
     end
 end
 
 function DebugPrintTable(...)
-    local spew = Convars:GetInt('barebones_spew') or -1
-    if spew == -1 and BAREBONES_DEBUG_SPEW then
-        spew = 1
-    end
-
-    if spew == 1 then
+    if BAREBONES_DEBUG_SPEW == true then
         PrintTable(...)
     end
 end
@@ -235,4 +225,41 @@ end
 
 function DistanceBetweenVectors(vec1, vec2)
     return (vec1 - vec2):Length()
+end
+
+function GetTableSize(table)
+    local count = 0
+    for _, __ in pairs(table) do
+        count = count + 1
+    end
+    return count
+end
+
+function ShallowTableCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function DeepTableCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[DeepTableCopy(orig_key)] = DeepTableCopy(orig_value)
+        end
+        setmetatable(copy, DeepTableCopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
 end

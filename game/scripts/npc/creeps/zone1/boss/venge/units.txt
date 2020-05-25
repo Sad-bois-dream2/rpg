@@ -7,13 +7,13 @@
             "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
             "Model"           "models/heroes/mirana/mirana.vmdl"  // Model.
             "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-            "Level"           "30"
+            "Level"           "0"
             "UnitLabel"         "healing_ward"
 
             // Abilities
             //----------------------------------------------------------------
 
-              "Ability1"          "mirana_moonshard_arrow"     // Ability 1.
+              "Ability1"          ""     // Ability 1.
               "Ability2"          ""     // Ability 2.
               "Ability3"          ""      // Ability 3.
               "Ability4"          ""      // Ability 4.
@@ -26,6 +26,7 @@
             //----------------------------------------------------------------
             "ArmorPhysical"       "0"     // Physical protection.
             "MagicalResistance"       "0"     // Magical protection.
+            "HeathBarOffset"        "250"
 
             // Attack
             //----------------------------------------------------------------
@@ -121,7 +122,7 @@
             // Abilities
             //----------------------------------------------------------------
 
-              "Ability1"          "luna_void_glaive"     // Ability 1.
+              "Ability1"          ""     // Ability 1.
               "Ability2"          ""     // Ability 2.
               "Ability3"          ""      // Ability 3.
               "Ability4"          ""      // Ability 4.
@@ -135,6 +136,7 @@
             //----------------------------------------------------------------
             "ArmorPhysical"       "0"     // Physical protection.
             "MagicalResistance"       "0"     // Magical protection.
+            "HeathBarOffset"        "250"
 
             // Attack
             //----------------------------------------------------------------

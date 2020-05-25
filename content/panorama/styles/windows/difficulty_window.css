@@ -1,5 +1,111 @@
-.LevelIcon
+.DifficultyWindow
 {
-	width: 80px;
-	height: 80px;
+	width: 800px;
+	height: 600px;
+	vertical-align: top;
+	margin-top: 50px;
+}
+
+.WindowContent
+{
+	margin-top: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    flow-children: down;
+}
+
+.TitleLabel
+{
+    color: white;
+    font-size: 20px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.TimeLeftLabel
+{
+    color: white;
+    font-size: 16px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    margin-bottom: 0px;
+}
+
+.PickedDifficultyLabel
+{
+    color: white;
+    font-size: 16px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: platformfont;
+	text-align: center;
+	letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.DifficultyChangeLabel
+{
+    color: white;
+    font-size: 15px;
+	font-family: platformfont;
+	text-align: left;
+	letter-spacing: 1px;
+}
+
+#DifficultyChangesContainer
+{
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
+    flow-children: down;
+    overflow: squish scroll;
+}
+
+.ConfirmButton
+{
+    vertical-align: center;
+    horizontal-align: center;
+    visibility: collapse;
+}
+
+SlottedSlider.HorizontalSlider #SliderThumb
+{
+    background-image: url("s2r://panorama/images/hud/skull_stroke_png.vtex");
+    background-position: center;
+    background-size: 100% 100%;
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	box-shadow: fill black 1px 1px 32px 1px;
+}
+
+SlottedSlider.HorizontalSlider .SliderNotch
+{
+    visibility: collapse;
+}
+
+SlottedSlider.HorizontalSlider SlottedSlider.HorizontalSlider
+{
+    margin-top: 0px;
+}
+
+
+Slider.HorizontalSlider #SliderTrack, SlottedSlider.HorizontalSlider #SliderTrack
+{
+    margin-top: 8px;
+}
+
+.SliderHidden
+{
+    visibility: collapse;
 }

@@ -1,0 +1,10 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/chat.css" />
+    </styles>
+    <Panel class="CustomChatLineContainer" selectionpos="auto" hittest="false" hittestchildren="false">
+        <Panel class="CustomHeroBadge" selectionpos="auto" />
+        <Image id="HeroIcon" class="CustomHeroIcon" selectionpos="auto" src="file://{images}/heroes/npc_dota_hero_crystal_maiden_alt1.png" defaultsrc="" scaling="stretch-to-fit-preserve-aspect" />
+        <Label id="ChatLabel" class="CustomChatLineLabel" html="true" text=""/>
+    </Panel>
+</root>
