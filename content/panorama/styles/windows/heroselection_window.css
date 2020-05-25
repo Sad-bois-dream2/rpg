@@ -499,12 +499,15 @@
 	border-radius: 5px;
 	flow-children: down;
 	margin-right: 10px;
-    transform: translatey(0px);
 }
 
 .HeroSlot:hover {
 	border: 1px solid gold;
     transform: translatey(-5px);
+}
+
+.HeroSlot.Locked:hover {
+    transform: translatey(0px);
 }
 
 .HeroSlot DOTAHeroImage {
@@ -513,21 +516,39 @@
     horizontal-align: center;
 }
 
-.HeroSlot Label {
-    vertical-align: center;
-    horizontal-align: center;
-    color: white;
-    font-size: 16px;
-}
-
-.HeroSlot Label.HeroSlotNew {
+.HeroSlotLabel {
     vertical-align: center;
     horizontal-align: center;
     color: white;
     text-transform: uppercase;
     text-overflow: shrink;
-    font-size: 40px;
+    font-size: 16px;
     text-align: center;
+    width: fill-parent-flow(1.0);
+}
+
+.HeroSlotImage {
+    width: 18px;
+    height: 18px;
+    visibility: collapse;
+    background-image: url("s2r://panorama/images/control_icons/lock_small_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    vertical-align: center;
+    horizontal-align: center;
+}
+
+.HeroSlot.New .HeroSlotLabel {
+    font-size: 40px;
+}
+
+.HeroSlot.Locked .HeroSlotLabel {
+    visibility: collapse;
+}
+
+.HeroSlot.Locked .HeroSlotImage {
+    visibility: visible;
 }
 
 #HeroSelectionScreen {

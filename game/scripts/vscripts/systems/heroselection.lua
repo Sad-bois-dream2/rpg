@@ -123,7 +123,7 @@ function HeroSelection:OnHeroPickedRequest(event)
     HeroSelection.playerHeroes["player" .. event.PlayerID].playerId = event.PlayerID
     CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_picked_from_server", { hero = event.hero, player_id = event.PlayerID })
     if (HeroSelection:IsAllPlayersPickedHero()) then
-        GameRules:FinishCustomGameSetup()
+        GameRules:SetCustomGameSetupRemainingTime(5)
         HeroSelection:OnAllPlayersSelectedHero()
     end
 end

@@ -4,6 +4,8 @@ var latestSelectedHero;
 var heroPicked = true;
 var heroNotSelected = true;
 var tankStats, dpsStats, supportStats, utilityStats;
+var availableHeroes = [];
+var HERO_PANEL = 0, HERO_NAME = 1;
 var heroesData = {};
 var MAX_STATS = 5;
 var STATE_SELECTED = 0;
@@ -91,9 +93,9 @@ function OnCloseLoadWindowButtonPressed() {
     $("#SaveSlotsWindow").SetHasClass("Hidden", true);
 }
 
-function OnPickHeroButtonPressed() {
-    heroPicked = false;
-    if(heroPicked) {
+function OnPickHeroButtonPressed(slot) {
+    var slot = $("#" + slot);
+    if(slot.BHasClass("Locked") || heroPicked) {
         return;
     }
     Game.EmitSound("HeroPicker.Selected");
@@ -157,7 +159,6 @@ function OnHeroesDataReceived(event) {
     }
 }
 
-
 function OnStateDataReceived(event) {
     var state = JSON.parse(event.state);
     var picked = false;
@@ -182,7 +183,6 @@ function FixAltTab() {
     }
     $.Schedule( 0.1, FixAltTab );
 }
-
 
 (function() {
     var tankContainer = $("#TankStat");
