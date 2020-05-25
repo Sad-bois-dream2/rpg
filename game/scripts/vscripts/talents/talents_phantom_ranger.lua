@@ -154,7 +154,6 @@ function phantom_ranger_phantom_arrow:OnSpellStart(source, target, level, isAuto
     source = source or self.caster
     target = target or self:GetCursorTarget()
     self.isAutomatic = isAutomatic or false
-    print (isAutomatic)
     self.caster.phantom_arrow_table = self.caster.phantom_arrow_table or {}
     local fromPhantom = (source ~= self.caster)
     local projectile = {

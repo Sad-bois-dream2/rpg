@@ -245,6 +245,8 @@ function Custom_ArrayRemove(t, fnKeep)
 
     return t;
 
+end
+
 function GetTableSize(table)
     local count = 0
     for _, __ in pairs(table) do
