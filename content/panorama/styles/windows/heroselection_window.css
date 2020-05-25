@@ -477,6 +477,7 @@
 #HeroSlotsPanel {
     width: fit-children;
     flow-children: right;
+    padding-top: 5px;
 }
 
 .HeroSlotsLabel {
@@ -485,7 +486,6 @@
     font-size: 20px;
     text-transform: uppercase;
     horizontal-align: center;
-    margin-bottom: 5px;
 }
 
 .HeroSlot {
@@ -499,10 +499,12 @@
 	border-radius: 5px;
 	flow-children: down;
 	margin-right: 10px;
+    transform: translatey(0px);
 }
 
 .HeroSlot:hover {
 	border: 1px solid gold;
+    transform: translatey(-5px);
 }
 
 .HeroSlot DOTAHeroImage {
