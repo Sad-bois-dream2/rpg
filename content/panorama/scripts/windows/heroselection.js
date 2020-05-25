@@ -1,8 +1,7 @@
 var heroes = [];
-var heroScreenLoaded = false;
 var latestSelectedHero;
 var heroPicked = true;
-var heroNotSelected = true;
+var heroSelected = false;
 var tankStats, dpsStats, supportStats, utilityStats;
 var availableHeroes = [];
 var HERO_PANEL = 0, HERO_NAME = 1;
@@ -77,9 +76,8 @@ function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
     $("#AvailableHeroesContainer").style.visibility = "visible";
     $("#HeroSlotsContainer").style.visibility = "visible";
-    heroScreenLoaded = true;
-    if(heroNotSelected) {
-        OnHeroSelected(heroes[0].Name, true);
+    if(heroSelected) {
+        OnHeroSelected(latestSelectedHero, true);
     }
 }
 
@@ -100,6 +98,12 @@ function OnPickHeroButtonPressed(slot) {
     }
     Game.EmitSound("HeroPicker.Selected");
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_picked", {"hero" : latestSelectedHero});
+	HideUIAfterHeroPick();
+}
+
+function HideUIAfterHeroPick() {
+    $("#AvailableHeroesContainer").style.visibility = "collapse";
+    $("#HeroSlotsContainer").style.visibility = "collapse";
 }
 
 function OnHeroesDataReceived(event) {
@@ -157,6 +161,8 @@ function OnHeroesDataReceived(event) {
             }
         }
     }
+    latestSelectedHero = heroes[0].Name;
+    heroSelected = true;
 }
 
 function OnStateDataReceived(event) {
@@ -168,20 +174,18 @@ function OnStateDataReceived(event) {
         var playerId = value.playerId;
         var playerHero = value.hero;
         var state = value.state;
-        if(state == STATE_PICKED && playerId == localPlayerId) {
-            latestSelectedHero = playerHero;
-            picked = true;
-            heroNotSelected = false;
+        if(playerId == localPlayerId) {
+            if(state >= STATE_SELECTED) {
+                latestSelectedHero = playerHero;
+                heroSelected = true;
+            }
+            if(state == STATE_PICKED) {
+                picked = true;
+                HideUIAfterHeroPick();
+            }
         }
     });
     heroPicked = picked;
-}
-
-function FixAltTab() {
-    if(latestSelectedHero) {
-        ChangeHeroModel(latestSelectedHero);
-    }
-    $.Schedule( 0.1, FixAltTab );
 }
 
 (function() {
@@ -203,6 +207,5 @@ function FixAltTab() {
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
 	GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesDataReceived);
 	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
-	FixAltTab();
 })();
 
