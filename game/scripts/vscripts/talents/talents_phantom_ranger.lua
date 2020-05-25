@@ -32,7 +32,6 @@ modifier_phantom_ranger_phantom_arrow_phantom = class({
         return 15
     end,
     CheckState = function(self)
-    if not IsServer() then return end
         return
         {
             [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
