@@ -852,6 +852,8 @@
         "DOTA_Chat_Enemy_is_alive"		"Enemy %ENEMY% is still alive."
         "DOTA_Chat_Enemy_health"		"Enemy %ENEMY% have <font color='#b7234a'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
         "DOTA_Chat_Enemy_mana"		"Enemy %ENEMY% have <font color='#257FF6'>%CURRENTMP% (%MPPERCENT%%)</font> mana left."
+        "DOTA_HeroSelection_SelectSlot"		"SELECT SLOT"
+        "DOTA_HeroSelection_TimeLeft"		"PICK TIME"
         "DOTA_HeroSelection_Stats_Tank"		"Survivability"
         "DOTA_HeroSelection_Stats_Dps"		"Damage"
         "DOTA_HeroSelection_Stats_Support"		"Support"

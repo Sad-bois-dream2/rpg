@@ -1,55 +1,14 @@
-var MAX_STATS = 5;
-var tankStats, dpsStats, supportStats, utilityStats;
 var STATE_SELECTED = 0;
 var STATE_PICKED = 1;
-var heroesData = {};
 
 function OnHeroSelected(event) {
     $("#HeroIcon" + event.player_id).heroname = event.hero;
-    if(event.player_id == Players.GetLocalPlayer()) {
-        $("#SelectedHeroName").text = $.Localize("#" + event.hero);
-        $("#SelectedHeroIcon").heroname = event.hero;
-        $("#HeroStats").style.visibility = "visible";
-        UpdateHeroStats(event.hero);
-        UpdateHeroAbilities(event.hero);
-    }
-}
-
-function UpdateHeroAbilities(hero) {
-    for(var i = 0; i < $("#HeroAbilitiesContainer").GetChildCount(); i++) {
-        var abilityName = heroesData[hero]["Ability" + i];
-        if(abilityName) {
-            var abilityPanel = $("#HeroAbilitiesContainer").GetChild(i);
-            abilityPanel.abilityname = abilityName;
-        }
-    }
 }
 
 function OnHeroPicked(event) {
     var heroIcon = $("#HeroIcon" + event.player_id);
     heroIcon.heroname = event.hero;
     heroIcon.SetHasClass("notpicked", false);
-}
-
-function UpdateHeroStats(hero) {
-    var tank = 0;
-    var dps = 0;
-    var support = 0;
-    var utility = 0;
-    if(heroesData[hero]) {
-        tank = heroesData[hero]["tank"];
-        dps = heroesData[hero]["dps"];
-        support = heroesData[hero]["support"];
-        utility = heroesData[hero]["utility"];
-    }
-    for(var i = 1; i <= MAX_STATS; i++) {
-        var index = i - 1;
-        var statValue = index + 1;
-        tankStats[index].SetHasClass("selected", (statValue <= tank));
-        dpsStats[index].SetHasClass("selected", (statValue <= dps));
-        supportStats[index].SetHasClass("selected", (statValue <= support));
-        utilityStats[index].SetHasClass("selected", (statValue <= utility));
-    }
 }
 
 function UpdateTimer()
@@ -129,70 +88,15 @@ function OnStateDataReceived(event) {
     });
 }
 
-function OnHeroesDataReceived(event) {
-    var heroes = JSON.parse(event.heroes);
-    for(var i = 0; i < heroes.length; i++) {
-        heroesData[heroes[i].Name] = {}
-        if(heroes[i].Roles) {
-            if(heroes[i].Roles.Tank) {
-                heroesData[heroes[i].Name].tank = heroes[i].Roles.Tank;
-            } else {
-                heroesData[heroes[i].Name].tank = 0;
-            }
-            if(heroes[i].Roles.DPS) {
-                heroesData[heroes[i].Name].dps = heroes[i].Roles.DPS;
-            } else {
-                heroesData[heroes[i].Name].dps = 0;
-            }
-            if(heroes[i].Roles.Support) {
-                heroesData[heroes[i].Name].support = heroes[i].Roles.Support;
-            } else {
-                heroesData[heroes[i].Name].support = 0;
-            }
-            if(heroes[i].Roles.Utility) {
-                heroesData[heroes[i].Name].utility = heroes[i].Roles.Utility;
-            } else {
-                heroesData[heroes[i].Name].utility = 0;
-            }
-        } else {
-            heroesData[heroes[i].Name].tank = 0;
-            heroesData[heroes[i].Name].dps = 0;
-            heroesData[heroes[i].Name].support = 0;
-            heroesData[heroes[i].Name].utility = 0;
-        }
-        for(var j = 0; j < 6; j++) {
-            if(heroes[i].Abilities[j]) {
-                heroesData[heroes[i].Name]["Ability"+j] = heroes[i].Abilities[j];
-            } else {
-                heroesData[heroes[i].Name]["Ability"+j] = "";
-            }
-        }
-    }
-}
-
 (function() {
 	UpdateTimer();
 	UpdateHeroColors();
 	HideDefaultUI();
     FixGameSetupWindow();
-    var tankContainer = $("#TankStat");
-    var dpsContainer = $("#DpsStat");
-    var supportContainer = $("#SupportStat");
-    var utilityContainer = $("#UtilityStat");
-    tankStats = [];
-    supportStats = [];
-    dpsStats = [];
-    utilityStats = [];
-    for(var i = 0; i < MAX_STATS; i++) {
-        tankStats.push(tankContainer.GetChild(i));
-        dpsStats.push(dpsContainer.GetChild(i));
-        supportStats.push(supportContainer.GetChild(i));
-        utilityStats.push(utilityContainer.GetChild(i));
-    }
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
+	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
 	GameEvents.Subscribe("rpg_hero_selection_hero_selected_from_server", OnHeroSelected);
 	GameEvents.Subscribe("rpg_hero_selection_hero_picked_from_server", OnHeroPicked);
-	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
-	GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesDataReceived);
 })();
 
 

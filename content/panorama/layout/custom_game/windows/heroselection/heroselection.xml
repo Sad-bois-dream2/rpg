@@ -22,23 +22,34 @@
             <Panel class="dot11"/>
             <Panel class="dot12"/>
         </Panel>
-        <Panel id="HeroSlotsPanel">
-            <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
-                <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                <Label text="+" class="HeroSlotNew"/>
+        <Panel id="HeroSlotsContainer">
+            <Label class="HeroSlotsLabel" text="#DOTA_HeroSelection_SelectSlot"/>
+            <Panel id="HeroSlotsPanel">
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
+                <Panel class="HeroSlot" onactivate="OnPickHeroButtonPressed()">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotNew"/>
+                </Panel>
             </Panel>
-            <!--<Panel class="HeroSlot">
-                <DOTAHeroImage heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                <Label text="Lv. 120"/>
-            </Panel>
-            <Panel class="HeroSlot">
-                <DOTAHeroImage heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                <Label text="Lv. 89"/>
-            </Panel> -->
-        </Panel>
-        <Panel id="SaveSlotsWindow" class="Hidden">
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png" scaling="stretch-to-fit-preserve-aspect" onactivate="OnCloseLoadWindowButtonPressed()"/>
-            <Label class="SaveSlotsTitleLabel" text="#DOTA_HeroSelection_SaveLoadTitle" />
         </Panel>
         <Panel id="AvailableHeroesContainer">
             <Panel class="AvailableHeroesGroupContainer">
@@ -56,6 +67,50 @@
                 <Label text="#DOTA_Tooltip_Intelligence" />
             </Panel>
             <Panel id="AvailableHeroesIntellect" />
+        </Panel>
+        <Panel id="HeroStats">
+            <Panel class="HeroNameContainer">
+                <DOTAHeroImage id="SelectedHeroIcon" heroname="npc_dota_hero_axe" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                <Label id="SelectedHeroName" text="" />
+            </Panel>
+            <Panel id="HeroAbilitiesContainer">
+                <DOTAAbilityImage id="Ability0" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability1" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability2" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability3" class="HeroAbility last" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Tank" />
+            <Panel id="TankStat" class="HeroStat">
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild last"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Dps" />
+            <Panel id="DpsStat" class="HeroStat">
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild last"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Support" />
+            <Panel id="SupportStat" class="HeroStat">
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild last"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Utility" />
+            <Panel id="UtilityStat" class="HeroStat">
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild"/>
+                <Panel class="HeroStatChild last"/>
+            </Panel>
         </Panel>
     </Panel>
 </root>
