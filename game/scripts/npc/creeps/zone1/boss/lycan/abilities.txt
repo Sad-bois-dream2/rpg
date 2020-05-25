@@ -11,14 +11,16 @@
             "ScriptFile"					"creeps/zone1/boss/lycan"
             "AbilityTextureName"			"lycan_call"
             "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+       		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		    "AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		    "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
        		"MaxLevel"						"3"
 
     		// Casting
     		//-------------------------------------------------------------------------------------------------------------
-    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-            "AbilityCastPoint"				"0.8"
-
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+            "AbilityCastPoint"				"0.3"
+            "AbilityCastRange"              "800"
        		// Time
        		//-------------------------------------------------------------------------------------------------------------
        		"AbilityCooldown"				"30"
@@ -30,7 +32,7 @@
        			"01"
        			{
        				"var_type"					"FIELD_FLOAT"
-       				"number"				    "1 2 3"
+       				"number"				    "2 3 4"
        			}
        			"02"
        			{
@@ -40,7 +42,7 @@
        			"03"
        			{
        				"var_type"					"FIELD_FLOAT"
-       				"duration"			        "5"
+       				"duration"			        "30"
        			}
        		}
     		"precache"
@@ -63,7 +65,7 @@
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"1"
+		"AbilityCooldown"				"0.25"
 
 
 		// Special
@@ -73,12 +75,12 @@
 			"01"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"chance"				    "40 70 100"
+				"chance"				    "40 50 60"
 			}
 			"02"
              {
                  "var_type"					"FIELD_FLOAT"
-                 "duration"			        "5"
+                 "duration"			        "30"
              }
 		}
 		    		"precache"
@@ -96,16 +98,17 @@
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"creeps/zone1/boss/lycan"
 		"AbilityTextureName"			"lycan_wound"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "3"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"                      "3"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastRange"              "800"
-        "AbilityCastPoint"				"0.8"
+		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastRange"              "1200"
+        "AnimationPlaybackRate"         "0.6"
+        "AbilityCastPoint"				"1"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"30"
@@ -116,29 +119,92 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"range"				    "800"
+				"var_type"				"FIELD_FLOAT"
+				"range"				    "1200"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"initial_damage"	    "10 20 30"
+				"var_type"				"FIELD_FLOAT"
+				"initial_damage"	    "15 30 50"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"dot"				    "2 5 10"
+				"var_type"				"FIELD_FLOAT"
+				"dot"				    "3 6 10"
 			}
 			"04"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"3 4 5"
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
 			}
 		}
 		"precache"
         	{
-        	    "particle" "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
-        	    "soundfile"			"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        	    "particle"      "particles/units/heroes/hero_bloodseeker/bloodseeker_rupture.vpcf"
+        	    "particle"      "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        	    "soundfile"		"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        	    "soundfile"     "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
+        	}
+	}
+
+    //=================================================================================================================
+	// Lycan : Lupine Magic
+	//=================================================================================================================
+	"lycan_lupine"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"creeps/zone1/boss/lycan"
+		"AbilityTextureName"			"lycan_lupine"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"                      "3"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_VICTORY"
+        "AbilityCastRange"              "1500"
+        "AnimationPlaybackRate"         "1"
+        "AbilityCastPoint"				"1"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage"	            "1000 3000 10000"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"number_of_lupine_set"	"6 8 10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow"	                "40 50 60"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"duration"	                "3"
+			}
+		}
+		"precache"
+        	{
+        	    "particle"      "particles/units/npc_boss_lycan/lycan_lupine/lupine_explode.vpcf"
+        	    "particle"      "particles/status_fx/status_effect_enchantress_enchant_slow.vpcf"
+        	    "particle"      "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
+        	    "soundfile"		"soundevents/game_sounds_heroes/game_sounds_bloodseeker.vsndevts"
+        	    "soundfile"     "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
         	}
 	}
     //=================================================================================================================
@@ -166,27 +232,28 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_absolute"			        "600 700 800"
+   				"ms_absolute"			    "600 700 800"
    			}
             "03"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"bat"				        "1.4 1.1 0.8"
+               	"bat"				        "1.2 1.0 0.8"
              }
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"crit_chance"				    "20"
+   				"crit_chance"				"20"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"crit_factor"				    "150 300 500"
+   				"crit_factor"				"150 300 500"
    			}
    		}
     		"precache"
     		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+                "soundfile"  "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
                 "particle"  "particles/hero/phantom_assassin/screen_blood_splatter.vpcf"
                 "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
                 "particle"  "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
@@ -203,7 +270,9 @@
         "ScriptFile"					"creeps/zone1/boss/lycan"
         "AbilityTextureName"			"lycan_howl_aura"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+  		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+  		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
 		"MaxLevel"						"3"
 
 		// Time
@@ -213,7 +282,8 @@
         // Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastRange"              "800"
+        "AbilityCastPoint"				"0.4"
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilitySpecial"
@@ -221,17 +291,17 @@
 			"01"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "dmg_reduce_outgoing_pct"               "20 35 50"
+                "dmg_reduce_outgoing_pct"   "20 35 50"
             }
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "as_aura"               "40 80 120"
+                "as_aura"                   "40 80 120"
             }
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "ms_aura"               "4 12 20"
+                "ms_aura"                   "20 40 80"
             }
 			"04"
 			{
@@ -241,17 +311,17 @@
 			"05"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "duration"               "7 9 11"
+                "duration"                  "10 12 14"
             }
 			"06"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "tick"               "0.5"
+                "tick"                      "0.5"
             }
 			"07"
 			{
 				"var_type"					"FIELD_FLOAT"
-                "radius"               "1500"
+                "radius"                    "1500"
             }
 
 
@@ -282,13 +352,14 @@
 
    		// Casting
         //-------------------------------------------------------------------------------------------------------------
-        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastRange"              "800"
-        "AbilityCastPoint"				"0.8"
+        "AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+        "AbilityCastRange"              "800 1000 1200"
+        "AnimationPlaybackRate"         "0.6"
+        "AbilityCastPoint"				"1"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"30"
+   		"AbilityCooldown"				"8"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -297,18 +368,30 @@
    		    "01"
              {
                	"var_type"					"FIELD_FLOAT"
-               	"range"				    "800"
+               	"range"				        "800 1000 1200"
              }
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"jump_range"				    "800 1000 1200"
+   				"jump_range"				"800 900 1000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"attack_bonus"				"200 400 600"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"crit_chance_bonus"		    "200 400 600"
    			}
    		}
 		"precache"
 		{
+		    "soundfile"     "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_begin.vpcf"
 			"particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_nether_strike_end.vpcf"
+			"particle"  "particles/econ/items/spectre/spectre_transversant_soul/spectre_ti7_crimson_spectral_dagger_path_owner_impact.vpcf"
 		}
 	}
     //=================================================================================================================
@@ -326,14 +409,14 @@
    		"MaxLevel"						"3"
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"5"
+   		"AbilityCooldown"				"3 2.5 2"
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
    			"01"
    			{
                     "var_type"					"FIELD_FLOAT"
-                    "chance"				    "20 35 50"
+                    "chance"				    "40 55 70"
    			}
    			"02"
    			{
@@ -369,22 +452,22 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				    "0.25 0.50 0.75"
+   				"dot"				        "0.33 0.66 1"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"heal_reduced"			"5 12 20"
+   				"heal_reduced"			    "5 10 15"
    			}
             "03"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"duration"			"3 4 5"
+    			"duration"			        "5"
     		}
             "04"
     		{
     			"var_type"					"FIELD_FLOAT"
-    			"max_stacks"			"5"
+    			"max_stacks"			    "99999"
     		}
    		}
 	    "precache"

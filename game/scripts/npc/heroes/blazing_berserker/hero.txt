@@ -38,5 +38,7 @@
 		"AttributeAgilityGain"         "2.2"            // Agility bonus per level.
 		"AttributeBaseIntelligence"    "18"            // Base intelligence
 		"AttributeIntelligenceGain"    "1.6"            // Intelligence bonus per level.
+		"VisionDaytimeRange"        "1800"        // Range of vision during day light.
+        "VisionNighttimeRange"      "1800"        // Range of vision at night time.
     }
 }

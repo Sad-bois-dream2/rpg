@@ -350,7 +350,6 @@ function phantom_ranger_shadow_waves:OnSpellStart(sourceUnit, target)
         ExtraData = { fromsummon = fromPhantom }
     }
     ProjectileManager:CreateLinearProjectile(info)
-    print("Launch projectile")
     -- Cloak of Shadows (talent 45) logic
     local modifier = self.caster:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_45")
     local stealthCoolingDown = self.caster:FindModifierByName("modifier_phantom_ranger_cloak_of_shadows_stealth_cd")
@@ -362,6 +361,7 @@ function phantom_ranger_shadow_waves:OnSpellStart(sourceUnit, target)
         self.caster:AddNewModifier(self.caster, nil, "modifier_phantom_ranger_cloak_of_shadows_stealth_cd", { duration = modifier.talent45_cd }) 
 
     end
+
 end
 
 function phantom_ranger_shadow_waves:OnProjectileHit_ExtraData(target, location, ExtraData)

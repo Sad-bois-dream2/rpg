@@ -2,7 +2,6 @@
 BAREBONES_VERSION = "1.00"
 
 -- Set this to true if you want to see a complete debug output of all events/processes done by barebones
--- You can also change the cvar 'barebones_spew' at any time to 1 or 0 for output/no output
 BAREBONES_DEBUG_SPEW = IsInToolsMode()
 
 if GameMode == nil then
@@ -17,7 +16,7 @@ require('libraries/timers')
 -- This library can be used for advanced 3D projectile systems.
 --require('libraries/projectiles')
 -- This library can be used for sending panorama notifications to the UIs of players/teams/everyone
---require('libraries/notifications')
+require('libraries/notifications')
 -- This library can be used for starting customized animations on units from lua
 --require('libraries/animations')
 -- This library can be used for performing "Frankenstein" attachments on units
@@ -45,6 +44,7 @@ require('events')
 json = require('libraries/json')
 require('libraries/popup')
 require('systems/game_mechanics')
+require('systems/difficulty')
 require('systems/inventory')
 require('items/require')
 require('systems/talenttree')
@@ -117,21 +117,17 @@ end
   is useful for starting any game logic timers/thinkers, beginning the first round, etc.
 ]]
 function GameMode:OnGameInProgress()
-    --Timers:CreateTimer(5, -- Start this timer 5 game-time seconds later
-    --function()
-    --DebugPrint("This function is called 5 seconds after the game begins, and every 5 seconds thereafter")
-    --local hero = PlayerResource:GetPlayer(0):GetAssignedHero()
-    --GameMode:SetupInventoryForHero(hero)
-    --return 5.0 -- Rerun this timer every 5 game-time seconds
-    --end)
     if (BAREBONES_DEBUG_SPEW) then
         -- sad bois for testing all stuff in game
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
         CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
     end
+    -- Trainer
     CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
         dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
     end)
+    -- Vision in village
+    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game
@@ -179,10 +175,19 @@ function GameMode:OnSayChatMessageRequest(event, args)
         return
     end
     event.player_id = tonumber(event.player_id)
-    if (event.player_id and event.msg) then
+    if (event.player_id and event.msg and type(event.msg) == "string") then
         local player = PlayerResource:GetPlayer(event.player_id)
-        if (player) then
-            Say(player, event.msg, true)
+        local messageLength = string.len(event.msg)
+        if (messageLength < 1) then
+            return
+        end
+        event.msg = string.sub(event.msg, 1, math.min(100, messageLength))
+        if(not event.args) then
+            event.args = {}
+        end
+        event.args = json.encode(event.args)
+        if (player and string.len(event.msg) > 0) then
+            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName()})
         end
     end
 end

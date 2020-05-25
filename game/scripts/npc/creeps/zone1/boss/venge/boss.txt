@@ -7,27 +7,27 @@
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
         "Model"           "models/heroes/vengeful/vengeful.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
-        "Level"           "30"
+        "Level"           "0"
         "UnitLabel"         "boss"
         "ModelScale" 				"1.5"
 
         // Abilities
         //----------------------------------------------------------------
 
-          "Ability1"          "venge_fall"     // Ability 1.
-          "Ability2"          "venge_moonify"     // Ability 2.
-          "Ability3"          "venge_guardian"      // Ability 3.
-          "Ability4"          "venge_missle"      // Ability 4.
-          "Ability5"          "venge_fire"     // Ability 5.
-          "Ability6"          "venge_storm"      // Ability 6 - Extra.
+          "Ability1"          ""     // Ability 1.
+          "Ability2"          ""     // Ability 2.
+          "Ability3"          ""      // Ability 3.
+          "Ability4"          ""      // Ability 4.
+          "Ability5"          ""     // Ability 5.
+          "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-
 
         // Armor
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
+        "HeathBarOffset"        "250"
 
         // Attack
         //----------------------------------------------------------------
