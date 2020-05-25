@@ -1949,6 +1949,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_46:OnCreated()
     self.talent46_arrowLevel = 1
     self.talent46_basePhantomLimit = 4
     self.talent46_phantomLimitIncreasePerLevel = 1
+    self.talent46_procCd = 1.5
 
 end
 
@@ -1957,33 +1958,46 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_46:OnAttackLanded(params)
 
     if not IsServer() then return end
-    if (params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then 
+    local ability = self.caster:FindAbilityByName("phantom_ranger_phantom_arrow")
+    if (not ability) then return end
+    if (params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster and not self.caster:HasModifier("modifier_phantom_ranger_phantom_troupe_proc_cd")) then 
 
         self.caster.phantom_arrow_table = self.caster.phantom_arrow_table or {}
         local talent46_level = TalentTree:GetHeroTalentLevel(self.caster, 46)
         local phantomProc = RollPercentage(self.talent46_baseChance + talent46_level * self.talent46_chancePerLevel)
         if not phantomProc then return end
-        local ability = self.caster:FindAbilityByName("phantom_ranger_phantom_arrow")
-        if (not ability) then
 
-            local index
-            local i = 7
-            while (not index and i < self.caster:GetAbilityCount()) do
-
-                if (not self.caster:GetAbilityByIndex(i)) then index = i end
-                i = i + 1
-
-            end
-            ability = self.caster:AddAbility("phantom_ranger_phantom_arrow")
-            if (index) then ability:SetAbilityIndex(index) end
-
-        end
-
+        self.caster:AddNewModifier(self.caster, nil, "modifier_phantom_ranger_phantom_troupe_proc_cd", { duration = self.talent46_procCd })
         ability.OnSpellStart(ability, params.attacker, params.target, self.talent46_arrowLevel, true)
 
     end
 
 end
+
+--------------------------------------------------------------------------------
+
+modifier_phantom_ranger_phantom_troupe_proc_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_phantom_ranger_phantom_troupe_proc_cd"] = LUA_MODIFIER_MOTION_NONE
 
 --------------------------------------------------------------------------------
 -- Talent 47 - Mirage 

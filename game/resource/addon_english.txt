@@ -627,7 +627,7 @@
 		"DOTA_Tooltip_modifier_phantom_ranger_cloak_of_shadows_stealth_cd"		"Cloak of Shadows cooldown"
         "DOTA_Tooltip_modifier_phantom_ranger_cloak_of_shadows_stealth_cd_Description"		"Cloak of Shadows is on cooldown."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46"		"Phantom Troupe"
-		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46_Description"		"Your auto attacks have a 20/25/30% chance to fire a level 1/2/3 Phantom Arrow at the target. Maximum phantoms - 5/6/7. <br><br> (Does not require Phantom Arrow to be learned)"
+		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46_Description"		"Your auto attacks have a 20/25/30% chance to fire a level 1/2/3 Phantom Arrow at the target. Maximum phantoms - 5/6/7. <br><br> (Requires Phantom Arrow to be learned)"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_47"		"Mirage"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_47_Description"		"The phantom from Soul Echo will mimic your offensive abilities. Increases Soul Echo's duration by 5/6/7 seconds."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_48"		"Deadly Vibration"
