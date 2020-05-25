@@ -876,7 +876,7 @@ function modifier_ursa_slam_slow:GetMoveSpeedPercentBonus()
     return self.ms_slow
 end
 
-function modifier_ursa_slam_slow:GetSpellHasteBonus()
+function modifier_ursa_slam_slow:GetSpellHastePercentBonus()
     return self.sph_slow
 end
 

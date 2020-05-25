@@ -636,7 +636,7 @@ function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_venge_side_frost_slow:GetSpellHasteBonus()
+function modifier_venge_side_frost_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 LinkLuaModifier("modifier_venge_side_frost_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1167,7 +1167,7 @@ function venge_fall:OnSpellStart()
                     endTime = 0.1,
                     callback = function()
                         fired_meteors = fired_meteors + 1
-                        if not caster:IsAlive() then
+                        if not enemy:IsAlive() or not caster:IsAlive() then
                             return
                         end
                         target_point 		= enemy:GetAbsOrigin()
@@ -1176,9 +1176,7 @@ function venge_fall:OnSpellStart()
 
                         if fired_meteors == number_of_meteors then
                             return
-                        else--if fired_meteors == number_of_meteors - 1 then
-                            --return 0.5
-                        --else
+                        else
                             return 0.5
                         end
                     end
@@ -1993,7 +1991,8 @@ modifier_venge_bubble_passive = class({
                  MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PURE,
                  MODIFIER_EVENT_ON_ATTACKED,
                  MODIFIER_PROPERTY_MODEL_SCALE,
-                }
+                 MODIFIER_STATE_LOW_ATTACK_PRIORITY
+        }
     end,
     GetStatusEffectName = function(self)
         return "particles/econ/events/ti7/fountain_regen_ti7_bubbles.vpcf"
@@ -2863,7 +2862,7 @@ function modifier_venge_quake_pulse:OnCreated()
         self.parent = self:GetParent()
         --self.sound_epicenter = "Ability.SandKing_Epicenter"
         self.aoe_particle = "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_aoe.vpcf"
-        self.crack = "particles/units/heroes/hero_elder_titan/elder_titan_echo_stomp_cracks.vpcf"
+        self.crack = "particles/units/npc_boss_venge/venge_quake/elder_titan_echo_stomp_cracks_shake.vpcf"
         -- Ability specials
         self.pulse_count = self.ability:GetSpecialValueFor("pulse_count")
         self.damage = self.ability:GetSpecialValueFor("damage")
@@ -2929,8 +2928,16 @@ function modifier_venge_quake_pulse:OnIntervalThink()
                 damageTable.damage = self.damage
                 damageTable.earthdmg = true
                 GameMode:DamageUnit(damageTable)
-                -- Apply Epicenter slow
+                --ministun
                 local modifierTable = {}
+                modifierTable.ability = self.ability
+                modifierTable.target = enemy
+                modifierTable.caster = self.caster
+                modifierTable.modifier_name = "modifier_stunned"
+                modifierTable.duration = 0.3
+                GameMode:ApplyBuff(modifierTable)
+                -- Apply Epicenter slow
+                modifierTable = {}
                 modifierTable.ability = self.ability
                 modifierTable.target = enemy
                 modifierTable.caster = self.caster
@@ -3015,7 +3022,7 @@ function modifier_venge_quake_slow:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_venge_quake_slow:GetSpellHasteBonus()
+function modifier_venge_quake_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 LinkLuaModifier("modifier_venge_quake_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)

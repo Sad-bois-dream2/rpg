@@ -227,7 +227,7 @@ modifier_luna_curse_amp = class({
         return false
     end,
     GetTexture = function(self)
-        return luna_curse:GetAbilityTextureName()
+        return  "file://{images}/custom_game/hud/luna/luna_curse_amp.png"--luna_curse:GetAbilityTextureName()
     end,
     GetEffectName = function(self)
         return  "particles/units/npc_boss_luna/luna_curse/curse_green.vpcf"
@@ -271,7 +271,7 @@ modifier_luna_curse_reduce = class({
         return false
     end,
     GetTexture = function(self)
-        return luna_curse:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_curse_reduce.png"--luna_curse:GetAbilityTextureName()
     end,
     GetEffectName = function(self)
         return "particles/econ/items/lycan/ti9_immortal/lycan_ti9_immortal_howl_buff.vpcf"--
@@ -455,7 +455,7 @@ function luna_wave:OnSpellStart()
 
     for _, enemy in pairs(enemies) do
         -- This "dummy" literally only exists to attach the gush travel sound to
-        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, "modifier_luna_wave_thinker", {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
         gush_dummy:EmitSoundParams("Hero_Tidehunter.Gush.AghsProjectile",1.0, 0.2, 0)
 
         local direction	= (enemy:GetAbsOrigin() - self:GetCaster():GetAbsOrigin()):Normalized()
@@ -531,19 +531,11 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
         -- Gush has reached its end location
     elseif data.gush_dummy then
         EntIndexToHScript(data.gush_dummy):StopSound("Hero_Tidehunter.Gush.AghsProjectile")
-        EntIndexToHScript(data.gush_dummy):RemoveSelf()
+        EntIndexToHScript(data.gush_dummy):RemoveSelf() --this is UTIL remove
     end
 end
 
---remove thinker
-modifier_luna_wave_thinker = class({})
 
-function modifier_luna_wave_thinker:OnDestroy()
-    if not IsServer() then
-        return
-    end
-    UTIL_Remove(self:GetParent())
-end
 ---------
 --luna wax wane
 --------
@@ -650,7 +642,7 @@ modifier_luna_wax = class({
         return true
     end,
     GetTexture = function(self)
-        return luna_wax_wane:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_wax.png"--luna_wax_wane:GetAbilityTextureName()
     end,
 })
 
@@ -727,7 +719,7 @@ modifier_luna_wane = class({
         return true
     end,
     GetTexture = function(self)
-        return luna_wax_wane:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_wane.png"--luna_wax_wane:GetAbilityTextureName()
     end,
 })
 

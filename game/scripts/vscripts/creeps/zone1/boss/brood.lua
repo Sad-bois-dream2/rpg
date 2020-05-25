@@ -222,7 +222,7 @@ function modifier_brood_toxin_slow:GetAttackSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_brood_toxin_slow:GetSpellHasteBonus()
+function modifier_brood_toxin_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 
@@ -814,7 +814,6 @@ function brood_kiss:BlinkKiss(target)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
     caster:MoveToTargetToAttack(target)
-    caster:PerformAttack(target, true, true, true, true, false, false, false)
     caster:SetForwardVector(direction)
 
     --Kiss<3
@@ -1166,7 +1165,7 @@ function modifier_brood_spit_burn_slow:GetAttackSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_brood_spit_burn_slow:GetSpellHasteBonus()
+function modifier_brood_spit_burn_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 

@@ -179,8 +179,9 @@ function treant_hook:OnSpellStart()
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
         self.radius = self:GetSpecialValueFor("range")
         local target = self:FindTargetForHook(caster)
-        local vine_dummy = CreateModifierThinker(self:GetCaster(), self, "modifier_treant_hook_thinker", {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
-        vine_dummy:EmitSoundParams("Hero_DarkWillow.Bramble.Spawn",1.0, 0.2, 0)
+        local vine_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        vine_dummy:EmitSoundParams("Hero_DarkWillow.Bramble.Spawn",1.0, 0.7, 0)
+
         local info =
         {
             Target = target,
@@ -223,7 +224,7 @@ function treant_hook:OnProjectileThink_ExtraData(location, data)
 end
 
 
-function treant_hook:OnProjectileHit(target)
+function treant_hook:OnProjectileHit(target,data)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
     if target then
@@ -245,19 +246,11 @@ function treant_hook:OnProjectileHit(target)
         GameMode:ApplyDebuff(modifierTable)
 
         caster:EmitSound("treant_treant_attack_09") --come here
+    elseif data.vine_dummy then
+        EntIndexToHScript(data.vine_dummy):RemoveSelf() --this is UTIL remove
     end
 end
 
---remove thinker
-modifier_treant_hook_thinker = class({})
-
-function modifier_treant_hook_thinker:OnDestroy()
-    if not IsServer() then
-        return
-    end
-    UTIL_Remove(self:GetParent())
-end
-LinkLuaModifier("modifier_treant_hook_thinker", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 ----------------
 -- treant flux
 ----------------
@@ -617,7 +610,7 @@ function modifier_treant_seed:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_treant_seed:GetSpellHasteBonus()
+function modifier_treant_seed:GetSpellHastePercentBonus()
     return self.slow
 end
 
