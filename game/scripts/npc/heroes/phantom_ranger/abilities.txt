@@ -360,6 +360,7 @@
 		"precache"
 		{
 			"particle" "particles/units/phantom_ranger/test/void_disciple/void_disciple_smoke_2.vpcf"
+			"soundfile", "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
 		}
 	}
 	//=================================================================================================================
