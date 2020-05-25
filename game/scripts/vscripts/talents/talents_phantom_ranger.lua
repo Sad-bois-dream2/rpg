@@ -143,7 +143,7 @@ end
 function phantom_ranger_phantom_arrow:OnSpellStart(source, target, level, isAutomatic)
 
     level = level or self:GetLevel()
-    if not level then return end
+    if (not level or level < 1 or level > 4) then return end
     self.arrowDamage = self:GetLevelSpecialValueFor("arrow_damage", level - 1)
     self.phantomDuration = self:GetLevelSpecialValueFor("phantom_duration", level - 1)
     self.phantomPercentDamage = self:GetLevelSpecialValueFor("phantom_damage", level - 1)
@@ -2360,11 +2360,6 @@ function DestroyPhantom(phantom)
     end
 end
 
--- GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
--- GameMode.PreDamageAfterResistancesEventHandlersTable = {}
--- GameMode.TALENTS_PHANTOM_RANGER_INIT = false
- 
-
 if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_phantom_ranger_hunters_focus_buff, 'OnTakeDamage'))
@@ -2378,5 +2373,3 @@ if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
 
 end
-
-
