@@ -72,7 +72,7 @@
 	background-position: 50% 50%;
 	background-size: 100% 100%;
 	width: 300px;
-	height: 300px;
+	height: 350px;
 	vertical-align: center;
 	horizontal-align: right;
 	border: 1px solid gray;
@@ -180,11 +180,16 @@
 
 .HeroStatChild.selected {
 	background-image: url("s2r://panorama/images/hero_complexity_full_png.vtex");
-    /*background-color: gradient( linear, 0% 100%, 0% 0%, from( #5A615Ecc ), to( #879695cc )); */
 }
 
-.HeroStatChild.last {
-    /*margin-right: 0px; */
+.HeroStatChild.hover {
+	background-image: url("s2r://panorama/images/hero_complexity_full_png.vtex");
+	wash-color: gold;
+}
+
+.HeroStatChild.filter {
+	background-image: url("s2r://panorama/images/hero_complexity_full_png.vtex");
+	wash-color: gray;
 }
 
 .TimerContainer {
@@ -460,6 +465,10 @@
     border: 1px solid gold;
 }
 
+.AvailableHeroesButton.filter {
+    wash-color: gray;
+}
+
 .AvailableHeroesIcon {
     width: 98px;
     height: 56px;
@@ -569,23 +578,12 @@
     horizontal-align: center;
 }
 
-#SaveSlotsWindow {
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	background-size: 100% 100%;
-    vertical-align: center;
+.ResetFilterButton {
     horizontal-align: center;
-	width: 500px;
-    height: 400px;
-    border: 1px solid grey;
-    border-radius: 5px;
+    vertical-align: center;
+    margin: 0px;
 }
 
-.SaveSlotsTitleLabel {
-    color: white;
-    horizontal-align: center;
-    font-size: 20px;
-    margin-top: 15px;
+.ResetFilterButton Label {
     text-transform: uppercase;
 }

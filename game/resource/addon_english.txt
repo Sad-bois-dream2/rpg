@@ -858,6 +858,7 @@
         "DOTA_HeroSelection_Stats_Dps"		"Damage"
         "DOTA_HeroSelection_Stats_Support"		"Support"
         "DOTA_HeroSelection_Stats_Utility"		"Utility"
+        "DOTA_HeroSelection_ResetFilter"		"RESET FILTER"
         // Countless items
         "DOTA_Tooltip_Ability_item_claymore_custom"      "Claymore"
         "DOTA_Tooltip_Ability_item_claymore_custom_Description"      ""

@@ -86,36 +86,39 @@
                 <DOTAAbilityImage id="Ability3" class="HeroAbility last" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
             </Panel>
             <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Tank" />
-            <Panel id="TankStat" class="HeroStat">
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild last"/>
+            <Panel id="TankStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('TankStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 1)" onactivate="OnMouseClickOverStat('TankStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 2)" onactivate="OnMouseClickOverStat('TankStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 3)" onactivate="OnMouseClickOverStat('TankStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 4)" onactivate="OnMouseClickOverStat('TankStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 5)" onactivate="OnMouseClickOverStat('TankStat', 5)"/>
             </Panel>
             <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Dps" />
-            <Panel id="DpsStat" class="HeroStat">
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild last"/>
+            <Panel id="DpsStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('DpsStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 1)" onactivate="OnMouseClickOverStat('DpsStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 2)" onactivate="OnMouseClickOverStat('DpsStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 3)" onactivate="OnMouseClickOverStat('DpsStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 4)" onactivate="OnMouseClickOverStat('DpsStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 5)" onactivate="OnMouseClickOverStat('DpsStat', 5)"/>
             </Panel>
             <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Support" />
-            <Panel id="SupportStat" class="HeroStat">
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild last"/>
+            <Panel id="SupportStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('SupportStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 1)" onactivate="OnMouseClickOverStat('SupportStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 2)" onactivate="OnMouseClickOverStat('SupportStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 3)" onactivate="OnMouseClickOverStat('SupportStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 4)" onactivate="OnMouseClickOverStat('SupportStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 5)" onactivate="OnMouseClickOverStat('SupportStat', 5)"/>
             </Panel>
             <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Utility" />
-            <Panel id="UtilityStat" class="HeroStat">
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild"/>
-                <Panel class="HeroStatChild last"/>
+            <Panel id="UtilityStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('UtilityStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 1)" onactivate="OnMouseClickOverStat('UtilityStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 2)" onactivate="OnMouseClickOverStat('UtilityStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 3)" onactivate="OnMouseClickOverStat('UtilityStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 4)" onactivate="OnMouseClickOverStat('UtilityStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 5)" onactivate="OnMouseClickOverStat('UtilityStat', 5)"/>
+            </Panel>
+            <Panel class="WindowButton ResetFilterButton" onactivate="OnResetFilterButtonClick()">
+                <Label text="#DOTA_HeroSelection_ResetFilter"/>
             </Panel>
         </Panel>
     </Panel>

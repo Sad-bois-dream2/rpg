@@ -9,6 +9,7 @@ var heroesData = {};
 var MAX_STATS = 5;
 var STATE_SELECTED = 0;
 var STATE_PICKED = 1;
+var filterData = {};
 
 function OnHeroSelected(hero, notPlaySound) {
     if(heroPicked) {
@@ -19,6 +20,7 @@ function OnHeroSelected(hero, notPlaySound) {
     $("#SelectedHeroName").text = $.Localize("#" + hero);
     $("#SelectedHeroIcon").heroname = hero;
     $("#HeroStats").style.visibility = "visible";
+    ResetFilter();
 	UpdateSaveSlots(hero);
     UpdateHeroStats(hero);
     UpdateHeroAbilities(hero);
@@ -72,6 +74,87 @@ function UpdateHeroStats(hero) {
     }
 }
 
+function OnMouseOverStat(container, childIndex) {
+    var statContainer = $("#" + container);
+    for(var i = 0; i < childIndex; i++) {
+        var statPanel = statContainer.GetChild(i);
+        statPanel.SetHasClass("hover", true);
+    }
+    for(var i = childIndex; i < statContainer.GetChildCount(); i++) {
+        var statPanel = statContainer.GetChild(i);
+        statPanel.SetHasClass("hover", false);
+    }
+}
+
+function OnMouseOutOfStatPanel(container) {
+    var statContainer = $("#" + container);
+    for(var i = 0; i < statContainer.GetChildCount(); i++) {
+        var statPanel = statContainer.GetChild(i);
+        statPanel.SetHasClass("hover", false);
+    }
+}
+
+function OnMouseClickOverStat(container, childIndex) {
+    var statContainer = $("#" + container);
+    for(var i = 0; i < childIndex; i++) {
+        var statPanel = statContainer.GetChild(i);
+        statPanel.SetHasClass("filter", true);
+    }
+    for(var i = childIndex; i < statContainer.GetChildCount(); i++) {
+        var statPanel = statContainer.GetChild(i);
+        statPanel.SetHasClass("filter", false);
+    }
+    filterData[container] = childIndex;
+    UpdateFilter();
+}
+
+function OnResetFilterButtonClick() {
+    Game.EmitSound("General.SelectAction");
+    ResetFilter();
+    UpdateFilter();
+}
+
+function ResetFilter() {
+    Object.entries(filterData).map(entry => {
+        var key = entry[0];
+        OnMouseClickOverStat(key, 0);
+    });
+}
+
+function UpdateFilter() {
+    var tank = 0;
+    var dps = 0;
+    var support = 0;
+    var utility = 0;
+    if(filterData['TankStat']) {
+        tank = filterData['TankStat'];
+    }
+    if(filterData['DpsStat']) {
+        dps = filterData['DpsStat'];
+    }
+    if(filterData['SupportStat']) {
+        support = filterData['SupportStat'];
+    }
+    if(filterData['UtilityStat']) {
+        utility = filterData['UtilityStat'];
+    }
+    if(tank == 0 && dps == 0 && support == 0 && utility == 0) {
+        for(var i = 0; i < availableHeroes.length; i++) {
+            availableHeroes[i][HERO_PANEL].SetHasClass("filter", false);
+        }
+    } else {
+        for(var i = 0; i < availableHeroes.length; i++) {
+            var heroName = availableHeroes[i][HERO_NAME];
+            var tankCondition = (heroesData[heroName].tank >= tank);
+            var dpsCondition = (heroesData[heroName].dps >= dps);
+            var supportCondition = (heroesData[heroName].support >= support);
+            var utilityCondition = (heroesData[heroName].utility >= utility);
+            var finalCondition = tankCondition && dpsCondition && supportCondition && utilityCondition;
+            availableHeroes[i][HERO_PANEL].SetHasClass("filter", !finalCondition);
+        }
+    }
+}
+
 function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
     $("#AvailableHeroesContainer").style.visibility = "visible";
@@ -79,16 +162,6 @@ function OnHeroSelectionScreenLoaded() {
     if(heroSelected) {
         OnHeroSelected(latestSelectedHero, true);
     }
-}
-
-function OnOpenLoadWindowButtonPressed() {
-    Game.EmitSound("ui.option_toggle");
-    $("#SaveSlotsWindow").SetHasClass("Hidden", false);
-}
-
-function OnCloseLoadWindowButtonPressed() {
-    Game.EmitSound("ui.match_close");
-    $("#SaveSlotsWindow").SetHasClass("Hidden", true);
 }
 
 function OnPickHeroButtonPressed(slot) {
@@ -125,6 +198,7 @@ function OnHeroesDataReceived(event) {
         heroPanel.BLoadLayout("file://{resources}/layout/custom_game/windows/heroselection/heroselection_button.xml", false, false);
         heroPanel.FindChildTraverse('HeroIcon').heroname = heroes[i].Name;
         heroPanel.Data().OnHeroSelected = OnHeroSelected;
+        availableHeroes.push([heroPanel, heroes[i].Name]);
         heroesData[heroes[i].Name] = {}
         if(heroes[i].Roles) {
             if(heroes[i].Roles.Tank) {
