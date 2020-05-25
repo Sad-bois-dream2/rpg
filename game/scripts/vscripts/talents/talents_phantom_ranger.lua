@@ -58,31 +58,31 @@ function modifier_phantom_ranger_phantom_arrow_phantom:OnCreated(params)
     self.phantom = self:GetParent()
     self.hero = self.phantom:GetOwner()
     self.ability = self:GetAbility()
-    self.target = self.ability:GetCursorTarget()
     self.phantomSpeed = params.phantomSpeed
-    self:StartIntervalThink(0.5)
+    --self.target = self.ability:GetCursorTarget()
+    --self:StartIntervalThink(0.5)
 
 end
 
 --------------------------------------------------------------------------------
 
-function modifier_phantom_ranger_phantom_arrow_phantom:OnIntervalThink()
+-- function modifier_phantom_ranger_phantom_arrow_phantom:OnIntervalThink()
 
-    if not (self.target and not self.target:IsNull() and self.target:IsAlive()) then
+--     if not (self.target and (not self.target:IsNull()) and self.target:IsAlive()) then
 
-        if (TalentTree:GetHeroTalentLevel(self.hero, 46) > 0) then
+--         if (TalentTree:GetHeroTalentLevel(self.hero, 46) > 0) then
 
-        Custom_ArrayRemove(self.hero.phantom_arrow_table, function(i,j)
-            return self.hero.phantom_arrow_table[i] ~= self.phantom:entindex() 
-        end)
+--         Custom_ArrayRemove(self.hero.phantom_arrow_table, function(i,j)
+--             return self.hero.phantom_arrow_table[i] ~= self.phantom:entindex() 
+--         end)
 
-        end
+--         end
 
-        DestroyPhantom(self.phantom) 
+--         DestroyPhantom(self.phantom) 
 
-    end
+--     end
 
-end
+-- end
 
 --------------------------------------------------------------------------------
 
@@ -129,11 +129,11 @@ function phantom_ranger_phantom_arrow:OnUpgrade()
 
     if not IsServer() then return end
     self.caster = self:GetCaster()
+    self.phantomMS = 550
     -- self.arrowDamage = self:GetSpecialValueFor("arrow_damage")
     -- self.phantomDuration = self:GetSpecialValueFor("phantom_duration")
     -- self.phantomPercentDamage = self:GetSpecialValueFor("phantom_damage")
     -- self.phantomPercentAS = self:GetSpecialValueFor("phantom_attack_speed")
-    self.phantomMS = 550
     --self.projectileSpeed = self:GetSpecialValueFor("projectile_speed")
 
 end
@@ -153,7 +153,8 @@ function phantom_ranger_phantom_arrow:OnSpellStart(source, target, level, isAuto
     if not self.caster then self:OnUpgrade() end
     source = source or self.caster
     target = target or self:GetCursorTarget()
-    isAutomatic = isAutomatic or false
+    self.isAutomatic = isAutomatic or false
+    print (isAutomatic)
     self.caster.phantom_arrow_table = self.caster.phantom_arrow_table or {}
     local fromPhantom = (source ~= self.caster)
     local projectile = {
@@ -164,7 +165,7 @@ function phantom_ranger_phantom_arrow:OnSpellStart(source, target, level, isAuto
         bDodgeable = false,
         bProvidesVision = false,
         iMoveSpeed = self.projectileSpeed,
-        ExtraData = { fromsummon = fromPhantom, isAutomatic = isAutomatic }
+        ExtraData = { fromsummon = fromPhantom }
     }
     ProjectileManager:CreateTrackingProjectile(projectile)
     source:EmitSound("Hero_DrowRanger.FrostArrows")
@@ -180,7 +181,8 @@ function phantom_ranger_phantom_arrow:OnProjectileHit_ExtraData(target, location
         GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.arrowDamage / 100, voiddmg = true, fromsummon = ExtraData.fromsummon })
         target:EmitSound("Hero_ShadowDemon.DemonicPurge.Impact")
         local modifier = self.caster:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_46")
-        if (modifier and ExtraData.isAutomatic == true and #(self.caster.phantom_arrow_table) >= modifier.talent46_basePhantomLimit + talent46_level * modifier.talent46_phantomLimitIncreasePerLevel) then return false end
+        local talent46_level = TalentTree:GetHeroTalentLevel(self.caster, 46)
+        if (modifier and self.isAutomatic == true and #(self.caster.phantom_arrow_table) >= modifier.talent46_basePhantomLimit + talent46_level * modifier.talent46_phantomLimitIncreasePerLevel) then return false end
         local spawnLocation = location + RandomVector(208)
         local phantom = CreatePhantomAtPoint(spawnLocation, self, "modifier_phantom_ranger_phantom_arrow_phantom", self.phantomMS, self.phantomDuration)
         Timers:CreateTimer(0.05, function()
@@ -1962,6 +1964,21 @@ function modifier_npc_dota_hero_drow_ranger_talent_46:OnAttackLanded(params)
         local phantomProc = RollPercentage(self.talent46_baseChance + talent46_level * self.talent46_chancePerLevel)
         if not phantomProc then return end
         local ability = self.caster:FindAbilityByName("phantom_ranger_phantom_arrow")
+        if (not ability) then
+
+            local index
+            local i = 7
+            while (not index and i < self.caster:GetAbilityCount()) do
+
+                if (not self.caster:GetAbilityByIndex(i)) then index = i end
+                i = i + 1
+
+            end
+            ability = self.caster:AddAbility("phantom_ranger_phantom_arrow")
+            if (index) then ability:SetAbilityIndex(index) end
+
+        end
+
         ability.OnSpellStart(ability, params.attacker, params.target, self.talent46_arrowLevel, true)
 
     end
