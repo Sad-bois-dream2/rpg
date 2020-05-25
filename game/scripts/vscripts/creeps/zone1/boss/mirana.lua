@@ -77,7 +77,7 @@ function modifier_mirana_shard:OnAttackLanded(keys)
         local damage = burn * self.void_per_burn
         keys.target:ReduceMana(burn)
         keys.target:EmitSound("Hero_Antimage.ManaBreak")
-        local manaburn_pfx = ParticleManager:CreateParticle("particles/generic_gameplay/generic_manaburn.vpcf", PATTACH_ABSORIGIN_FOLLOW, keys.target)
+        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, keys.target)
         ParticleManager:SetParticleControl(manaburn_pfx, 0, keys.target:GetAbsOrigin() )
         ParticleManager:ReleaseParticleIndex(manaburn_pfx)
 
@@ -185,7 +185,7 @@ function mirana_sky:OnSpellStart()
             modifierTable.duration = -1
             GameMode:ApplyDebuff(modifierTable)
         end
-        EmitGlobalSound("Hero_Nightstalker.Darkness.Team")
+        self:GetCaster():EmitSound("Hero_Nightstalker.Darkness.Team")
         local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
         local particle_darkness = "particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
         local particle_darkness_fx = ParticleManager:CreateParticle(particle_darkness, PATTACH_ABSORIGIN_FOLLOW, caster)
@@ -227,7 +227,10 @@ modifier_mirana_blessing = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
     end,
 })
 
@@ -237,8 +240,14 @@ function modifier_mirana_blessing:OnCreated()
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
+    self.luna_far = nil
+    Timers:CreateTimer(0, function()
+        if self.luna_far == nil then
+            self.luna_far = self.ability:FindLuna(self.parent, 25000)
+            return 0.1
+        end
+    end)
     self:StartIntervalThink(0.5)
-    self:OnIntervalThink()
 end
 
 function mirana_blessing:FindLuna(parent, range)
@@ -251,12 +260,10 @@ function mirana_blessing:FindLuna(parent, range)
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    for _, ally in pairs(allies) do
-        if IsLuna(ally) == true then
-            local Luna = ally
-            return Luna
-        else return nil
-        end
+    local luna = allies[1]
+    if IsLuna(luna) == true then
+        return luna
+    else return nil
     end
 end
 
@@ -278,6 +285,14 @@ function modifier_mirana_blessing:OnIntervalThink()
         modifierTable.modifier_name = "modifier_mirana_blessing_buff"
         modifierTable.duration = 5
         GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+function modifier_mirana_blessing:OnDeath(params)
+    if (params.unit == self.parent) or params.unit == self.luna_far then
+        self.parent:RemoveModifierByName("modifier_mirana_blessing_buff ")
+        self.parent:RemoveModifierByName("modifier_mirana_blessing")
+        self.luna_far:RemoveModifierByName("modifier_mirana_blessing_buff ")
     end
 end
 
@@ -319,12 +334,14 @@ function modifier_mirana_blessing_buff:OnCreated()
 end
 
 function modifier_mirana_blessing_buff:GetDamageReductionBonus()
-    return self.dmg_reduction_final*0.2
+    return self.dmg_reduction_final
 end
 
 function modifier_mirana_blessing_buff:GetAttackSpeedPercentBonus()
     return self.as_bonus_final
 end
+
+
 
 LinkLuaModifier("modifier_mirana_blessing_buff", "creeps/zone1/boss/mirana.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -443,13 +460,29 @@ function mirana_holy:ShootSet(range, caster, caster_loc, travel_distance, start_
             bDeleteOnHit		= true,
             vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
             bProvidesVision		= false,
-            --ExtraData			= {damage = damage, stun = stun}
         }
         ProjectileManager:CreateLinearProjectile(projectile)
         -- Play cast sound
         caster:EmitSound("Hero_Mirana.ArrowCast")
     end
 end
+
+function mirana_holy:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local caster_position = caster:GetAbsOrigin()
+        local particle_moon = "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf"
+        local particle_moon_fx = ParticleManager:CreateParticle(particle_moon, PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(particle_moon_fx, 0, Vector(caster_position.x, caster_position.y, caster_position.z + 400))
+        Timers:CreateTimer(2, function()
+            ParticleManager:DestroyParticle(particle_moon_fx, false)
+            ParticleManager:ReleaseParticleIndex(particle_moon_fx)
+        end)
+    end
+
+    return true
+end
+
 
 
 function mirana_holy:OnSpellStart()
@@ -524,9 +557,6 @@ modifier_mirana_under_silence = class({
     RemoveOnDeath = function(self)
         return true
     end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_skywrath_mage/skywrath_mage_ancient_seal_debuff.vpcf"
     end,
@@ -537,14 +567,6 @@ modifier_mirana_under_silence = class({
         return mirana_under:GetAbilityTextureName()
     end
 })
-
-function modifier_mirana_under_silence:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.parent = self:GetParent()
-    self.ability = self:GetAbility()
-end
 
 function modifier_mirana_under_silence:CheckState()
     local state = { [MODIFIER_STATE_SILENCED] = true, }
@@ -609,6 +631,29 @@ mirana_under = class({
         return "mirana_under"
     end,
 })
+
+function mirana_under:IsRequireCastbar()
+    return true
+end
+
+function mirana_under:IsInterruptible()
+    return false
+end
+
+function mirana_under:OnAbilityPhaseStart()
+    if IsServer() then
+        local caster = self:GetCaster()
+        local wax = "particles/econ/items/luna/luna_lucent_ti5/luna_eclipse_cast_moonfall.vpcf"
+        local wax_fx = ParticleManager:CreateParticle(wax, PATTACH_POINT_FOLLOW, caster)
+        ParticleManager:SetParticleControl(wax_fx, 1, Vector(300, 0, 0))--self.radius
+        Timers:CreateTimer(5, function()
+            ParticleManager:DestroyParticle(wax_fx, false)
+            ParticleManager:ReleaseParticleIndex(wax_fx)
+        end)
+    end
+
+    return true
+end
 
 function mirana_under:FindTargetForSilence(caster) --random with already hit removal
     if IsServer() then
@@ -1126,7 +1171,7 @@ modifier_mirana_guile = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/npc_boss_mirana/moon_chain_debuff.vpcf"
+        return "particles/units/npc_boss_mirana/mirana_guile/moon_chain_debuff.vpcf"
     end,
     GetEffectAttachType = function(self)
         return PATTACH_ABSORIGIN_FOLLOW
@@ -1158,7 +1203,7 @@ mirana_guile = class({
 
 function  mirana_guile:ApplyChains(target, caster)
     target:EmitSound("Hero_EmberSpirit.SearingChains.Target")
-    local impact_pfx = ParticleManager:CreateParticle("particles/units/npc_boss_mirana/moon_chain_cast.vpcf", PATTACH_ABSORIGIN, target)
+    local impact_pfx = ParticleManager:CreateParticle("particles/units/npc_boss_mirana/mirana_guile/moon_chain_cast.vpcf", PATTACH_ABSORIGIN, target)
     ParticleManager:SetParticleControl(impact_pfx, 0, caster:GetAbsOrigin())
     ParticleManager:SetParticleControl(impact_pfx, 1, target:GetAbsOrigin())
     ParticleManager:ReleaseParticleIndex(impact_pfx)
