@@ -25,6 +25,8 @@
 		"DOTA_Tooltip_Ability_empty5_Description"		"Can be learned from the 3rd row in talents."
 		"DOTA_Tooltip_Ability_empty6"		"Ability slot"
 		"DOTA_Tooltip_Ability_empty6_Description"		"Can be learned from the 3rd row in talents."
+
+
 		// Phantom Ranger (drow)
 		"DOTA_Tooltip_Ability_phantom_ranger_soul_echo"		"Soul Echo"
 		"DOTA_Tooltip_Ability_phantom_ranger_soul_echo_Description"		"Phantom Ranger's soul whispers to the void plane and creates a Phantom substitute of herself from the echo. It lasts for 5 seconds. Redirect all threat generated and a percent of damage taken by Phantom Ranger to the substitute. The cooldown of this skill cannot be reduced."
@@ -92,6 +94,12 @@
 		"DOTA_Tooltip_Ability_phantom_ranger_phantom_barrage_radius" 				"RADIUS:"
 		"DOTA_Tooltip_modifier_phantom_ranger_phantom_barrage_charges"				"Phantom Barrage Charges"
 		"DOTA_Tooltip_modifier_phantom_ranger_phantom_barrage_charges_Description"	"Has %dMODIFIER_PROPERTY_TOOLTIP% charges left."
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow"		"Phantom Arrow"
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow_Description"		"Using her signature spell, Phantom Ranger fires a magical arrow at an enemy, which deals void damage while summoning an invulnerable phantom to attack them. The phantom cannot apply attack modifiers." 
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow_arrow_damage"			"%ATTACK DAMAGE TO DAMAGE:"
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow_phantom_duration"		"PHANTOM DURATION:"
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow_phantom_damage" 			"%PHANTOM DAMAGE:"
+		"DOTA_Tooltip_Ability_phantom_ranger_phantom_arrow_phantom_attack_speed" 	"%PHANTOM ATTACK SPEED:"
 		
 
 		// Molten Guardian (mars)
@@ -607,14 +615,14 @@
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_45_Description"		"Shadow Wave also cloaks you with Stealth for 1.5/2.25/3 seconds (10 seconds cooldown). You take 30/40/50% less damage in Stealth. <br><br> (Attacking and casting abilities doesn't break Stealth.)"
 		"DOTA_Tooltip_modifier_phantom_ranger_cloak_of_shadows_stealth_cd"		"Cloak of Shadows cooldown"
         "DOTA_Tooltip_modifier_phantom_ranger_cloak_of_shadows_stealth_cd_Description"		"Cloak of Shadows is on cooldown."
-		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46"		"Phantom Army"
+		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46"		"Phantom Troupe"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_46_Description"		"Your auto attacks have a 20/25/30% chance to fire a level 1/2/3 Phantom Arrow at the target. Maximum phantoms - 5/6/7. <br><br> (Does not require Phantom Arrow to be learned)"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_47"		"Mirage"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_47_Description"		"The phantom from Soul Echo will mimic your offensive abilities. Increases Soul Echo's duration by 5/6/7 seconds."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_48"		"Deadly Vibration"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_48_Description"		"Increases Phantom Harmonic's chance to proc by 20/30/40%. Harmonic also increases your attack damage, armor and elemental resistances by 3% per stack."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_49"		"Master of the Cold Void"
-		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_49_Description"		"Your attacks deal physical frost damage. If you would deal void damage, you instead deal void frost damage. Increases frost damage by 30/40/50%."
+		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_49_Description"		"You and your phantoms' attacks deal physical frost damage. If you would deal void damage, you instead deal void frost damage. Increases frost damage by 30/40/50%."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_50"		"Avatar of the Void"
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_50_Description"		"Your void damage penetrates 65/75/85% of void resistance, increased to 100% while you're Stealthed."
 		"DOTA_TalentTree_npc_dota_hero_drow_ranger_Talent_51"		"Shadowcaster"
