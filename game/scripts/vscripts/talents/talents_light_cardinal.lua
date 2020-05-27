@@ -1055,7 +1055,9 @@ modifier_npc_dota_hero_silencer_talent_49 = class({
     end
 })
 
-function modifier_npc_dota_hero_silencer_talent_49:OnAbilityFullyCast()
+LinkedModifiers["modifier_npc_dota_hero_silencer_talent_49"] = LUA_MODIFIER_MOTION_NONE
+
+function modifier_npc_dota_hero_silencer_talent_49:OnCreated()
     if (not IsServer()) then
         return
     end

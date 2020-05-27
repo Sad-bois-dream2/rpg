@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_molten_guardian"
+    "npc_dota_hero_mars"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_mars"
         "Ability1"	"molten_guardian_scorching_clash"
         "Ability2"	"molten_guardian_volcanic_blow"
         "Ability3"	"molten_guardian_lava_skin"
@@ -40,5 +39,12 @@
 		"AttributeIntelligenceGain"    "1.4"            // Intelligence bonus per level.
 		"VisionDaytimeRange"        "1800"        // Range of vision during day light.
         "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "2"
+            "Support"   "0"
+            "Utility"   "1"
+        }
     }
 }

@@ -25,11 +25,12 @@
 		"AttackDamageMin"			"0"		// Damage range min.
 		"AttackDamageMax"			"0"		// Damage range max.
 		"AttackRate"				"1.7"		// Speed of attack.
-		"AttackAnimationPoint"		"0.0"		// Normalized time in animation cycle to attack.
+		"AttackAnimationPoint"		"0.55"		// Normalized time in animation cycle to attack.
 		"AttackAcquisitionRange"	"1"		// Range within a target can be acquired.
-		"AttackRange"				"1"		// Range within a target can be attacked.
-		"ProjectileModel"			"particles/neutral_fx/ghost_base_attack.vpcf" // Particle system model for projectile.
-		"ProjectileSpeed"			"900"		// Speed of projectile.		     
+		"AttackRange"				"625"		// Range within a target can be attacked.
+		//"ProjectileModel"			"particles/neutral_fx/ghost_base_attack.vpcf" // Particle system model for projectile.
+		"ProjectileModel"			"particles/units/heroes/hero_drow/drow_base_attack.vpcf" // Particle system model for projectile.
+		"ProjectileSpeed"			"1250"		// Speed of projectile.		     
 		// Bounds
 		//----------------------------------------------------------------
 		"RingRadius"				"45"
@@ -42,7 +43,9 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
-		"MovementSpeed"				"320"		// Speed.			
+		"MovementSpeed"				"320"		// Speed.
+		"MovementTurnRate"			"1.0"
+			
 		// Status
 		//----------------------------------------------------------------
 		"StatusHealth"				"1"		// Base health.
@@ -54,6 +57,12 @@
 		//----------------------------------------------------------------
 		"VisionDaytimeRange"		"400"		// Range of vision during day light.
 		"VisionNighttimeRange"		"400"		// Range of vision at night time.
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_GOODGUYS"
+		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_HERO"
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_HERO"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 	}	
 	"npc_dota_phantom_ranger_void_disciple"	
 	{

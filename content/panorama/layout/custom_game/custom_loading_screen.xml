@@ -2,6 +2,10 @@
   <styles>
     <include src="file://{resources}/styles/custom_loading_screen.css" />
   </styles>
-  <Panel class="AddonLoadingRoot">
+  <scripts>
+    <include src="file://{resources}/scripts/custom_game/custom_loading_screen.js" />
+  </scripts>
+  <Panel>
+    <Panel id="Container" class="LoadingScreen"/>
   </Panel>
 </root>
