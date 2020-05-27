@@ -1,6 +1,7 @@
 .SaveLoadWindow {
     width: 350px;
     height: 515px;
+    visibility: collapse;
 }
 
 #SlotsContainer {
@@ -22,7 +23,7 @@
 }
 
 .SaveSlot:hover {
-  border: 1px solid gold;
+    opacity: 0.6;
 }
 
 .SaveSlotLeftContent {
@@ -39,10 +40,9 @@
 
 .SaveSlotLeftContentText {
     horizontal-align: center;
-    vertical-align: bottom;
+    vertical-align: center;
     flow-children: down;
     margin-left: 7px;
-    margin-bottom: 5px;
 }
 
 .SaveSlotHeroIcon {
