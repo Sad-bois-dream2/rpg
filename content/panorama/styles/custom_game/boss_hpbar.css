@@ -6,16 +6,16 @@
 .BossPanel {
 	horizontal-align: center;
 	vertical-align: top;
-	width: 805px;
+	width: 642px;
 	height: fit-children;
 	visibility: collapse;
 }
 
 .BossPortrait {
-	width: 140px;
-	height: 143px;
+	width: 100px;
+	height: 109px;
 	border: 1px solid #7F8C8D;
-	margin-left: 25px;
+	margin-left: 70px;
 	margin-top: -1px;
 	border-radius: 10px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
@@ -32,51 +32,51 @@
 {
 	width: 100%;
 	height: 100%;
-	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #A71D31 ), to( #3F0D12 ) );
 }
 
 .BossHpBarPanel {
-	width: 100%;
-	height: 30px;
-	border: 1px solid grey;
+	width: 478px;
+	height: 20px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	border-radius: 4px;
-	margin-left: 157px; 
+	margin-left: 161px;
 	margin-top: 23px;
+	border: 1px solid grey;
+	border-bottom: 0px solid grey;
+	border-top: 0px solid grey;
 }
 
 .BossMpBar
 {
 	width: 100%;
 	height: 100%;
-	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
 }
 
 .BossMpBarPanel {
-	width: 100%;
-	height: 30px;
-	border: 1px solid grey;
+	width: 478px;
+	height: 20px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	border-radius: 4px;
-	margin-left: 157px; 
-	margin-top: 50px;
+	margin-left: 161px;
+	margin-top: 41px;
+	border: 1px solid grey;
+	border-top: 0px solid grey;
 }
 
 .BossHpMpBarValue
 {
 	color: white;
-	font-size: 14px;
+	font-size: 12px;
 	vertical-align: center;
 	horizontal-align: center;
 	font-family: platformfont;
+	text-align: center;
 }
 
 
 .BossHpMpBarRegValue {
 	color: white;
-	font-size: 14px;
+	font-size: 12px;
 	vertical-align: center;
 	horizontal-align: right;
 	margin-right: 4px;
@@ -104,25 +104,26 @@
 
 .AbilityImage
 {
-	width: 65px;
-	height: 63px;
+	width: 48px;
+	height: 48px;
 	border: 1px solid grey;
-	border-radius: 6px; 
+	border-radius: 5px;
 }
 
 .BossAbilitiesPanel {
 	flow-children: right;
 	width: 100%;
-	margin-left: 157px;
-	margin-top: 79px;
+	margin-left: 160px;
+	margin-top: 59px;
 }
 
 .BossNamePanel {
-	width: 100%;
+	width: 478px;
 	height: 25px;
 	border: 1px solid grey;
+	border-bottom: 0px solid grey;
 	horizontal-align: center;
-	margin-left: 158px;
+	margin-left: 159px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
@@ -132,8 +133,9 @@
 .BossNamePanel #BossName {
 	horizontal-align: center;
 	vertical-align: center;
-	font-size: 18px;
+	font-size: 15px;
 	font-family: platformfont;
+	color: white;
 }
 
 #CooldownOverlay
@@ -204,10 +206,10 @@
 
 .BossModifiersPanel
 {
-    width: 100%;
+    width: 565px;
     height: fit-children;
-    margin-top: 145px;
-    margin-left: 25px;
+    margin-top: 110px;
+    margin-left: 70px;
     flow-children: down;
 }
 
@@ -222,6 +224,8 @@
 .buff_list .BuffRoot, .debuff_list .BuffRoot
 {
 	transform: rotateX(0deg);
+	width: 42px;
+	height: 42px;
 }
 
 .BossStats
@@ -245,14 +249,13 @@
     width: 16px;
     height: 16px;
     vertical-align: center;
-	margin-right: 2px;
 }
 
 .BossStatsLabel Label
 {
     vertical-align: center;
 	color: white;
-	font-size: 14px;
+	font-size: 12px;
 	font-family: platformfont;
 	text-overflow: shrink;
 	height: 16px;
@@ -261,12 +264,14 @@
 
 .CloseButton
 {
-	width: 18px;
-	height: 18px;
+	width: 16px;
+	height: 16px;
 	border-radius: 100%;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	horizontal-align: right;
 	vertical-align: top;
+	margin-top: 4px;
+	margin-right: 5px;
 }

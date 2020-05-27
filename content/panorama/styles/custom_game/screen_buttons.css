@@ -6,7 +6,7 @@
 .ButtonsContainer {
 	vertical-align: bottom;
 	horizontal-align: right;
-	width: 160px;
+	width: fit-children;
 	height: 93px;
 	border: 1px solid grey;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #2d3436 ), to( #000000 ) ); 
@@ -16,6 +16,9 @@
 	border-radius: 10px;
 	padding-left: 15px;
 	flow-children: right;
+}
+.ButtonsContainer.OnLeftSide {
+	horizontal-align: left;
 }
 
 .Button {

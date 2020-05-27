@@ -114,7 +114,8 @@ function OnExpBarClick(id) {
 		expPercent = Math.round((100-expPercent) * 100) / 100;
 		var message;
 		if(maxExp == 0) {
-			message = "#DOTA_Chat_Ally_maxlevel"
+			message = "#DOTA_Chat_Ally_maxlevel";
+			expPercent = 100;
 		} else {
 			message = "#DOTA_Chat_Ally_needxp";
 		}

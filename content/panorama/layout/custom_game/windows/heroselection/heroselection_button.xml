@@ -1,0 +1,14 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/heroselection_window.css"/>
+    </styles>
+    <script>
+        function OnClick() {
+            var button = $.GetContextPanel();
+            button.Data().OnHeroSelected(button.id);
+        }
+    </script>
+    <RadioButton group="Heroes" class="AvailableHeroesButton" onactivate="OnClick()">
+        <DOTAHeroImage id="HeroIcon" heroname="npc_dota_hero_crystal_maiden" class="AvailableHeroesIcon" scaling="stretch-to-fit-preserve-aspect" />
+    </RadioButton>
+</root>

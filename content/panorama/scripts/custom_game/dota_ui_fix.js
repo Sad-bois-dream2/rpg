@@ -1,25 +1,4 @@
-var chatLinesContainer, chatControls;
-var customChatLines = [];
-var CHAT_LINE_PANEL = 0, CHAT_LINE_TIME = 1;
-var UPDATE_INTERVAL = 0.1;
-var CHAT_EXPIRE_TIME = 7 + UPDATE_INTERVAL;
-
-function UpdateValues() {
-    for(var i = 0; i < customChatLines.length; i++) {
-        customChatLines[i][CHAT_LINE_TIME] -= UPDATE_INTERVAL;
-        if(customChatLines[i][CHAT_LINE_TIME] <= UPDATE_INTERVAL) {
-            customChatLines[i][CHAT_LINE_PANEL].SetHasClass("NotReallyExpired", false);
-            customChatLines[i][CHAT_LINE_TIME] = UPDATE_INTERVAL;
-        }
-    }
-}
-
-function AutoUpdateValues() {
-    UpdateValues();
-    $.Schedule(UPDATE_INTERVAL, function() {
-        AutoUpdateValues();
-    });
-}
+var chatLinesContainer;
 
 function GetHEXPlayerColor(playerId) {
 	var playerColor = Players.GetPlayerColor(playerId).toString(16);
@@ -51,7 +30,6 @@ function OnChatMessageRequest(event) {
     var chatLineText = $.Localize("#DOTA_Chat_Allies").replace("%NAME%", "<font color='" + playerColor + "'>" + Players.GetPlayerName(event.player_id) + "</font>").replace("%TEXT%", event.text);
     chatLineLabel.text = chatLineText;
     heroIcon.SetImage("file://{images}/heroes/" + event.hero + ".png");
-    customChatLines.push([chatLine, CHAT_EXPIRE_TIME])
 }
 
 function FixCastbarLayout() {
@@ -112,8 +90,6 @@ function StartCastbarFixTimer() {
     minimap.style.height = "245px";
     minimap.style.borderRadius = "10px";
     chatLinesContainer = base.FindChildTraverse('ChatLinesPanel');
-    chatControls = base.FindChildTraverse('ChatControls');
     GameEvents.Subscribe("rpg_say_chat_message_from_server", OnChatMessageRequest);
-    AutoUpdateValues();
     StartCastbarFixTimer();
 })();

@@ -496,14 +496,19 @@ function Inventory:OnInventoryItemPickedFromGround(event)
             local hero = player:GetAssignedHero()
             if (hero ~= nil) then
                 if (Inventory:IsHeroHaveInventory(hero)) then
+                    local itemId = event.itemEntity:GetEntityIndex()
                     if (event.itemEntity:GetPurchaser() == hero) then
-                        local slot, item = Inventory:AddItem(hero, event.item, event.itemEntity.inventoryStats)
-                        if (slot ~= Inventory.slot.invalid) then
-                            event.itemEntity:Destroy()
-                        end
+                        Inventory:AddItem(hero, event.item, event.itemEntity.inventoryStats)
                     else
-                        hero:DropItemAtPositionImmediate(event.itemEntity, hero:GetAbsOrigin())
+                        local item = CreateItem(event.item, hero, hero)
+                        local positionOnGround = hero:GetAbsOrigin()
+                        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
+                        local itemStats = Inventory:GetItemEntityStats(event.itemEntity)
+                        Inventory:SetItemEntityStats(item, itemStats)
+                        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
                     end
+                    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
+                    event.itemEntity:Destroy()
                 end
             end
         end
@@ -540,11 +545,10 @@ function Inventory:OnInventoryDropItemRequest(event, args)
     local item = CreateItem(event.item, hero, hero)
     local positionOnGround = hero:GetAbsOrigin()
     local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
-    if (itemOnGround == nil) then
-        item:Destroy()
-        return
-    end
-    Inventory:SetItemEntityStats(item, Inventory:GetItemStatsForHero(hero, event.equipped, event.slot))
+    local itemStats = Inventory:GetItemStatsForHero(hero, event.equipped, event.slot)
+    Inventory:SetItemEntityStats(item, itemStats)
+    local itemId = item:GetEntityIndex()
+    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
     item:SetPurchaser(hero)
     Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
 end

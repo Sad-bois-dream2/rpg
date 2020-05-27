@@ -1,0 +1,34 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/saveload_window.css"/>
+    </styles>
+    <script>
+        var slotId = -1;
+        var slot;
+
+        function ShowHeroInfo() {
+            slot.Data().ShowHeroInfo(slotId);
+        }
+
+        function HideHeroInfo() {
+            slot.Data().HideHeroInfo(slotId);
+        }
+
+        (function() {
+            slot = $.GetContextPanel();
+            slotId = slot.id.replace("SaveSlot", "");
+        })();
+    </script>
+    <Panel class="SaveSlot">
+        <Panel class="SaveSlotLeftContent">
+            <DOTAHeroImage id="SaveSlotHeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_drow_ranger" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
+            <Panel class="SaveSlotLeftContentText">
+                <Label class="SaveSlotLevelLabel" text="Level 0" />
+                <Label class="SaveSlotDateLabel" text="Date()" />
+            </Panel>
+        </Panel>
+        <Image onmouseover="ShowHeroInfo()" onmouseout="HideHeroInfo()" class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+        <Panel class="SaveSlotLockedIcon"/>
+    </Panel>
+</root>
