@@ -1,0 +1,13 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/saveload_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/basic_window.js"/>
+        <include src="file://{resources}/scripts/windows/saveload.js"/>
+    </scripts>
+    <Panel class="Root" hittest="false">
+
+    </Panel>
+</root>
