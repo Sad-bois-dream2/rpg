@@ -76,6 +76,9 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_mind_control", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_root", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fel", Enemies.ABILITY_TYPE_INNATE)
+    --tower
+    Enemies:RegisterEnemyAbility("npc_tower_helltower", "helltower_hellfire", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_holytower", "holytower_holyfrost", Enemies.ABILITY_TYPE_INNATE)
 end
 
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)

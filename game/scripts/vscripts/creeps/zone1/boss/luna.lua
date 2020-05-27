@@ -1292,6 +1292,9 @@ modifier_luna_bound_buff = class({
     GetTexture = function(self)
         return luna_bound:GetAbilityTextureName()
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
 function modifier_luna_bound_buff:OnCreated()
@@ -1323,28 +1326,35 @@ function modifier_luna_bound_buff:OnTakeDamage(damageTable)
         healTable.ability = modifier:GetAbility()
         healTable.heal = damageTable.damage * modifier:GetAbility():GetSpecialValueFor("lifesteal") * 0.01
         GameMode:HealUnit(healTable)
-        --moonshard arrow
-        local mana_burn =  modifier:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
-        local void_per_burn =  modifier:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
-        local Max_mana = damageTable.victim:GetMaxMana()
-        local burn = Max_mana * mana_burn
+    end
+end
 
-        local Mana = damageTable.victim:GetMana()
+function modifier_luna_bound_buff:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    if (keys.attacker == self.parent) and self:GetStackCount() > 1  then
+        self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
+        self.void_per_burn = self:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
+        local Max_mana = keys.target:GetMaxMana()
+        local burn = Max_mana * self.mana_burn
+
+        local Mana = keys.target:GetMana()
         --if burn more than current mana burn equal to current mana
         if burn > Mana then
             burn = Mana
         end
-        local damage = burn * void_per_burn
-        damageTable.victim:ReduceMana(burn)
-        damageTable.victim:EmitSound("Hero_Antimage.ManaBreak")
-        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
-        ParticleManager:SetParticleControl(manaburn_pfx, 0, damageTable.victim:GetAbsOrigin() )
+        local damage = burn * self.void_per_burn
+        keys.target:ReduceMana(burn)
+        keys.target:EmitSound("Hero_Antimage.ManaBreak")
+        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, keys.target)
+        ParticleManager:SetParticleControl(manaburn_pfx, 0, keys.target:GetAbsOrigin() )
         ParticleManager:ReleaseParticleIndex(manaburn_pfx)
 
         local damageTable= {}
-        damageTable.caster =  modifier:GetParent()
-        damageTable.target = damageTable.victim
-        damageTable.ability =  modifier:GetAbility()
+        damageTable.caster = keys.attacker
+        damageTable.target = keys.target
+        damageTable.ability = self.ability
         damageTable.damage = damage
         damageTable.voiddmg = true
         GameMode:DamageUnit(damageTable)

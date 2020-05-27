@@ -393,8 +393,8 @@
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
     	    "particle"  "particles/units/heroes/hero_vengeful/vengeful_nether_swap.vpcf"
     	    "particle"  "particles/units/heroes/hero_vengeful/vengeful_nether_swap_target.vpcf"
-    	    "particle"  "particles/units/npc_boss_mirana/moon_chain_cast.vpcf"
-    	    "particle"  "particles/units/npc_boss_mirana/moon_chain_debuff.vpcf"
+    	    "particle"  "particles/units/npc_boss_mirana/mirana_guile/moon_chain_cast.vpcf"
+    	    "particle"  "particles/units/npc_boss_mirana/mirana_guile/moon_chain_debuff.vpcf"
     	}
     }
     //=================================================================================================================

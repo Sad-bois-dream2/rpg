@@ -23,6 +23,10 @@
 #base creeps/zone1/boss/luna/units.txt
 #base creeps/zone1/boss/venge/boss.txt
 #base creeps/zone1/boss/venge/units.txt
+#base creeps/tower/helltower/creep.txt
+#base creeps/tower/helltower/units.txt
+#base creeps/tower/holytower/creep.txt
+#base creeps/tower/holytower/units.txt
 
 "DOTAUnits"
 {
