@@ -640,7 +640,6 @@ function ShowEquippedItemTooltip(slotId) {
 }
 
 function ShowItemDropTooltip(name, stats) {
-    $.Msg(stats);
 	var position = GameUI.GetCursorPosition();
 	var itemIcon = name;
 	var itemName = $.Localize("#DOTA_Tooltip_Ability_"+name);

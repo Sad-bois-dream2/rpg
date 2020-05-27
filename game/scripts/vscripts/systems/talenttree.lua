@@ -20,11 +20,9 @@ end
 if (IsServer()) then
     ListenToGameEvent("player_chat", function(event)
         if (event.text == "-reset") then
-            PlayerResource:ReplaceHeroWith(event.playerid, "npc_dota_hero_drow_ranger", 0, 0)
-            --[[
             local player = PlayerResource:GetPlayer(event.playerid)
             local hero = player:GetAssignedHero()
-            TalentTree:Reset(hero) --]]
+            TalentTree:Reset(hero)
         end
     end, nil)
 end
