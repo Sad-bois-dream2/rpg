@@ -320,6 +320,7 @@ function Inventory:SetupForHero(hero)
         Inventory:AddItem(hero, "item_third_eye")
         Inventory:AddItem(hero, "item_chainmail")
         Inventory:AddItem(hero, "item_third_eye")
+        Inventory:AddItem(hero, "item_silver_ring")
     end
 end
 

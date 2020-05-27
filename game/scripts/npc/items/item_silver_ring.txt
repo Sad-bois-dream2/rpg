@@ -5,7 +5,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"                            "10001"
-		"BaseClass"                     "item_driven"
+		"BaseClass"                     "item_datadriven"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityTextureName"            "silver_ring"
 		"ItemBaseLevel"                 "1"
