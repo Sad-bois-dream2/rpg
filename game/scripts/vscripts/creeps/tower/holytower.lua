@@ -62,7 +62,7 @@ function holytower_holyfrost:ShootLinear( caster, caster_loc, travel_distance, s
     Timers:CreateTimer(1.1, function()
         caster:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_ATTACK, 0.8)
     end)
-    print("linear")
+    --print("linear")
     local angleLeft
     local direction = caster:GetForwardVector()
     local direction_face
@@ -122,7 +122,7 @@ function holytower_holyfrost:ShootOnTop( caster, caster_loc, travel_distance, st
     if (not IsServer()) then
         return
     end
-    print("set")
+    --print("set")
     Timers:CreateTimer(1.1, function()
         caster:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_ATTACK, 0.8)
     end)
@@ -139,7 +139,7 @@ function holytower_holyfrost:ShootOnTop( caster, caster_loc, travel_distance, st
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        print(#enemies)
+        --print(#enemies)
         local enemypos = enemies[1]:GetAbsOrigin()
         local direction_face = (enemypos-caster_loc):Normalized()
         caster:SetForwardVector(direction_face)
@@ -196,7 +196,7 @@ function modifier_holytower_holyfrost:OnIntervalThink()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        print(#enemies)
+        --print(#enemies)
         if #enemies> 0 and RollPercentage(75) then
             --75% chance turn at a hero and send directly on top of heroes if it finds hero nearby
             self.ability:ShootOnTop( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)

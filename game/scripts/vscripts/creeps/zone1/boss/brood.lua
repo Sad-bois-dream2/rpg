@@ -125,7 +125,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_brood_toxin:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_brood_toxin")
-    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.naturedmg == true) then
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.naturedmg == true) and damageTable.attacker:IsAlive() then
         local slowmod = damageTable.victim:FindModifierByName("modifier_brood_toxin_slow")
         local stunmod = damageTable.victim:FindModifierByName("modifier_brood_toxin_stunned")
         --if no stun and (no toxin slow or lower than max stack) add stack
@@ -916,47 +916,48 @@ function brood_spit:OnProjectileHit(target, location)
     local impact_radius = self:GetSpecialValueFor("impact_radius")
     --local linger = self:GetSpecialValueFor("burn_linger_duration")
     -- precache damage
+    if self.caster:IsAlive() then
+        local enemies = FindUnitsInRadius(
+                self.caster:GetTeamNumber(), -- int, your team number
+                location, -- point, center point
+                nil, -- handle, cacheUnit. (not known)
+                impact_radius, -- float, radius. or use FIND_UNITS_EVERYWHERE
+                DOTA_UNIT_TARGET_TEAM_ENEMY, -- int, team filter
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, -- int, type filter
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER, --int, order filter
+                false  -- bool, can grow cache
+        )
 
-    local enemies = FindUnitsInRadius(
-            self:GetCaster():GetTeamNumber(), -- int, your team number
-            location, -- point, center point
-            nil, -- handle, cacheUnit. (not known)
-            impact_radius, -- float, radius. or use FIND_UNITS_EVERYWHERE
-            DOTA_UNIT_TARGET_TEAM_ENEMY, -- int, team filter
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, -- int, type filter
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER, --int, order filter
-            false  -- bool, can grow cache
-    )
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = enemy
+            damageTable.ability = self -- can be nil
+            damageTable.damage = damage
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+            --local modifierTable = {}
+            --modifierTable.ability = self
+            --modifierTable.target = enemy
+            --modifierTable.caster = self.caster
+            --modifierTable.modifier_name = "modifier_brood_spit_burn_slow"
+            --modifierTable.duration = linger
+            --GameMode:ApplyDebuff(modifierTable)
 
-    for _, enemy in pairs(enemies) do
-        local damageTable = {}
-        damageTable.caster = self.caster
-        damageTable.target = enemy
-        damageTable.ability = self -- can be nil
-        damageTable.damage = damage
-        damageTable.naturedmg = true
-        GameMode:DamageUnit(damageTable)
-        --local modifierTable = {}
-        --modifierTable.ability = self
-        --modifierTable.target = enemy
-        --modifierTable.caster = self.caster
-        --modifierTable.modifier_name = "modifier_brood_spit_burn_slow"
-        --modifierTable.duration = linger
-        --GameMode:ApplyDebuff(modifierTable)
+        end
 
+        -- start aura on thinker
+        local mod = target:AddNewModifier(
+                self.caster, -- player source
+                self, -- ability source
+                "modifier_brood_spit_thinker", -- modifier name
+                { duration = duration,
+                } -- kv
+        )
+
+        self:PlayEffects(location)
     end
-
-    -- start aura on thinker
-    local mod = target:AddNewModifier(
-            self:GetCaster(), -- player source
-            self, -- ability source
-            "modifier_brood_spit_thinker", -- modifier name
-            { duration = duration,
-            } -- kv
-    )
-
-    self:PlayEffects(location)
 end
 
 function brood_spit:PlayEffects(loc)
@@ -1177,13 +1178,15 @@ function modifier_brood_spit_burn_slow:OnIntervalThink()
     local parent = self:GetParent()
     local caster = self:GetCaster()
     -- apply damage
-    local damageTable = {}
-    damageTable.caster = caster
-    damageTable.target = parent
-    damageTable.ability = self:GetAbility()
-    damageTable.damage = dps
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
+    if caster:IsAlive() then
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = parent
+        damageTable.ability = self:GetAbility()
+        damageTable.damage = dps
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
 end
 
 --------------------------------------------------------------------------------

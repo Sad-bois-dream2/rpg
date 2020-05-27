@@ -55,7 +55,7 @@ function modifier_luna_void:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) then
+    if (keys.attacker == self.parent) and keys.attacker:IsAlive() then
         Timers:CreateTimer(0.1,function()
         local radius = self:GetAbility():GetSpecialValueFor("radius")
         local Max_mana = keys.target:GetMaxMana()
@@ -499,11 +499,12 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
     if not IsServer() then return end
     local damage = self:GetSpecialValueFor("damage")
     local duration = self:GetSpecialValueFor("duration")
-    if target then
+    local caster = self:GetCaster()
+    if target and caster:IsAlive()then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
-        modifierTable.caster = self:GetCaster()
+        modifierTable.caster = caster
         modifierTable.modifier_name = "modifier_luna_wave_amp"
         modifierTable.duration = duration
         GameMode:ApplyDebuff(modifierTable)
@@ -948,8 +949,8 @@ function luna_cruelty:ReleaseVoid(radius, number, projectile_speed, set, set_int
 end
 
 function luna_cruelty:OnProjectileHit_ExtraData(target, vLocation, extraData)
-    if target then
-        local caster = self:GetCaster()
+    local caster = self:GetCaster()
+    if target and caster:IsAlive() then
         local caster_loc = Vector( extraData.originX, extraData.originY, extraData.originZ )
         local target_loc = target:GetAbsOrigin()
         local increment = self:GetSpecialValueFor("increment_damage")
@@ -1109,26 +1110,24 @@ function luna_orbs:OnProjectileHit_ExtraData(target, data)
     local projectile_speed = self:GetSpecialValueFor("projectile_speed")
     self.already_hit = {}
     -- Make sure there is a target
-    if not target then return nil end
-    table.insert(self.already_hit, target)
-    EmitSoundOn("Hero_Lich.ChainFrostImpact.Hero", target)
-    local damageTable = {}
-    damageTable.caster = caster
-    damageTable.target = target
-    damageTable.ability = self
-    damageTable.damage = damage
-    damageTable.voiddmg = true
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_stunned"
-    modifierTable.duration = stun
-    GameMode:ApplyDebuff(modifierTable)
-
-
+    if target and caster:IsAlive() then
+        table.insert(self.already_hit, target)
+        EmitSoundOn("Hero_Lich.ChainFrostImpact.Hero", target)
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.voiddmg = true
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = stun
+        GameMode:ApplyDebuff(modifierTable)
         -- Start a timer and bounce again!
         Timers:CreateTimer(projectile_delay, function()
 
@@ -1168,6 +1167,7 @@ function luna_orbs:OnProjectileHit_ExtraData(target, data)
             }
             ProjectileManager:CreateTrackingProjectile(chain_frost_projectile)
         end)
+    end
 end
 
 --------------
@@ -1333,7 +1333,7 @@ function modifier_luna_bound_buff:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) and self:GetStackCount() > 1  then
+    if (keys.attacker == self.parent) and self:GetStackCount() > 1 and keys.attacker:IsAlive() then
         self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
         self.void_per_burn = self:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
         local Max_mana = keys.target:GetMaxMana()

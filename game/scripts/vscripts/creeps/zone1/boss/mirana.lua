@@ -63,7 +63,7 @@ function modifier_mirana_shard:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) then
+    if (keys.attacker == self.parent) and keys.attacker:IsAlive() then
         self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
         self.void_per_burn = self:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
         local Max_mana = keys.target:GetMaxMana()
@@ -524,7 +524,7 @@ function mirana_holy:OnProjectileHit_ExtraData(target)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
     local stun = self:GetSpecialValueFor("stun")
-    if target then
+    if target and caster:IsAlive() then
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target
@@ -831,34 +831,36 @@ function mirana_under:ShowerAoe(caster, aoe, strikepos, damage)
                     FIND_ANY_ORDER,
                     false)
             for _, enemy in pairs(enemies) do
-                local damageTable = {}
-                damageTable.caster = caster
-                damageTable.target = enemy
-                damageTable.ability = self
-                damageTable.damage = damage
-                damageTable.voiddmg = true
-                damageTable.naturedmg = true
-                GameMode:DamageUnit(damageTable)
-                local modifierTable = {}
-                modifierTable.ability = self
-                modifierTable.target = enemy
-                modifierTable.caster = caster
-                modifierTable.modifier_name = "modifier_stunned"
-                modifierTable.duration = 0.1 --stun
-                GameMode:ApplyDebuff(modifierTable)
-                modifierTable = {}
-                modifierTable.ability = self
-                modifierTable.target = enemy
-                modifierTable.caster = caster
-                modifierTable.modifier_name = "modifier_mirana_under_silence"
-                modifierTable.duration = 3 --silence
-                GameMode:ApplyDebuff(modifierTable)
-                local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
-                local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, enemy)
-                Timers:CreateTimer(3.0, function()
-                    ParticleManager:DestroyParticle(ray_fx, false)
-                    ParticleManager:ReleaseParticleIndex(ray_fx)
-                end)
+                if caster:IsAlive() then
+                    local damageTable = {}
+                    damageTable.caster = caster
+                    damageTable.target = enemy
+                    damageTable.ability = self
+                    damageTable.damage = damage
+                    damageTable.voiddmg = true
+                    damageTable.naturedmg = true
+                    GameMode:DamageUnit(damageTable)
+                    local modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = enemy
+                    modifierTable.caster = caster
+                    modifierTable.modifier_name = "modifier_stunned"
+                    modifierTable.duration = 0.1 --stun
+                    GameMode:ApplyDebuff(modifierTable)
+                    modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = enemy
+                    modifierTable.caster = caster
+                    modifierTable.modifier_name = "modifier_mirana_under_silence"
+                    modifierTable.duration = 3 --silence
+                    GameMode:ApplyDebuff(modifierTable)
+                    local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
+                    local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, enemy)
+                    Timers:CreateTimer(3.0, function()
+                        ParticleManager:DestroyParticle(ray_fx, false)
+                        ParticleManager:ReleaseParticleIndex(ray_fx)
+                    end)
+                end
             end
             local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
             local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, caster)
@@ -1452,7 +1454,7 @@ function modifier_mirana_bound_buff:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) and self:GetStackCount() > 1 then
+    if (keys.attacker == self.parent) and self:GetStackCount() > 1 and keys.attacker:IsAlive() then
         Timers:CreateTimer(0.1,function()
             local radius = self:GetAbility():GetSpecialValueFor("radius")
             local Max_mana = keys.target:GetMaxMana()
