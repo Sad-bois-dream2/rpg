@@ -18,8 +18,8 @@
 		"npc_dota_hero_invoker"	"Chosen Invoker" // Ranged int mage dd №1
 		"npc_dota_hero_silencer"	"Light Cardinal" // Support #1
 		"npc_dota_hero_enchantress"	"Priestess of Sacred Forest" // Support #2
-		"npc_dota_hero_doom_bringer"	"Melee str phys dd №2"
-		"npc_dota_hero_dark_willow"	"Ranger agi phys dd №1"
+		"npc_dota_hero_doom_bringer"	"Catastrophe Demolisher" // Melee srr phys dd #2
+		"npc_dota_hero_dark_willow"	"Dark Willow"
 		// Countless hero abilities
 		"DOTA_Tooltip_Ability_empty5"		"Ability slot"
 		"DOTA_Tooltip_Ability_empty5_Description"		"Can be learned from the 3rd row in talents."
@@ -891,8 +891,15 @@
         "DOTA_Chat_Ally_level"		"Ally %HERO% have <font color='#DAAF01'>Level %LEVEL%</font>."
         "DOTA_Chat_Ally_needxp"		"Ally %HERO% need <font color='#DAAF01'>%XP% (%EXPPERCENT%%) XP</font> to reach <font color='#DAAF01'>Level %NEXTLEVEL%</font>."
         "DOTA_Chat_Enemy_is_alive"		"Enemy %ENEMY% is still alive."
-        "DOTA_Chat_Enemy_health"		"Enemy %ENEMY% have <font color='#00FF00'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
+        "DOTA_Chat_Enemy_health"		"Enemy %ENEMY% have <font color='#b7234a'>%CURRENTHP% (%HPPERCENT%%)</font> health left."
         "DOTA_Chat_Enemy_mana"		"Enemy %ENEMY% have <font color='#257FF6'>%CURRENTMP% (%MPPERCENT%%)</font> mana left."
+        "DOTA_HeroSelection_SelectSlot"		"SELECT SLOT TO LOAD"
+        "DOTA_HeroSelection_TimeLeft"		"PICK TIME"
+        "DOTA_HeroSelection_Stats_Tank"		"Survivability"
+        "DOTA_HeroSelection_Stats_Dps"		"Damage"
+        "DOTA_HeroSelection_Stats_Support"		"Support"
+        "DOTA_HeroSelection_Stats_Utility"		"Utility"
+        "DOTA_HeroSelection_ResetFilter"		"RESET FILTER"
         // Countless items
         "DOTA_Tooltip_Ability_item_claymore_custom"      "Claymore"
         "DOTA_Tooltip_Ability_item_claymore_custom_Description"      ""

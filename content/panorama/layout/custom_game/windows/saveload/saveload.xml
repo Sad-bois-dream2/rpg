@@ -1,0 +1,74 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/saveload_window.css"/>
+        <include src="file://{resources}/styles/windows/inventory_window.css" />
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/basic_window.js"/>
+        <include src="file://{resources}/scripts/windows/saveload.js"/>
+    </scripts>
+    <Panel class="Root" hittest="false">
+        <Panel id="MainWindow" class="Window SaveLoadWindow">
+            <Label class="SaveLoadTitleLabel" text="Select slot to save" />
+            <Panel id="SlotsContainer" />
+            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
+                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+        </Panel>
+    <Panel id="SaveSlotHeroPreview">
+        <Panel class="HeroItems">
+            <Panel id="HeroModelContainer">
+                <DOTAScenePanel renderdeferred="false" class="HeroModel OverviewHeroRender" unit="npc_dota_hero_drow_ranger" drawbackground="1" allowrotation="false" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>
+            </Panel>
+            <Panel id="LeftItemSlots" class="LeftItemSlots">
+                <Panel id="InventoryEquippedSlot0" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(0)" onmouseover="ShowEquippedItemTooltip(0)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage0" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_claymore"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot1" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(1)" onmouseover="ShowEquippedItemTooltip(1)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage1" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_chainmail"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot2" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(2)" onmouseover="ShowEquippedItemTooltip(2)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage2" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_inventory_legs_background"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot3" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(3)" onmouseover="ShowEquippedItemTooltip(3)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage3" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_boots"/>
+                </Panel>
+            </Panel>
+            <Panel id="RightItemSlots" class="RightItemSlots">
+                <Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)" onmouseover="ShowEquippedItemTooltip(5)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage5" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_poor_mans_shield"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot6" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(6)" onmouseover="ShowEquippedItemTooltip(6)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage6" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_cloak"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot7" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(7)" onmouseover="ShowEquippedItemTooltip(7)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage7" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shivas_guard"/>
+                </Panel>
+                <Panel id="InventoryEquippedSlot8" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(8)" onmouseover="ShowEquippedItemTooltip(8)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage8" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_gloves"/>
+                </Panel>
+            </Panel>
+            <Panel id="MiddleItemSlots" class="MiddleItemSlots">
+                <Panel id="InventoryEquippedSlot4" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(4)" onmouseover="ShowEquippedItemTooltip(4)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage4" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_helm_of_iron_will"/>
+                </Panel>
+            </Panel>
+            <Panel id="MiddleItemSlotsFromBottom" class="MiddleItemSlots FromBottom">
+                <Panel class="LeftRings">
+                    <Panel id="InventoryEquippedSlot9" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(9)" onmouseover="ShowEquippedItemTooltip(9)" onmouseout="HideItemTooltip()" showtooltip="false">
+                        <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage9" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_ring_of_protection"/>
+                    </Panel>
+                </Panel>
+                <Panel id="InventoryEquippedSlot10" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(10)" onmouseover="ShowEquippedItemTooltip(10)" onmouseout="HideItemTooltip()" showtooltip="false">
+                    <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage10" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_belt_of_strength"/>
+                </Panel>
+                <Panel class="RightRings">
+                    <Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true" oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)" onmouseover="ShowEquippedItemTooltip(11)" onmouseout="HideItemTooltip()" showtooltip="false">
+                        <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage11" scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shadow_amulet"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+        </Panel>
+    </Panel>
+    </Panel>
+</root>

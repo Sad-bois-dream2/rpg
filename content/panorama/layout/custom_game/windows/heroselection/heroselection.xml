@@ -1,0 +1,125 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
+        <include src="file://{resources}/styles/windows/heroselection_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/heroselection.js"/>
+    </scripts>
+    <Panel class="Root HeroSelection" hittest="false">
+        <DOTAScenePanel id="HeroSelectionScreen" onload="OnHeroSelectionScreenLoaded()" antialias="true" renderdeferred="false" map="hero_selection" particleonly="false" light="global_light" camera=""/>
+        <Panel id="Spinner" class="lds-default">
+            <Panel class="dot1"/>
+            <Panel class="dot2"/>
+            <Panel class="dot3"/>
+            <Panel class="dot4"/>
+            <Panel class="dot5"/>
+            <Panel class="dot6"/>
+            <Panel class="dot7"/>
+            <Panel class="dot8"/>
+            <Panel class="dot9"/>
+            <Panel class="dot10"/>
+            <Panel class="dot11"/>
+            <Panel class="dot12"/>
+        </Panel>
+        <Panel id="HeroSlotsContainer">
+            <Label class="HeroSlotsLabel" text="#DOTA_HeroSelection_SelectSlot"/>
+            <Panel id="HeroSlotsPanel">
+                <Panel id="HeroSlot0" class="HeroSlot New" onactivate="OnPickHeroButtonPressed('HeroSlot0')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+                <Panel id="HeroSlot1" class="HeroSlot New" onactivate="OnPickHeroButtonPressed('HeroSlot1')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+                <Panel id="HeroSlot2" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot2')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+                <Panel id="HeroSlot3" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot3')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+                <Panel id="HeroSlot4" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot4')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+                <Panel id="HeroSlot5" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot5')">
+                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                    <Label text="+" class="HeroSlotLabel"/>
+                    <Panel class="HeroSlotImage"/>
+                </Panel>
+            </Panel>
+        </Panel>
+        <Panel id="AvailableHeroesContainer">
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Strength" />
+            </Panel>
+            <Panel id="AvailableHeroesStrength" />
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Agility" />
+            </Panel>
+            <Panel id="AvailableHeroesAgility" />
+            <Panel class="AvailableHeroesGroupContainer">
+                <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex" />
+                <Label text="#DOTA_Tooltip_Intelligence" />
+            </Panel>
+            <Panel id="AvailableHeroesIntellect" />
+        </Panel>
+        <Panel id="HeroStats">
+            <Panel class="HeroNameContainer">
+                <DOTAHeroImage id="SelectedHeroIcon" heroname="npc_dota_hero_axe" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
+                <Label id="SelectedHeroName" text="" />
+            </Panel>
+            <Panel id="HeroAbilitiesContainer">
+                <DOTAAbilityImage id="Ability0" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability1" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability2" class="HeroAbility" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+                <DOTAAbilityImage id="Ability3" class="HeroAbility last" showtooltip="true" abilityname="phantom_ranger_void_disciple" scaling="stretch-to-fit-preserve-aspect" />
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Tank" />
+            <Panel id="TankStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('TankStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 1)" onactivate="OnMouseClickOverStat('TankStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 2)" onactivate="OnMouseClickOverStat('TankStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 3)" onactivate="OnMouseClickOverStat('TankStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 4)" onactivate="OnMouseClickOverStat('TankStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('TankStat', 5)" onactivate="OnMouseClickOverStat('TankStat', 5)"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Dps" />
+            <Panel id="DpsStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('DpsStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 1)" onactivate="OnMouseClickOverStat('DpsStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 2)" onactivate="OnMouseClickOverStat('DpsStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 3)" onactivate="OnMouseClickOverStat('DpsStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 4)" onactivate="OnMouseClickOverStat('DpsStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('DpsStat', 5)" onactivate="OnMouseClickOverStat('DpsStat', 5)"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Support" />
+            <Panel id="SupportStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('SupportStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 1)" onactivate="OnMouseClickOverStat('SupportStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 2)" onactivate="OnMouseClickOverStat('SupportStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 3)" onactivate="OnMouseClickOverStat('SupportStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 4)" onactivate="OnMouseClickOverStat('SupportStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('SupportStat', 5)" onactivate="OnMouseClickOverStat('SupportStat', 5)"/>
+            </Panel>
+            <Label class="HeroStatLabel" text="#DOTA_HeroSelection_Stats_Utility" />
+            <Panel id="UtilityStat" class="HeroStat" onmouseout="OnMouseOutOfStatPanel('UtilityStat')">
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 1)" onactivate="OnMouseClickOverStat('UtilityStat', 1)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 2)" onactivate="OnMouseClickOverStat('UtilityStat', 2)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 3)" onactivate="OnMouseClickOverStat('UtilityStat', 3)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 4)" onactivate="OnMouseClickOverStat('UtilityStat', 4)"/>
+                <Panel class="HeroStatChild" onmouseover="OnMouseOverStat('UtilityStat', 5)" onactivate="OnMouseClickOverStat('UtilityStat', 5)"/>
+            </Panel>
+            <Panel class="WindowButton ResetFilterButton" onactivate="OnResetFilterButtonClick()">
+                <Label text="#DOTA_HeroSelection_ResetFilter"/>
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

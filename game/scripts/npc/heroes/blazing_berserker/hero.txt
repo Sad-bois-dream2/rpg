@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_blazing_berserker"
+    "npc_dota_hero_axe"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_axe"
         "Ability1"	"blazing_berserker_molten_strike"
         "Ability2"	"blazing_berserker_incinerating_souls"
         "Ability3"	"blazing_berserker_battle_hunger"
@@ -40,5 +39,12 @@
 		"AttributeIntelligenceGain"    "1.6"            // Intelligence bonus per level.
 		"VisionDaytimeRange"        "1800"        // Range of vision during day light.
         "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+        "Roles"
+        {
+            "Tank"  "1"
+            "DPS"   "5"
+            "Support"   "0"
+            "Utility"   "0"
+        }
     }
 }

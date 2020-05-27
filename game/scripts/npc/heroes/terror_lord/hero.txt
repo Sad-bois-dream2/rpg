@@ -1,9 +1,8 @@
 "DOTAHeroes"
 {
-    "rpg_dota_hero_terror_lord"
+    "npc_dota_hero_abyssal_underlord"
     {
         "AbilityLayout"     "6"
-        "override_hero"     "npc_dota_hero_abyssal_underlord"
         "Ability1"	"terror_lord_malicious_flames"
         "Ability2"	"terror_lord_mighty_defiance"
         "Ability3"	"terror_lord_destructive_stomp"
@@ -40,5 +39,12 @@
 		"AttributeIntelligenceGain"    "2.3"            // Intelligence bonus per level.
 		"VisionDaytimeRange"        "1800"        // Range of vision during day light.
         "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "3"
+            "Support"   "0"
+            "Utility"   "1"
+        }
     }
 }
