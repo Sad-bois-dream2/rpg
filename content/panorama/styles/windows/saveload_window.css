@@ -25,10 +25,6 @@
   border: 1px solid gold;
 }
 
-.SaveSlot.Locked:hover {
-  border: 1px solid gray;
-}
-
 .SaveSlotLeftContent {
     flow-children: right;
     width: fit-children;
@@ -126,4 +122,16 @@
 .SaveSlot.Empty .SaveSlotLockedIcon {
     background-image: url("s2r://panorama/images/control_icons/plus_png.vtex");
     visibility: visible;
+}
+
+#SaveSlotHeroPreview {
+    width: 450px;
+    height: 500px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	visibility: collapse;
 }
