@@ -549,15 +549,20 @@
 }
 
 .HeroSlot.New .HeroSlotLabel {
-    font-size: 40px;
+    visibility: collapse;
 }
 
 .HeroSlot.Locked .HeroSlotLabel {
     visibility: collapse;
 }
 
-.HeroSlot.Locked .HeroSlotImage {
+.HeroSlot.New .HeroSlotImage {
     visibility: visible;
+    background-image: url("s2r://panorama/images/control_icons/plus_png.vtex");
+}
+
+.HeroSlot.Locked .HeroSlotImage {
+    background-image: url("s2r://panorama/images/control_icons/lock_medium_png.vtex");
 }
 
 #HeroSelectionScreen {
