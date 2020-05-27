@@ -227,7 +227,7 @@ end
 function treant_hook:OnProjectileHit(target,data)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
-    if target then
+    if target and caster:IsAlive() then
         local vector = (caster:GetAbsOrigin() - target:GetAbsOrigin()):Normalized()
         local damageTable = {}
         damageTable.ability = self
@@ -302,7 +302,7 @@ function modifier_treant_flux_eye:OnIntervalThink()  --StartIntervalThink will o
     -- damage
     local counter = 0
     Timers:CreateTimer(0, function()
-        if counter < 10 then
+        if counter < 10 and self.parent:IsAlive() then
             local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
             self.parent:GetAbsOrigin(),
             nil,
@@ -349,7 +349,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_treant_flux_eye:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_treant_flux_eye")
-    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.puredmg == true ) then
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.puredmg == true and damageTable.attacker:IsAlive() ) then
         local modifierTable = {}
         modifierTable.ability = modifier:GetAbility()
         modifierTable.target = damageTable.victim
@@ -506,37 +506,39 @@ function modifier_treant_storm_eye:OnCreated()
 end
 
 function modifier_treant_storm_eye:OnIntervalThink()
-    local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
-            self.parent:GetAbsOrigin(),
-            nil,
-            self.range,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, enemy in pairs(enemies) do
-        local casterOrigin = self.parent:GetAbsOrigin()
-        local enemyOrigin = enemy:GetAbsOrigin()
-        local vector =  enemyOrigin - casterOrigin
-        local distance = vector:Length2D()
+    if self.parent:IsAlive() then
+        local enemies = FindUnitsInRadius(self.parent:GetTeamNumber(),
+                self.parent:GetAbsOrigin(),
+                nil,
+                self.range,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local casterOrigin = self.parent:GetAbsOrigin()
+            local enemyOrigin = enemy:GetAbsOrigin()
+            local vector =  enemyOrigin - casterOrigin
+            local distance = vector:Length2D()
             if distance < self.min_damage_range then
                 distance = self.min_damage_range end
-        local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)) * self.tick
-        local damageTable = {}
-        damageTable.caster = self.parent
-        damageTable.target = enemy
-        damageTable.ability = self.ability
-        damageTable.damage = damage
-        damageTable.naturedmg = true
-        GameMode:DamageUnit(damageTable)
-        --particle on hit
-        self.pfx = ParticleManager:CreateParticle( "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(self.pfx, false)
-            ParticleManager:ReleaseParticleIndex(self.pfx)
-        end)
-        enemy:EmitSound("Hero_Furion.TreantFootsteps")
+            local damage = (self.base_damage + self.increment * (distance - self.min_damage_range)) * self.tick
+            local damageTable = {}
+            damageTable.caster = self.parent
+            damageTable.target = enemy
+            damageTable.ability = self.ability
+            damageTable.damage = damage
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+            --particle on hit
+            self.pfx = ParticleManager:CreateParticle( "particles/units/heroes/hero_tiny/tiny_grow_cleave.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
+            Timers:CreateTimer(1.0, function()
+                ParticleManager:DestroyParticle(self.pfx, false)
+                ParticleManager:ReleaseParticleIndex(self.pfx)
+            end)
+            enemy:EmitSound("Hero_Furion.TreantFootsteps")
+        end
     end
 end
 
@@ -615,23 +617,25 @@ function modifier_treant_seed:GetSpellHastePercentBonus()
 end
 
 function modifier_treant_seed:OnIntervalThink()
-    --damage
-    local damageTable= {}
-    damageTable.caster = self.caster
-    damageTable.target = self.parent
-    damageTable.ability = self.ability
-    damageTable.damage = self.damage
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-    self.parent:EmitSound("Hero_Treant.LeechSeed.Tick ")
-    --mana drain
-    local Max_mana = self.parent:GetMaxMana()
-    local burn = Max_mana * self.mana_drain
-    self.parent:ReduceMana(burn)
-    --particle
-    self.damage_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_treant/treant_leech_seed_damage_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
-    ParticleManager:ReleaseParticleIndex(self.damage_particle)
-    self.damage_particle = nil
+    if self.caster:IsAlive() then
+        --damage
+        local damageTable= {}
+        damageTable.caster = self.caster
+        damageTable.target = self.parent
+        damageTable.ability = self.ability
+        damageTable.damage = self.damage
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        self.parent:EmitSound("Hero_Treant.LeechSeed.Tick ")
+        --mana drain
+        local Max_mana = self.parent:GetMaxMana()
+        local burn = Max_mana * self.mana_drain
+        self.parent:ReduceMana(burn)
+        --particle
+        self.damage_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_treant/treant_leech_seed_damage_pulse.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+        ParticleManager:ReleaseParticleIndex(self.damage_particle)
+        self.damage_particle = nil
+    end
 end
 
 LinkLuaModifier("modifier_treant_seed", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
@@ -776,7 +780,7 @@ end
 function modifier_treant_one:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_treant_one")
     local rootmod = damageTable.attacker:FindModifierByName("modifier_treant_one_root")
-    if (damageTable.damage > 0 and rootmod == nil and modifier and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+    if (damageTable.damage > 0 and damageTable.victim:IsAlive() and rootmod == nil and modifier and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
         local modifierTable = {}
         modifierTable.ability = modifier:GetAbility()
         modifierTable.target = damageTable.attacker
@@ -785,7 +789,7 @@ function modifier_treant_one:OnTakeDamage(damageTable)
         modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
         modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
         GameMode:ApplyDebuff(modifierTable)
-    elseif (damageTable.damage > 0 and modifier and rootmod ~= nil and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+    elseif (damageTable.damage > 0 and modifier and rootmod ~= nil and damageTable.victim:IsAlive() and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
                 damageTable.victim:GetAbsOrigin(),
@@ -865,27 +869,21 @@ function modifier_treant_one_root:CheckState()
 end
 
 function modifier_treant_one_root:OnIntervalThink()
-    local damageTable = {}
-    damageTable.ability = self.ability
-    damageTable.caster = self.caster
-    damageTable.target = self.parent
-    damageTable.damage = self.dot
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-    local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
-    local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
-    treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
-    treant:AddNewModifier(self.caster, self.ability, "modifier_treant_one_ignore_aggro_buff", { duration = -1, target = self.parent})
-    treant:EmitSound("Hero_Furion.TreantSpawn")
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.ability = self.ability
+        damageTable.caster = self.caster
+        damageTable.target = self.parent
+        damageTable.damage = self.dot
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
+        local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
+        treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
+        treant:AddNewModifier(self.caster, self.ability, "modifier_treant_one_ignore_aggro_buff", { duration = -1, target = self.parent})
+        treant:EmitSound("Hero_Furion.TreantSpawn")
+    end
 end
-
---function modifier_treant_one_root:OnDestroy()
-    --if (not IsServer()) then
-        --return
-    --end
-    --ParticleManager:DestroyParticle(self.pidx, false)
-    --ParticleManager:ReleaseParticleIndex(self.pidx)
---end
 
 LinkLuaModifier("modifier_treant_one_root", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -1229,7 +1227,7 @@ end
 function treant_beam:OnProjectileHit_ExtraData(target)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
-    if target then
+    if target and caster:IsAlive()then
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target

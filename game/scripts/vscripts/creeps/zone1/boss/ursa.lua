@@ -52,7 +52,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_ursa_rend:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_ursa_rend")
-    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.physdmg == true) then
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.physdmg == true and damageTable.attacker:IsAlive())  then
             local modifierTable = {}
             modifierTable.ability = modifier:GetAbility()
             modifierTable.target = damageTable.victim
@@ -241,18 +241,20 @@ function modifier_ursa_dash_motion:UpdateHorizontalMotion(me, dt)
                     false)
             for _, enemy in pairs(enemies) do
                 if (not TableContains(self.damagedEnemies, enemy)) then
-                    local damageTable = {}
-                    damageTable.caster = self.caster
-                    damageTable.target = enemy
-                    damageTable.ability = self.ability
-                    damageTable.damage = self.base_damage
-                    damageTable.physdmg = true
-                    GameMode:DamageUnit(damageTable)
-                    table.insert(self.damagedEnemies, enemy)
+                    if self.caster:IsAlive() then
+                        local damageTable = {}
+                        damageTable.caster = self.caster
+                        damageTable.target = enemy
+                        damageTable.ability = self.ability
+                        damageTable.damage = self.base_damage
+                        damageTable.physdmg = true
+                        GameMode:DamageUnit(damageTable)
+                        table.insert(self.damagedEnemies, enemy)
+                    end
                 end
             end
         elseif ( traveled_distance < self.dash_range) then
-            expected_location = current_location - self.caster:GetForwardVector() * self.dash_speed * dt
+            expected_location = current_location - self.caster:GetForwardVector() * self.dash_speed * dt -- backward dash if blocked
             self.caster:SetAbsOrigin(expected_location)
             local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                     expected_location,
@@ -265,14 +267,16 @@ function modifier_ursa_dash_motion:UpdateHorizontalMotion(me, dt)
                     false)
             for _, enemy in pairs(enemies) do
                 if (not TableContains(self.damagedEnemies, enemy)) then
-                    local damageTable = {}
-                    damageTable.caster = self.caster
-                    damageTable.target = enemy
-                    damageTable.ability = self.ability
-                    damageTable.damage = self.base_damage
-                    damageTable.physdmg = true
-                    GameMode:DamageUnit(damageTable)
-                    table.insert(self.damagedEnemies, enemy)
+                    if self.caster:IsAlive() then
+                        local damageTable = {}
+                        damageTable.caster = self.caster
+                        damageTable.target = enemy
+                        damageTable.ability = self.ability
+                        damageTable.damage = self.base_damage
+                        damageTable.physdmg = true
+                        GameMode:DamageUnit(damageTable)
+                        table.insert(self.damagedEnemies, enemy)
+                    end
                 end
             end
         else
@@ -538,7 +542,7 @@ function ursa_roar:OnProjectileHit_ExtraData(target)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
     local stun = self:GetSpecialValueFor("stun")
-    if target then
+    if target and caster:IsAlive() then
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target
@@ -640,40 +644,42 @@ end
 
 function ursa_swift:SwiftEarth(caster)
     -- "Blinking cause earth to split deal aoe damage stun at both location."
-    local swift_earth = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_swift/ursa_swift.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(swift_earth, 1, Vector(225, 0, 0))
-    Timers:CreateTimer(1.5, function()
-        ParticleManager:DestroyParticle(swift_earth, false)
-        ParticleManager:ReleaseParticleIndex(swift_earth)
-    end)
-    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-            caster:GetAbsOrigin(),
-            nil,
-            self.stun_aoe,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
+    if caster:IsAlive() then
+        local swift_earth = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_swift/ursa_swift.vpcf", PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(swift_earth, 1, Vector(225, 0, 0))
+        Timers:CreateTimer(1.5, function()
+            ParticleManager:DestroyParticle(swift_earth, false)
+            ParticleManager:ReleaseParticleIndex(swift_earth)
+        end)
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                caster:GetAbsOrigin(),
+                nil,
+                self.stun_aoe,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
 
-    for _, enemy in pairs(enemies) do
-        --Damage nearby enemies
-        local damageTable = {}
-        damageTable.caster = caster
-        damageTable.target = enemy
-        damageTable.ability = self
-        damageTable.damage = self.damage
-        damageTable.earthdmg = true
-        GameMode:DamageUnit(damageTable)
+        for _, enemy in pairs(enemies) do
+            --Damage nearby enemies
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = self.damage
+            damageTable.earthdmg = true
+            GameMode:DamageUnit(damageTable)
 
-        -- Apply the stun on them
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = enemy
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = self.stun
-        GameMode:ApplyDebuff(modifierTable)
+            -- Apply the stun on them
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_stunned"
+            modifierTable.duration = self.stun
+            GameMode:ApplyDebuff(modifierTable)
+        end
     end
 end
 
