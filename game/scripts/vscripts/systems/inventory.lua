@@ -80,9 +80,11 @@ function Inventory:AddItem(hero, item, itemStats)
         end
         local item = CreateItem(item, hero, hero)
         local positionOnGround = hero:GetAbsOrigin()
-        CreateItemOnPositionSync(positionOnGround, item)
+        local itemId = item:GetEntityIndex()
+        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
         Inventory:SetItemEntityStats(item, itemStats)
         item:SetPurchaser(hero)
+        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
         return Inventory.slot.invalid, item
     end
 end
@@ -91,11 +93,13 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
     local slot, item = Inventory:AddItem(hero, item, itemStats)
     if (slot ~= Inventory.slot.invalid) then
         local itemStats = Inventory:GetItemStatsForHero(hero, false, slot)
-        local itemEntity = CreateItem(item.name, hero, hero)
+        local itemEntity = CreateItem(item, hero, hero)
+        local itemId = itemEntity:GetEntityIndex()
+        local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
         Inventory:SetItemEntityStats(itemEntity, itemStats)
         itemEntity:SetPurchaser(hero)
-        CreateItemOnPositionSync(location, itemEntity)
         Inventory:SetItemInSlot(hero, "", false, slot, {})
+        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = itemEntity:GetAbilityName() })
     end
     return item
 end
@@ -475,13 +479,13 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
                 for i = 0, Inventory.maxStoredItems do
                     local itemInInventorySlot = Inventory:GetItemInSlot(hero, false, i)
                     if (Inventory:IsItemNotEmpty(itemInInventorySlot)) then
-                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot.name, false, i, Inventory:GetItemStatsForHero(hero, false, i))
+                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventorySlot, false, i, Inventory:GetItemStatsForHero(hero, false, i))
                     end
                 end
                 for i = 0, Inventory.slot.last do
                     local itemInInventoryEquippedSlot = Inventory:GetItemInSlot(hero, true, i)
                     if (Inventory:IsItemNotEmpty(itemInInventoryEquippedSlot)) then
-                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventoryEquippedSlot.name, true, i, Inventory:GetItemStatsForHero(hero, true, i))
+                        Inventory:SendUpdateInventorySlotRequest(hero, itemInInventoryEquippedSlot, true, i, Inventory:GetItemStatsForHero(hero, true, i))
                     end
                 end
             end)
