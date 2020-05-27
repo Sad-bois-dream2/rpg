@@ -636,6 +636,7 @@ function ShowEquippedItemTooltip(slotId) {
 }
 
 function ShowItemDropTooltip(name, stats) {
+    $.Msg(stats);
 	var position = GameUI.GetCursorPosition();
 	var itemIcon = name;
 	var itemName = $.Localize("#DOTA_Tooltip_Ability_"+name);
@@ -883,6 +884,38 @@ function OnItemDrop(event) {
     dropContainer.MoveChildBefore(itemDropPanel, dropContainer.GetChild(0));
 }
 
+var DROPPED_ITEM_HITBOX_SIZE = 70;
+var latestShowedItemId = -1;
+
+function ShowDroppedItemTooltip() {
+    var cursorPosition = GameUI.GetCursorPosition();
+    cursorPosition = Game.ScreenXYToWorld(cursorPosition[0], cursorPosition[1]);
+    var itemsInWorld = CustomNetTables.GetAllTableValues("inventory_world_items");
+    var latestShowedItem = CustomNetTables.GetTableValue("inventory_world_items", latestShowedItemId.toString());
+    if(latestShowedItem) {
+        if(Game.Length2D(Entities.GetAbsOrigin(latestShowedItem.itemWorldId), cursorPosition) > DROPPED_ITEM_HITBOX_SIZE) {
+            HideItemTooltip();
+            latestShowedItemId = -1;
+        }
+    } else {
+        latestShowedItemId = -1;
+        $.Each(itemsInWorld, function(item) {
+            var itemPosition = Entities.GetAbsOrigin(item.value.itemWorldId);
+            if((Game.Length2D(itemPosition, cursorPosition) <= DROPPED_ITEM_HITBOX_SIZE)) {
+                var fixedItemStats = []
+                $.Each(item.value.itemStats, function(itemStat) {
+                    fixedItemStats.push(itemStat);
+                });
+                ShowItemDropTooltip(item.value.itemName, fixedItemStats);
+                latestShowedItemId = item.key;
+            }
+        });
+    }
+    $.Schedule(0.1, function() {
+        ShowDroppedItemTooltip();
+    });
+}
+
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];
 	pageButtons = [$("#Page0Button"), $("#Page1Button"), $("#Page2Button")];
@@ -924,5 +957,6 @@ function OnItemDrop(event) {
 	GameEvents.Subscribe("rpg_inventory_items_data", OnInventoryItemsDataRequest);
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
     GameEvents.Subscribe("rpg_enemy_item_dropped", OnItemDrop);
+	ShowDroppedItemTooltip();
     AutoUpdateValues();
 })();
