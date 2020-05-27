@@ -10,7 +10,7 @@
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_phantom_ranger"
 		"AbilityTextureName"			"phantom_ranger_phantom_harmonic"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+        "AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
  		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
  		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
  		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
@@ -154,7 +154,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"20"
+		"AbilityCooldown"				"20 20 20 20"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -189,9 +189,15 @@
 				"var_type"				"FIELD_FLOAT"
 				"silence_duration"				"0.2"
 			}
+				"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_damage"			"75 100 125 150"
+			}
 			"precache"
 			{
 				"particle" "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf"
+				"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
 			}
 		}
 	}
@@ -248,11 +254,373 @@
 		}
 		"precache"
 		{
-		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
+			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
 			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
 			"particle" "particles/status_fx/status_effect_maledict.vpcf"
 		}
 	}
+
+	//=================================================================================================================
+	// Phantom Ranger: Void Arrows
+	//=================================================================================================================
+	"phantom_ranger_void_arrows"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_void_arrows"
+        "AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_ATTACK | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"750 750 750 750"
+		"AbilityCastPoint"				"0"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"4 5 6 7"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"void_arrows_damage"				"30 60 90 120"
+			}
+		}
+		"precache"
+		{
+			//"particle" "particles/units/phantom_ranger/phantom_ranger_black_arrow.vpcf"
+		}
+	}
+	//=================================================================================================================
+	// Phantom Ranger: Hunter's focus
+	//=================================================================================================================
+	"phantom_ranger_hunters_focus"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_hunters_focus"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"120"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"200"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"attack_damage"			"15 30 45 60"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"attack_speed"			"800 800 800 800"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"duration"				"20 20 20 20"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/phantom_ranger/test/void_disciple/void_disciple_smoke_2.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Phantom Ranger: Black Arrow
+	//=================================================================================================================
+	"phantom_ranger_black_arrow"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_black_arrow"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+        "SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+ 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+ 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.3"
+		"AbilityCastRange"				"750"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"25 50 75 100"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"black_arrow_damage"	"4 6 8 10"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"black_arrow_duration"	"10 10 10 10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bane_duration"			"5 5 5 5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"tick_rate"				"1 1 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bane_damage"			"10 10 10 10"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bane_max_stacks"		"20 20 20 20"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"projectile_speed"		"1250"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/phantom_ranger/phantom_ranger_black_arrow.vpcf"
+			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
+    		"soundfile" "soundevents/game_sounds_heroes/game_sounds_drowranger.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Phantom Ranger: Phantom of Vengeance
+	//=================================================================================================================
+	"phantom_ranger_phantom_of_vengeance"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_phantom_of_vengeance"
+		"AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
+ 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"	
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0.1 0.1 0.1 0.1"
+		"AbilityCastRange"				"1500"
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+		"AbilityCastGestureSlot"		"DEFAULT"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"15 14 13 12"
+	
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40 60 80 100"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"225"		
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"max_distance"				"1500"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"phantom_speed"				"800"
+
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"phantom_vision"			"450"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"contact_damage"			"100 125 150 175"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"contact_cdr"				"5"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"4"
+			}
+		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
+			//"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
+			//"particle" "particles/status_fx/status_effect_maledict.vpcf"
+		}
+		
+	}
+
+	//=================================================================================================================
+	// Phantom Ranger: Shadowstep
+	//=================================================================================================================
+	"phantom_ranger_shadowstep"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_shadowstep"	
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
+		"MaxLevel"						"1"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0.0 0.0 0.0 0.0"
+		"AbilityCastAnimation"			"ACT_INVALID"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+    		//"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
+		}
+	}		
+
+	//=================================================================================================================
+	// Phantom Ranger: Phantom Barrage
+	//=================================================================================================================
+	"phantom_ranger_phantom_barrage"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_phantom_barrage"
+		"AbilityType"            		"DOTA_ABILITY_TYPE_BASIC"
+ 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"	
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0.0"
+	
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"10 10 10 10"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"damage"					"10 20 30 40"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"max_charges"				"2 3 4 5"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"charge_restore_time"		"2"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"725"		
+			}
+	
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"projectile_speed"			"3000"
+
+			}
+		}
+		"precache"
+		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_bane.vsndevts"
+			"particle"  "particles/units/heroes/hero_bane/bane_projectile.vpcf"
+		}
+		
+	}
+
 	//=================================================================================================================
 	// Phantom Ranger: Phantom Arrow
 	//=================================================================================================================
@@ -261,351 +629,71 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_phantom_arrow"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"ScriptFile"					"talents/talents_phantom_ranger"
+		"AbilityTextureName"			"phantom_ranger_phantom_arrow"	
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"10 11 12 13"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"max_voids"				"2 3 4 5"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_damage"				"20 30 40 50"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_aa_speed"				"100"
-			}
-		}
-		"precache"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Phantom Ranger: Remnant Arrow
-	//=================================================================================================================
-	"phantom_ranger_remnant_arrow"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_remnant_arrow"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               "4"
+		"MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
+		"AbilityCastPoint"				"0.3 0.3 0.3 0.3"
+		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
 
-		// Time
+
+		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"10 11 12 13"
+		"AbilityCooldown"				"10.0 9.0 8.0 7.0"
+
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
-
+		"AbilityManaCost"				"20 40 60 80"		
+		
+		// Cast Range
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"750 750 750 750"
+		
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilitySpecial"
 		{
 			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"max_voids"				"2 3 4 5"
+				"var_type"					"FIELD_INTEGER"
+				"arrow_damage"				"80 120 160 200"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
+				"var_type"					"FIELD_INTEGER"
+				"projectile_speed"			"1250"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"void_damage"				"20 30 40 50"
+				"var_type"					"FIELD_FLOAT"
+				"phantom_duration"			"5.0 6.0 7.0 8.0"
 			}
 			"04"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"void_aa_speed"				"100"
+				"var_type"					"FIELD_INTEGER"
+				"phantom_damage"			"20 20 20 20"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"phantom_attack_speed"		"100 100 100 100"
 			}
 		}
 		"precache"
 		{
-		}
-	}
-	//=================================================================================================================
-	// Phantom Ranger: Barrage
-	//=================================================================================================================
-	"phantom_ranger_barrage"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_barrage"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"10 11 12 13"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"max_voids"				"2 3 4 5"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_damage"				"20 30 40 50"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_aa_speed"				"100"
-			}
-		}
-		"precache"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Phantom Ranger: Hunter focus
-	//=================================================================================================================
-	"phantom_ranger_hunter_focus"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_hunter_focus"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"20 15 10 5"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"attack_speed"				"600"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
-			}
-		}
-		"precache"
-		{
-			"particle" "particles/units/phantom_ranger/test/void_disciple/void_disciple_smoke_2.vpcf"
-		}
-	}
-	//=================================================================================================================
-	// Phantom Ranger: Huntress
-	//=================================================================================================================
-	"phantom_ranger_huntress"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_huntress"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"10 11 12 13"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"max_voids"				"2 3 4 5"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_damage"				"20 30 40 50"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_aa_speed"				"100"
-			}
-		}
-		"precache"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Phantom Ranger: Intimidation
-	//=================================================================================================================
-	"phantom_ranger_intimidation"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_phantom_ranger"
-		"AbilityTextureName"			"phantom_ranger_intimidation"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"10 11 12 13"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"max_voids"				"2 3 4 5"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"duration"				"5 6 7 8"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_damage"				"20 30 40 50"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"void_aa_speed"				"100"
-			}
-		}
-		"precache"
-		{
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_lancer.vsndevts"
+			"particle" "particles/status_fx/status_effect_terrorblade_reflection.vpcf"
 		}
 	}
 }
