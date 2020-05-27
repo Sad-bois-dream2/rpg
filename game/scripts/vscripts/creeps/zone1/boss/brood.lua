@@ -188,10 +188,11 @@ function modifier_brood_toxin_slow:OnCreated()
     self.caster = self:GetCaster()
     self.target = self:GetParent()
     self.ability = self:GetAbility()
-    self.base_slow = self:GetAbility():GetSpecialValueFor("base_slow") * -0.01
-    self.slow = self:GetAbility():GetSpecialValueFor("stack_slow") * -0.01 * (self:GetStackCount() + 1) + self.base_slow
-    self.stun = self:GetAbility():GetSpecialValueFor("stun")
-    self.max_stacks = self:GetAbility():GetSpecialValueFor("max_stacks")
+    self.base_slow = self.ability:GetSpecialValueFor("base_slow") * -0.01
+    --not fixing +1 in this because it cant get to 21 stacks at 20 stacks it become stun
+    self.slow = self.ability:GetSpecialValueFor("stack_slow") * -0.01 * (self:GetStackCount() + 1) + self.base_slow
+    self.stun = self.ability:GetSpecialValueFor("stun")
+    self.max_stacks = self.ability:GetSpecialValueFor("max_stacks")
 end
 
 function modifier_brood_toxin_slow:OnRefresh()
@@ -246,6 +247,9 @@ modifier_brood_toxin_stunned = class({
     end,
     GetEffectAttachType = function(self)
         return PATTACH_OVERHEAD_FOLLOW
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_PROVIDES_FOW_POSITION }
     end
 })
 
@@ -253,10 +257,6 @@ function modifier_brood_toxin_stunned:OnCreated()
     if not IsServer() then
         return
     end
-    self.caster = self:GetCaster()
-    self.target = self:GetParent()
-    self.ability = self:GetAbility()
-    --self.immunity = self:GetAbility():GetSpecialValueFor("immunity")
 end
 
 function modifier_brood_toxin_stunned:CheckState()
@@ -264,56 +264,13 @@ function modifier_brood_toxin_stunned:CheckState()
              [MODIFIER_STATE_FROZEN] = true, }
 end
 
---give vision to mother
-function modifier_brood_toxin_stunned:DeclareFunctions()
-    local funcs = { MODIFIER_PROPERTY_PROVIDES_FOW_POSITION }
-
-    return funcs
-end
-
 function modifier_brood_toxin_stunned:GetModifierProvidesFOWVision()
     return 1
 end
 
---function modifier_brood_toxin_stunned:OnDestroy()
---if not IsServer() then
---return
---end
---local modifierTable = {}
---modifierTable.ability = self.ability
---modifierTable.target = self.target
---modifierTable.caster = self.caster
---modifierTable.modifier_name = "modifier_brood_toxin_immunity"
---modifierTable.duration = self.immunity
---GameMode:ApplyDebuff(modifierTable)
---end
 
 LinkLuaModifier("modifier_brood_toxin_stunned", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
---modifier_brood_toxin_immunity = class({
---IsDebuff = function(self)
---return true
---end,
---IsHidden = function(self)
---return false
---end,
---IsPurgable = function(self)
---return false
---end,
---GetTexture = function(self)
---return brood_toxin:GetAbilityTextureName()
---end
---})
-
---function modifier_brood_toxin_immunity:OnCreated()
---if not IsServer() then
---return
---end
---self.caster = self:GetParent()
---self.target = self:GetParent()
---end
-
---LinkLuaModifier("modifier_brood_toxin_immunity", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
 
 ---------------------
@@ -461,6 +418,9 @@ modifier_brood_comes_charge = class({
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_weaver/weaver_shukuchi.vpcf"
+    end,
+    DeclareFunctions = function(self)
+        return {MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN}
     end
 })
 
@@ -487,12 +447,6 @@ function modifier_brood_comes_charge:CheckState()
     return {
         [MODIFIER_STATE_SILENCED] = true,
         [MODIFIER_STATE_NO_UNIT_COLLISION] = true
-    }
-end
-
-function modifier_brood_comes_charge:DeclareFunctions()
-    return {
-        MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN
     }
 end
 
@@ -644,7 +598,6 @@ function modifier_brood_cocoons:OnCreated()
         return
     end
     self.parent = self:GetParent()
-    self.parent:NoHealthBar()
     self.caster = self:GetCaster()
     self.interval = self:GetAbility():GetSpecialValueFor("interval")
     self:StartIntervalThink(self.interval)
@@ -758,6 +711,9 @@ modifier_brood_kiss = class({
     end,
     IsPurgable = function(self)
         return true
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_poison_viper.vpcf"
     end
 })
 
@@ -784,6 +740,7 @@ end
 function modifier_brood_kiss:OnIntervalThink()
     local tick = 1
     self.delay = self.delay - tick
+    self.parent:EmitSound("Hero_DarkWillow.Ley.Count")
     ParticleManager:SetParticleControl(self.pidx, 2, Vector(0, math.max(0, math.floor(self.delay)), 0))
     if (self.delay < 1) then
         self.parent:ForceKill(false)
@@ -882,6 +839,27 @@ function brood_kiss:BlinkKiss(target)
     target:EmitSound("hero_viper.viperStrike")
 end
 
+function brood_kiss:IsRequireCastbar()
+    return true
+end
+
+function brood_kiss:IsInterruptible()
+    return true
+end
+
+
+function brood_kiss:OnAbilityPhaseStart()
+    if IsServer() then
+        local particle_cast = "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
+        local effect_cast = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, self:GetCaster())
+        Timers:CreateTimer(3.0, function()
+            ParticleManager:DestroyParticle(effect_cast, false)
+            ParticleManager:ReleaseParticleIndex(effect_cast)
+        end)
+    end
+    return true
+end
+
 function brood_kiss:OnSpellStart()
     if (not IsServer()) then
         return
@@ -890,13 +868,6 @@ function brood_kiss:OnSpellStart()
     caster:EmitSound("broodmother_broo_kill_12")
     local target = self:FindTargetForBlink(caster)
     self:BlinkKiss(target)
-    --particle
-    local particle_cast = "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner_flash.vpcf"
-    local effect_cast = ParticleManager:CreateParticle(particle_cast, PATTACH_ABSORIGIN, self:GetCaster())
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(effect_cast, false)
-        ParticleManager:ReleaseParticleIndex(effect_cast)
-    end)
 end
 
 ----------------
@@ -1564,12 +1535,15 @@ modifier_brood_web_aura_enemy = class({})
 
 function modifier_brood_web_aura_enemy:OnCreated()
     self.ability = self:GetAbility()
-
-    if IsServer() then
-        if not self:GetAbility() then
-            self:Destroy()
-        end
+    if not IsServer() then
+        return
     end
+
+    --if IsServer() then
+        --if not self:GetAbility() then
+            --self:Destroy()
+        --end
+    --end
 
     -- Ability properties
     self.caster = self:GetCaster()
@@ -1636,10 +1610,10 @@ function modifier_brood_web_enemy:OnCreated()
     if (not IsServer()) then
         return
     end
-    if (not self.ability or self.ability:IsNull()) then
+    --if (not self.ability or self.ability:IsNull()) then -- this cause web to completely stop working
         -- creation at the moment of brood death probably
-        self:Destroy()
-    end
+        --self:Destroy()
+    --end
     -- Ability properties
     self.ability = self:GetAbility()
     self.caster = self:GetCaster()
@@ -1665,7 +1639,9 @@ function modifier_brood_web_enemy:OnIntervalThink()
         FindClearSpaceForUnit(webspider, summon_point, true)
         webspider:AddNewModifier(self.parent, self.ability, "modifier_kill", { duration = 30 })
         --on spawn
-        webspider:EmitSound("broodmother_broo_ability_spawn_04")
+        if self.caster:IsAlive() then
+            webspider:EmitSound("broodmother_broo_ability_spawn_04")
+        end
     end
 end
 
@@ -1894,9 +1870,6 @@ modifier_brood_angry_stack = class({
     GetTexture = function(self)
         return brood_angry:GetAbilityTextureName()
     end,
-    DeclareFunctions = function(self)
-        return {MODIFIER_PROPERTY_MODEL_SCALE}
-    end
 })
 
 function modifier_brood_angry_stack:OnCreated()
@@ -1906,10 +1879,10 @@ function modifier_brood_angry_stack:OnCreated()
     --parameter
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    self.as_bonus = self:GetAbility():GetSpecialValueFor("as_bonus") * 0.01 * self:GetStackCount()
-    self.dmg_reduction = self:GetAbility():GetSpecialValueFor("dmg_reduction") * 0.01 * self:GetStackCount()
-    self.damage = self:GetAbility():GetSpecialValueFor("self_damage")
-    self.cd_reduce = self:GetAbility():GetSpecialValueFor("cd_reduce")
+    self.damage = self.ability:GetSpecialValueFor("self_damage")
+    self.cd_reduce = self.ability:GetSpecialValueFor("cd_reduce")
+    self.as_bonus= self.ability:GetSpecialValueFor("as_bonus")
+    self.dmg_reduction= self.ability:GetSpecialValueFor("dmg_reduction")
     --self DAMAGE
     local Health = self.parent:GetHealth()
     local damage = Health * self.damage *0.01
@@ -1929,7 +1902,7 @@ function modifier_brood_angry_stack:OnCreated()
 
             if remaining_cooldown > 0 then
                 ability:EndCooldown()
-                ability:StartCooldown(math.max(remaining_cooldown - self.cd_reduce, 0))
+                ability:StartCooldown(remaining_cooldown - self.cd_reduce)--(math.max(remaining_cooldown - self.cd_reduce, 0))
             end
         end
     end
@@ -1953,17 +1926,14 @@ function modifier_brood_angry_stack:OnRefresh()
     self:OnCreated()
 end
 
--- "Each angry buff of brood size by 1%. This has no impact on her collision size."
-function modifier_brood_angry_stack:GetModifierModelScale()
-    return 1
-end
-
 function modifier_brood_angry_stack:GetAttackSpeedPercentBonus()
-    return self.as_bonus
+    self.as_bonus_final= self.as_bonus * 0.01 * self:GetStackCount()
+    return self.as_bonus_final
 end
 
 function modifier_brood_angry_stack:GetDamageReductionBonus()
-    return self.dmg_reduction
+    self.dmg_reduction_final= self.dmg_reduction * 0.01 * self:GetStackCount()
+    return self.dmg_reduction_final
 end
 
 LinkLuaModifier("modifier_brood_angry_stack", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)

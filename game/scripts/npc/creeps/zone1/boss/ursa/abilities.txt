@@ -68,8 +68,9 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
-        "AbilityCastPoint"				"0.6"
-        "AbilityCastRange"				"600"
+        "AbilityCastPoint"				"2"
+        "AnimationPlaybackRate"         "0.15"
+        "AbilityCastRange"				"1000"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -78,12 +79,12 @@
             "01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_range"				"800 1000 1200"
+				"dash_range"				"1200"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_speed"				"600 750 900"
+				"dash_speed"				"600 700 800"
 			}
 			"03"
 			{
@@ -132,7 +133,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastPoint"				"0.1"
-        "AbilityCastRange"				"600"
+        "AbilityCastRange"				"1200"
 
    		// Special
    		//-------------------------------------------------------------------------------------------------------------
@@ -182,7 +183,7 @@
         "AnimationIgnoresModelScale"    "1"
         "AnimationPlaybackRate"         "0.2"
         "AbilityCastPoint"				"2"
-        "AbilityCastRange"				"1500"
+        "AbilityCastRange"				"1200"
 
    		// Time
    		//-------------------------------------------------------------------------------------------------------------
@@ -220,7 +221,7 @@
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"end_radius"				"600"
+   				"end_radius"				"450"
    			}
    			"07"
    			{
@@ -343,7 +344,7 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"				    "500 1000 1500"
+   				"radius"				    "800 1200 1600"
    			}
    			"02"
    			{
@@ -369,15 +370,15 @@
    			"06"
    			{
             	"var_type"				    "FIELD_FLOAT"
-               	"duration"	    	        "6 9 12"
+               	"duration"	    	        "5 7 9"
             }
    		}
    				"precache"
                 		{
                 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ursa.vsndevts"
-                			"particle" "particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7.vpcf"
-                			"particle" "particles/dev/library/base_dust_hit_shockwave.vpcf"
-                			"particle" "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+                			"particle"  "particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7.vpcf"
+                			"particle"  "particles/units/heroes/hero_ursa/ursa_earthshock_modifier.vpcf"
+                			"particle"  "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf"
                 		}
     }
 
@@ -445,7 +446,7 @@
         			"particle"	"particles/generic_gameplay/generic_lifesteal.vpcf"
         			"particle"  "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
         		    "particle"  "particles/items2_fx/urn_of_shadows_damage.vpcf"
-        		    "particle"  "particles/units/heroes/hero_spirit_breaker/spirit_breaker_haste_owner.vpcf"
+        		    "particle"  "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
         		}
 
 	}

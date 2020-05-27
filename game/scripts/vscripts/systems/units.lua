@@ -59,7 +59,8 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitBonusAttackSpeed = 0
         local unitBonusPercentAttackSpeed = 1
         local unitBonusSpellDamage = 0
-        local unitBonusSpellHaste = 1
+        local unitBonusSpellHaste = 0 --this become flat
+        local unitBonusPercentSpellHaste = 1 --this is total percent
         local unitBonusAttackRange = 0
         local unitBonusPercentAttackRange = 1
         local unitBonusCastRange = 0
@@ -151,8 +152,10 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitBonusSpellDamage = unitBonusSpellDamage + (tonumber(unitModifiers[i].GetSpellDamageBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetSpellHasteBonus) then
-                local spellHasteBonus = tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0
-                unitBonusSpellHaste = unitBonusSpellHaste * (1 - spellHasteBonus)
+                unitBonusSpellHaste = unitBonusSpellHaste  + (tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetSpellHastePercentBonus) then
+                unitBonusPercentSpellHaste = unitBonusPercentSpellHaste  + (tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetAttackRangeBonus) then
                 unitBonusAttackRange = unitBonusAttackRange + (tonumber(unitModifiers[i].GetAttackRangeBonus(unitModifiers[i])) or 0)
@@ -345,7 +348,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         -- spell damage
         statsTable.spellDamage = unitBonusSpellDamage
         -- spell haste
-        statsTable.spellHaste = math.max(0.01, unitBonusSpellHaste)
+        local totalSpellHaste = unitBonusSpellHaste * unitBonusPercentSpellHaste -- work like AS
+        --compared to AS dota vanilla has 600 AS + 100 initial = 700 total AS cap
+        --but in our custom game it is 800 (tested) so lets cap it at 800 too for easier balance and late game scaling this mean 2s cast time cap at 0.25 cast time (1.7 BAT need nerf too)
+        --everything /100 to not break old code
+        statsTable.spellHaste = math.min(8, totalSpellHaste)
         -- attack range
         local baseAttackRange = unit:GetBaseAttackRange()
         statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange) - baseAttackRange)
@@ -525,6 +532,10 @@ end
 
 function modifier_stats_system:GetAttackSpeedBonus()
     return 100
+end
+
+function modifier_stats_system:GetSpellHasteBonus()
+    return 1 --this is actually 100 but to prevent fixing everything hero / boss code removing *0.01 from old spellhaste we go with this everything /100
 end
 
 function modifier_stats_system:OnAttackLanded(event)
@@ -920,9 +931,9 @@ end
 ---@return number
 function Units:GetSpellHaste(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.spellHaste
+        return unit.stats.spellHaste  -- this is equal to statsTable.spellHaste for hero
     end
-    return 1
+    return 1 --for creep
 end
 
 ---@param unit CDOTA_BaseNPC

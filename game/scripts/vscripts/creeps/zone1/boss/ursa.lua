@@ -125,8 +125,10 @@ modifier_ursa_rend_armor = class({
     end,
     GetEffectAttachType = function(self)
         return PATTACH_OVERHEAD_FOLLOW
+    end,
+    GetTexture = function(self)
+        return ursa_rend:GetAbilityTextureName()
     end
-
 })
 
 function modifier_ursa_rend_armor:OnCreated()
@@ -195,8 +197,10 @@ function modifier_ursa_dash_motion:OnCreated(kv)
         if (self:ApplyHorizontalMotionController() == false) then
             self:Destroy()
         end
+        self:StartIntervalThink(0.1)
     end
 end
+
 
 function modifier_ursa_dash_motion:OnDestroy()
     if IsServer() then
@@ -221,11 +225,35 @@ function modifier_ursa_dash_motion:UpdateHorizontalMotion(me, dt)
         local isBlocked = GridNav:IsBlocked(expected_location)
         local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.caster:GetHullRadius(), true)
         local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
-        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range) then
+        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range ) then
             self.caster:SetAbsOrigin(expected_location)
             local particle_location = expected_location + Vector(0, 0, 100)
             ParticleManager:SetParticleControl(self.ability.particle, 0, particle_location)
             ParticleManager:SetParticleControl(self.ability.particle, 1, particle_location)
+            local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                    expected_location,
+                    nil,
+                    200,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_HERO,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            for _, enemy in pairs(enemies) do
+                if (not TableContains(self.damagedEnemies, enemy)) then
+                    local damageTable = {}
+                    damageTable.caster = self.caster
+                    damageTable.target = enemy
+                    damageTable.ability = self.ability
+                    damageTable.damage = self.base_damage
+                    damageTable.physdmg = true
+                    GameMode:DamageUnit(damageTable)
+                    table.insert(self.damagedEnemies, enemy)
+                end
+            end
+        elseif ( traveled_distance < self.dash_range) then
+            expected_location = current_location - self.caster:GetForwardVector() * self.dash_speed * dt
+            self.caster:SetAbsOrigin(expected_location)
             local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                     expected_location,
                     nil,
@@ -261,6 +289,15 @@ ursa_dash = class({
         return "ursa_dash"
     end,
 })
+
+function ursa_dash:IsRequireCastbar()
+    return true
+end
+
+function ursa_dash:IsInterruptible()
+    return false
+end
+
 
 function ursa_dash:FindTargetForDash(caster)
     local range = self:GetSpecialValueFor("dash_range") * 1.5
@@ -316,9 +353,9 @@ function ursa_dash:OnSpellStart(unit, special_cast)
                 self.particle = ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_dash/ursa_dash.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
                 ParticleManager:SetParticleControl(self.particle, 0, location + Vector(0, 0, 100))
                 ParticleManager:SetParticleControl(self.particle, 1, location + Vector(0, 0, 100))
-                caster:AddNewModifier(caster, self, "modifier_ursa_dash_motion", { Duration = -1 })
+                caster:AddNewModifier(caster, self, "modifier_ursa_dash_motion", { Duration = 2 })
                 counter = counter+1
-                return 2.0
+                return 3
                 end
             end)
     end
@@ -348,15 +385,10 @@ modifier_ursa_fury = class({
     GetTexture = function(self)
         return ursa_fury:GetAbilityTextureName()
     end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_overpower.vpcf"
+    end
 })
-
-function modifier_ursa_fury:GetEffectAttachType()
-    return PATTACH_ABSORIGIN_FOLLOW
-end
-
-function modifier_ursa_fury:GetStatusEffectName()
-    return "particles/status_fx/status_effect_overpower.vpcf"
-end
 
 function modifier_ursa_fury:OnCreated()
     if not IsServer() then
@@ -755,6 +787,7 @@ function ursa_slam:OnSpellStart()
         self.caster = self:GetCaster()
         local sound_cast = "Hero_Ursa.Earthshock"
         local earthshock_particle = "particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7.vpcf"
+        local aoe_particle = "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf"
         -- Ability specials
         local radius = self:GetSpecialValueFor("radius")
         local damage = self:GetSpecialValueFor("damage")
@@ -770,12 +803,12 @@ function ursa_slam:OnSpellStart()
             ParticleManager:DestroyParticle(earthshock_particle_fx, false)
             ParticleManager:ReleaseParticleIndex(earthshock_particle_fx)
         end)
-        --bigger aoe
-        if self:GetLevel() == 2 then
-            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale4_1000.vpcf", PATTACH_ABSORIGIN, self.caster)
-        elseif self:GetLevel() ==3 then
-            ParticleManager:CreateParticle("particles/units/npc_boss_ursa/ursa_slam/slam_blast_scale6_1500.vpcf", PATTACH_ABSORIGIN, self.caster)
-        end
+        local aoe_particle_fx = ParticleManager:CreateParticle(aoe_particle, PATTACH_ABSORIGIN, self.caster)
+        ParticleManager:SetParticleControl(aoe_particle_fx, 2, Vector(radius, radius, 225))
+        Timers:CreateTimer(3.0, function()
+            ParticleManager:DestroyParticle(aoe_particle_fx, false)
+            ParticleManager:ReleaseParticleIndex(aoe_particle_fx)
+        end)
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -824,9 +857,6 @@ modifier_ursa_slam_slow = class({
     RemoveOnDeath = function(self)
         return true
     end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     GetTexture = function(self)
         return ursa_slam:GetAbilityTextureName()
     end,
@@ -856,7 +886,7 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") * -0.01
-    self.as_slow = self.ability:GetSpecialValueFor("as_slow") * -0.01
+    self.as_slow = self.ability:GetSpecialValueFor("as_slow") * - 0.01
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
 end
 
@@ -867,6 +897,29 @@ LinkLuaModifier("modifier_ursa_slam_slow", "creeps/zone1/boss/ursa.lua", LUA_MOD
 -- ursa hunting prey
 ---------------------
 -- modifiers
+--just to make him blue
+modifier_ursa_hunt_blue = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
+    end
+})
+
+function modifier_ursa_hunt_blue:OnCreated()
+    if not IsServer() then
+        return
+    end
+end
+LinkLuaModifier("modifier_ursa_hunt_blue", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+--real buff
 modifier_ursa_hunt_buff_stats = class({
     IsDebuff = function(self)
         return false
@@ -886,15 +939,13 @@ modifier_ursa_hunt_buff_stats = class({
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_DEATH }
     end,
-    --GetEffectName = function(self)
-        --return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
-    --end,
-    --GetEffectAttachType = function(self)
-        --return PATTACH_ABSORIGIN_FOLLOW
-    --end,
-    GetStatusEffectName = function(self)
-        return "particles/units/npc_boss_ursa/ursa_hunt/hunt_color.vpcf"
-    end
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_ursa/ursa_enrage_buff.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN_FOLLOW
+    end,
+
 })
 
 function modifier_ursa_hunt_buff_stats:GetAttackDamagePercentBonus()
@@ -1013,6 +1064,13 @@ function ursa_hunt:OnSpellStart()
     modifierTable.ability = self
     modifierTable.target = caster
     modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_ursa_hunt_blue"
+    modifierTable.duration = duration
+    GameMode:ApplyBuff(modifierTable) --blue boi
+    modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_ursa_hunt_buff_stats"
     modifierTable.duration = duration
     GameMode:ApplyBuff(modifierTable) -- apply bloodrage
@@ -1124,9 +1182,9 @@ function modifier_ursa_jelly_buff:OnCreated(keys)
     local channel_time = self.ability:GetSpecialValueFor("channel_time")
     local max_health = self:GetParent():GetMaxHealth()
     local tick = self.ability:GetSpecialValueFor("tick")
-    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * (self:GetStackCount()) * tick /(channel_time)
+    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 * (self:GetStackCount()+1) * tick /(channel_time)
     self.regen = (self.ability:GetSpecialValueFor("regen") * 0.01 * (self:GetStackCount())* tick /(channel_time) * max_health) + 1
-end -- not sure which one need +1 but like lycan stack final value seems off by 1
+end
 
 function modifier_ursa_jelly_buff:OnRefresh(keys)
     if not IsServer() then
@@ -1136,11 +1194,11 @@ function modifier_ursa_jelly_buff:OnRefresh(keys)
 end
 
 function modifier_ursa_jelly_buff:GetDamageReductionBonus()
-    return self.dmg_reduction --or 0
+    return self.dmg_reduction
 end
 
 function modifier_ursa_jelly_buff:GetHealthRegenerationBonus()
-    return self.regen or 0
+    return self.regen
 end
 
 
