@@ -77,8 +77,12 @@ function modifier_inventory_item_example:GetSpellDamageBonus()
     return 0
 end
 
--- 1.0 = 100%, pls no
+-- this is flat like AS
 function modifier_inventory_item_example:GetSpellHasteBonus()
+    return 0
+end
+--this work like % AS 1.0 = 100%
+function modifier_inventory_item_example:GetSpellHastePercentBonus()
     return 0
 end
 

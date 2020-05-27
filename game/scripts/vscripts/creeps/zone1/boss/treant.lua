@@ -71,6 +71,9 @@ end
 function modifier_treant_hook_motion:OnHorizontalMotionInterrupted()
     if IsServer() then
         self:Destroy()
+        Timers:CreateTimer(0.3, function()
+            FindClearSpaceForUnit(self.parent, self.expected_location, true)
+        end)
     end
 end
 
@@ -78,14 +81,14 @@ function modifier_treant_hook_motion:UpdateHorizontalMotion(me, dt)
     if (IsServer()) then
         local caster_location = self.caster:GetAbsOrigin()
         local current_location = self.parent:GetAbsOrigin()
-        local expected_location = current_location + self.parent:GetForwardVector() * self.dash_speed * dt
-        local isTraversable = GridNav:IsTraversable(expected_location)
-        local isBlocked = GridNav:IsBlocked(expected_location)
-        local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.parent:GetHullRadius(), true)
+        self.expected_location = current_location + self.parent:GetForwardVector() * self.dash_speed * dt
+        --local isTraversable = GridNav:IsTraversable(expected_location)
+        --local isBlocked = GridNav:IsBlocked(expected_location)
+        --local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.parent:GetHullRadius(), true)
         local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
         local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
-        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range and distance_to_caster > 200 ) then --and not distance_to_caster< 250
-            self.parent:SetAbsOrigin(expected_location)
+        if (traveled_distance < self.dash_range and distance_to_caster > 200 ) then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
+            self.parent:SetAbsOrigin(self.expected_location)
             self.parent:EmitSound("Hero_DarkWillow.Bramble.Spawn")--vine spawn sound
             local vine = "particles/units/heroes/hero_treant/treant_bramble_root.vpcf"
             local pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, self.parent)
@@ -254,6 +257,7 @@ function modifier_treant_hook_thinker:OnDestroy()
     end
     UTIL_Remove(self:GetParent())
 end
+LinkLuaModifier("modifier_treant_hook_thinker", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 ----------------
 -- treant flux
 ----------------
@@ -836,8 +840,11 @@ modifier_treant_one_root = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetStatusEffectName = function(self)
-        return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN
     end,
 })
 
@@ -854,8 +861,7 @@ function modifier_treant_one_root:OnCreated(keys)
     self.dot = self:GetAbility():GetSpecialValueFor("dot")
     self.tick = self:GetAbility():GetSpecialValueFor("tick")
     self:StartIntervalThink(self.tick)
-    --local vine = "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
-    --self.pidx = ParticleManager:CreateParticle(vine, PATTACH_ABSORIGIN, self.parent)
+    self.parent:EmitSound("Hero_Treant.Overgrowth.Cast")
 end
 
 function modifier_treant_one_root:CheckState()
@@ -876,7 +882,7 @@ function modifier_treant_one_root:OnIntervalThink()
     local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
     local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
     treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
-    treant:AddNewModifier(self.caster, self.ability, "modifier_treant_one_ignore_aggro_buff", { duration = -1, target = self.parent:GetEntityIndex()})
+    treant:AddNewModifier(self.caster, self.ability, "modifier_treant_one_ignore_aggro_buff", { duration = -1, target = self.parent})
     treant:EmitSound("Hero_Furion.TreantSpawn")
 end
 
@@ -916,7 +922,7 @@ function modifier_treant_one_ignore_aggro_buff:OnCreated(keys)
     if (not keys or keys.target) then
         self:Destroy()
     end
-    self.target = EntIndexToHScript(keys.target)
+    self.target = keys.target
 end
 
 function modifier_treant_one_ignore_aggro_buff:GetIgnoreAggroTarget()
@@ -985,7 +991,7 @@ function modifier_treant_ingrain:OnIntervalThink()
         --tried to set particle that get destroyed every 0.1s but it stacks up and looks ugly
         local armor = "particles/units/heroes/hero_treant/treant_livingarmor.vpcf"
         local healFX = ParticleManager:CreateParticle(armor, PATTACH_ABSORIGIN_FOLLOW, self.parent)
-        ParticleManager:SetParticleControlEnt(healFX, 1, self:GetParent(), PATTACH_POINT_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(healFX, 1, self:GetParent(), PATTACH_ABSORIGIN_FOLLOW, "attach_hitloc", self:GetParent():GetAbsOrigin(), true)
         self:AddParticle(healFX, false, false, -1, false, false)
         Timers:CreateTimer(0.1, function()
             ParticleManager:DestroyParticle(healFX, false)
@@ -1134,18 +1140,18 @@ treant_beam = class({
     end,
 })
 
-function treant_beam:OnSpellStart()
+function treant_beam:IsRequireCastbar()
+    return true
+end
+
+function treant_beam:IsInterruptible()
+    return false
+end
+
+
+function treant_beam:OnAbilityPhaseStart()
     if IsServer() then
-        -- Ability properties
         local caster = self:GetCaster()
-        local caster_loc = caster:GetAbsOrigin()
-        -- Ability specials
-        local travel_distance = self:GetSpecialValueFor("travel_distance")
-        local start_radius = self:GetSpecialValueFor("start_radius")
-        local end_radius = self:GetSpecialValueFor("end_radius")
-        local projectile_speed = self:GetSpecialValueFor("projectile_speed")
-        local radius = self:GetSpecialValueFor("radius")
-        --local delay = self:GetSpecialValueFor("delay") --2 s delay
         -- Particle and play cast sound try to match delay
         Timers:CreateTimer(1.0, function()
             local gather_fx = "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_channel_ti6.vpcf"
@@ -1168,49 +1174,62 @@ function treant_beam:OnSpellStart()
                 ParticleManager:ReleaseParticleIndex(charge2)
             end)
         end)
+    end
+    return true
+end
 
-        --wait delay then shoot
-        Timers:CreateTimer(2.0, function()
-            -- Find all nearby enemies
-            local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                    caster:GetAbsOrigin(),
-                    nil,
-                    radius,
-                    DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-                    DOTA_UNIT_TARGET_FLAG_NONE,
-                    FIND_ANY_ORDER,
-                    false)
-            for _, enemy in pairs(enemies) do
-                --particle
-                self.beam_particle = "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_ti6.vpcf"
-                local enemy_loc = enemy:GetAbsOrigin()
-                local distance = enemy_loc - caster_loc
-                local direction = distance:Normalized()
-                local projectile =
-                {
-                    Ability				= self,
-                    EffectName			= self.beam_particle,
-                    vSpawnOrigin		= caster:GetAbsOrigin(),
-                    fDistance			= travel_distance,
-                    fStartRadius		= start_radius,
-                    fEndRadius			= end_radius,
-                    Source				= caster,
-                    bHasFrontalCone		= false,
-                    bReplaceExisting	= false,
-                    iUnitTargetTeam		= self:GetAbilityTargetTeam(),
-                    iUnitTargetFlags	= nil,
-                    iUnitTargetType		= self:GetAbilityTargetType(),
-                    fExpireTime 		= GameRules:GetGameTime() + 10.0,
-                    bDeleteOnHit		= true,
-                    vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
-                    bProvidesVision		= false,
-                    --ExtraData			= {damage = damage, stun = stun}
-                }
-                caster:EmitSound("Hero_Furion.WrathOfNature_Damage")
-                ProjectileManager:CreateLinearProjectile(projectile)
-                end
-        end)
+
+
+function treant_beam:OnSpellStart()
+    if IsServer() then
+        -- Ability properties
+        local caster = self:GetCaster()
+        local caster_loc = caster:GetAbsOrigin()
+        -- Ability specials
+        local travel_distance = self:GetSpecialValueFor("travel_distance")
+        local start_radius = self:GetSpecialValueFor("start_radius")
+        local end_radius = self:GetSpecialValueFor("end_radius")
+        local projectile_speed = self:GetSpecialValueFor("projectile_speed")
+        local radius = self:GetSpecialValueFor("radius")
+        -- Find all nearby enemies
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                caster:GetAbsOrigin(),
+                nil,
+                radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            --particle
+            self.beam_particle = "particles/econ/items/windrunner/windrunner_ti6/windrunner_spell_powershot_ti6.vpcf"
+            local enemy_loc = enemy:GetAbsOrigin()
+            local distance = enemy_loc - caster_loc
+            local direction = distance:Normalized()
+            local projectile =
+            {
+                Ability				= self,
+                EffectName			= self.beam_particle,
+                vSpawnOrigin		= caster:GetAbsOrigin(),
+                fDistance			= travel_distance,
+                fStartRadius		= start_radius,
+                fEndRadius			= end_radius,
+                Source				= caster,
+                bHasFrontalCone		= false,
+                bReplaceExisting	= false,
+                iUnitTargetTeam		= self:GetAbilityTargetTeam(),
+                iUnitTargetFlags	= nil,
+                iUnitTargetType		= self:GetAbilityTargetType(),
+                fExpireTime 		= GameRules:GetGameTime() + 10.0,
+                bDeleteOnHit		= true,
+                vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
+                bProvidesVision		= false,
+                --ExtraData			= {damage = damage, stun = stun}
+            }
+            caster:EmitSound("Hero_Furion.WrathOfNature_Damage")
+            ProjectileManager:CreateLinearProjectile(projectile)
+        end
     end
 end
 
@@ -1291,7 +1310,10 @@ modifier_treant_root_debuff = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/heroes/hero_treant/treant_overgrowth_vines.vpcf"
+        return "particles/units/heroes/hero_lone_druid/lone_druid_bear_entangle_body.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_ABSORIGIN
     end,
 })
 

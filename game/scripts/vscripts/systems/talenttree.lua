@@ -112,12 +112,12 @@ function TalentTree:Init()
     self.tempAbilities = { "empty5", "antimage_blink" }
     self.talent_abilities = {
         ["npc_dota_hero_drow_ranger"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
+            "phantom_ranger_phantom_arrow",
+            "phantom_ranger_phantom_barrage",
+            "phantom_ranger_void_arrows",
+            "phantom_ranger_hunters_focus",
+            "phantom_ranger_phantom_of_vengeance",
+            "phantom_ranger_black_arrow"
         },
         ["npc_dota_hero_juggernaut"] = {
             "luminous_samurai_blade_dance",

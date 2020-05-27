@@ -86,6 +86,8 @@
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_49.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_50.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_51.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_black_arrow_bane.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_shadow_waves_silence_cd.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talentbranch_1.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talentbranch_2.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talentbranch_3.png"/>

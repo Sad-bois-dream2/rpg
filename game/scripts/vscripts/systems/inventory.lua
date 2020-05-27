@@ -8,6 +8,7 @@ function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_broadsword", self.rarity.common, self.slot.offhand, 5)
     Inventory:RegisterItemSlot("item_chainmail", self.rarity.common, self.slot.body, 5)
     Inventory:RegisterItemSlot("item_third_eye", self.rarity.common, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_silver_ring", self.rarity.common, self.slot.ring, 5)
 end
 
 function Inventory:Init()

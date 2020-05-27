@@ -1,4 +1,5 @@
 #base items/item_claymore_custom.txt
+#base items/item_silver_ring.txt
 
 "DOTAAbilities"
 {

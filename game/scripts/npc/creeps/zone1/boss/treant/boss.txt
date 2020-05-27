@@ -73,7 +73,7 @@
         //----------------------------------------------------------------
         "StatusHealth"        "1000"     // Base health.
         "StatusHealthRegen"     "0"     // Health regeneration rate.
-        "StatusMana"        "99999999"     // Base mana.
+        "StatusMana"        "0"     // Base mana.
         "StatusManaRegen"     "0"     // Mana regeneration rate.
 
         // Team
@@ -98,11 +98,11 @@
         {
         "AttachWearables"
                     {
-                        //"1" { "ItemDef" "9452"}
-                        "1" { "ItemDef" "9901"}
-                        "2" { "ItemDef" "9900"}
-                        "3" { "ItemDef" "9898"}
-                        "4" { "ItemDef" "9899"}
+
+                        "1" { "ItemDef" "9898"}
+                        "2" { "ItemDef" "9899"}
+                        "3" { "ItemDef" "9900"}
+                        "4" { "ItemDef" "9901"}
 
                     }
 
