@@ -540,7 +540,7 @@
     width: 18px;
     height: 18px;
     visibility: collapse;
-    background-image: url("s2r://panorama/images/control_icons/lock_small_png.vtex");
+    background-image: url("s2r://panorama/images/control_icons/lock_medium_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
