@@ -9,7 +9,6 @@
     flow-children: down;
     margin-top: 50px;
     padding: 7px;
-    overflow: squish scroll;
     horizontal-align: center;
 }
 
@@ -22,11 +21,24 @@
     margin-bottom: 5px;
 }
 
+.SaveSlot:hover {
+  border: 1px solid gold;
+}
+
+.SaveSlot.Locked:hover {
+  border: 1px solid gray;
+}
+
 .SaveSlotLeftContent {
     flow-children: right;
     width: fit-children;
     height: fit-children;
     margin-top: 6px;
+}
+
+.SaveSlot.Locked .SaveSlotLeftContent,
+.SaveSlot.Empty .SaveSlotLeftContent {
+    visibility: collapse;
 }
 
 .SaveSlotLeftContentText {
@@ -85,4 +97,33 @@
 
 .SaveSlotInfoIcon:hover {
     opacity: 0.5;
+}
+
+.SaveSlot.Locked .SaveSlotInfoIcon {
+    visibility: collapse;
+}
+
+.SaveSlot.Empty .SaveSlotInfoIcon {
+    visibility: collapse;
+}
+
+.SaveSlotLockedIcon {
+    width: 32px;
+    height: 32px;
+    background-image: url("s2r://panorama/images/control_icons/lock_medium_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    vertical-align: center;
+    horizontal-align: center;
+    visibility: collapse;
+}
+
+.SaveSlot.Locked .SaveSlotLockedIcon {
+    visibility: visible;
+}
+
+.SaveSlot.Empty .SaveSlotLockedIcon {
+    background-image: url("s2r://panorama/images/control_icons/plus_png.vtex");
+    visibility: visible;
 }

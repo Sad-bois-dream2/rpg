@@ -20,6 +20,7 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
                 <Panel class="SaveSlot">
                     <Panel class="SaveSlotLeftContent">
@@ -30,8 +31,9 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
-                <Panel class="SaveSlot">
+                <Panel class="SaveSlot Empty">
                     <Panel class="SaveSlotLeftContent">
                         <DOTAHeroImage id="HeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
                         <Panel class="SaveSlotLeftContentText">
@@ -40,8 +42,9 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
-                <Panel class="SaveSlot">
+                <Panel class="SaveSlot Locked">
                     <Panel class="SaveSlotLeftContent">
                         <DOTAHeroImage id="HeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
                         <Panel class="SaveSlotLeftContentText">
@@ -50,8 +53,9 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
-                <Panel class="SaveSlot">
+                <Panel class="SaveSlot Locked">
                     <Panel class="SaveSlotLeftContent">
                         <DOTAHeroImage id="HeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
                         <Panel class="SaveSlotLeftContentText">
@@ -60,8 +64,9 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
-                <Panel class="SaveSlot">
+                <Panel class="SaveSlot Locked">
                     <Panel class="SaveSlotLeftContent">
                         <DOTAHeroImage id="HeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_crystal_maiden" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
                         <Panel class="SaveSlotLeftContentText">
@@ -70,6 +75,7 @@
                         </Panel>
                     </Panel>
                     <Image class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel class="SaveSlotLockedIcon"/>
                 </Panel>
             </Panel>
             <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
