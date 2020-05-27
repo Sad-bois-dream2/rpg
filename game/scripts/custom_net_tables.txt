@@ -4,5 +4,6 @@
   [
     "containers_lua",
     "selection",
+    "inventory_world_items"
   ]
 }

@@ -1,3 +1,13 @@
+if not Dummy then
+    Dummy = class({})
+end
+
+function Dummy:Init()
+    -- Changing that require same change in client side dummy.js
+    Dummy.DPS_TIME = 10
+    Dummy.DPS_DELAY = 5
+end
+
 modifier_dps_dummy = class({
     IsDebuff = function(self)
         return false
@@ -17,10 +27,16 @@ modifier_dps_dummy = class({
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MIN_HEALTH }
+    end,
     CheckState = function(self)
         return {
             [MODIFIER_STATE_NO_HEALTH_BAR] = true
         }
+    end,
+    GetMinHealth = function(self)
+        return 1
     end
 })
 
@@ -189,10 +205,6 @@ end
 
 LinkLuaModifier("modifier_dps_dummy_counter", "systems/dummy", LUA_MODIFIER_MOTION_NONE)
 
-if not Dummy then
-    Dummy = class({})
-end
-
 function Dummy:InitPanaromaEvents()
     CustomGameEventManager:RegisterListener("rpg_dummy_start", Dynamic_Wrap(Dummy, 'OnDummyStartRequest'))
     CustomGameEventManager:RegisterListener("rpg_dummy_open_window", Dynamic_Wrap(Dummy, 'OnDummyOpenWindowRequest'))
@@ -344,9 +356,7 @@ if not Dummy.initialized and IsServer() then
     ListenToGameEvent('npc_spawned', Dynamic_Wrap(Dummy, 'OnNPCSpawned'), Dummy)
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_dps_dummy, 'OnPostTakeDamage'))
     Dummy:InitPanaromaEvents()
-    -- Changing that require same change in client side dummy.js
-    Dummy.DPS_TIME = 10
-    Dummy.DPS_DELAY = 5
+    Dummy:Init()
     Dummy.initialized = true
 end
 

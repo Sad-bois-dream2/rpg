@@ -1,0 +1,137 @@
+.SaveLoadWindow {
+    width: 350px;
+    height: 515px;
+    visibility: collapse;
+}
+
+#SlotsContainer {
+    width: fill-parent-flow (1.0);
+    height: fill-parent-flow (1.0);
+    flow-children: down;
+    margin-top: 50px;
+    padding: 7px;
+    horizontal-align: center;
+}
+
+.SaveSlot {
+    width: fill-parent-flow(1.0);
+    height: 70px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    horizontal-align: center;
+    margin-bottom: 5px;
+}
+
+.SaveSlot:hover {
+    opacity: 0.6;
+}
+
+.SaveSlotLeftContent {
+    flow-children: right;
+    width: fit-children;
+    height: fit-children;
+    margin-top: 6px;
+}
+
+.SaveSlot.Locked .SaveSlotLeftContent,
+.SaveSlot.Empty .SaveSlotLeftContent {
+    visibility: collapse;
+}
+
+.SaveSlotLeftContentText {
+    horizontal-align: center;
+    vertical-align: center;
+    flow-children: down;
+    margin-left: 7px;
+}
+
+.SaveSlotHeroIcon {
+    horizontal-align: left;
+    vertical-align: center;
+    width: 96px;
+    height: 56px;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.SaveSlotLevelLabel {
+    horizontal-align: center;
+    vertical-align: bottom;
+    color: white;
+    font-size: 14px;
+    text-overflow: shrink;
+    text-align: left;
+    width: fill-parent-flow(1.0);
+    margin-bottom: 5px;
+}
+
+.SaveSlotDateLabel {
+    horizontal-align: right;
+    vertical-align: bottom;
+    font-size: 12px;
+    color: white;
+    width: fill-parent-flow(1.0);
+}
+
+.SaveLoadTitleLabel {
+    color: white;
+    font-size: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: top;
+    horizontal-align: center;
+    margin-top: 20px;
+}
+
+.SaveSlotInfoIcon {
+    width: 48px;
+    height: 48px;
+    vertical-align: center;
+    horizontal-align: right;
+    margin-right: 10px;
+}
+
+.SaveSlotInfoIcon:hover {
+    opacity: 0.5;
+}
+
+.SaveSlot.Locked .SaveSlotInfoIcon {
+    visibility: collapse;
+}
+
+.SaveSlot.Empty .SaveSlotInfoIcon {
+    visibility: collapse;
+}
+
+.SaveSlotLockedIcon {
+    width: 32px;
+    height: 32px;
+    background-image: url("s2r://panorama/images/control_icons/lock_medium_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+    vertical-align: center;
+    horizontal-align: center;
+    visibility: collapse;
+}
+
+.SaveSlot.Locked .SaveSlotLockedIcon {
+    visibility: visible;
+}
+
+.SaveSlot.Empty .SaveSlotLockedIcon {
+    background-image: url("s2r://panorama/images/control_icons/plus_png.vtex");
+    visibility: visible;
+}
+
+#SaveSlotHeroPreview {
+    width: 450px;
+    height: 500px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	visibility: collapse;
+}

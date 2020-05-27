@@ -43,6 +43,7 @@ require('events')
 -- rest shit
 json = require('libraries/json')
 require('libraries/popup')
+require('systems/saveload')
 require('systems/game_mechanics')
 require('systems/difficulty')
 require('systems/inventory')
@@ -56,6 +57,7 @@ require('systems/heroes')
 require('systems/units')
 require('systems/enemies')
 require('systems/dummy')
+require('systems/heroselection')
 require('heroes/require')
 require('creeps/require')
 --[[
@@ -117,17 +119,18 @@ end
   is useful for starting any game logic timers/thinkers, beginning the first round, etc.
 ]]
 function GameMode:OnGameInProgress()
-    if (BAREBONES_DEBUG_SPEW) then
-        -- sad bois for testing all stuff in game
-        CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15319, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
-        CreateUnitByNameAsync("npc_test_unit", Vector(-14229, 15159, 0), true, nil, nil, DOTA_TEAM_NEUTRALS, nil)
-    end
-    -- Trainer
-    CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(dummy)
-        dummy:SetForwardVector(Vector(-0.977157, 0.212519, -0))
+    Timers:CreateTimer(3.0, function()
+        -- Trainer
+        CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(npc)
+            npc:SetForwardVector(Vector(-0.977157, 0.212519, 0))
+        end)
+        -- Save NPC
+        CreateUnitByNameAsync("npc_save_unit", Vector(-15503.247070, 15164.744141, 384), true, nil, nil, DOTA_TEAM_GOODGUYS, function(npc)
+            npc:SetForwardVector(Vector(0.936735, -0.350039,0))
+        end)
+        -- Vision in village
+        CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
     end)
-    -- Vision in village
-    CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
 end
 
 -- This function initializes the game mode and is called before anyone loads into the game
@@ -141,6 +144,11 @@ function GameMode:InitGameMode()
     GameModeEntity:SetFogOfWarDisabled(false)
     GameModeEntity:SetBuybackEnabled(false)
     GameModeEntity:SetDamageFilter(Dynamic_Wrap(GameMode, "DamageFilter"), self)
+    GameRules:SetHeroSelectionTime(0)
+    GameRules:SetHeroSelectPenaltyTime(0)
+    GameRules:SetPreGameTime(0)
+    GameRules:SetStrategyTime(0)
+    GameRules:SetShowcaseTime(0)
     DebugPrint('[BAREBONES] Done loading gamemode!\n\n')
 end
 

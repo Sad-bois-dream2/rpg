@@ -144,7 +144,7 @@ function UpdateValues() {
 		bossHpBarValue.text = (Math.round(hpPercent * 100) / 100) + "%";
 	}
     var preSymbol = "+";
-    if(mpReg < 0) {
+    if(hpReg < 0) {
         preSymbol = "";
     }
     if(hpReg == 0) {
