@@ -5,7 +5,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"                            "10001"
-		"BaseClass"                     "item_driven"
+		"BaseClass"                     "item_datadriven"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityTextureName"            "silver_ring"
 		"ItemBaseLevel"                 "1"
@@ -22,22 +22,12 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"spellhaste_min"		"5"
+				"spell_haste_min"		"5"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"spellhaste_max"		"10"
-			}
-			"03"
-			{
-				"var_type"			"FIELD_INTEGER"
-				"spellhaste_percent_min"		"1"
-			}
-			"04"
-			{
-				"var_type"			"FIELD_INTEGER"
-				"spellhaste_percent_max"		"5"
+				"spell_haste_max"		"10"
 			}
 		}
 	}

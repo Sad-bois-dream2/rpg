@@ -1,27 +1,27 @@
 "DOTAUnits"
 {
-    "npc_tower_holytower"
+    "npc_boss_winterwyrm_dragon"
     {
-        //"vscripts"					"creeps/ai/ai_generic.lua"
+        "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/items/world/towers/ti10_radiant_tower/ti10_radiant_tower_model_editor.vmdl" //"models/heroes/ursa/ursa.vmdl"  // Model.
+        "Model"           "models/items/dragon_knight/legacy_of_the_winterwyrm_form_of_the_winterwyrm/legacy_of_the_winterwyrm_form_of_the_winterwyrm.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
-        "ModelScale" 				"1.1"
-
+        "UnitLabel"         "boss"
+        "ModelScale" 				"1.5"
 
         // Abilities
         //----------------------------------------------------------------
+
           "Ability1"          ""     // Ability 1.
           "Ability2"          ""     // Ability 2.
           "Ability3"          ""      // Ability 3.
           "Ability4"          ""      // Ability 4.
-          "Ability5"          ""      // Ability 5.
+          "Ability5"          ""     // Ability 5.
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-
 
         // Armor
         //----------------------------------------------------------------
@@ -31,15 +31,15 @@
 
         // Attack
         //----------------------------------------------------------------
-        "AttackCapabilities"    "DOTA_UNIT_CAP_MELEE_ATTACK"     // Type of attack - melee, ranged, etc.
-        "AttackDamageMin"     "0"     // Damage range min.
-        "AttackDamageMax"     "0"     // Damage range max.
+        "AttackCapabilities"    "DOTA_UNIT_CAP_RANGED_ATTACK"     // Type of attack - melee, ranged, etc.
+        "AttackDamageMin"     "10"     // Damage range min.
+        "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1.7"     // Speed of attack.
-        "AttackAnimationPoint"    "0.3"   // Normalized time in animation cycle to attack.
+        "AttackAnimationPoint"    "0.33"   // Normalized time in animation cycle to attack.
         "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
-        "AttackRange"       "150"   // Range within a target can be attacked.
-        "ProjectileModel"     "" // Particle system model for projectile.
+        "AttackRange"       "600"   // Range within a target can be attacked.
+        "ProjectileModel"     "particles/units/heroes/hero_dragon_knight/dragon_knight_elder_dragon_attack_black.vpcf" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
 
         // Attributes
@@ -65,13 +65,13 @@
         // Movement
         //----------------------------------------------------------------
         "MovementCapabilities"    "DOTA_UNIT_CAP_MOVE_GROUND"     // Type of locomotion - ground, air
-        "MovementSpeed"       "0"   // Speed
-        "MovementTurnRate"      "0"   // Turning rate.
+        "MovementSpeed"       "150"   // Speed
+        "MovementTurnRate"      "1.0"   // Turning rate.
         "FollowRange"       "250"   // Distance to keep when following
 
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"        "2000"     // Base health.
+        "StatusHealth"        "1000"     // Base health.
         "StatusHealthRegen"     "0"     // Health regeneration rate.
         "StatusMana"        "0"     // Base mana.
         "StatusManaRegen"     "0"     // Mana regeneration rate.
@@ -85,23 +85,13 @@
 
         // Vision
         //----------------------------------------------------------------
-        "VisionDaytimeRange"    "800"   // Range of vision during day light.
-        "VisionNighttimeRange"    "800"   // Range of vision at night time.
+        "VisionDaytimeRange"    "1400"   // Range of vision during day light.
+        "VisionNighttimeRange"    "1400"   // Range of vision at night time.
 
         // Bots
         //----------------------------------------------------------------
         "AttackDesire"        "1.5"   // How much bots want to attack them vs other non-hero things
 
-        //Cosmetic
-        //------------------------------------------------------------------
-        "Creature"
-        {
-        "AttachWearables"
-                    {
-
-                    }
-
-        }
 
     }
 }

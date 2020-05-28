@@ -47,7 +47,6 @@ function modifier_helltower_hellfire:OnCreated()
     self.ability = self:GetAbility()
     self.parent:StartGesture(ACT_DOTA_CUSTOM_TOWER_IDLE)
     self:StartIntervalThink(5)
-    self:OnIntervalThink()
 end
 
 function modifier_helltower_hellfire:CheckState()
@@ -111,7 +110,7 @@ function helltower_hellfire:Launch(caster, caster_loc, travel_distance, start_ra
     self.wave = ParticleManager:CreateParticle("particles/units/helltower/magnataur_shockwave_red.vpcf", PATTACH_WORLDORIGIN, caster)
     ParticleManager:SetParticleControl(self.wave, 0, caster_loc) --origin location
     ParticleManager:SetParticleControl(self.wave, 1, projectile.vVelocity) -- velocity
-    ParticleManager:SetParticleControl(self.wave, 60, Vector(255,-135,-200))
+    ParticleManager:SetParticleControl(self.wave, 60, Vector(150,5,5))
     ParticleManager:SetParticleControl(self.wave, 61, Vector(1,0,0))
     ParticleManager:ReleaseParticleIndex(self.wave)
 end
@@ -197,6 +196,12 @@ function modifier_helltower_hellfire:OnIntervalThink()
                 FIND_ANY_ORDER,
                 false)
         --print(#enemies)
+        local warning = "particles/units/helltower/lina_spell_light_strike_array_no_black.vpcf"
+        local start_particle = ParticleManager:CreateParticle(warning, PATTACH_ABSORIGIN, caster)
+        Timers:CreateTimer(1.0,function()
+        ParticleManager:DestroyParticle(start_particle, false)
+        ParticleManager:ReleaseParticleIndex(start_particle)
+        end)
         if #enemies> 0 and RollPercentage(75) then
             --75% chance turn at a hero and send directly on top of heroes if it finds hero nearby
             self.ability:ShootOnTop( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
@@ -280,9 +285,11 @@ function modifier_helltower_hellchain:OnCreated()
     self.parent = self:GetParent()
     self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.damage = self.ability:GetSpecialValueFor("damage") *0.1
-    self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
-    self:StartIntervalThink(0.5)
+    self.dot = self.ability:GetSpecialValueFor("dot")
+    self.mana_burn = self.ability:GetSpecialValueFor("mana_burn") * 0.01
+    self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+    self.tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(self.tick)
 end
 
 function modifier_helltower_hellchain:CheckState()
@@ -293,11 +300,11 @@ function modifier_helltower_hellchain:CheckState()
 end
 
 function modifier_helltower_hellchain:GetSpellHastePercentBonus()
-    return -0.75
+    return self.slow
 end
 
 function modifier_helltower_hellchain:GetAttackSpeedPercentBonus()
-    return -0.75
+    return self.slow
 end
 --reduce these by 1000%
 function modifier_helltower_hellchain:GetHealthRegenerationPercentBonus()
@@ -309,16 +316,18 @@ function modifier_helltower_hellchain:GetHealingReceivedPercentBonus()
 end
 
 function modifier_helltower_hellchain:OnIntervalThink()
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.parent
-    damageTable.ability = self.ability
-    damageTable.damage = self.damage
-    damageTable.firedmg = true
-    GameMode:DamageUnit(damageTable)
-    local Max_mana = self.parent:GetMaxMana()
-    local burn = Max_mana * self.mana_burn
-    self.parent:ReduceMana(burn)
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.parent
+        damageTable.ability = self.ability
+        damageTable.damage = self.dot
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        local Max_mana = self.parent:GetMaxMana()
+        local burn = Max_mana * self.mana_burn
+        self.parent:ReduceMana(burn)
+    end
 end
 
 LinkLuaModifier("modifier_helltower_hellchain", "creeps/tower/helltower.lua", LUA_MODIFIER_MOTION_NONE)

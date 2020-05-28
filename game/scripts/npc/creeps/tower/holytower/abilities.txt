@@ -45,13 +45,24 @@ DOTAAbilites
    				"var_type"					"FIELD_FLOAT"
    				"duration"			        "2 2.5 3"
    			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"			        "50 150 1500"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"tick"			        "0.5"
+   			}
    		}
 	    "precache"
         {
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
-    	    "soundfile" soundevents/game_sounds_heroes/game_sounds_crystalmaiden.vsndevts
-    	    "particle"  "particles/units/heroes/hero_magnataur/magnataur_shockwave.vpcf"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_crystalmaiden.vsndevts"
+    	    "particle"  "particles/units/holytower/magnataur_shockwave_blue.vpcf"
     	    "particle"  "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    	    "particle"  "particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf"
     	}
     }
 }

@@ -28,11 +28,8 @@ function modifier_inventory_item_silver_ring:OnCreated(keys)
 end
 
 function modifier_inventory_item_silver_ring:GetSpellHasteBonus()
-    return self.data.spellhaste
+    return self.data.spell_haste * 0.01
 end
 
-function modifier_inventory_item_silver_ring:GetSpellHastePercentBonus()
-    return self.data.spellhaste_percent
-end
 
 LinkLuaModifier("modifier_inventory_item_silver_ring", "items/item_silver_ring", LUA_MODIFIER_MOTION_NONE)

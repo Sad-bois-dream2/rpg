@@ -1,15 +1,15 @@
 DOTAAbilites
 {
     //=================================================================================================================
-    // Helltower : Hellfire
+    // Naturetower : Felblight
     //=================================================================================================================
-    "helltower_hellfire"
+    "naturetower_felblight"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/tower/helltower"
-        "AbilityTextureName"			"helltower_hellfire"
+        "ScriptFile"					"creeps/tower/naturetower"
+        "AbilityTextureName"			"naturetower_felblight"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
        	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -43,17 +43,17 @@ DOTAAbilites
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"mana_burn"			        "5 8 11"
+   				"duration"			        "15"
    			}
    			"06"
    			{
-   				"var_type"					"FIELD_FLOAT"
-   				"duration"			        "2 2.5 3"
+   				"var_type"					"FIELD_FLOAT" //will not go over calculation wrong limit 47%
+   				"stats_decrease"			"6"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"			        "50 150 1500"
+   				"amp"			            "15 22 30"
    			}
    			"08"
    			{
@@ -63,17 +63,16 @@ DOTAAbilites
    			"09"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"slow"			        "75"
+   				"slow"			        "25"
    			}
    		}
 	    "precache"
         {
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
-    	    "particle"  "particles/units/helltower/magnataur_shockwave_red.vpcf"
-    	    "particle"  "particles/units/heroes/hero_ember_spirit/ember_spirit_searing_chains_debuff.vpcf"
-    	    "particle"  "particles/units/helltower/lina_spell_light_strike_array_no_black.vpcf"
-
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
+    	    "particle"  "particles/units/naturetower/magnataur_shockwave_green.vpcf"
+    	    "particle"  "particles/units/heroes/hero_viper/viper_viper_strike_debuff.vpcf"
+    	    "particle"  "particles/units/heroes/hero_venomancer/venomancer_poison_nova.vpcf"
     	}
     }
 }

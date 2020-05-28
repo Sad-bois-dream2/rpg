@@ -79,6 +79,8 @@ function Enemies:InitAbilites()
     --tower
     Enemies:RegisterEnemyAbility("npc_tower_helltower", "helltower_hellfire", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_tower_holytower", "holytower_holyfrost", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_naturetower", "naturetower_felblight", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_earthtower", "earthtower_tectonic", Enemies.ABILITY_TYPE_INNATE)
 end
 
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)

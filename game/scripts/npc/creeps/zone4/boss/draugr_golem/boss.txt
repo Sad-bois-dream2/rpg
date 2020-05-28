@@ -1,27 +1,26 @@
 "DOTAUnits"
 {
-    "npc_tower_holytower"
+    "npc_boss_draugr_golem"
     {
-        //"vscripts"					"creeps/ai/ai_generic.lua"
+        "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/items/world/towers/ti10_radiant_tower/ti10_radiant_tower_model_editor.vmdl" //"models/heroes/ursa/ursa.vmdl"  // Model.
+        "Model"           "models/items/undying/flesh_golem/frostivus_2018_undying_accursed_draugr_golem/frostivus_2018_undying_accursed_draugr_golem.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
-        "ModelScale" 				"1.1"
-
-
+        "UnitLabel"         "boss"
+        "ModelScale" 				"1"
         // Abilities
         //----------------------------------------------------------------
+
           "Ability1"          ""     // Ability 1.
           "Ability2"          ""     // Ability 2.
           "Ability3"          ""      // Ability 3.
           "Ability4"          ""      // Ability 4.
-          "Ability5"          ""      // Ability 5.
+          "Ability5"          ""     // Ability 5.
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
-
 
         // Armor
         //----------------------------------------------------------------
@@ -32,12 +31,12 @@
         // Attack
         //----------------------------------------------------------------
         "AttackCapabilities"    "DOTA_UNIT_CAP_MELEE_ATTACK"     // Type of attack - melee, ranged, etc.
-        "AttackDamageMin"     "0"     // Damage range min.
-        "AttackDamageMax"     "0"     // Damage range max.
+        "AttackDamageMin"     "10"     // Damage range min.
+        "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1.7"     // Speed of attack.
-        "AttackAnimationPoint"    "0.3"   // Normalized time in animation cycle to attack.
-        "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
+        "AttackAnimationPoint"    "0.4"   // Normalized time in animation cycle to attack.
+        "AttackAcquisitionRange"  "1500"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
@@ -65,13 +64,13 @@
         // Movement
         //----------------------------------------------------------------
         "MovementCapabilities"    "DOTA_UNIT_CAP_MOVE_GROUND"     // Type of locomotion - ground, air
-        "MovementSpeed"       "0"   // Speed
-        "MovementTurnRate"      "0"   // Turning rate.
+        "MovementSpeed"       "150"   // Speed
+        "MovementTurnRate"      "1.0"   // Turning rate.
         "FollowRange"       "250"   // Distance to keep when following
 
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"        "2000"     // Base health.
+        "StatusHealth"        "1000"     // Base health.
         "StatusHealthRegen"     "0"     // Health regeneration rate.
         "StatusMana"        "0"     // Base mana.
         "StatusManaRegen"     "0"     // Mana regeneration rate.
@@ -92,16 +91,6 @@
         //----------------------------------------------------------------
         "AttackDesire"        "1.5"   // How much bots want to attack them vs other non-hero things
 
-        //Cosmetic
-        //------------------------------------------------------------------
-        "Creature"
-        {
-        "AttachWearables"
-                    {
-
-                    }
-
-        }
 
     }
 }

@@ -18,6 +18,12 @@
 #base creeps/zone1/boss/venge/abilities.txt
 #base creeps/tower/helltower/abilities.txt
 #base creeps/tower/holytower/abilities.txt
+#base creeps/tower/naturetower/abilities.txt
+#base creeps/tower/earthtower/abilities.txt
+#base creeps/zone1/boss/parasite_golem/abilities.txt
+#base creeps/zone4/boss/draugr_golem/abilities.txt
+#base creeps/zone5/boss/incurable_golem/abilities.txt
+#base creeps/zone5/boss/winterwyrm_dragon/abilities.txt
 
 "DOTAAbilities"
 {

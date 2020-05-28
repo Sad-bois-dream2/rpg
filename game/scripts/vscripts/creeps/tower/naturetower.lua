@@ -10,16 +10,16 @@ function RotateVectorAroundAngle( vec, angle )
     return vec2
 end
 
-holytower_holyfrost = class({
+naturetower_felblight = class({
     GetAbilityTextureName = function(self)
-        return "holytower_holyfrost"
+        return "naturetower_felblight"
     end,
     GetIntrinsicModifierName = function(self)
-        return "modifier_holytower_holyfrost"
+        return "modifier_naturetower_felblight"
     end,
 })
 
-modifier_holytower_holyfrost = class({
+modifier_naturetower_felblight = class({
     IsDebuff = function(self)
         return false
     end,
@@ -39,27 +39,27 @@ modifier_holytower_holyfrost = class({
 
 })
 
-function modifier_holytower_holyfrost:OnCreated()
+function modifier_naturetower_felblight:OnCreated()
     if not IsServer() then
         return
     end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
-    self.parent:StartGesture(ACT_DOTA_CUSTOM_TOWER_IDLE)
+    self.parent:StartGesture(ACT_DOTA_IDLE)
     self:StartIntervalThink(5)
 end
 
-function modifier_holytower_holyfrost:CheckState()
+function modifier_naturetower_felblight:CheckState()
     return { [MODIFIER_STATE_STUNNED] = true,
     }
 end
 
-function holytower_holyfrost:ShootLinear( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
+function naturetower_felblight:ShootLinear( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
     if (not IsServer()) then
         return
     end
     Timers:CreateTimer(1.1, function()
-        caster:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_ATTACK, 0.8)
+        caster:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK, 0.8)
     end)
     --print("linear")
     local angleLeft
@@ -71,7 +71,7 @@ function holytower_holyfrost:ShootLinear( caster, caster_loc, travel_distance, s
     caster:SetForwardVector(direction_face)
     Timers:CreateTimer(2.0,function()
         Timers:CreateTimer(0.5, function()
-            caster:RemoveGesture(ACT_DOTA_CUSTOM_TOWER_ATTACK)
+            caster:RemoveGesture(ACT_DOTA_ATTACK)
         end)
         --linear
         for  i =  0, 4, 1 do
@@ -86,7 +86,7 @@ function holytower_holyfrost:ShootLinear( caster, caster_loc, travel_distance, s
     end)
 end
 
-function holytower_holyfrost:Launch(caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle,direction)
+function naturetower_felblight:Launch(caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle,direction)
     local projectile =
     {
         Ability				= self,
@@ -107,27 +107,27 @@ function holytower_holyfrost:Launch(caster, caster_loc, travel_distance, start_r
         bProvidesVision		= false,
     }
     ProjectileManager:CreateLinearProjectile(projectile)
-    self.wave = ParticleManager:CreateParticle("particles/units/holytower/magnataur_shockwave_blue.vpcf", PATTACH_WORLDORIGIN, caster)
+    self.wave = ParticleManager:CreateParticle("particles/units/naturetower/magnataur_shockwave_green.vpcf", PATTACH_WORLDORIGIN, caster)
     ParticleManager:SetParticleControl(self.wave, 0, caster_loc) --origin location
     ParticleManager:SetParticleControl(self.wave, 1, projectile.vVelocity) -- velocity
-    ParticleManager:SetParticleControl(self.wave, 60, Vector(0,0,255))
+    ParticleManager:SetParticleControl(self.wave, 60, Vector(75,255,-10))
     ParticleManager:SetParticleControl(self.wave, 61, Vector(1,0,0))
     ParticleManager:ReleaseParticleIndex(self.wave)
 end
 
 
 
-function holytower_holyfrost:ShootOnTop( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
+function naturetower_felblight:ShootOnTop( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
     if (not IsServer()) then
         return
     end
     --print("set")
     Timers:CreateTimer(1.1, function()
-        caster:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_ATTACK, 0.8)
+        caster:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK, 0.8)
     end)
     Timers:CreateTimer(2.0, function()
         Timers:CreateTimer(0.5, function()
-            caster:RemoveGesture(ACT_DOTA_CUSTOM_TOWER_ATTACK)
+            caster:RemoveGesture(ACT_DOTA_ATTACK)
         end)
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 caster:GetAbsOrigin(),
@@ -175,7 +175,7 @@ function holytower_holyfrost:ShootOnTop( caster, caster_loc, travel_distance, st
     end)
 end
 
-function modifier_holytower_holyfrost:OnIntervalThink()
+function modifier_naturetower_felblight:OnIntervalThink()
     local caster = self:GetParent()
     local caster_loc = caster:GetAbsOrigin()
     -- Ability specials
@@ -196,19 +196,21 @@ function modifier_holytower_holyfrost:OnIntervalThink()
                 FIND_ANY_ORDER,
                 false)
         --print(#enemies)
-        local warning = "particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf"
-        local start_particle = ParticleManager:CreateParticle(warning, PATTACH_ABSORIGIN, caster)
-        ParticleManager:ReleaseParticleIndex(start_particle)
+        local warning = "particles/units/heroes/hero_venomancer/venomancer_poison_nova.vpcf"
+        self.nova_particle = ParticleManager:CreateParticle(warning, PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(self.nova_particle, 1, Vector(300,1,300))
+        ParticleManager:ReleaseParticleIndex(self.nova_particle)
         if #enemies> 0 and RollPercentage(75) then
-            --75% chance turn at a hero and send directly on top of heroes if it finds hero nearby
+            --75% chance turn at a hero and send directly on top of heroes if it finds hero nearby.
             self.ability:ShootOnTop( caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
-        else--25% chance turn randomly and send linear even found hero / it always sends linear if it doesn't find hero
+        else--25% chance turn randomly and send linear even found hero / it always sends linear if it doesn't find hero.
             self.ability:ShootLinear(caster, caster_loc, travel_distance, start_radius, end_radius, projectile_speed, arrow_particle)
         end
     end
 end
 
-function holytower_holyfrost:OnProjectileHit_ExtraData(target)
+
+function naturetower_felblight:OnProjectileHit_ExtraData(target)
     if not target then
         return nil
     end
@@ -217,38 +219,43 @@ function holytower_holyfrost:OnProjectileHit_ExtraData(target)
     local damage = self:GetSpecialValueFor("damage")
     local duration = self:GetSpecialValueFor("duration")
     if caster:IsAlive()then
+
+        local modifierTable = {}
+        modifierTable.caster = caster
+        modifierTable.target = target
+        modifierTable.ability = self
+        modifierTable.modifier_name = "modifier_naturetower_felpoison"
+        modifierTable.duration = duration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = 5
+        GameMode:ApplyStackingDebuff(modifierTable)
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target
         damageTable.ability = self
         damageTable.damage = damage
-        damageTable.frostdmg = true
-        damageTable.holydmg = true
+        damageTable.voiddmg = true
+        damageTable.firedmg = true
         GameMode:DamageUnit(damageTable)
         target:EmitSound("Hero_Magnataur.ShockWave.Target")
-        caster:EmitSound("Hero_Crystal.Frostbite")
-        local modifierTable = {}
-        modifierTable.caster = caster
-        modifierTable.target = target
-        modifierTable.ability = self
-        modifierTable.modifier_name = "modifier_holytower_frostbite"
-        modifierTable.duration = duration
-        GameMode:ApplyDebuff(modifierTable)
+        caster:EmitSound("hero_viper.viperStrikeImpact")
     end
 end
 
-function modifier_holytower_holyfrost:OnDeath( params )
+function modifier_naturetower_felblight:OnDeath( params )
     if IsServer() then
         if params.unit == self.parent then
-            self.parent:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_DIE, 0.5)
+            self.parent:StartGestureWithPlaybackRate(ACT_DOTA_DIE, 0.5)
         end
     end
 end
 
-LinkLuaModifier("modifier_holytower_holyfrost", "creeps/tower/holytower.lua", LUA_MODIFIER_MOTION_NONE)
 
 
-modifier_holytower_frostbite = class({
+LinkLuaModifier("modifier_naturetower_felblight", "creeps/tower/naturetower.lua", LUA_MODIFIER_MOTION_NONE)
+
+
+modifier_naturetower_felpoison = class({
     IsDebuff = function(self)
         return true
     end,
@@ -262,67 +269,67 @@ modifier_holytower_frostbite = class({
         return true
     end,
     GetEffectName = function(self)
-        return  "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+        return "particles/units/heroes/hero_viper/viper_viper_strike_debuff.vpcf"
     end,
     GetEffectAttachType = function(self)
         return PATTACH_ABSORIGIN_FOLLOW
     end,
     GetTexture = function(self)
-        return "crystal_maiden_frostbite"
-    end,
-    DeclareFunctions = function(self)
-        return {MODIFIER_PROPERTY_TURN_RATE_PERCENTAGE} -- increase by percentage
+        return "viper_viper_strike"
     end
 })
 
-function modifier_holytower_frostbite:OnCreated()
+function modifier_naturetower_felpoison:OnCreated()
     if (not IsServer()) then
         return
     end
     self.parent = self:GetParent()
     self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.dot = self.ability:GetSpecialValueFor("dot")
+    self.stats = self.ability:GetSpecialValueFor("stats_decrease") * -0.01
+    self.amp = self.ability:GetSpecialValueFor("amp")*-0.01
+    self.slow = self.ability:GetSpecialValueFor("slow")*-0.01
     self.tick = self.ability:GetSpecialValueFor("tick")
+    self.dot = self.ability:GetSpecialValueFor("dot")
     self:StartIntervalThink(self.tick)
 end
 
-function modifier_holytower_frostbite:CheckState()
-    local state = {
-        [MODIFIER_STATE_ROOTED] = true,
-        [MODIFIER_STATE_DISARMED] = true,
-        [MODIFIER_STATE_SILENCED] = true,
-        [MODIFIER_STATE_FROZEN] =true,
-    }
-    return state
+function modifier_naturetower_felpoison:GetMoveSpeedPercentBonus()
+    return self.slow
 end
 
-function modifier_holytower_frostbite:GetModifierTurnRate_Percentage() --% add to current turnrate -- tested this one add not subtract
-    return -100
-end
---reduce these by 1000%
-function modifier_holytower_frostbite:GetSpellDamageBonus()
-    return -10
+--rot from with in decrease stats
+function modifier_naturetower_felpoison:GetStrengthPercentBonus() --max str reduciton that health still correct is 47% higher than this break health calcution idk why kek
+    return self.stats* self:GetStackCount()
 end
 
-function modifier_holytower_frostbite:GetAttackDamagePercentBonus()
-    return -10
+function modifier_naturetower_felpoison:GetAgilityPercentBonus()
+    return self.stats * self:GetStackCount()
 end
 
-function modifier_holytower_frostbite:GetHealingCausedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_naturetower_felpoison:GetIntellectPercentBonus()
+    return self.stats * self:GetStackCount()
 end
 
-function modifier_holytower_frostbite:OnIntervalThink()
+function modifier_naturetower_felpoison:GetPrimaryAttributePercentBonus()
+    return self.stats* 0.5 * self:GetStackCount()
+end
+
+function modifier_naturetower_felpoison:GetDamageReductionBonus()
+    return self.amp * self:GetStackCount()
+end
+
+function modifier_naturetower_felpoison:OnIntervalThink()
     if self.caster:IsAlive() then
         local damageTable = {}
         damageTable.caster = self.caster
         damageTable.target = self.parent
         damageTable.ability = self.ability
         damageTable.damage = self.dot
-        damageTable.frostdmg = true
+        damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
     end
 end
 
-LinkLuaModifier("modifier_holytower_frostbite", "creeps/tower/holytower.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_naturetower_felpoison", "creeps/tower/naturetower.lua", LUA_MODIFIER_MOTION_NONE)
+

@@ -1,15 +1,14 @@
 "DOTAUnits"
 {
-    "npc_tower_holytower"
+    "npc_tower_earthtower"
     {
         //"vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/items/world/towers/ti10_radiant_tower/ti10_radiant_tower_model_editor.vmdl" //"models/heroes/ursa/ursa.vmdl"  // Model.
+        "Model"           "models/items/warlock/golem/ti9_cache_warlock_tribal_warlock_golem/ti9_cache_warlock_tribal_golem_alt.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
-        "ModelScale" 				"1.1"
-
+        "ModelScale" 				"1.4"
 
         // Abilities
         //----------------------------------------------------------------

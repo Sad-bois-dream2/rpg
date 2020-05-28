@@ -1,15 +1,15 @@
 DOTAAbilites
 {
     //=================================================================================================================
-    // Helltower : Hellfire
+    // Earthtower : Tectonic
     //=================================================================================================================
-    "helltower_hellfire"
+    "earthtower_tectonic"
    	{
    		// General
    		//-------------------------------------------------------------------------------------------------------------
    		"BaseClass"						"ability_lua"
-        "ScriptFile"					"creeps/tower/helltower"
-        "AbilityTextureName"			"helltower_hellfire"
+        "ScriptFile"					"creeps/tower/earthtower"
+        "AbilityTextureName"			"earthtower_tectonic"
         "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
        	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -43,37 +43,28 @@ DOTAAbilites
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"mana_burn"			        "5 8 11"
+   				"duration"			        "2 2.5 3"
    			}
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"			        "2 2.5 3"
+   				"blocker_radius"			"24"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"			        "50 150 1500"
+   				"blocker_duration"			"20"
    			}
-   			"08"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"tick"			        "0.5"
-   			}
-   			"09"
-   			{
-   				"var_type"					"FIELD_FLOAT"
-   				"slow"			        "75"
-   			}
+
    		}
 	    "precache"
         {
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
-    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
-    	    "particle"  "particles/units/helltower/magnataur_shockwave_red.vpcf"
-    	    "particle"  "particles/units/heroes/hero_ember_spirit/ember_spirit_searing_chains_debuff.vpcf"
-    	    "particle"  "particles/units/helltower/lina_spell_light_strike_array_no_black.vpcf"
-
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_earthshaker.vsndevts"
+    	    "particle"  "particles/units/earthtower/magnataur_shockwave_brown.vpcf"
+    	    "particle"  "particles/econ/items/earthshaker/earthshaker_ti9/earthshaker_fissure_ti9_lvl2.vpcf"
+    	    "particle"  "particles/generic_gameplay/generic_stunned.vpcf"
+    	    "particle"  "particles/units/heroes/hero_centaur/centaur_warstomp.vpcf"
     	}
     }
 }

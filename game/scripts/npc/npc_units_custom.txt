@@ -27,6 +27,23 @@
 #base creeps/tower/helltower/units.txt
 #base creeps/tower/holytower/creep.txt
 #base creeps/tower/holytower/units.txt
+#base creeps/zone1/boss/parasite_golem/boss.txt
+#base creeps/zone1/boss/parasite_golem/units.txt
+#base creeps/tower/naturetower/creep.txt
+#base creeps/tower/naturetower/units.txt
+#base creeps/tower/earthtower/creep.txt
+#base creeps/tower/earthtower/units.txt
+#base creeps/zone4/boss/draugr_golem/boss.txt
+#base creeps/zone4/boss/draugr_golem/units.txt
+#base creeps/zone5/boss/incurable_golem/boss.txt
+#base creeps/zone5/boss/incurable_golem/units.txt
+#base creeps/zone5/boss/winterwyrm_dragon/boss.txt
+#base creeps/zone5/boss/winterwyrm_dragon/units.txt
+#base creeps/zone1/trash/amber_dragoon.txt
+#base creeps/zone1/trash/mimicry_spiderling.txt
+#base creeps/zone1/trash/treant_cis.txt
+#base creeps/zone5/trash/invokerkid_dragon.txt
+#base creeps/zone5/trash/apostate_golem.txt
 
 "DOTAUnits"
 {

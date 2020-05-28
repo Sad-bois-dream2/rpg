@@ -46,7 +46,9 @@ function OnStartTouch(trigger)
     local tower =
     {
         "npc_tower_holytower",
-        "npc_tower_helltower"
+        "npc_tower_helltower",
+        "npc_tower_naturetower",
+        "npc_tower_naturetower"
     }
 
     local vector_tower =

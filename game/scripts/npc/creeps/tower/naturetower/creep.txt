@@ -1,14 +1,14 @@
 "DOTAUnits"
 {
-    "npc_tower_holytower"
+    "npc_tower_naturetower"
     {
         //"vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/items/world/towers/ti10_radiant_tower/ti10_radiant_tower_model_editor.vmdl" //"models/heroes/ursa/ursa.vmdl"  // Model.
+        "Model"           "models/items/venomancer/ward/chomper_ward/chomper_ward.vmdl" // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
-        "ModelScale" 				"1.1"
+        "ModelScale" 				"2.35"
 
 
         // Abilities
@@ -27,7 +27,7 @@
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
-        "HeathBarOffset"        "350"
+        "HeathBarOffset"        "550"
 
         // Attack
         //----------------------------------------------------------------
