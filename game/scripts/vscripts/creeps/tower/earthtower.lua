@@ -43,8 +43,6 @@ function modifier_earthtower_tectonic:OnCreated()
     if not IsServer() then
         return
     end
-    if(IsServer()) then
-        Inventory:CreateItemOnGround(HeroList:GetHero(0), HeroList:GetHero(0):GetAbsOrigin(), "item_silver_ring")end
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self.parent:StartGesture(ACT_DOTA_IDLE_RARE)

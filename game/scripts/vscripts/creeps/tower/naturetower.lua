@@ -234,8 +234,8 @@ function naturetower_felblight:OnProjectileHit_ExtraData(target)
         damageTable.target = target
         damageTable.ability = self
         damageTable.damage = damage
-        damageTable.voiddmg = true
-        damageTable.firedmg = true
+        damageTable.naturedmg = true
+        damageTable.infernodmg = true
         GameMode:DamageUnit(damageTable)
         target:EmitSound("Hero_Magnataur.ShockWave.Target")
         caster:EmitSound("hero_viper.viperStrikeImpact")
@@ -249,7 +249,6 @@ function modifier_naturetower_felblight:OnDeath( params )
         end
     end
 end
-
 
 
 LinkLuaModifier("modifier_naturetower_felblight", "creeps/tower/naturetower.lua", LUA_MODIFIER_MOTION_NONE)

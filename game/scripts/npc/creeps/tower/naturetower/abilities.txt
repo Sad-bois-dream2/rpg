@@ -65,6 +65,11 @@ DOTAAbilites
    				"var_type"					"FIELD_FLOAT"
    				"slow"			        "25"
    			}
+   			"10"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"			        "100 300 1000"
+   			}
    		}
 	    "precache"
         {
