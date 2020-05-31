@@ -222,7 +222,7 @@ end
 
 function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_luminous_samurai_jhana")
-    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.ability.procChance) and not modifier.cooldown) then
+    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.ability.procChance) and modifier.ability:IsCooldownReady()) then
         local modifierTable = {}
         modifierTable.ability = modifier.ability
         modifierTable.target = damageTable.victim
@@ -232,7 +232,7 @@ function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
         modifierTable.stacks = 1
         modifierTable.max_stacks = modifier.ability.maxStacks
         local buff = GameMode:ApplyStackingBuff(modifierTable)
-        modifier.cooldown = true
+        --modifier.cooldown = true
         EmitSoundOn("Hero_Juggernaut.HealingWard.Stop", damageTable.victim)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/jhana/jhana.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
         Timers:CreateTimer(modifier.ability.stackDuration, function()
@@ -243,10 +243,11 @@ function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
                 buff:SetStackCount(stacks)
             end
         end)
+        modifier.ability:StartCooldown(modifier.ability.stackCooldown)
         Timers:CreateTimer(modifier.ability.stackCooldown, function()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            modifier.cooldown = nil
+            --modifier.cooldown = nil
         end)
         damageTable.damage = 0
         return damageTable
@@ -584,8 +585,15 @@ modifier_luminous_samurai_blade_dance_debuff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+        DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
     end
 })
+
+function modifier_luminous_samurai_blade_dance_debuff:OnTooltip()
+    return self:GetStackCount()
+end
 
 function modifier_luminous_samurai_blade_dance_debuff:OnCreated()
     if (not IsServer()) then

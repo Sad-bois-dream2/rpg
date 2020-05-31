@@ -65,15 +65,15 @@
 		}
 	}
 	//=================================================================================================================
-	// Crystal Sorceress: Sheer Cold
+	// Crystal Sorceress: Deep Freeze
 	//=================================================================================================================
-	"crystal_sorceress_sheer_cold"
+	"crystal_sorceress_deep_freeze"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_crystal_sorceress"
-		"AbilityTextureName"			"crystal_sorceress_sheer_cold"
+		"AbilityTextureName"			"crystal_sorceress_deep_freeze"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -152,8 +152,8 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/crystal_sorceress/sheer_cold/sheer_cold.vpcf"
-            "particle"  "particles/units/crystal_sorceress/sheer_cold/sheer_cold_debuff.vpcf"
+            "particle"  "particles/units/crystal_sorceress/deep_freeze/deep_freeze.vpcf"
+            "particle"  "particles/units/crystal_sorceress/deep_freeze/deep_freeze_debuff.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}

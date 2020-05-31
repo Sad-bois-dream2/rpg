@@ -4,7 +4,7 @@
     {
         "AbilityLayout"     "6"
         "Ability1"	"crystal_sorceress_frost_comet"
-        "Ability2"	"crystal_sorceress_sheer_cold"
+        "Ability2"	"crystal_sorceress_deep_freeze"
         "Ability3"	"crystal_sorceress_glacier_rush"
         "Ability4"	"crystal_sorceress_freezing_destruction"
         "Ability5"	"empty5"
