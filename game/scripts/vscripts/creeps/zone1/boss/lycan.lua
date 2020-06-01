@@ -150,7 +150,7 @@ function lycan_wound:ApplyDamageAndDebuff(target, caster)
     local damage = Max_health * initial
     local dot = self:GetSpecialValueFor("dot") * 0.01
     --apply a buff dealing initial damage then dot and heal negation
-    --initial damage
+    --initial damage --dont need to check IsAlive here because its instant
     local damageTable = {}
     damageTable.caster = caster
     damageTable.target = target
@@ -229,21 +229,23 @@ function modifier_lycan_wound_debuff:OnCreated(keys)
 end
 
 function modifier_lycan_wound_debuff:OnIntervalThink()
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.target
-    damageTable.ability = self.ability
-    damageTable.damage = self.dot * self.target:GetMaxHealth()
-    damageTable.puredmg = true
-    GameMode:DamageUnit(damageTable)
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.target
+        damageTable.ability = self.ability
+        damageTable.damage = self.dot * self.target:GetMaxHealth()
+        damageTable.puredmg = true
+        GameMode:DamageUnit(damageTable)
+    end
 end
---heal negate
+--heal negate reduce by 1000%
 function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
-    return -1
+    return -10
 end
 
 function modifier_lycan_wound_debuff:GetHealingReceivedPercentBonus()
-    return -1
+    return -10
 end
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -362,20 +364,22 @@ function lycan_lupine:LupineAoe(caster, aoe, strikepos, damage)
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = caster
-            damageTable.target = enemy
-            damageTable.ability = self
-            damageTable.damage = damage
-            damageTable.physdmg = true
-            GameMode:DamageUnit(damageTable)
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_lycan_lupine"
-            modifierTable.duration = self:GetSpecialValueFor("duration")
-            GameMode:ApplyDebuff(modifierTable)
+            if caster:IsAlive() then
+                local damageTable = {}
+                damageTable.caster = caster
+                damageTable.target = enemy
+                damageTable.ability = self
+                damageTable.damage = damage
+                damageTable.physdmg = true
+                GameMode:DamageUnit(damageTable)
+                local modifierTable = {}
+                modifierTable.ability = self
+                modifierTable.target = enemy
+                modifierTable.caster = caster
+                modifierTable.modifier_name = "modifier_lycan_lupine"
+                modifierTable.duration = self:GetSpecialValueFor("duration")
+                GameMode:ApplyDebuff(modifierTable)
+            end
         end
         local particle_cast = "particles/units/npc_boss_lycan/lycan_lupine/lupine_explode.vpcf"
         local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, caster)
@@ -577,7 +581,7 @@ end
 ---@param damageTable DAMAGE_TABLE
 function modifier_lycan_transform:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_lycan_transform")
-    if (damageTable.damage > 0 and modifier and GameMode:RollCriticalChance(damageTable.attacker, modifier.crit_chance) and not damageTable.ability and damageTable.physdmg) then
+    if (damageTable.damage > 0 and modifier and GameMode:RollCriticalChance(damageTable.attacker, modifier.crit_chance) and not damageTable.ability and damageTable.physdmg and damageTable.attacker:IsAlive()) then
         local victimPosition = damageTable.victim:GetAbsOrigin()
         local crit_particle = "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
         local coup_pfx = ParticleManager:CreateParticle(crit_particle, PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
@@ -1279,13 +1283,15 @@ end
 function modifier_lycan_bleeding_dot:OnIntervalThink()
     local maxHealth = self.target:GetMaxHealth()
     local damage = maxHealth * self.dot * self:GetStackCount()
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.target
-    damageTable.ability = self.ability
-    damageTable.damage = damage
-    damageTable.puredmg = true
-    GameMode:DamageUnit(damageTable)
+    --if self.caster:IsAlive() then --Bleed should still work after caster ded wolf can apply bleed. Intentionally remove IsAlive() check.
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.target
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.puredmg = true
+        GameMode:DamageUnit(damageTable)
+    --end
 end
 
 LinkLuaModifier("modifier_lycan_bleeding_dot", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)

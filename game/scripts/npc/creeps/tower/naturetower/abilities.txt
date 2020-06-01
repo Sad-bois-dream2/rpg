@@ -1,0 +1,83 @@
+DOTAAbilites
+{
+    //=================================================================================================================
+    // Naturetower : Felblight
+    //=================================================================================================================
+    "naturetower_felblight"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/tower/naturetower"
+        "AbilityTextureName"			"naturetower_felblight"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "500 1500 5000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "150"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"800"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"			        "15"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT" //will not go over calculation wrong limit 47%
+   				"stats_decrease"			"6"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"amp"			            "15 22 30"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"tick"			        "0.5"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"slow"			        "25"
+   			}
+   			"10"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"			        "100 300 1000"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_viper.vsndevts"
+    	    "particle"  "particles/units/naturetower/magnataur_shockwave_green.vpcf"
+    	    "particle"  "particles/units/heroes/hero_viper/viper_viper_strike_debuff.vpcf"
+    	    "particle"  "particles/units/heroes/hero_venomancer/venomancer_poison_nova.vpcf"
+    	}
+    }
+}

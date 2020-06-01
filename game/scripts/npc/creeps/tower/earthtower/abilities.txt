@@ -1,0 +1,70 @@
+DOTAAbilites
+{
+    //=================================================================================================================
+    // Earthtower : Tectonic
+    //=================================================================================================================
+    "earthtower_tectonic"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/tower/earthtower"
+        "AbilityTextureName"			"earthtower_tectonic"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "500 1500 5000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "150"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"800"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"			        "2 2.5 3"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"blocker_radius"			"24"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"blocker_duration"			"20"
+   			}
+
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_earthshaker.vsndevts"
+    	    "particle"  "particles/units/earthtower/magnataur_shockwave_brown.vpcf"
+    	    "particle"  "particles/econ/items/earthshaker/earthshaker_ti9/earthshaker_fissure_ti9_lvl2.vpcf"
+    	    "particle"  "particles/generic_gameplay/generic_stunned.vpcf"
+    	    "particle"  "particles/units/heroes/hero_centaur/centaur_warstomp.vpcf"
+    	}
+    }
+}

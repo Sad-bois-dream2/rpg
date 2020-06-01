@@ -1,0 +1,79 @@
+DOTAAbilites
+{
+    //=================================================================================================================
+    // Helltower : Hellfire
+    //=================================================================================================================
+    "helltower_hellfire"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/tower/helltower"
+        "AbilityTextureName"			"helltower_hellfire"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+       	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "2000"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "500 1500 5000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"radius"				    "150"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"800"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"mana_burn"			        "5 8 11"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"			        "2 2.5 3"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"			        "50 150 1500"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"tick"			        "0.5"
+   			}
+   			"09"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"slow"			        "75"
+   			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
+    	    "particle"  "particles/units/helltower/magnataur_shockwave_red.vpcf"
+    	    "particle"  "particles/units/heroes/hero_ember_spirit/ember_spirit_searing_chains_debuff.vpcf"
+    	    "particle"  "particles/units/helltower/lina_spell_light_strike_array_no_black.vpcf"
+
+    	}
+    }
+}

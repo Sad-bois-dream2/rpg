@@ -1,0 +1,1184 @@
+"DOTAAbilities"
+{
+	"item_two_handed_sword"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10000"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_claymore"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"10"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"20"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_reduce_min"		"-15"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_reduce_max"		"-15"
+			}
+		}
+	}
+	"item_one_handed_sword"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10001"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_broadsword"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"8"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_min"		"1"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_max"		"8"
+			}
+		}
+	}
+	"item_silver_ring"
+    {
+     	// General
+     	//-------------------------------------------------------------------------------------------------------------
+     	"ID"                            "10002"
+     	"BaseClass"                     "item_datadriven"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+    	"AbilityTextureName"            "silver_ring"
+    	"ItemBaseLevel"                 "1"
+    	"ItemPurchasable" 				"0"
+    	"ItemSellable"					"0"
+    	"ItemKillable"					"0"
+     	"ItemDroppable" 				"0"
+     	"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+     	"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+     	// Special
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilitySpecial"
+     	{
+     		"01"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_min"		"2"
+     		}
+     		"02"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_max"		"10"
+     		}
+
+     	}
+    }
+	"item_chainshirt"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10003"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_chainmail"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_min"		"3"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_max"		"5"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"fire_resist_reduce_min"		"50"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"fire_resist_reduce_max"		"50"
+			}
+		}
+	}
+	"item_wooden_shield"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10004"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_stout_shield"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"block_min"		"2"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"block_max"		"3"
+			}
+
+		}
+	}
+	"item_leather_boots"
+    {
+     	// General
+     	//-------------------------------------------------------------------------------------------------------------
+     	"ID"                            "10005"
+     	"BaseClass"                     "item_datadriven"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+    	"AbilityTextureName"            "item_boots"
+    	"ItemBaseLevel"                 "1"
+    	"ItemPurchasable" 				"0"
+    	"ItemSellable"					"0"
+    	"ItemKillable"					"0"
+     	"ItemDroppable" 				"0"
+     	"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+     	"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+     	// Special
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilitySpecial"
+     	{
+     		"01"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"move_speed_min"		"10"
+     		}
+     		"02"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"move_speed_max"		"20"
+     		}
+
+     	}
+    }
+	"item_wooden_wand"
+    {
+     	// General
+     	//-------------------------------------------------------------------------------------------------------------
+     	"ID"                            "10006"
+     	"BaseClass"                     "item_datadriven"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+    	"AbilityTextureName"            "item_magic_stick"
+    	"ItemBaseLevel"                 "1"
+    	"ItemPurchasable" 				"0"
+    	"ItemSellable"					"0"
+    	"ItemKillable"					"0"
+     	"ItemDroppable" 				"0"
+     	"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+     	"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+     	// Special
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilitySpecial"
+     	{
+     		"01"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_min"		"5"
+     		}
+     		"02"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_max"		"12"
+     		}
+     		"03"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"mana_regen_min"		"2"
+     		}
+     		"04"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"mana_regen_max"		"5"
+     		}
+
+
+     	}
+    }
+	"item_glowing_weed"
+    {
+     	// General
+     	//-------------------------------------------------------------------------------------------------------------
+     	"ID"                            "10007"
+     	"BaseClass"                     "item_datadriven"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+    	"AbilityTextureName"            "item_faerie_fire"
+    	"ItemBaseLevel"                 "1"
+    	"ItemPurchasable" 				"0"
+    	"ItemSellable"					"0"
+    	"ItemKillable"					"0"
+     	"ItemDroppable" 				"0"
+     	"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+     	"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+     	// Special
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilitySpecial"
+     	{
+     		"01"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"health_regen_min"		"20"
+     		}
+     		"02"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"health_regen_max"		"30"
+     		}
+     		"03"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"mana_regen_min"		"20"
+     		}
+     		"04"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"mana_regen_max"		"30"
+     		}
+     		"05"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"blank_chance_min"		"25"
+     		}
+     		"06"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"blank_chance_max"		"25"
+     		}
+     		"07"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"blank_stun_min"		"2"
+     		}
+     		"08"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"blank_stun_max"		"2"
+     		}
+     		"09"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"attack_speed_reduce_min"		"-35"
+     		}
+     		"10"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"attack_speed_reduce_max"		"-35"
+     		}
+     		"11"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_reduce_min"		"-35"
+     		}
+     		"12"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"spellhaste_reduce_max"		"-35"
+     		}
+     		"13"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"move_speed_reduce_min"		"-35"
+     		}
+     		"14"
+     		{
+     			"var_type"			"FIELD_INTEGER"
+     			"move_speed_reduce_max"		"-35"
+     		}
+
+     	}
+    }
+	"item_witchs_broom"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10008"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_broom_handle"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_immortal.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_min"		"200"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_max"		"250"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_drain_min"		"15"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_drain_max"		"15"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_drain_percent_min"		"1"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_drain_percent_max"		"1"
+			}
+			"07"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_min"		"30"
+			}
+			"08"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_max"		"40"
+			}
+			"09"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_min"		"30"
+			}
+			"10"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_max"		"40"
+			}
+
+		}
+	}
+	"item_twig"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10009"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "branch"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"1"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_regen_min"		"1"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_regen_max"		"1"
+			}
+
+
+		}
+	}
+	"item_elven_slippers"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10010"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_slippers"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_min"		"15"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_max"		"25"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"agility_min"		"3"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"agility_max"		"7"
+			}
+
+
+		}
+	}
+	"item_warchief_belt"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10011"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_belt_of_strength"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_min"		"3"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_max"		"7"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_min"		"2"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_max"		"3"
+			}
+
+
+		}
+	}
+	"item_elven_blade"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10012"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_blade_of_alacrity"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_min"		"7"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_max"		"12"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"agility_min"		"3"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"agility_max"		"7"
+			}
+
+
+		}
+	}
+
+	"item_iron_gauntlets"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10013"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_gauntlets"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_min"		"2"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_max"		"4"
+			}
+
+
+		}
+	}
+	"item_executioner_axe"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10014"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_ogre_axe"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_rare.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"25"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"35"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"crit_chance_min"		"15"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"crit_chance_max"		"20"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"crit_damage_min"		"130"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"crit_damage_max"		"150"
+			}
+		}
+	}
+	"item_garnet_circlet"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10015"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_circlet"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"primary_min"		"5"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"primary_max"		"10"
+			}
+		}
+	}
+	"item_kings_crown"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10016"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_crown"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_rare.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"primary_min"		"15"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"primary_max"		"25"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_min"		"150"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_max"		"200"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_min"		"150"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"mana_max"		"200"
+			}
+		}
+	}
+	"item_elven_armband"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10017"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_band_of_elvenskin"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_min"		"7"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_speed_max"		"12"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_min"		"50"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_max"		"100"
+			}
+		}
+	}
+	"item_apprentice_mantle"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10018"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_mantle"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_max"		"3"
+			}
+
+		}
+	}
+	"item_wizard_robe"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10019"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_robe"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_min"		"3"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_max"		"7"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_min"			"150"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"health_max"			"200"
+			}
+		}
+	}
+	"item_jewel_staff"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10020"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_staff_of_wizardry"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_rare.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_min"		"10"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_max"		"15"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_min"			"25"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_max"			"35"
+			}
+		}
+	}
+	"item_sacred_tome"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10021"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_tome_of_knowledge"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_min"		"3"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"intellect_max"		"7"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"holy_damage_min"			"10"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"holy_damage_max"			"15"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"healing_caused_min"			"50"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"healing_caused_max"			"100"
+			}
+		}
+	}
+	"item_hatchet"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10022"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_quelling_blade"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"4"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_min"			"1"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"strength_max"			"4"
+			}
+
+		}
+	}
+	"item_citrine_ring"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10023"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_ring_of_protection"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_max"		"2"
+			}
+		}
+	}
+	"item_martial_staff"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10024"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_quarterstaff"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"5"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"10"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_min"		"8"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"spellhaste_max"		"15"
+			}
+		}
+	}
+	"item_iron_spear"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10025"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_javelin"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_uncommon.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"5"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"10"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"phys_proc_chance_min"		"7"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"phys_proc_chance_max"		"12"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"phys_proc_damage_min"		"50"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"phys_proc_damage_max"		"100"
+			}
+		}
+	}
+	"item_wolf_claw"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10025"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_blades_of_attack"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"ab_crit_chance_min"		"10"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"ab_crit_chance_max"		"15"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"ab_crit_damage_min"		"150"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"ab_crit_damage_max"		"175"
+			}
+
+		}
+	}
+
+}
+

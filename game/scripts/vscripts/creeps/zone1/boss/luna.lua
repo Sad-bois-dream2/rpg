@@ -55,7 +55,7 @@ function modifier_luna_void:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) then
+    if (keys.attacker == self.parent) and keys.attacker:IsAlive() then
         Timers:CreateTimer(0.1,function()
         local radius = self:GetAbility():GetSpecialValueFor("radius")
         local Max_mana = keys.target:GetMaxMana()
@@ -227,7 +227,7 @@ modifier_luna_curse_amp = class({
         return false
     end,
     GetTexture = function(self)
-        return luna_curse:GetAbilityTextureName()
+        return  "file://{images}/custom_game/hud/luna/luna_curse_amp.png"--luna_curse:GetAbilityTextureName()
     end,
     GetEffectName = function(self)
         return  "particles/units/npc_boss_luna/luna_curse/curse_green.vpcf"
@@ -271,7 +271,7 @@ modifier_luna_curse_reduce = class({
         return false
     end,
     GetTexture = function(self)
-        return luna_curse:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_curse_reduce.png"--luna_curse:GetAbilityTextureName()
     end,
     GetEffectName = function(self)
         return "particles/econ/items/lycan/ti9_immortal/lycan_ti9_immortal_howl_buff.vpcf"--
@@ -455,7 +455,7 @@ function luna_wave:OnSpellStart()
 
     for _, enemy in pairs(enemies) do
         -- This "dummy" literally only exists to attach the gush travel sound to
-        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, "modifier_luna_wave_thinker", {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
+        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
         gush_dummy:EmitSoundParams("Hero_Tidehunter.Gush.AghsProjectile",1.0, 0.2, 0)
 
         local direction	= (enemy:GetAbsOrigin() - self:GetCaster():GetAbsOrigin()):Normalized()
@@ -499,11 +499,12 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
     if not IsServer() then return end
     local damage = self:GetSpecialValueFor("damage")
     local duration = self:GetSpecialValueFor("duration")
-    if target then
+    local caster = self:GetCaster()
+    if target and caster:IsAlive()then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
-        modifierTable.caster = self:GetCaster()
+        modifierTable.caster = caster
         modifierTable.modifier_name = "modifier_luna_wave_amp"
         modifierTable.duration = duration
         GameMode:ApplyDebuff(modifierTable)
@@ -531,19 +532,11 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
         -- Gush has reached its end location
     elseif data.gush_dummy then
         EntIndexToHScript(data.gush_dummy):StopSound("Hero_Tidehunter.Gush.AghsProjectile")
-        EntIndexToHScript(data.gush_dummy):RemoveSelf()
+        EntIndexToHScript(data.gush_dummy):RemoveSelf() --this is UTIL remove
     end
 end
 
---remove thinker
-modifier_luna_wave_thinker = class({})
 
-function modifier_luna_wave_thinker:OnDestroy()
-    if not IsServer() then
-        return
-    end
-    UTIL_Remove(self:GetParent())
-end
 ---------
 --luna wax wane
 --------
@@ -650,7 +643,7 @@ modifier_luna_wax = class({
         return true
     end,
     GetTexture = function(self)
-        return luna_wax_wane:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_wax.png"--luna_wax_wane:GetAbilityTextureName()
     end,
 })
 
@@ -727,7 +720,7 @@ modifier_luna_wane = class({
         return true
     end,
     GetTexture = function(self)
-        return luna_wax_wane:GetAbilityTextureName()
+        return "file://{images}/custom_game/hud/luna/luna_wane.png"--luna_wax_wane:GetAbilityTextureName()
     end,
 })
 
@@ -956,8 +949,8 @@ function luna_cruelty:ReleaseVoid(radius, number, projectile_speed, set, set_int
 end
 
 function luna_cruelty:OnProjectileHit_ExtraData(target, vLocation, extraData)
-    if target then
-        local caster = self:GetCaster()
+    local caster = self:GetCaster()
+    if target and caster:IsAlive() then
         local caster_loc = Vector( extraData.originX, extraData.originY, extraData.originZ )
         local target_loc = target:GetAbsOrigin()
         local increment = self:GetSpecialValueFor("increment_damage")
@@ -1117,26 +1110,24 @@ function luna_orbs:OnProjectileHit_ExtraData(target, data)
     local projectile_speed = self:GetSpecialValueFor("projectile_speed")
     self.already_hit = {}
     -- Make sure there is a target
-    if not target then return nil end
-    table.insert(self.already_hit, target)
-    EmitSoundOn("Hero_Lich.ChainFrostImpact.Hero", target)
-    local damageTable = {}
-    damageTable.caster = caster
-    damageTable.target = target
-    damageTable.ability = self
-    damageTable.damage = damage
-    damageTable.voiddmg = true
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_stunned"
-    modifierTable.duration = stun
-    GameMode:ApplyDebuff(modifierTable)
-
-
+    if target and caster:IsAlive() then
+        table.insert(self.already_hit, target)
+        EmitSoundOn("Hero_Lich.ChainFrostImpact.Hero", target)
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.voiddmg = true
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = stun
+        GameMode:ApplyDebuff(modifierTable)
         -- Start a timer and bounce again!
         Timers:CreateTimer(projectile_delay, function()
 
@@ -1176,6 +1167,7 @@ function luna_orbs:OnProjectileHit_ExtraData(target, data)
             }
             ProjectileManager:CreateTrackingProjectile(chain_frost_projectile)
         end)
+    end
 end
 
 --------------
@@ -1300,6 +1292,9 @@ modifier_luna_bound_buff = class({
     GetTexture = function(self)
         return luna_bound:GetAbilityTextureName()
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
 function modifier_luna_bound_buff:OnCreated()
@@ -1331,28 +1326,35 @@ function modifier_luna_bound_buff:OnTakeDamage(damageTable)
         healTable.ability = modifier:GetAbility()
         healTable.heal = damageTable.damage * modifier:GetAbility():GetSpecialValueFor("lifesteal") * 0.01
         GameMode:HealUnit(healTable)
-        --moonshard arrow
-        local mana_burn =  modifier:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
-        local void_per_burn =  modifier:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
-        local Max_mana = damageTable.victim:GetMaxMana()
-        local burn = Max_mana * mana_burn
+    end
+end
 
-        local Mana = damageTable.victim:GetMana()
+function modifier_luna_bound_buff:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    if (keys.attacker == self.parent) and self:GetStackCount() > 1 and keys.attacker:IsAlive() then
+        self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
+        self.void_per_burn = self:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
+        local Max_mana = keys.target:GetMaxMana()
+        local burn = Max_mana * self.mana_burn
+
+        local Mana = keys.target:GetMana()
         --if burn more than current mana burn equal to current mana
         if burn > Mana then
             burn = Mana
         end
-        local damage = burn * void_per_burn
-        damageTable.victim:ReduceMana(burn)
-        damageTable.victim:EmitSound("Hero_Antimage.ManaBreak")
-        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
-        ParticleManager:SetParticleControl(manaburn_pfx, 0, damageTable.victim:GetAbsOrigin() )
+        local damage = burn * self.void_per_burn
+        keys.target:ReduceMana(burn)
+        keys.target:EmitSound("Hero_Antimage.ManaBreak")
+        local manaburn_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/am_manaburn_basher_ti_5.vpcf", PATTACH_ABSORIGIN_FOLLOW, keys.target)
+        ParticleManager:SetParticleControl(manaburn_pfx, 0, keys.target:GetAbsOrigin() )
         ParticleManager:ReleaseParticleIndex(manaburn_pfx)
 
         local damageTable= {}
-        damageTable.caster =  modifier:GetParent()
-        damageTable.target = damageTable.victim
-        damageTable.ability =  modifier:GetAbility()
+        damageTable.caster = keys.attacker
+        damageTable.target = keys.target
+        damageTable.ability = self.ability
         damageTable.damage = damage
         damageTable.voiddmg = true
         GameMode:DamageUnit(damageTable)

@@ -63,7 +63,7 @@ function modifier_mirana_shard:OnAttackLanded(keys)
     if not IsServer() then
         return
     end
-    if (keys.attacker == self.parent) then
+    if (keys.attacker == self.parent) and keys.attacker:IsAlive() then
         self.mana_burn = self:GetAbility():GetSpecialValueFor("mana_burn") * 0.01
         self.void_per_burn = self:GetAbility():GetSpecialValueFor("void_per_burn") *0.01
         local Max_mana = keys.target:GetMaxMana()
@@ -432,7 +432,7 @@ function mirana_holy:ShootSet(range, caster, caster_loc, travel_distance, start_
             nil,
             range,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_HERO ,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
@@ -462,9 +462,11 @@ function mirana_holy:ShootSet(range, caster, caster_loc, travel_distance, start_
             bProvidesVision		= false,
         }
         ProjectileManager:CreateLinearProjectile(projectile)
-        -- Play cast sound
-        caster:EmitSound("Hero_Mirana.ArrowCast")
+
+
     end
+    -- Play cast sound
+    caster:EmitSound("Hero_Mirana.ArrowCast")
 end
 
 function mirana_holy:OnAbilityPhaseStart()
@@ -522,13 +524,13 @@ function mirana_holy:OnProjectileHit_ExtraData(target)
     local caster = self:GetCaster()
     local damage = self:GetSpecialValueFor("damage")
     local stun = self:GetSpecialValueFor("stun")
-    if target then
+    if target and caster:IsAlive() then
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target
         damageTable.ability = self
         damageTable.damage = damage
-        damageTable.puredmg = true
+        damageTable.holydmg = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self
@@ -829,34 +831,36 @@ function mirana_under:ShowerAoe(caster, aoe, strikepos, damage)
                     FIND_ANY_ORDER,
                     false)
             for _, enemy in pairs(enemies) do
-                local damageTable = {}
-                damageTable.caster = caster
-                damageTable.target = enemy
-                damageTable.ability = self
-                damageTable.damage = damage
-                damageTable.voiddmg = true
-                damageTable.naturedmg = true
-                GameMode:DamageUnit(damageTable)
-                local modifierTable = {}
-                modifierTable.ability = self
-                modifierTable.target = enemy
-                modifierTable.caster = caster
-                modifierTable.modifier_name = "modifier_stunned"
-                modifierTable.duration = 0.1 --stun
-                GameMode:ApplyDebuff(modifierTable)
-                modifierTable = {}
-                modifierTable.ability = self
-                modifierTable.target = enemy
-                modifierTable.caster = caster
-                modifierTable.modifier_name = "modifier_mirana_under_silence"
-                modifierTable.duration = 3 --silence
-                GameMode:ApplyDebuff(modifierTable)
-                local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
-                local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, enemy)
-                Timers:CreateTimer(3.0, function()
-                    ParticleManager:DestroyParticle(ray_fx, false)
-                    ParticleManager:ReleaseParticleIndex(ray_fx)
-                end)
+                if caster:IsAlive() then
+                    local damageTable = {}
+                    damageTable.caster = caster
+                    damageTable.target = enemy
+                    damageTable.ability = self
+                    damageTable.damage = damage
+                    damageTable.voiddmg = true
+                    damageTable.naturedmg = true
+                    GameMode:DamageUnit(damageTable)
+                    local modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = enemy
+                    modifierTable.caster = caster
+                    modifierTable.modifier_name = "modifier_stunned"
+                    modifierTable.duration = 0.1 --stun
+                    GameMode:ApplyDebuff(modifierTable)
+                    modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = enemy
+                    modifierTable.caster = caster
+                    modifierTable.modifier_name = "modifier_mirana_under_silence"
+                    modifierTable.duration = 3 --silence
+                    GameMode:ApplyDebuff(modifierTable)
+                    local particle_ray = "particles/units/heroes/hero_mirana/mirana_moonlight_ray.vpcf"
+                    local ray_fx = ParticleManager:CreateParticle(particle_ray, PATTACH_POINT_FOLLOW, enemy)
+                    Timers:CreateTimer(3.0, function()
+                        ParticleManager:DestroyParticle(ray_fx, false)
+                        ParticleManager:ReleaseParticleIndex(ray_fx)
+                    end)
+                end
             end
             local particle_cast = "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_aftershock.vpcf"
             local effect_cast = ParticleManager:CreateParticle( particle_cast, PATTACH_WORLDORIGIN, caster)
@@ -1122,7 +1126,7 @@ function mirana_aligned:OnChannelFinish()
                 nil,
                 radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_HERO ,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
@@ -1407,6 +1411,9 @@ modifier_mirana_bound_buff = class({
     GetTexture = function(self)
         return mirana_bound:GetAbilityTextureName()
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
 function modifier_mirana_bound_buff:OnCreated()
@@ -1439,37 +1446,46 @@ function modifier_mirana_bound_buff:OnTakeDamage(damageTable)
         healTable.ability = modifier:GetAbility()
         healTable.heal = damageTable.damage * modifier:GetAbility():GetSpecialValueFor("lifesteal") * 0.01
         GameMode:HealUnit(healTable)
-        --void glaive
-        Timers:CreateTimer(0.1, function()
-            local radius = modifier:GetAbility():GetSpecialValueFor("radius")
-            local Max_mana = damageTable.victim:GetMaxMana()
-            local Mana = damageTable.victim:GetMana()
-            local damage = modifier:GetAbility():GetSpecialValueFor("explode_per_mana") * (Max_mana - Mana)
-            local void_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/antimage_manavoid_ti_5.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
-            ParticleManager:SetParticleControlEnt(void_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", damageTable.victim:GetOrigin(), true)
-            ParticleManager:SetParticleControl(void_pfx, 1, Vector(radius,0,0))
-            ParticleManager:ReleaseParticleIndex(void_pfx)
-            damageTable.attacker:EmitSoundParams("Hero_Antimage.ManaVoidCast", 1.0, 0.2, 0) --name pitch volume(81 for base) delay
-            damageTable.victim:EmitSoundParams("Hero_Antimage.ManaVoid", 1.0, 0.2, 0)
+    end
+end
 
-            -- Find all nearby enemies
-            local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
-                    damageTable.victim:GetAbsOrigin(),
-                    nil,
-                    radius,
-                    DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-                    DOTA_UNIT_TARGET_FLAG_NONE,
-                    FIND_ANY_ORDER,
-                    false)
-            for _, enemy in pairs(enemies) do
-                local damageTable= {}
-                damageTable.caster = modifier:GetParent()
-                damageTable.target = enemy
-                damageTable.ability = modifier:GetAbility()
-                damageTable.damage = damage*0.001
-                damageTable.voiddmg = true
-                GameMode:DamageUnit(damageTable)
+
+function modifier_mirana_bound_buff:OnAttackLanded(keys)
+    if not IsServer() then
+        return
+    end
+    if (keys.attacker == self.parent) and self:GetStackCount() > 1 and keys.attacker:IsAlive() then
+        Timers:CreateTimer(0.1,function()
+            local radius = self:GetAbility():GetSpecialValueFor("radius")
+            local Max_mana = keys.target:GetMaxMana()
+            local Mana = keys.target:GetMana()
+            local damage = self:GetAbility():GetSpecialValueFor("explode_per_mana") * (Max_mana - Mana)
+            if Mana < Max_mana then
+                local void_pfx = ParticleManager:CreateParticle("particles/econ/items/antimage/antimage_weapon_basher_ti5/antimage_manavoid_ti_5.vpcf", PATTACH_POINT_FOLLOW, keys.target)
+                ParticleManager:SetParticleControlEnt(void_pfx, 0, keys.target, PATTACH_POINT_FOLLOW, "attach_hitloc", keys.target:GetOrigin(), true)
+                ParticleManager:SetParticleControl(void_pfx, 1, Vector(radius,0,0))
+                ParticleManager:ReleaseParticleIndex(void_pfx)
+                keys.attacker:EmitSoundParams("Hero_Antimage.ManaVoidCast", 1.0, 0.2, 0) --name pitch volume(81 for base) delay
+                keys.target:EmitSoundParams("Hero_Antimage.ManaVoid", 1.0, 0.2, 0)
+                -- Find all nearby enemies
+                local enemies = FindUnitsInRadius(keys.attacker:GetTeamNumber(),
+                        keys.target:GetAbsOrigin(),
+                        nil,
+                        radius,
+                        DOTA_UNIT_TARGET_TEAM_ENEMY,
+                        DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                        DOTA_UNIT_TARGET_FLAG_NONE,
+                        FIND_ANY_ORDER,
+                        false)
+                for _, enemy in pairs(enemies) do
+                    local damageTable= {}
+                    damageTable.caster = keys.attacker
+                    damageTable.target = enemy
+                    damageTable.ability = self.ability
+                    damageTable.damage = damage
+                    damageTable.voiddmg = true
+                    GameMode:DamageUnit(damageTable)
+                end
             end
         end)
     end

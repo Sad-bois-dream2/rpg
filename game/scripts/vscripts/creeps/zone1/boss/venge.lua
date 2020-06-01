@@ -636,7 +636,7 @@ function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_venge_side_frost_slow:GetSpellHasteBonus()
+function modifier_venge_side_frost_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 LinkLuaModifier("modifier_venge_side_frost_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1167,7 +1167,7 @@ function venge_fall:OnSpellStart()
                     endTime = 0.1,
                     callback = function()
                         fired_meteors = fired_meteors + 1
-                        if not caster:IsAlive() then
+                        if not enemy:IsAlive() or not caster:IsAlive() then
                             return
                         end
                         target_point 		= enemy:GetAbsOrigin()
@@ -1176,9 +1176,7 @@ function venge_fall:OnSpellStart()
 
                         if fired_meteors == number_of_meteors then
                             return
-                        else--if fired_meteors == number_of_meteors - 1 then
-                            --return 0.5
-                        --else
+                        else
                             return 0.5
                         end
                     end
@@ -1420,13 +1418,15 @@ function modifier_venge_fall_aura:OnIntervalThink()
                 )
 
                 -- Apply meteor main dmg
-                local damageTable = {}
-                damageTable.ability 		= self.ability
-                damageTable.caster = self.caster
-                damageTable.target = enemy
-                damageTable.damage = self.main_dmg
-                damageTable.firedmg = true
-                GameMode:DamageUnit(damageTable)
+                if self.caster:IsAlive() then
+                    local damageTable = {}
+                    damageTable.ability 		= self.ability
+                    damageTable.caster = self.caster
+                    damageTable.target = enemy
+                    damageTable.damage = self.main_dmg
+                    damageTable.firedmg = true
+                    GameMode:DamageUnit(damageTable)
+                end
             end
         end
     end
@@ -1472,14 +1472,16 @@ end
 function modifier_venge_fall_burn:OnIntervalThink()
 
     if IsServer() then
-        local damageTable = {}
-        damageTable.ability = self.ability
-        damageTable.caster = self.caster
-        damageTable.target = self.parent
-        damageTable.damage = self.burn_dps
-        damageTable.firedmg = true
-        GameMode:DamageUnit(damageTable)
-        -- Apply meteor debuff burn dmg
+        if self.caster:IsAlive() then
+            local damageTable = {}
+            damageTable.ability = self.ability
+            damageTable.caster = self.caster
+            damageTable.target = self.parent
+            damageTable.damage = self.burn_dps
+            damageTable.firedmg = true
+            GameMode:DamageUnit(damageTable)
+            -- Apply meteor debuff burn dmg
+        end
     end
 end
 
@@ -1628,24 +1630,27 @@ modifier_venge_mind_control = class ({
 
 function modifier_venge_mind_control:OnCreated( kv )
     if IsServer() then
-        if self:GetParent():GetForceAttackTarget() then
+        self.parent = self:GetParent()
+        self.ability = self:GetAbility()
+        self.caster = self:GetCaster()
+        if self.parent:GetForceAttackTarget() then
             self:Destroy()
             return
         end
-        self.movespeed_bonus = self:GetAbility():GetSpecialValueFor( "movespeed_bonus" )*0.01
-        self.attackspeed_bonus = self:GetAbility():GetSpecialValueFor( "attackspeed_bonus" )*0.01
-        self.target_search_radius = self:GetAbility():GetSpecialValueFor( "target_search_radius" )
-        self.charm_duration = self:GetAbility():GetSpecialValueFor( "charm_duration" )
-        self.stun = self:GetAbility():GetSpecialValueFor("stun")
-        self:GetParent():Interrupt()
-        self:GetParent():SetIdleAcquire( true )
+        self.movespeed_bonus = self.ability:GetSpecialValueFor( "movespeed_bonus" )*0.01
+        self.attackspeed_bonus = self.ability:GetSpecialValueFor( "attackspeed_bonus" )*0.01
+        self.target_search_radius = self.ability:GetSpecialValueFor( "target_search_radius" )
+        self.charm_duration = self.ability:GetSpecialValueFor( "charm_duration" )
+        self.stun = self.ability:GetSpecialValueFor("stun")
+        self.parent:Interrupt()
+        self.parent:SetIdleAcquire( true )
 
-        self:GetParent():AddNewModifier( self:GetCaster(), nil, "modifier_phased", { duration = -1 } ) -- no idea why this is needed but i tried remove it and spell doenst work
+        self.parent:AddNewModifier( self.caster, nil, "modifier_phased", { duration = -1 } ) -- no idea why this is needed but i tried remove it and spell doesnt work
         --price to pay
-        self:GetParent():SetMana(0)
+        self.parent:SetMana(0)
         --find closest ally
-        local hAllies = FindUnitsInRadius( self:GetParent():GetTeamNumber(),
-                self:GetParent():GetOrigin(),
+        local hAllies = FindUnitsInRadius( self.parent:GetTeamNumber(),
+                self.parent:GetOrigin(),
                 nil,
                 self.target_search_radius,
                 DOTA_UNIT_TARGET_TEAM_FRIENDLY,
@@ -1656,12 +1661,12 @@ function modifier_venge_mind_control:OnCreated( kv )
         if #hAllies >0 then
             self.hDesiredTarget = hAllies[ 1 ]
             --print(hAllies[ 1 ]:GetUnitName())
-            self:GetParent():SetForceAttackTargetAlly( self.hDesiredTarget )
+            self.parent:SetForceAttackTargetAlly( self.hDesiredTarget )
             --mark the ally that is targeted by charmed boi
             local modifierTable = {}
-            modifierTable.ability = self:GetAbility()
+            modifierTable.ability = self.ability
             modifierTable.target = self.hDesiredTarget
-            modifierTable.caster = self:GetCaster()
+            modifierTable.caster = self.caster
             modifierTable.modifier_name = "modifier_venge_mind_control_marked"
             modifierTable.duration = self.charm_duration
             GameMode:ApplyDebuff(modifierTable)
@@ -1672,17 +1677,17 @@ function modifier_venge_mind_control:OnCreated( kv )
             --check if party or solo
             if HeroList:GetHeroCount() > 1 then
                 local modifierTable = {}
-                modifierTable.ability = self:GetAbility()
-                modifierTable.target = self:GetParent()
-                modifierTable.caster = self:GetCaster()
+                modifierTable.ability = self.ability
+                modifierTable.target = self.parent
+                modifierTable.caster = self.caster
                 modifierTable.modifier_name = "modifier_stunned"
                 modifierTable.duration = self.stun
                 GameMode:ApplyDebuff(modifierTable)
                 else
                 local modifierTable = {}
-                modifierTable.ability = self:GetAbility()
-                modifierTable.target = self:GetParent()
-                modifierTable.caster = self:GetCaster()
+                modifierTable.ability = self.ability
+                modifierTable.target = self.parent
+                modifierTable.caster = self.caster
                 modifierTable.modifier_name = "modifier_stunned"
                 modifierTable.duration = 3
                 GameMode:ApplyDebuff(modifierTable)
@@ -1703,11 +1708,11 @@ end
 
 function modifier_venge_mind_control:OnIntervalThink()
     if IsServer() then
-        if self:GetParent():GetForceAttackTarget() == nil then
-            self:GetParent():SetForceAttackTargetAlly( self.hDesiredTarget )
+        if self.parent:GetForceAttackTarget() == nil then
+            self.parent:SetForceAttackTargetAlly( self.hDesiredTarget )
         end
 
-        if self.hDesiredTarget == nil or self.hDesiredTarget:IsAlive() == false then
+        if self.hDesiredTarget == nil or self.hDesiredTarget:IsAlive() == false or not self.caster:IsAlive() then
             self:Destroy()
             return
         end
@@ -1716,11 +1721,11 @@ end
 
 function modifier_venge_mind_control:OnDestroy()
     if IsServer() then
-        self:GetParent():SetForceAttackTargetAlly( nil )
+        self.parent:SetForceAttackTargetAlly( nil )
 
-        self:GetParent():RemoveModifierByName( "modifier_phased" )
-        self:GetParent():RemoveModifierByName( "modifier_venge_mind_control_black" )
-        EmitSoundOn( "Hero_DarkWillow.Ley.Stun", self:GetParent() )
+        self.parent:RemoveModifierByName( "modifier_phased" )
+        self.parent:RemoveModifierByName( "modifier_venge_mind_control_black" )
+        EmitSoundOn( "Hero_DarkWillow.Ley.Stun", self.parent )
     end
 end
 
@@ -1768,21 +1773,21 @@ function venge_mind_control:OnSpellStart()
         end)
         self.projectile_speed = self:GetSpecialValueFor( "projectile_speed" )
         self.charm_duration = self:GetSpecialValueFor( "charm_duration" )
-        local caster = self:GetCaster()
-        caster:EmitSoundParams("vengefulspirit_vng_kill_01", 1.0, 5.2, 0)
-        if not caster:HasModifier("modifier_venge_side_void") then
+        self.caster = self:GetCaster()
+        self.caster:EmitSoundParams("vengefulspirit_vng_kill_01", 1.0, 5.2, 0)
+        if not self.caster:HasModifier("modifier_venge_side_void") then
             local modifierTable = {}
             modifierTable.ability = self
-            modifierTable.target = caster
-            modifierTable.caster = caster
+            modifierTable.target = self.caster
+            modifierTable.caster = self.caster
             modifierTable.modifier_name = "modifier_venge_side_void"
             modifierTable.duration = 5
             GameMode:ApplyBuff(modifierTable)
         end
         GameMode:ApplyDebuff(modifierTable)
         local range = self:GetSpecialValueFor("range")
-        local enemies = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
-                self:GetCaster():GetAbsOrigin(),
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.caster:GetAbsOrigin(),
                 nil,
                 range,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -1797,11 +1802,11 @@ function venge_mind_control:OnSpellStart()
         end
         local info = {
             Target = self.target,
-            Source = self:GetCaster(),
+            Source = self.caster,
             Ability = self,
             EffectName = "particles/units/npc_boss_venge/venge_control/chaos_knight_chaos_bolt_purple.vpcf",
             iMoveSpeed = self.projectile_speed,
-            vSourceLoc = self:GetCaster():GetOrigin(),
+            vSourceLoc = self.caster:GetOrigin(),
             bDodgeable = false,
             bProvidesVision = false,
             flExpireTime = GameRules:GetGameTime() + 10 --self.projectile_expire_time,
@@ -1809,8 +1814,7 @@ function venge_mind_control:OnSpellStart()
 
         ProjectileManager:CreateTrackingProjectile( info )
 
-        StopSoundOn( "DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
-        --EmitSoundOn( "Hero_ShadowDemon.Disruption", self:GetCaster() )
+        StopSoundOn( "DOTA_Item.HeavensHalberd.Activate", caster )
     end
 end
 
@@ -1820,14 +1824,14 @@ function venge_mind_control:OnProjectileHit( hTarget, vLocation )
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.target = hTarget
-            modifierTable.caster = self:GetCaster()
+            modifierTable.caster = self.caster
             modifierTable.modifier_name = "modifier_venge_mind_control_black"
             modifierTable.duration = self.charm_duration
             GameMode:ApplyDebuff(modifierTable)
             modifierTable = {}
             modifierTable.ability = self
             modifierTable.target = hTarget
-            modifierTable.caster = self:GetCaster()
+            modifierTable.caster = self.caster
             modifierTable.modifier_name = "modifier_venge_mind_control"
             modifierTable.duration = self.charm_duration
             GameMode:ApplyDebuff(modifierTable)
@@ -1840,7 +1844,7 @@ function venge_mind_control:OnProjectileHit( hTarget, vLocation )
                     ParticleManager:ReleaseParticleIndex(bound_fx)
                 end)
             end)
-            if hTarget:HasModifier("modifier_venge_bubble")then
+            if hTarget:HasModifier("modifier_venge_bubble") and self.caster:IsAlive() then
                 hTarget:ForceKill(false)
             end
         end
@@ -1878,18 +1882,20 @@ function modifier_venge_bubble:OnCreated( kv )
         return
     end
     self.parent = self:GetParent()
-    self.bubble_tick = self:GetAbility():GetSpecialValueFor( "bubble_tick" )
-    local Max_Health = self:GetParent():GetMaxHealth()
-    self.bubble_damage = self:GetAbility():GetSpecialValueFor( "bubble_damage" ) * Max_Health * 0.01 * self.bubble_tick
+    self.caster = self:GetCaster()
+    self.ability = self:GetAbility()
+    self.bubble_tick = self.ability:GetSpecialValueFor( "bubble_tick" )
+    local Max_Health = self.parent:GetMaxHealth()
+    self.bubble_damage = self.ability:GetSpecialValueFor( "bubble_damage" ) * Max_Health * 0.01 * self.bubble_tick
 
-    self.hBubble = CreateUnitByName( "npc_boss_venge_bubble", self:GetParent():GetAbsOrigin(), true, self:GetCaster(), self:GetCaster(), self:GetCaster():GetTeamNumber() )
-    local vector = self.parent:GetAbsOrigin()-self:GetCaster():GetAbsOrigin()
+    self.hBubble = CreateUnitByName( "npc_boss_venge_bubble", self.parent:GetAbsOrigin(), true, self.caster, self.caster, self.caster:GetTeamNumber() )
+    local vector = self.parent:GetAbsOrigin()-self.caster:GetAbsOrigin()
     self.hBubble:SetForwardVector(vector)
     --self.hBubble:AddNewModifier( self:GetCaster(), self, "modifier_venge_bubble_passive", { duration = -1 })
     local modifierTable = {}
-    modifierTable.ability = self:GetAbility()
+    modifierTable.ability = self.ability
     modifierTable.target = self.hBubble
-    modifierTable.caster = self:GetCaster()
+    modifierTable.caster = self.caster
     modifierTable.modifier_name = "modifier_venge_bubble_passive"
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
@@ -1907,14 +1913,16 @@ function modifier_venge_bubble:OnCreated( kv )
     self.parent:StartGesture(ACT_DOTA_FLAIL)
 end
 
-function modifier_venge_bubble:OnIntervalThink( )
-    local damageTable = {}
-    damageTable.caster = self:GetCaster()
-    damageTable.target =  self:GetParent()
-    damageTable.ability = self:GetAbility()
-    damageTable.damage = self.bubble_damage
-    damageTable.frostdmg = true
-    GameMode:DamageUnit(damageTable)
+function modifier_venge_bubble:OnIntervalThink()
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target =  self.parent
+        damageTable.ability = self.ability
+        damageTable.damage = self.bubble_damage
+        damageTable.frostdmg = true
+        GameMode:DamageUnit(damageTable)
+    end
     self.parent:StartGesture(ACT_DOTA_FLAIL) --in case it get removed by other skills for example moonify
     if not self.hBubble:IsAlive() then
         self.parent:RemoveGesture(ACT_DOTA_FLAIL)
@@ -1945,26 +1953,26 @@ function modifier_venge_bubble:OnDestroy()
         self.hBubble:ForceKill( false )
     end
 end
-
+-- reduce these by 1000%
 function modifier_venge_bubble:GetHealthRegenerationPercentBonus()
-    return -1
+    return -10
 end
 
 function modifier_venge_bubble:GetHealingReceivedPercentBonus()
-    return -1
+    return -10
 end
 
 function modifier_venge_bubble:GetSpellDamageBonus()
-    return -1
+    return -10
 end
 
 function modifier_venge_bubble:GetAttackDamagePercentBonus()
-    return -1
+    return -10
 end
 
-function modifier_venge_bubble:OnDeath( params )
+function modifier_venge_bubble:OnDeath( params ) --venge death = bubble pop
     if IsServer() then
-        if params.unit == self:GetCaster() then
+        if params.unit == self.caster then
             self:Destroy()
         end
     end
@@ -1993,7 +2001,8 @@ modifier_venge_bubble_passive = class({
                  MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PURE,
                  MODIFIER_EVENT_ON_ATTACKED,
                  MODIFIER_PROPERTY_MODEL_SCALE,
-                }
+                 MODIFIER_STATE_LOW_ATTACK_PRIORITY
+        }
     end,
     GetStatusEffectName = function(self)
         return "particles/econ/events/ti7/fountain_regen_ti7_bubbles.vpcf"
@@ -2504,55 +2513,57 @@ end
 
 function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks per 1s roughly 0.0357s
     if (IsServer()) then
-        local caster_location = self.caster:GetAbsOrigin()
-        local current_location = self.parent:GetAbsOrigin()
-        self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt
-        local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
-        if ( distance_to_caster > 350) and self.parent:HasModifier("modifier_venge_bubble") then
-            self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
-            self.parent:SetAbsOrigin(self.expected_location)
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = self.parent
-            damageTable.ability = self.ability
-            damageTable.damage = self.damage
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
-        elseif ( distance_to_caster > 350 ) and not self.parent:HasModifier("modifier_venge_bubble") then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
-            self.parent:SetAbsOrigin(self.expected_location)
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = self.parent
-            damageTable.ability = self.ability
-            damageTable.damage = self.damage
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
-        elseif ( distance_to_caster <= 350 and distance_to_caster > 100 and not self.parent:HasModifier("modifier_venge_bubble") ) then
-            self.parent:SetAbsOrigin(self.expected_location)
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = self.parent
-            damageTable.ability = self.ability
-            damageTable.damage = self.damage*3
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
-        elseif ( distance_to_caster > 90) and self.parent:HasModifier("modifier_venge_bubble") then
-            self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
-            self.parent:SetAbsOrigin(self.expected_location)
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = self.parent
-            damageTable.ability = self.ability
-            damageTable.damage = self.damage*3
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
-            if distance_to_caster < 100 then
+        if self.caster:IsAlive() then
+            local caster_location = self.caster:GetAbsOrigin()
+            local current_location = self.parent:GetAbsOrigin()
+            self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt
+            local distance_to_caster = DistanceBetweenVectors(current_location, caster_location)
+            if ( distance_to_caster > 350) and self.parent:HasModifier("modifier_venge_bubble") then
+                self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
+                self.parent:SetAbsOrigin(self.expected_location)
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = self.parent
+                damageTable.ability = self.ability
+                damageTable.damage = self.damage
+                damageTable.holydmg = true
+                GameMode:DamageUnit(damageTable)
+            elseif ( distance_to_caster > 350 ) and not self.parent:HasModifier("modifier_venge_bubble") then --and not distance_to_caster< 250 --isTraversable and not isBlocked and not isTreeNearby and t
+                self.parent:SetAbsOrigin(self.expected_location)
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = self.parent
+                damageTable.ability = self.ability
+                damageTable.damage = self.damage
+                damageTable.holydmg = true
+                GameMode:DamageUnit(damageTable)
+            elseif ( distance_to_caster <= 350 and distance_to_caster > 100 and not self.parent:HasModifier("modifier_venge_bubble") ) then
+                self.parent:SetAbsOrigin(self.expected_location)
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = self.parent
+                damageTable.ability = self.ability
+                damageTable.damage = self.damage*3
+                damageTable.holydmg = true
+                GameMode:DamageUnit(damageTable)
+            elseif ( distance_to_caster > 90) and self.parent:HasModifier("modifier_venge_bubble") then
+                self.expected_location = current_location + self.parent:GetForwardVector() * self.fixed_movement_speed * dt * 3
+                self.parent:SetAbsOrigin(self.expected_location)
+                local damageTable = {}
+                damageTable.caster = self.caster
+                damageTable.target = self.parent
+                damageTable.ability = self.ability
+                damageTable.damage = self.damage*3
+                damageTable.holydmg = true
+                GameMode:DamageUnit(damageTable)
+                if distance_to_caster < 100 then
+                    self:Destroy()
+                    self.parent:ForceKill(false)
+                end
+            else
                 self:Destroy()
                 self.parent:ForceKill(false)
             end
-        else
-            self:Destroy()
-            self.parent:ForceKill(false)
         end
     end
 end
@@ -2863,7 +2874,7 @@ function modifier_venge_quake_pulse:OnCreated()
         self.parent = self:GetParent()
         --self.sound_epicenter = "Ability.SandKing_Epicenter"
         self.aoe_particle = "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_aoe.vpcf"
-        self.crack = "particles/units/heroes/hero_elder_titan/elder_titan_echo_stomp_cracks.vpcf"
+        self.crack = "particles/units/npc_boss_venge/venge_quake/elder_titan_echo_stomp_cracks_shake.vpcf"
         -- Ability specials
         self.pulse_count = self.ability:GetSpecialValueFor("pulse_count")
         self.damage = self.ability:GetSpecialValueFor("damage")
@@ -2919,7 +2930,7 @@ function modifier_venge_quake_pulse:OnIntervalThink()
                 false)
 
         for _,enemy in pairs(enemies) do
-            if enemy ~= self.parent then
+            if enemy ~= self.parent and self.caster:IsAlive() then
                 --earthquake ground wave
                 -- Deal damage
                 local damageTable = {}
@@ -2929,8 +2940,16 @@ function modifier_venge_quake_pulse:OnIntervalThink()
                 damageTable.damage = self.damage
                 damageTable.earthdmg = true
                 GameMode:DamageUnit(damageTable)
-                -- Apply Epicenter slow
+                --ministun
                 local modifierTable = {}
+                modifierTable.ability = self.ability
+                modifierTable.target = enemy
+                modifierTable.caster = self.caster
+                modifierTable.modifier_name = "modifier_stunned"
+                modifierTable.duration = 0.3
+                GameMode:ApplyBuff(modifierTable)
+                -- Apply Epicenter slow
+                modifierTable = {}
                 modifierTable.ability = self.ability
                 modifierTable.target = enemy
                 modifierTable.caster = self.caster
@@ -3015,7 +3034,7 @@ function modifier_venge_quake_slow:GetMoveSpeedPercentBonus()
     return self.slow
 end
 
-function modifier_venge_quake_slow:GetSpellHasteBonus()
+function modifier_venge_quake_slow:GetSpellHastePercentBonus()
     return self.slow
 end
 LinkLuaModifier("modifier_venge_quake_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -3034,15 +3053,13 @@ function venge_quake:IsInterruptible()
 end
 
 function venge_quake:OnProjectileHit_ExtraData(target)
-    local caster = self:GetCaster()
-    local damage = self:GetSpecialValueFor("damage")
     if target then
-        if not target:HasModifier("modifier_venge_quake_pulse") then
+        if not target:HasModifier("modifier_venge_quake_pulse") and self.caster:IsAlive() then
             local damageTable = {}
-            damageTable.caster = caster
+            damageTable.caster = self.caster
             damageTable.target = target
             damageTable.ability = self
-            damageTable.damage = damage * 3
+            damageTable.damage = self.damage * 3
             damageTable.earthdmg = true
             GameMode:DamageUnit(damageTable)
         end
@@ -3065,13 +3082,14 @@ function venge_quake:OnSpellStart()
     end
     ParticleManager:DestroyParticle( self.nPreviewFX, false )
     ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
-    local caster = self:GetCaster()
-    caster:EmitSoundParams("vengefulspirit_vng_ability_08", 1.0, 2.2, 0)
-    if not caster:HasModifier("modifier_venge_side_earth") then
+    self.caster = self:GetCaster()
+    self.damage = self:GetSpecialValueFor("damage")
+    self.caster:EmitSoundParams("vengefulspirit_vng_ability_08", 1.0, 2.2, 0)
+    if not self.caster:HasModifier("modifier_venge_side_earth") then
         local modifierTable = {}
         modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
         modifierTable.modifier_name = "modifier_venge_side_earth"
         modifierTable.duration = 5
         GameMode:ApplyBuff(modifierTable)
@@ -3096,15 +3114,15 @@ function venge_quake:OnSpellStart()
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = self.target
-        modifierTable.caster = caster
+        modifierTable.caster = self.caster
         modifierTable.modifier_name = "modifier_venge_quake_pulse"
         modifierTable.duration = self.epicenter_duration
         GameMode:ApplyDebuff(modifierTable)
     else
         local modifierTable = {}
         modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
         modifierTable.modifier_name = "modifier_venge_quake_pulse"
         modifierTable.duration = self.epicenter_duration
         GameMode:ApplyDebuff(modifierTable)
@@ -3158,18 +3176,20 @@ function modifier_venge_root:CheckState()
 end
 
 function modifier_venge_root:OnIntervalThink()
-    local damageTable = {}
-    damageTable.ability = self.ability
-    damageTable.caster = self.caster
-    damageTable.target = self.parent
-    damageTable.damage = self.dot
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-    local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
-    local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
-    treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
-    treant:AddNewModifier(self.caster, self.ability, "modifier_venge_root_ignore_aggro_buff", { duration = -1, target = self.parent})
-    treant:EmitSound("Hero_Furion.TreantSpawn")
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.ability = self.ability
+        damageTable.caster = self.caster
+        damageTable.target = self.parent
+        damageTable.damage = self.dot
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        local summon_point = self.parent:GetAbsOrigin() + 100 * self.parent:GetForwardVector()
+        local treant = CreateUnitByName("npc_boss_treant_lesser_treant", summon_point, true, self.caster, self.caster, self.caster:GetTeam())
+        treant:AddNewModifier(self.caster, self.ability, "modifier_kill", { duration = 30 })
+        treant:AddNewModifier(self.caster, self.ability, "modifier_venge_root_ignore_aggro_buff", { duration = -1, target = self.parent})
+        treant:EmitSound("Hero_Furion.TreantSpawn")
+    end
 end
 
 LinkLuaModifier("modifier_venge_root", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -3332,13 +3352,15 @@ function modifier_venge_fel:GetDamageReductionBonus()
 end
 
 function modifier_venge_fel:OnIntervalThink()
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.parent
-    damageTable.ability = self.ability
-    damageTable.damage = self.damage
-    damageTable.infernodmg = true
-    GameMode:DamageUnit(damageTable)
+    if self.caster:IsAlive() then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.parent
+        damageTable.ability = self.ability
+        damageTable.damage = self.damage
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+    end
 end
 
 LinkLuaModifier("modifier_venge_fel", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)

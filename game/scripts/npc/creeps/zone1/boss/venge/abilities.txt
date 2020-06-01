@@ -194,7 +194,6 @@
             "particle" "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf"
             "particle" "particles/units/heroes/hero_chen/chen_holy_persuasion.vpcf"
             "particle" "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_aoe.vpcf"
-            "particle" "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_soil.vpcf"
             "particle" "particles/units/npc_boss_treant/treant_flux/flux_gather.vpcf"
             "particle" "particles/units/heroes/heroes_underlord/underlord_firestorm_pre.vpcf"
             "particle" "particles/units/heroes/hero_winter_wyvern/wyvern_arctic_burn_slow.vpcf"
@@ -585,7 +584,7 @@
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"slow"		                "10 13 16"
+   				"slow"		                "10 15 20"
    			}
    			"05"
    			{
@@ -640,8 +639,7 @@
     	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_elder_titan.vsndevts"
     	    "particle"  "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf"
             "particle"  "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_aoe.vpcf"
-            "particle"  "particles/units/npc_boss_ursa/ursa_slam/ursa_slam_soil.vpcf"
-            "particle"  "particles/units/heroes/hero_elder_titan/elder_titan_echo_stomp_cracks.vpcf"
+            "particle"  "particles/units/npc_boss_venge/venge_quake/elder_titan_echo_stomp_cracks_shake.vpcf"
     	}
     }
     //=================================================================================================================
