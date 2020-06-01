@@ -15,6 +15,14 @@
 		{
 			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_control/nevermore_loadout_ember_swirl_purple.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_control/nevermore_loadout_ember_swirl_purple.vpcf"
+			m_flDelay = 0.25
+		},
+		{
+			m_ChildRef = resource:"particles/units/npc_boss_venge/venge_control/nevermore_loadout_ember_swirl_purple.vpcf"
+			m_flDelay = 0.5
+		},
 	]
 	m_nBehaviorVersion = 10
 	m_controlPointConfigurations = 

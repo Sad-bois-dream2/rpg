@@ -67,7 +67,7 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_luna", "luna_bound", Enemies.ABILITY_TYPE_INNATE)
     --venge boss
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_missile", Enemies.ABILITY_TYPE_INNATE)
-    --Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_sky", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_sky", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_side", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fall", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_tide", Enemies.ABILITY_TYPE_INNATE)
@@ -76,6 +76,11 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_mind_control", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_root", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_venge", "venge_fel", Enemies.ABILITY_TYPE_INNATE)
+    --tower
+    Enemies:RegisterEnemyAbility("npc_tower_helltower", "helltower_hellfire", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_holytower", "holytower_holyfrost", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_naturetower", "naturetower_felblight", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_tower_earthtower", "earthtower_tectonic", Enemies.ABILITY_TYPE_INNATE)
 end
 
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)
@@ -512,6 +517,11 @@ function modifier_creep_scaling:OnCreated()
     if (Enemies:IsBoss(self.creep)) then
         self.armor = 15
         self.elementalArmor = 0.47
+        --pull boss back if they run too far 2500 range
+        Timers:CreateTimer(5, function()
+            self.spawn_pos = self.creep:GetAbsOrigin()
+            self:StartIntervalThink(2)
+        end)
     else
         local eliteChance = math.floor(5 * (1 + (self.difficulty)))
         if (RollPercentage(eliteChance) and not self.creep:GetOwner()) then
@@ -575,6 +585,17 @@ function modifier_creep_scaling:OnCreated()
         end
     end, self)
 end
+
+function modifier_creep_scaling:OnIntervalThink()
+    self.current_pos = self.creep:GetAbsOrigin()
+    local displacement = self.spawn_pos - self.current_pos
+    local distance = displacement:Length2D()
+    if distance > 2500 then
+        FindClearSpaceForUnit(self.creep, self.spawn_pos, true)
+        Aggro:Reset(self.creep)
+    end
+end
+
 
 function modifier_creep_scaling:OnDeath(keys)
     if (not IsServer()) then

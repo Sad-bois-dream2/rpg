@@ -77,7 +77,7 @@ function modifier_inventory_item_example:GetSpellDamageBonus()
     return 0
 end
 
--- this is flat like AS
+-- this is flat like AS but capped at 8 this is so that old code dont need fix. Every flat spellhaste related stuff need to be *0.01 in lua from the display value in addon_english
 function modifier_inventory_item_example:GetSpellHasteBonus()
     return 0
 end

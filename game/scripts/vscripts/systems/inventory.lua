@@ -4,11 +4,243 @@ end
 
 -- items database
 function Inventory:SetupItems()
-    Inventory:RegisterItemSlot("item_claymore_custom", self.rarity.common, self.slot.mainhand, 5)
-    Inventory:RegisterItemSlot("item_broadsword", self.rarity.common, self.slot.offhand, 5)
-    Inventory:RegisterItemSlot("item_chainmail", self.rarity.common, self.slot.body, 5)
-    Inventory:RegisterItemSlot("item_third_eye", self.rarity.common, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_two_handed_sword", self.rarity.common, self.slot.mainhand, 5) --2H
+    Inventory:RegisterItemSlot("item_one_handed_sword", self.rarity.common, self.slot.mainhand, 5) --both
     Inventory:RegisterItemSlot("item_silver_ring", self.rarity.common, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_chainshirt", self.rarity.common, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_wooden_shield", self.rarity.common, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_leather_boots", self.rarity.common, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_wooden_wand", self.rarity.common, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_glowing_weed", self.rarity.uncommon, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_witchs_broom", self.rarity.immortal, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_twig", self.rarity.common, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_elven_slippers", self.rarity.uncommon, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_warchief_belt", self.rarity.uncommon, self.slot.belt, 5)
+    Inventory:RegisterItemSlot("item_elven_blade", self.rarity.uncommon, self.slot.mainhand, 5) --both
+    Inventory:RegisterItemSlot("item_iron_gauntlets", self.rarity.common, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_executioner_axe", self.rarity.rare, self.slot.mainhand, 5) --2H
+    Inventory:RegisterItemSlot("item_garnet_circlet", self.rarity.uncommon, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_kings_crown", self.rarity.uniqueRare, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_elven_armband", self.rarity.uncommon, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_apprentice_mantle", self.rarity.common, self.slot.shoulder, 5)
+    Inventory:RegisterItemSlot("item_wizard_robe", self.rarity.uncommon, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_jewel_staff", self.rarity.rare, self.slot.mainhand, 5) --2H
+    Inventory:RegisterItemSlot("item_sacred_tome", self.rarity.uncommon, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_hatchet", self.rarity.common, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_citrine_ring", self.rarity.common, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_martial_staff", self.rarity.common, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_iron_spear", self.rarity.uncommon, self.slot.mainhand, 5) --2H
+    Inventory:RegisterItemSlot("item_wolf_claw", self.rarity.common, self.slot.mainhand, 5) --both
+    Inventory:RegisterItemSlot("item_plate_helmet", self.rarity.common, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_leather_cloak", self.rarity.common, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_cultist_mask", self.rarity.rare, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_curved_dagger", self.rarity.rare, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_ruby_ring", self.rarity.uncommon, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_leather_glove", self.rarity.common, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_cursed_ring", self.rarity.rare, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_void_amulet", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_ritual_mask", self.rarity.uncommon, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_shiny_emerald", self.rarity.uncommon, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_fel_staff", self.rarity.uniqueRare, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_demon_stone", self.rarity.uniqueRare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_poison_orb", self.rarity.uniqueRare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_gold_ring", self.rarity.uniqueRare, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_glimmering_sapphire", self.rarity.uniqueRare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_scarlet_orb", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_azure_orb", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_amaranthine_orb", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_plate_armor", self.rarity.legendary, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_purifying_talisman", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_tribal_charm", self.rarity.uncommon, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_plasma_orb", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_fel_sword", self.rarity.cursedLegendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_sapphire_staff", self.rarity.uniqueLegendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_elven_bow", self.rarity.uniqueLegendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_titan_axe", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_golden_skull", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_composite_wand", self.rarity.uncommon, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_bronze_brancer", self.rarity.uncommon, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_violet_talisman", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_elven_warmask", self.rarity.uncommon, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_demon_ring", self.rarity.cursedAncient, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_solider_sneakers", self.rarity.rare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_mage_sneakers", self.rarity.rare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_elven_sneakers", self.rarity.rare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_swiftboots", self.rarity.rare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_bone_wand", self.rarity.legendary, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_wizard_ring", self.rarity.uniqueLegendary, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_death_gods_mask", self.rarity.cursedLegendary, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_samurai_helmet", self.rarity.ancient, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_blessed_boots", self.rarity.legendary, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_battle_boots", self.rarity.legendary, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_iron_shield", self.rarity.uncommon, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_warchief_headress", self.rarity.rare, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_void_ring", self.rarity.uniqueLegendary, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_lichs_phylactery", self.rarity.cursedAncient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_healer_boots", self.rarity.uncommon, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_tiger_medallion", self.rarity.common, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_mage_boots", self.rarity.legendary, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_tribal_drum", self.rarity.rare, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_enchanted_trinket", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_cultleaders_mask", self.rarity.ancient, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_turquoise_locket", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_soul_jar", self.rarity.cursedImmortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_glowing_weed_pipe", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_knight_boots", self.rarity.uniqueRare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_void_cape", self.rarity.uniqueImmortal, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_veil_of_darkness", self.rarity.ancient, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_book_of_agony", self.rarity.cursedLegendary, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_book_of_dread", self.rarity.cursedAncient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_book_of_calamity", self.rarity.cursedImmortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_crescent_staff", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_sapphire_lens", self.rarity.uniqueAncient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_flaming_rod", self.rarity.immortal, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_wand_of_the_wind", self.rarity.ancient, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_ruby_bone_wand", self.rarity.ancient, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_infernal_staff", self.rarity.cursedAncient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_heliotrix", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_winter_staff", self.rarity.ancient, self.slot.mainhand, 5) --2H
+    Inventory:RegisterItemSlot("item_tenebris", self.rarity.immortal, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_viridis", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_sacrificial_scythe", self.rarity.cursedImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_rubicundus", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_antimagic_hood", self.rarity.uncommon, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_ironwall", self.rarity.rare, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_commander_mail", self.rarity.rare, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_time_rewinder", self.rarity.uniqueImmortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_fusion_orb", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_kings_armor", self.rarity.uniqueRare, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_scarlet_lotus", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_kings_staff", self.rarity.uniqueRare, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_sky_pike", self.rarity.uniqueLegendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_mirror_axe", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_northern_realm_shoulder", self.rarity.ancient, self.slot.shoulder, 5)
+    Inventory:RegisterItemSlot("item_hells_general_armor", self.rarity.ancient, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_tainted_fire", self.rarity.uniqueAncient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_scorching_blade", self.rarity.uniqueLegendary, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_glacial_hammer", self.rarity.uniqueLegendary, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_void_armlet", self.rarity.cursedLegendary, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_umbra_blade", self.rarity.uniqueLegendary, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_murderous_maul", self.rarity.legendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_elder_staff", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_bronze_double_axe", self.rarity.uniqueRare, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_fel_blade", self.rarity.ancient, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_luminarium", self.rarity.uniqueAncient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_assassins_blade", self.rarity.uniqueAncient, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_devils_kiss", self.rarity.uniqueAncient, self.slot.mainhand, 5)--2H bow
+    Inventory:RegisterItemSlot("item_subsicivus", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_judgement", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_lights_bane", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_sanguis_furore", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_winged_serpent", self.rarity.legendary, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_frozeheart", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_knightfall", self.rarity.uniqueAncient, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_quicksilver", self.rarity.uniqueAncient, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_volvebatur", self.rarity.immortal, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_lightning_mace", self.rarity.legendary, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_mageblade", self.rarity.ancient, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_sacred_halberd", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_hellscythe", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_eldritch_twin_guardian", self.rarity.uniqueAncient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_scorching_twin_guardian", self.rarity.uniqueAncient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_freezing_twin_guardian", self.rarity.uniqueAncient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_demons_horn", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_dreameater", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_firecore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_frostcore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_earthcore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_voidcore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_holycore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_naturecore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_infernocore", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_lesser_viridis", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_mage_ring", self.rarity.legendary, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_savage", self.rarity.uniqueRare, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_autumn", self.rarity.uniqueAncient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_sniper_lens", self.rarity.rare, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_nymphs_tear", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_moonlit_shield", self.rarity.legendary, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_shovel", self.rarity.common, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_fishermans_net", self.rarity.uncommon, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_scaled_shoulder", self.rarity.rare, self.slot.shoulder, 5)
+    Inventory:RegisterItemSlot("item_verdant_ring", self.rarity.ancient, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_long_bow", self.rarity.uncommon, self.slot.mainhand, 5)--2H bow
+    Inventory:RegisterItemSlot("item_dragon_claw", self.rarity.rare, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_noble_cape", self.rarity.uncommon, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_seer_orb", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_apple_charm", self.rarity.uncommon, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_serpent_ring", self.rarity.rare, self.slot.ring, 5)
+    Inventory:RegisterItemSlot("item_elven_armguard", self.rarity.rare, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_mage_armguard", self.rarity.rare, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_soldier_armguard", self.rarity.rare, self.slot.gloves, 5)
+    Inventory:RegisterItemSlot("item_tribal_necklace", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_golemskin", self.rarity.immortal, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_mechanical_quiver", self.rarity.immortal, self.slot.cape, 5) --need bow to work
+    Inventory:RegisterItemSlot("item_greater_glowing_weed", self.rarity.legendary, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_subzero_edge", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_darkflame", self.rarity.uniqueImmortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_excalibur", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_emerald_necklace", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_stonehammer", self.rarity.common, self.slot.mainhand, 5)--both
+    Inventory:RegisterItemSlot("item_mothers_leg", self.rarity.uniqueImmortal, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_spyglass", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_charred_essence", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_pharaoh_staff", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_blazefury", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_silken_reflector", self.rarity.immortal, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_ritual_candle", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_dragon_horn", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_shuriken", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_warlock_dagger", self.rarity.uniqueImmortal, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_lucky_crystal", self.rarity.legendary, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_hellsworn", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_dragon_orb", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_soldier_shako", self.rarity.rare, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_elementinus", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_deaths_whisper", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H bow
+    Inventory:RegisterItemSlot("item_pestilence", self.rarity.uniqueImmortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_thunderstrike", self.rarity.uniqueImmortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_constellation", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_voodoo_boots", self.rarity.ancient, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_void_mirror", self.rarity.immortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_captain_hat", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_outworld_prism", self.rarity.uniqueImmortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_hopes_end", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_boots_of_autumn", self.rarity.ancient, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_sea_king_trident", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_cultist_boot", self.rarity.rare, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_general_banner", self.rarity.rare, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_blazing_robe", self.rarity.uniqueRare, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_herald_of_void", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_felskull", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_truth", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_pelt_cape", self.rarity.common, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_hand_of_the_fallen", self.rarity.cursedImmortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_ruby_disk", self.rarity.rare, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_bronze_mace", self.rarity.rare, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_army_baldric", self.rarity.ancient, self.slot.belt, 5)
+    Inventory:RegisterItemSlot("item_voodoo_femur", self.rarity.ancient, self.slot.mainhand, 5)
+    Inventory:RegisterItemSlot("item_spider_shield", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_hood_of_damned", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_warlock_skull", self.rarity.cursedImmortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_general_boots", self.rarity.ancient, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_shimmering_moon", self.rarity.immortal, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_fallen_helm", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_forgotten_carapace", self.rarity.immortal, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_soulstring", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H bow
+    Inventory:RegisterItemSlot("item_katana", self.rarity.ancient, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_bearskin_cloak", self.rarity.rare, self.slot.cape, 5)
+    Inventory:RegisterItemSlot("item_winterwyrm_skull_helmet", self.rarity.immortal, self.slot.helmet, 5)
+    Inventory:RegisterItemSlot("item_glowing_sphere", self.rarity.ancient, self.slot.amulet, 5)
+    Inventory:RegisterItemSlot("item_sacred_shield", self.rarity.ancient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_lich_skull", self.rarity.cursedAncient, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_gluey_substance", self.rarity.ancient, self.slot.body, 5)
+    Inventory:RegisterItemSlot("item_death_edge", self.rarity.immortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_dimension_slipper", self.rarity.ancient, self.slot.boots, 5)
+    Inventory:RegisterItemSlot("item_lucifera", self.rarity.cursedImmortal, self.slot.mainhand, 5)--2H
+    Inventory:RegisterItemSlot("item_obstrutionum", self.rarity.uniqueImmortal, self.slot.offhand, 5)
+    Inventory:RegisterItemSlot("item_holy_trident", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
+    --Inventory:RegisterItemSlot("item_", self.rarity., self.slot., 5)
 end
 
 function Inventory:Init()
@@ -94,7 +326,7 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
     if (slot ~= Inventory.slot.invalid) then
         local itemStats = Inventory:GetItemStatsForHero(hero, false, slot)
         local itemEntity = CreateItem(item, hero, hero)
-        local itemId = itemEntity:GetEntityIndex()
+            local itemId = itemEntity:GetEntityIndex()
         local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
         Inventory:SetItemEntityStats(itemEntity, itemStats)
         itemEntity:SetPurchaser(hero)
@@ -137,9 +369,9 @@ function Inventory:GenerateStatsForItem(item, difficulty)
         return result
     end
     local itemDifficulty = Inventory:GetItemDifficulty(item)
-    local minRoll = difficulty / itemDifficulty
+    local minRoll = 0
     if (difficulty > itemDifficulty or math.abs(difficulty - itemDifficulty) < 0.01) then
-        minRoll = 1
+        minRoll = 0.5
     end
     for statName, statValues in pairs(itemStats) do
         local value = Inventory:PerformRoll(statValues.min, statValues.max, minRoll)
@@ -313,15 +545,34 @@ function Inventory:SetupForHero(hero)
             hero.inventory.equipped_items[i] = {}
             hero.inventory.equipped_items[i].name = ""
         end
-        Inventory:AddItem(hero, "item_claymore_custom")
-        Inventory:AddItem(hero, "item_claymore_custom")
-        Inventory:AddItem(hero, "item_broadsword")
-        Inventory:AddItem(hero, "item_broadsword")
-        Inventory:AddItem(hero, "item_chainmail")
-        Inventory:AddItem(hero, "item_third_eye")
-        Inventory:AddItem(hero, "item_chainmail")
-        Inventory:AddItem(hero, "item_third_eye")
-        Inventory:AddItem(hero, "item_silver_ring")
+        Inventory:AddItem(hero,"item_one_handed_sword")
+        Inventory:AddItem(hero,"item_two_handed_sword")
+        Inventory:AddItem(hero,"item_silver_ring")
+        Inventory:AddItem(hero,"item_chainshirt")
+        Inventory:AddItem(hero,"item_wooden_shield")
+        Inventory:AddItem(hero,"item_leather_boots")
+        Inventory:AddItem(hero,"item_wooden_wand")
+        Inventory:AddItem(hero,"item_glowing_weed")
+        Inventory:AddItem(hero,"item_witchs_broom")
+        Inventory:AddItem(hero,"item_twig")
+        Inventory:AddItem(hero,"item_elven_slippers")
+        Inventory:AddItem(hero,"item_warchief_belt")
+        Inventory:AddItem(hero,"item_elven_blade")
+        Inventory:AddItem(hero,"item_iron_gauntlets")
+        Inventory:AddItem(hero,"item_executioner_axe")
+        Inventory:AddItem(hero,"item_garnet_circlet")
+        Inventory:AddItem(hero,"item_kings_crown")
+        Inventory:AddItem(hero,"item_elven_armband")
+        Inventory:AddItem(hero,"item_apprentice_mantle")
+        Inventory:AddItem(hero,"item_wizard_robe")
+        Inventory:AddItem(hero,"item_jewel_staff")
+        Inventory:AddItem(hero,"item_sacred_tome")
+        Inventory:AddItem(hero,"item_hatchet")
+        Inventory:AddItem(hero,"item_citrine_ring")
+        Inventory:AddItem(hero,"item_martial_staff")
+        Inventory:AddItem(hero,"item_iron_spear")
+        Inventory:AddItem(hero,"item_wolf_claw")
+
     end
 end
 

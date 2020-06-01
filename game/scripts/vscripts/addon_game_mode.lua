@@ -50,6 +50,8 @@ function Precache(context)
             PrecacheItemByNameSync(ability, context)
         end
     end
+    --enemy spawn
+    PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts", context)
 end
 
 -- Create the game mode when we activate

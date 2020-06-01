@@ -721,6 +721,13 @@
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talentbranch_4.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talentbranch_5.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/npc_dota_hero_abyssal_underlord/talentbranch_6.png"/>
+            <Image src="file://{images}/custom_game/hud/luna/luna_curse_amp.png"/>
+            <Image src="file://{images}/custom_game/hud/luna/luna_curse_reduce.png"/>
+            <Image src="file://{images}/custom_game/hud/luna/luna_wax.png"/>
+            <Image src="file://{images}/custom_game/hud/luna/luna_wane.png"/>
+            <Image src="file://{images}/custom_game/zone_opening/venge.png"/>
+
+
         </Panel>
     </Panel>
 </root>

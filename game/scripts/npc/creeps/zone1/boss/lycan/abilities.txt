@@ -253,8 +253,7 @@
     		"precache"
     		{   "soundfile" "soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
                 "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
-                "soundfile"  "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
-                "particle"  "particles/hero/phantom_assassin/screen_blood_splatter.vpcf"
+                "soundfile" "soundevents/voscripts/game_sounds_vo_lycan.vsndevts"
                 "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
                 "particle"  "particles/units/heroes/hero_lycan/lycan_shapeshift_cast.vpcf"
     		}
