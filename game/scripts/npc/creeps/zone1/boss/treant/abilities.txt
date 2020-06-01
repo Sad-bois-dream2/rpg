@@ -211,6 +211,11 @@
     				"var_type"					"FIELD_FLOAT"
                     "duration"                  "8 10 12"
     		    }
+            // for tooltip only
+            {
+            "var_type"          "FIELD_FLOAT"
+                    "range_damage"              "1"  // = min_damage / increment_damage
+            }
     		}
     		"precache"
             {
