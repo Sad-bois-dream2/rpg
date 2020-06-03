@@ -9,7 +9,7 @@
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
         "UnitLabel"         "boss"
-        "ModelScale" 				"1"
+        "ModelScale" 				"1.2"
         // Abilities
         //----------------------------------------------------------------
 
@@ -26,7 +26,7 @@
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
-        "HeathBarOffset"        "350"
+        "HeathBarOffset"        "550"
 
         // Attack
         //----------------------------------------------------------------

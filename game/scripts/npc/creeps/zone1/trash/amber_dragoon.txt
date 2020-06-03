@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-    "npc_creep_amber_dragoon"
+    "npc_trash_amber_dragoon"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General

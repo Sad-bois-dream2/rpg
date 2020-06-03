@@ -475,43 +475,24 @@ ursa_roar = class({
     end,
 })
 
-function ursa_roar:IsRequireCastbar()
-    return true
-end
-
-function ursa_roar:IsInterruptible()
-    return false
-end
-
 function ursa_roar:OnSpellStart()
     if IsServer() then
+        if self:GetCursorPosition() == self:GetCaster():GetAbsOrigin() then
+            self:GetCaster():SetCursorPosition(self:GetCursorPosition() + self:GetCaster():GetForwardVector())
+        end
+
+        local target_point = self:GetCursorPosition()
         -- Ability properties
         local caster = self:GetCaster()
-        local caster_loc = caster:GetAbsOrigin()
         -- Ability specials
         local travel_distance = self:GetSpecialValueFor("travel_distance")
         local start_radius = self:GetSpecialValueFor("start_radius")
         local end_radius = self:GetSpecialValueFor("end_radius")
         local projectile_speed = self:GetSpecialValueFor("projectile_speed")
-        local radius = self:GetSpecialValueFor("radius")
         -- Play cast sound
         caster:EmitSound("Hero_Ursa.Enrage")
-        -- Find all nearby enemies
-        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                caster:GetAbsOrigin(),
-                nil,
-                radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        for _, enemy in pairs(enemies) do
             --particle
             self.roar_particle = "particles/units/npc_boss_ursa/ursa_roar/ursa_roar.vpcf"
-            local enemy_loc = enemy:GetAbsOrigin()
-            local distance = enemy_loc - caster_loc
-            local direction = distance:Normalized()
             local projectile =
             {
                 Ability				= self,
@@ -528,13 +509,11 @@ function ursa_roar:OnSpellStart()
                 iUnitTargetType		= self:GetAbilityTargetType(),
                 fExpireTime 		= GameRules:GetGameTime() + 10.0,
                 bDeleteOnHit		= true,
-                vVelocity			= Vector(direction.x,direction.y,0) * projectile_speed,
+                vVelocity			= (((target_point - self:GetCaster():GetAbsOrigin()) * Vector(1, 1, 0)):Normalized())* projectile_speed,
                 bProvidesVision		= false,
                 --ExtraData			= {damage = damage, stun = stun}
             }
-
-            ProjectileManager:CreateLinearProjectile(projectile)
-        end
+        ProjectileManager:CreateLinearProjectile(projectile)
     end
 end
 

@@ -1,0 +1,271 @@
+DOTAAbilites
+{   //=================================================================================================================
+ 	// Yukionna : Broken Promise
+ 	//=================================================================================================================
+ 	"yukionna_promise"
+ 	{
+ 		// General
+ 		//-------------------------------------------------------------------------------------------------------------
+ 		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone4/boss/yukionna"
+        "AbilityTextureName"			"yukionna_promise"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+ 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+ 		"MaxLevel"						"3"
+
+
+ 		// Special
+ 		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilitySpecial"
+ 		{
+ 			"01"
+ 			{
+ 				"var_type"					"FIELD_FLOAT"
+ 				"stun"				        "7 9 11"
+ 			}
+ 			//reset cd on icy breath chance
+ 			"02"
+ 			{
+ 				"var_type"					"FIELD_FLOAT"
+ 				"cd_reduce"				        "5 7.5 10"
+ 			}
+ 		}
+ 				"precache"
+         		{
+    	            "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
+    	            "particle"  "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf"
+    	            "particle"  "particles/units/heroes/hero_death_prophet/death_prophet_death.vpcf"
+         		}
+ 	}
+    //=================================================================================================================
+    // Yukionna : Icy Breath
+    //=================================================================================================================
+    "yukionna_breath"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone4/boss/yukionna"
+        "AbilityTextureName"			"yukionna_breath"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"1000"
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   			"01"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"range"				        "810"
+   			}
+   			"02"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"damage"				    "200 600 2000"
+   			}
+   			"03"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"start_radius"				    "150"
+   			}
+   			"04"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"projectile_speed"			"1050"
+   			}
+   			"05"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"duration"			        "3 4 5"
+   			}
+   			"06"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"dot"			            "20 60 200"
+   			}
+   			"07"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"tick"			            "0.5"
+   			}
+   			"08"
+   			{
+   				"var_type"					"FIELD_FLOAT"
+   				"end_radius"				"300"
+   			}
+ 			//just the tooltips reset cd chance
+ 			"09"
+ 			{
+ 				"var_type"					"FIELD_FLOAT"
+ 				"cd_reduce"				        "5 7.5 10"
+ 			}
+   		}
+	    "precache"
+        {
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_dragon_knight.vsndevts"
+    	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_crystalmaiden.vsndevts"
+    	    "particle"  "particles/econ/items/dragon_knight/dk_ti10_immortal/dk_ti10_breathe_fire_trail_emissiveline.vpcf"
+    	    "particle"  "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    	    "particle"  "particles/econ/items/dragon_knight/dk_ti10_immortal/dk_ti10_breathe_fire.vpcf"
+    	}
+    }
+    //=================================================================================================================
+ 	// Yukionna : Essence Drain
+ 	//=================================================================================================================
+ 	"yukionna_drain"
+ 	{
+        // General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone4/boss/yukionna"
+        "AbilityTextureName"			"yukionna_drain"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET| DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+    	"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.2"
+        "AbilityCastRange"				"1500"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+ 		// Special
+ 		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilitySpecial"
+ 		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"base_damage"		    "40 120 400"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_pct"			    "4 8 12"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"channel_time"			"15.0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				    "0.2"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"ms_reduce"		        "100"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"number"				"2 4 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"range"		            "2000"
+			}
+
+
+ 		}
+ 		"precache"
+        {
+    	      "soundfile" "soundevents/game_sounds_heroes/game_sounds_death_prophet.vsndevts"
+    	      "particle"  "particles/units/heroes/hero_death_prophet/death_prophet_spiritsiphon.vpcf"
+    	      "particle"  "particles/units/heroes/hero_death_prophet/death_prophet_death.vpcf"
+        }
+ 	}
+	//=================================================================================================================
+    // Yukionna : Snowstorm
+    //=================================================================================================================
+    "yukionna_snowstorm"
+    {
+            // General
+       		//-------------------------------------------------------------------------------------------------------------
+       		"BaseClass"						"ability_lua"
+            "ScriptFile"					"creeps/zone4/boss/yukionna"
+            "AbilityTextureName"			"yukionna_snowstorm"
+            "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+            "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+     		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+     		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+       		"MaxLevel"						"3"
+
+
+       		// Time
+       		//-------------------------------------------------------------------------------------------------------------
+       		"AbilityCooldown"				"30"
+
+            // Casting
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+            "AbilityCastPoint"				"0.5"
+            "AbilityCastRange"				"1500"
+
+
+    		// Special
+    		//-------------------------------------------------------------------------------------------------------------
+    		"AbilitySpecial"
+    		{
+    			"01"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "range"                     "2500"
+    		    }
+    			"02"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "damage"                    "75 225 750"
+    		    }
+                "03"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "pull_distance"             "50"
+    		    }
+    			"03"
+    			{
+    				"var_type"					"FIELD_FLOAT"
+                    "pull_duration"             "0.3"
+    		    }
+    		    "04"
+    		    {
+    				"var_type"					"FIELD_FLOAT"
+                    "tick"                      "1.5"
+    		    }
+                "05"
+    		    {
+    				"var_type"					"FIELD_FLOAT"
+                    "duration"                  "9 12 15"
+    		    }
+    		}
+    		"precache"
+            {
+                "soundfile" "soundevents/game_sounds_heroes/game_sounds_crystalmaiden.vsndevts"
+                "particle"  "particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf"
+            }
+    }
+
+}

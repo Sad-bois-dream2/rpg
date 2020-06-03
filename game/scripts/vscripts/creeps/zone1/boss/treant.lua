@@ -780,7 +780,8 @@ end
 function modifier_treant_one:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_treant_one")
     local rootmod = damageTable.attacker:FindModifierByName("modifier_treant_one_root")
-    if (damageTable.damage > 0 and damageTable.victim:IsAlive() and rootmod == nil and modifier and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
+    local rootimmunity = damageTable.attacker:FindModifierByName("modifier_treant_one_immunity")
+    if (damageTable.damage > 0 and damageTable.victim:IsAlive() and rootmod == nil and rootimmunity ==nil and modifier and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
         local modifierTable = {}
         modifierTable.ability = modifier:GetAbility()
         modifierTable.target = damageTable.attacker
@@ -789,8 +790,16 @@ function modifier_treant_one:OnTakeDamage(damageTable)
         modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
         modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
         GameMode:ApplyDebuff(modifierTable)
+        modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.attacker
+        modifierTable.caster = damageTable.victim
+        modifierTable.modifier_name = "modifier_treant_one_immunity"
+        modifierTable.duration = 10
+        GameMode:ApplyDebuff(modifierTable)
     elseif (damageTable.damage > 0 and modifier and rootmod ~= nil and damageTable.victim:IsAlive() and RollPercentage(modifier:GetAbility():GetSpecialValueFor("chance"))) then
         -- Find all nearby enemies
+        local alreadyroot = 0
         local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
                 damageTable.victim:GetAbsOrigin(),
                 nil,
@@ -800,21 +809,30 @@ function modifier_treant_one:OnTakeDamage(damageTable)
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local keys = {}
-        for k in pairs(enemies) do
-            table.insert(keys, k)
-        end
         if (#enemies > 0) then
-            local rootTarget = enemies[keys[math.random(#keys)]]
-            local modifierTable = {}
-            modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = rootTarget
-            modifierTable.caster = damageTable.victim
-            modifierTable.modifier_name = "modifier_treant_one_root"
-            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
-            modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
-            GameMode:ApplyDebuff(modifierTable)
-        else return
+            for i=1,#enemies,1 do
+                local rootTarget = enemies[i]
+                if not rootTarget:HasModifier("modifier_treant_one_immunity") and alreadyroot == 0 then
+                    local modifierTable = {}
+                    modifierTable.ability = modifier:GetAbility()
+                    modifierTable.target = rootTarget
+                    modifierTable.caster = damageTable.victim
+                    modifierTable.modifier_name = "modifier_treant_one_root"
+                    modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
+                    modifierTable.modifier_params = {caster = damageTable.victim:GetEntityIndex()}
+                    GameMode:ApplyDebuff(modifierTable)
+                    modifierTable = {}
+                    modifierTable.ability = modifier:GetAbility()
+                    modifierTable.target = rootTarget
+                    modifierTable.caster = damageTable.victim
+                    modifierTable.modifier_name = "modifier_treant_one_immunity"
+                    modifierTable.duration = 10
+                    GameMode:ApplyDebuff(modifierTable)
+                    alreadyroot = 1
+                end
+            end
+        else
+            return
         end
     end
 end
@@ -887,6 +905,22 @@ end
 
 LinkLuaModifier("modifier_treant_one_root", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 
+modifier_treant_one_immunity = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+})
+
+LinkLuaModifier("modifier_treant_one_immunity", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
 
 modifier_treant_one_ignore_aggro_buff = class({
     IsDebuff = function(self)
@@ -921,6 +955,7 @@ function modifier_treant_one_ignore_aggro_buff:GetIgnoreAggroTarget()
 end
 
 LinkLuaModifier("modifier_treant_one_ignore_aggro_buff", "creeps/zone1/boss/treant.lua", LUA_MODIFIER_MOTION_NONE)
+
 ---------------------
 -- treant ingrain
 ---------------------

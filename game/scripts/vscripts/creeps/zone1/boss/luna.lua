@@ -277,11 +277,6 @@ modifier_luna_curse_reduce = class({
         return "particles/econ/items/lycan/ti9_immortal/lycan_ti9_immortal_howl_buff.vpcf"--
     end,
 })
-luna_curse = class({
-    GetAbilityTextureName = function(self)
-        return "luna_curse"
-    end,
-})
 
 function modifier_luna_curse_reduce:OnCreated(keys)
     if not IsServer() then

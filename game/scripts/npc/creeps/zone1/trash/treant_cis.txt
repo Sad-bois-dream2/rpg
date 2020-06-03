@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-    "npc_creep_treant_cis"
+    "npc_trash_treant_cis"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General

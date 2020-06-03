@@ -4,6 +4,18 @@ function OnStartTouch(trigger)
     --print(trigger.caller)
     local spawn_point = Vector(-14908.075195, 14764.760742, 384.000000)
     local spawn = spawn_point + Vector(500,0,0)
+    --CreateUnitByNameAsync("npc_boss_parasite_golem", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_executioner", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_hellhound", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_succubus", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_winterwyrm_dragon", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_balanar", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_rubicundus", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_viridis", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --CreateUnitByNameAsync("npc_boss_coeruleus", spawn, true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+
+
+
     local number = 7
     local boss =
     {"npc_boss_ursa",
@@ -28,9 +40,9 @@ function OnStartTouch(trigger)
 
 
     --boss spawn
-    for i = 0, number - 1, 1 do
-        CreateUnitByNameAsync(boss[i+1], Vector(vector[i+1].x, vector[i+1].y, 384), true, nil, nil, DOTA_TEAM_BADGUYS,nil)
-    end
+    --for i = 0, number - 1, 1 do
+        --CreateUnitByNameAsync(boss[i+1], Vector(vector[i+1].x, vector[i+1].y, 384), true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+    --end
 
     --act opening pic and sound
     Timers:CreateTimer(2.0, function()
@@ -69,11 +81,11 @@ function OnStartTouch(trigger)
     local number_tower = RandomInt(3, 6)
     local rng_number
     local chosen
-    for i = 0, number_tower - 1, 1 do
-        rng_number = RandomInt(1, #vector_tower)
-        chosen = vector_tower[rng_number]
-        CreateUnitByNameAsync(tower[RandomInt(1, #tower)], Vector(chosen.x, chosen.y, 384), true, nil, nil, DOTA_TEAM_BADGUYS,nil)
-        table.remove(vector_tower,rng_number) -- dont pepeg and build at the same place
-    end
+    --for i = 0, number_tower - 1, 1 do
+        --rng_number = RandomInt(1, #vector_tower)
+        --chosen = vector_tower[rng_number]
+        --CreateUnitByNameAsync(tower[RandomInt(1, #tower)], Vector(chosen.x, chosen.y, 384), true, nil, nil, DOTA_TEAM_BADGUYS,nil)
+        --table.remove(vector_tower,rng_number) -- dont pepeg and build at the same place
+    --end
 end
 

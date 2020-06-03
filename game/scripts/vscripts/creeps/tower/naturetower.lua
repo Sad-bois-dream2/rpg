@@ -294,7 +294,7 @@ function modifier_naturetower_felpoison:OnCreated()
 end
 
 function modifier_naturetower_felpoison:GetMoveSpeedPercentBonus()
-    return self.slow
+    return self.slow * self:GetStackCount()
 end
 
 --rot from with in decrease stats
@@ -324,7 +324,7 @@ function modifier_naturetower_felpoison:OnIntervalThink()
         damageTable.caster = self.caster
         damageTable.target = self.parent
         damageTable.ability = self.ability
-        damageTable.damage = self.dot
+        damageTable.damage = self.dot * self:GetStackCount()
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
     end

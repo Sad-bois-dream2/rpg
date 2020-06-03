@@ -68,7 +68,7 @@ DOTAAbilites
    			"10"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"			        "100 300 1000"
+   				"dot"			        "50 150 500"
    			}
    		}
 	    "precache"

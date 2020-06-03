@@ -209,9 +209,9 @@ function modifier_venge_missile:OnAttackLanded(keys)
         for _, enemy in pairs(enemies) do
             self.ability:ApplyMoondaze(enemy, keys.target, self.parent)
         end
-        local ele_phys ="particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf"
-        keys.target:EmitSound("Hero_KeeperOfTheLight.BlindingLight")
-        self.ability:ExplodeFX(ele_phys, keys.target, self.radius)
+        --local ele_phys ="particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf" -- i think players' eyes will bleed repeatedly seeing this shit
+        --keys.target:EmitSound("Hero_KeeperOfTheLight.BlindingLight")
+        --self.ability:ExplodeFX(ele_phys, keys.target, self.radius)
     end
 end
 
@@ -1596,7 +1596,7 @@ function modifier_venge_mind_control_black:OnAttackLanded(keys)
 end
 
 function modifier_venge_mind_control_black:GetManaRegenerationPercentBonus()
-    return -1
+    return -10
 end
 
 function modifier_venge_mind_control_black:OnDestroy()
@@ -2558,11 +2558,11 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
                 GameMode:DamageUnit(damageTable)
                 if distance_to_caster < 100 then
                     self:Destroy()
-                    self.parent:ForceKill(false)
+                    self.ability:MoonAbsorb(self.parent)
                 end
             else
                 self:Destroy()
-                self.parent:ForceKill(false)
+                self.ability:MoonAbsorb(self.parent)
             end
         end
     end
@@ -2658,7 +2658,7 @@ function modifier_venge_moonify_hide:OnCreated()
                 end
                 --kill that no friend boi
                 if self.parent:HasModifier("modifier_venge_moonify_hide") and self.expire == true and self.alive == false and self.delay < 1 then
-                    self.parent:ForceKill(false)
+                    self.ability:MoonAbsorb(self.parent)
                 end
                 return 1
             end
@@ -2717,8 +2717,7 @@ function modifier_venge_moonify_hide:OnIntervalThink()
     if self.alive == false  then
         --check if moon get killed by other players and not expired by itself. if yes killed the moonified boi
         if self.expire == false then
-            self.parent:EmitSound("Hero_EarthSpirit.StoneRemnant.Destroy ")
-            self.parent:ForceKill(false)
+            self.ability:MoonAbsorb(self.parent)
         --check if this debuff should be remove when rescued( literally get kissed at 200 range kekw)
         elseif self.expire == true then
             local allies = FindUnitsInRadius(self:GetParent():GetTeamNumber(),
@@ -2768,6 +2767,20 @@ function venge_moonify:GetAOERadius()
     return self:GetSpecialValueFor("radius")
 end
 
+function venge_moonify:MoonAbsorb(target)
+    if IsServer() then
+        local death_fx ="particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_target_death.vpcf"
+        self.nPreviewFX = ParticleManager:CreateParticle( death_fx, PATTACH_ABSORIGIN_FOLLOW, target )
+        ParticleManager:SetParticleControlEnt(self.nPreviewFX, 0, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(self.nPreviewFX, 2, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+        ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+        target:SetModelScale(0)
+        target:ForceKill(false)
+        Timers:CreateTimer(5,function()
+            target:SetModelScale(1)
+        end)
+    end
+end
 function venge_moonify:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
@@ -3097,8 +3110,8 @@ function venge_quake:OnSpellStart()
     local range = self:GetSpecialValueFor("range")
     self.epicenter_duration = self:GetSpecialValueFor("epicenter_duration")
     if HeroList:GetHeroCount() > 1 then
-        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                caster:GetAbsOrigin(),
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.caster:GetAbsOrigin(),
                 nil,
                 range,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,

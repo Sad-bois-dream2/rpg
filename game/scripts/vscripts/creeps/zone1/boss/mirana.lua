@@ -965,7 +965,7 @@ function modifier_mirana_aligned_channel:OnIntervalThink()
     modifierTable.modifier_name = "modifier_mirana_aligned_buff"
     modifierTable.duration = -1 --self.duration
     modifierTable.stacks = 1
-    modifierTable.max_stacks = self.max_stacks-- +1 to make it 50 idk why its 49 from 5/0.1 and still 49 after +1
+    modifierTable.max_stacks = self.max_stacks
     GameMode:ApplyStackingBuff(modifierTable)
 end
 
@@ -1096,8 +1096,6 @@ function mirana_aligned:OnSpellStart(unit, special_cast)
                     ParticleManager:DestroyParticle(particle_moon_fx, false)
                     ParticleManager:ReleaseParticleIndex(particle_moon_fx)
                 end)
-                --return 5
-            --end
         end)
     end
 end
@@ -1118,7 +1116,7 @@ function mirana_aligned:OnChannelFinish()
     local base_damage = self:GetSpecialValueFor("base_damage")
     local damage = base_damage * math.pow(expo, expo_power)
     local radius = self:GetSpecialValueFor("radius")
-    if not target:IsNull() then
+    if target:IsAlive() then
         self:StarsAlignFX(target)
         -- Find all nearby enemies
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),

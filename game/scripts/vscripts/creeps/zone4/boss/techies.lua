@@ -1,0 +1,24 @@
+---------------------------
+--techies penguin bombs --throw bombs directly on top of all heroes they will explode after 2s
+--------------------------
+---------------------------
+--techies landmine field  --scatter some automatic setup landmines around his location
+--------------------------
+---------------------------
+--techies for the greater good --jump after delay to a random hero dealing very high damage at the landing location, he loses some % health. Passively jump to a random hero and expolde in a large raduis after dead.
+--------------------------
+---------------------------
+--techies penguin missiles--send out weaponised penguin on land as tracking unit with low turn rate intended to collide with hero. They deal physical damage on passing through.
+--------------------------
+---------------------------
+--techies warning sign --throw a warning sign causing fear in an aoe
+--------------------------
+---------------------------
+--techies disabling traps -- scatter some automatic set up stasis traps (root) around himself
+--------------------------
+---------------------------
+--techies aerial strike -- sendout weaponised penguin on air. they fly around hero an drop bomb on top of hero location.
+--------------------------
+---------------------------
+--techies it's killing time -- silence himself but reduce BAT to 0.5 with 250/500/750 AS bonus for 10s
+--------------------------

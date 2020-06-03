@@ -1,0 +1,24 @@
+-----------------
+--lich phylactery --passive lich take no damage from everything and only die when its true phylactery is destroyed. lich's true phylactery appears nearby lich along with 2/4/6 fake ones(taking 150% damage compared to true 100%), they disappear and reshuffle location every 7/6/5s.(doppleganger like)
+-----------------
+-----------------
+--lich frost nova --very low cd 50% chance to cast single target frost nova on the highest aggro target/ 50% chance to cast  weaken frost nova to all enemies in range.
+-----------------
+-----------------
+--lich necromancers -- summon several necromancers. they can cast summon skeletons and cripple. Cripple slow as ms spellhaste target for 100% but the slow value reduce 10% every second.
+-----------------
+-----------------
+--lich unholy ritual --eat a skeleton/necromancers regenerate % of phylactery health. if no sacrifice is found regenerate for 25% of the normal amount.
+-----------------
+-----------------
+--lich ice prison  --undispellable stun on a random enemies dealing 25%/33%/40% max health as frost damage per second for 4s (1s in solo)
+-----------------
+-----------------
+--lich fallen skull --launch a slow-moving tracking projectile fallen skull to a random player, it has omega bounce range. It bounces and deals more damage each bounces, the damage is non-lethal. total bounce of 3/4/5.
+-----------------
+-----------------
+--lich void curse  --curse every heroes in range reduce 50/60/70% of their max mana, they will explode dealing aoe damage to both themselves and allies around them after the curse ends.
+-----------------
+-----------------
+--lich sealing chain --passive periodically apply sealing frostbite to a random hero for 3s (that hero will be cannot be rooted again for 10s) every 3s
+-----------------

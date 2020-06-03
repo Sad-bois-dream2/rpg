@@ -146,12 +146,12 @@
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"fire_resist_reduce_min"		"50"
+				"fire_resist_reduce_min"		"-50"
 			}
 			"04"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"fire_resist_reduce_max"		"50"
+				"fire_resist_reduce_max"		"-50"
 			}
 		}
 	}

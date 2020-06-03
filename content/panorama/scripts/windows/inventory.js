@@ -389,7 +389,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AgilityLabel").text = agi;
 		$("#IntelligenceLabel").text = int;
 		$("#SpellDamageLabel").text = Math.round(spellDamage * 100) + "%";
-		spellHaste = (spellHaste - 1) * 100;
+		spellHaste = (spellHaste) * 100;
 		$("#SpellhasteLabel").text = Math.round(spellHaste);
 		if(armor>=0){
 		var physProtection = ((armor * 0.06) / (1 + armor * 0.06));

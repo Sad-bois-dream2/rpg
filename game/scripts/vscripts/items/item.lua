@@ -31,7 +31,7 @@ function modifier_inventory_item_two_handed_sword:GetAttackDamageBonus()
 end
 
 function modifier_inventory_item_two_handed_sword:GetMoveSpeedBonus()
-    return self.data.move_speed
+    return self.data.move_speed_reduce
 end
 
 LinkLuaModifier("modifier_inventory_item_two_handed_sword", "items/item", LUA_MODIFIER_MOTION_NONE)
@@ -141,7 +141,7 @@ function modifier_inventory_item_chainshirt:GetArmorBonus()
 end
 
 function modifier_inventory_item_chainshirt:GetFireProtectionBonus()
-    return self.data.fire_resist_reduce*-0.01
+    return self.data.fire_resist_reduce*0.01
 end
 
 LinkLuaModifier("modifier_inventory_item_chainshirt", "items/item", LUA_MODIFIER_MOTION_NONE)
@@ -335,9 +335,6 @@ modifier_inventory_item_witchs_broom = class({
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_VISUAL_Z_DELTA }
-    end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_weaver/weaver_shukuchi.vpcf"
     end,
@@ -349,19 +346,9 @@ function modifier_inventory_item_witchs_broom:OnCreated(keys)
     end
     self.data = keys
     self.parent = self:GetParent()
-    self.fly =0
+    self.fly = 0
     self:StartIntervalThink(1)
 end
-
-
-function  modifier_inventory_item_witchs_broom:CheckState()
-    if self.fly == 0 then
-        return {[MODIFIER_STATE_NO_UNIT_COLLISION] = false}
-    else
-        return {[MODIFIER_STATE_NO_UNIT_COLLISION] = true}
-    end
-end
-
 
 function modifier_inventory_item_witchs_broom:OnIntervalThink()
     local MaxMana = self.parent:GetMaxMana()
@@ -381,14 +368,6 @@ function modifier_inventory_item_witchs_broom:GetMoveSpeedBonus()
         return 0
     else
         return self.data.move_speed
-    end
-end
-
-function modifier_inventory_item_witchs_broom:GetVisualZDelta()
-    if self.fly == 0 then
-        return 0
-    else
-        return 50
     end
 end
 

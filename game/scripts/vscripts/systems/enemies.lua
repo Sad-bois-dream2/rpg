@@ -81,6 +81,13 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_tower_holytower", "holytower_holyfrost", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_tower_naturetower", "naturetower_felblight", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_tower_earthtower", "earthtower_tectonic", Enemies.ABILITY_TYPE_INNATE)
+    --yukionna boss
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_promise", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_breath", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_snowstorm", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_drain", Enemies.ABILITY_TYPE_INNATE)
+    --draugr golem boss
+    Enemies:RegisterEnemyAbility("npc_boss_draugr_golem", "draugr_golem_tomb", Enemies.ABILITY_TYPE_INNATE)
 end
 
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)

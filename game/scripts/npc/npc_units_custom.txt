@@ -35,8 +35,6 @@
 #base creeps/tower/earthtower/units.txt
 #base creeps/zone4/boss/draugr_golem/boss.txt
 #base creeps/zone4/boss/draugr_golem/units.txt
-#base creeps/zone5/boss/incurable_golem/boss.txt
-#base creeps/zone5/boss/incurable_golem/units.txt
 #base creeps/zone5/boss/winterwyrm_dragon/boss.txt
 #base creeps/zone5/boss/winterwyrm_dragon/units.txt
 #base creeps/zone1/trash/amber_dragoon.txt
@@ -44,6 +42,36 @@
 #base creeps/zone1/trash/treant_cis.txt
 #base creeps/zone5/trash/invokerkid_dragon.txt
 #base creeps/zone5/trash/apostate_golem.txt
+#base creeps/zone1/trash/creeping_vine_undying.txt
+#base creeps/zone4/boss/yukionna/boss.txt
+#base creeps/zone4/boss/yukionna/units.txt
+#base creeps/zone4/boss/techies/boss.txt
+#base creeps/zone4/boss/techies/units.txt
+#base creeps/zone4/boss/hiems/boss.txt
+#base creeps/zone4/boss/hiems/units.txt
+#base creeps/zone4/boss/lich/boss.txt
+#base creeps/zone4/boss/lich/units.txt
+#base creeps/zone4/boss/frostwyrm/boss.txt
+#base creeps/zone4/boss/frostwyrm/units.txt
+#base creeps/zone4/boss/deathknight/boss.txt
+#base creeps/zone4/boss/deathknight/units.txt
+#base creeps/zone4/boss/snowgiant/boss.txt
+#base creeps/zone4/boss/snowgiant/units.txt
+#base creeps/zone5/boss/succubus/boss.txt
+#base creeps/zone5/boss/succubus/units.txt
+#base creeps/zone5/boss/executioner/boss.txt
+#base creeps/zone5/boss/executioner/units.txt
+#base creeps/zone5/boss/hellhound/boss.txt
+#base creeps/zone5/boss/hellhound/units.txt
+#base creeps/zone6/boss/balanar/boss.txt
+#base creeps/zone6/boss/balanar/units.txt
+#base creeps/zone8/boss/rubicundus/boss.txt
+#base creeps/zone8/boss/rubicundus/units.txt
+#base creeps/zone8/boss/viridis/boss.txt
+#base creeps/zone8/boss/viridis/units.txt
+#base creeps/zone8/boss/coeruleus/boss.txt
+#base creeps/zone8/boss/coeruleus/units.txt
+
 
 "DOTAUnits"
 {
