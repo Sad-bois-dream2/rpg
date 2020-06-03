@@ -1894,8 +1894,8 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_45:GetDamageReductionBonus()
 
 
-		local talent45_level = TalentTree:GetHeroTalentLevel(drow, 45)
-		if (drow:HasModifier("modifier_phantom_ranger_stealth")) then return (self.talent45_baseReducedDmgTaken + talent45_level * self.talent45_reducedDmgTakenPerLevel) / 100
+		local talent45_level = TalentTree:GetHeroTalentLevel(self.caster, 45)
+		if (self.caster:HasModifier("modifier_phantom_ranger_stealth")) then return (self.talent45_baseReducedDmgTaken + talent45_level * self.talent45_reducedDmgTakenPerLevel) / 100
         else return 0 
         end
 
@@ -2392,7 +2392,6 @@ if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_39, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_43, 'OnTakeDamage'))
-	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_45, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_49, 'OnTakeDamage'), true)
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_50, 'OnTakeDamage'))
 	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
