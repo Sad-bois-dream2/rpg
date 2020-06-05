@@ -1,11 +1,10 @@
 "DOTAUnits"
 {
-    "npc_boss_yukionna_ghost"
+    "npc_boss_yukionna_child"
 	{
-	    "vscripts"					"creeps/ai/ai_generic.lua"
 		// General
 		//----------------------------------------------------------------
-		"Model"						"models/items/death_prophet/exorcism/woman_of_the_snow_snowfly/woman_of_the_snow_snowfly.vmdl"	// Model.
+		"Model"						"models/items/courier/krobeling/krobeling_flying.vmdl"	// Model.
 		"BaseClass"					"npc_dota_creature"
 		"SoundSet"					"Hero_Furion.TreantSpawn"
 		"Level"						"0"
@@ -44,17 +43,17 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
-		"MovementSpeed"				"350"		// Speed.
+		"MovementSpeed"				"550"		// Speed.
 		// Status
 		//----------------------------------------------------------------
-		"StatusHealth"				"1000"		// Base health.
+		"StatusHealth"				"750"		// Base health.
 		"StatusHealthRegen"			"0"		// Health regeneration rate.
 		"StatusMana"				"0"		// Base mana.
 		"StatusManaRegen"			"0"		// Mana regeneration rate.
 
 		// Vision
 		//----------------------------------------------------------------
-		"VisionDaytimeRange"		"800"		// Range of vision during day light.
-		"VisionNighttimeRange"		"800"		// Range of vision at night time.
+		"VisionDaytimeRange"		"1500"		// Range of vision during day light.
+		"VisionNighttimeRange"		"1500"		// Range of vision at night time.
 	}
 }

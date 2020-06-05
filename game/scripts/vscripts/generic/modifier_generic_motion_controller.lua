@@ -12,7 +12,7 @@
 
 modifier_generic_motion_controller = class({})
 
-function modifier_generic_motion_controller:IgnoreTenacity()	return self.bIgnoreTenacity == 1 end
+function modifier_generic_motion_controller:IsHidden()         return true end
 function modifier_generic_motion_controller:IsPurgable()		return self:GetParent():GetTeamNumber() ~= self:GetCaster():GetTeamNumber() end
 function modifier_generic_motion_controller:GetAttributes()		return MODIFIER_ATTRIBUTE_MULTIPLE end -- This seems to allow proper interruption of stacking modifiers or something
 

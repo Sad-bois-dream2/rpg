@@ -1784,7 +1784,6 @@ function venge_mind_control:OnSpellStart()
             modifierTable.duration = 5
             GameMode:ApplyBuff(modifierTable)
         end
-        GameMode:ApplyDebuff(modifierTable)
         local range = self:GetSpecialValueFor("range")
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -3476,7 +3475,7 @@ if (IsServer() and not GameMode.ZONE1_BOSS_VENGE) then
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_bubble_passive, 'OnTakeDamage'))
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_moonify, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_frost, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_void, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_venge_side_void, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_holy, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_inferno, 'OnTakeDamage'))
     GameMode.ZONE1_BOSS_VENGE = true

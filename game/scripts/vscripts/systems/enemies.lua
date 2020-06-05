@@ -86,6 +86,10 @@ function Enemies:InitAbilites()
     Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_breath", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_snowstorm", Enemies.ABILITY_TYPE_INNATE)
     Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_drain", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_beauty", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_child", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_women", Enemies.ABILITY_TYPE_INNATE)
+    Enemies:RegisterEnemyAbility("npc_boss_yukionna", "yukionna_body", Enemies.ABILITY_TYPE_INNATE)
     --draugr golem boss
     Enemies:RegisterEnemyAbility("npc_boss_draugr_golem", "draugr_golem_tomb", Enemies.ABILITY_TYPE_INNATE)
 end

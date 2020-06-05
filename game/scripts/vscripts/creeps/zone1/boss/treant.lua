@@ -762,9 +762,6 @@ modifier_treant_one = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKE_DAMAGE }
-    end
 })
 
 function modifier_treant_one:OnCreated()
