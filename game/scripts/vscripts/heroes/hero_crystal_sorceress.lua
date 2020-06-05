@@ -109,8 +109,8 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     ProjectileManager:CreateTrackingProjectile(projectile)
     EmitSoundOn("Hero_Ancient_Apparition.ChillingTouch.Cast", self.caster)
 end
--- crystal_sorceress_sheer_cold modifiers
-modifier_crystal_sorceress_sheer_cold_aura = class({
+-- crystal_sorceress_deep_freeze modifiers
+modifier_crystal_sorceress_deep_freeze_aura = class({
     IsHidden = function(self)
         return true
     end,
@@ -133,17 +133,17 @@ modifier_crystal_sorceress_sheer_cold_aura = class({
         return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
     end,
     GetModifierAura = function(self)
-        return "modifier_crystal_sorceress_sheer_cold_aura_debuff"
+        return "modifier_crystal_sorceress_deep_freeze_aura_debuff"
     end,
     GetAuraDuration = function(self)
         return 0
     end,
     GetEffectName = function(self)
-        return "particles/units/crystal_sorceress/sheer_cold/sheer_cold.vpcf"
+        return "particles/units/crystal_sorceress/deep_freeze/deep_freeze.vpcf"
     end
 })
 
-function modifier_crystal_sorceress_sheer_cold_aura:OnCreated()
+function modifier_crystal_sorceress_deep_freeze_aura:OnCreated()
     if (not IsServer()) then
         return
     end
@@ -155,7 +155,7 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnCreated()
     self:StartIntervalThink(tick)
 end
 
-function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
+function modifier_crystal_sorceress_deep_freeze_aura:OnIntervalThink()
     if (not IsServer()) then
         return
     end
@@ -166,9 +166,9 @@ function modifier_crystal_sorceress_sheer_cold_aura:OnIntervalThink()
         self:Destroy()
     end
 end
-LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_deep_freeze_aura"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff = class({
+modifier_crystal_sorceress_deep_freeze_aura_debuff = class({
     IsDebuff = function(self)
         return true
     end,
@@ -186,7 +186,7 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff = class({
     end
 })
 
-function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnCreated()
+function modifier_crystal_sorceress_deep_freeze_aura_debuff:OnCreated()
     if (not IsServer()) then
         return
     end
@@ -205,7 +205,7 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnCreated()
     self:StartIntervalThink(self.tick)
 end
 
-function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
+function modifier_crystal_sorceress_deep_freeze_aura_debuff:OnIntervalThink()
     if (not IsServer()) then
         return
     end
@@ -213,7 +213,7 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
     modifierTable.ability = self.ability
     modifierTable.caster = self.caster
     modifierTable.target = self.target
-    modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"
+    modifierTable.modifier_name = "modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks"
     modifierTable.modifier_params = {
         slowPerStack = self.slowPerStack,
         damagePerStack = self.damagePerStack,
@@ -232,9 +232,9 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff:OnIntervalThink()
     GameMode:ApplyStackingDebuff(modifierTable)
 end
 
-LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_deep_freeze_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = class({
+modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks = class({
     IsDebuff = function(self)
         return true
     end,
@@ -251,14 +251,14 @@ modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks = class({
         return false
     end,
     GetTexture = function(self)
-        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+        return crystal_sorceress_deep_freeze:GetAbilityTextureName()
     end,
     GetEffectName = function(self)
-        return "particles/units/crystal_sorceress/sheer_cold/sheer_cold_debuff.vpcf"
+        return "particles/units/crystal_sorceress/deep_freeze/deep_freeze_debuff.vpcf"
     end
 })
 
-function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnCreated(keys)
+function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:OnCreated(keys)
     if (not IsServer()) then
         return
     end
@@ -281,45 +281,45 @@ function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnCreated(keys
     end
 end
 
-function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnIntervalThink()
+function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    if (RollPercentage(self.stunChance) and not self.target:HasModifier("modifier_crystal_sorceress_sheer_cold_stun_cd")) then
+    if (RollPercentage(self.stunChance) and not self.target:HasModifier("modifier_crystal_sorceress_deep_freeze_stun_cd")) then
         local modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.caster = self.caster
         modifierTable.target = self.target
-        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_stun_cd"
+        modifierTable.modifier_name = "modifier_crystal_sorceress_deep_freeze_stun_cd"
         modifierTable.duration = self.stunCooldown
         GameMode:ApplyDebuff(modifierTable)
         modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.caster = self.caster
         modifierTable.target = self.target
-        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_stun"
+        modifierTable.modifier_name = "modifier_crystal_sorceress_deep_freeze_stun"
         modifierTable.duration = self.stunDuration
         GameMode:ApplyDebuff(modifierTable)
         EmitSoundOnLocationWithCaster(self.target:GetAbsOrigin(), "hero_Crystal.frostbite", self.target)
     end
 end
 
-function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:GetMoveSpeedPercentBonus()
+function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:GetMoveSpeedPercentBonus()
     return math.min(-self:GetStackCount() * self.slowPerStack, self.maxSlow)
 end
 
 ---@param damageTable DAMAGE_TABLE
-function modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks")
+function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks")
     if (modifier and damageTable.damage > 0 and damageTable.frostdmg) then
         damageTable.damage = damageTable.damage * (1 + math.min(modifier:GetStackCount() * modifier.damagePerStack, modifier.maxDamage))
         return damageTable
     end
 end
 
-LinkedModifiers["modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun = class({
+modifier_crystal_sorceress_deep_freeze_stun = class({
     IsDebuff = function(self)
         return true
     end,
@@ -339,7 +339,7 @@ modifier_crystal_sorceress_sheer_cold_stun = class({
         return false
     end,
     GetTexture = function(self)
-        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+        return crystal_sorceress_deep_freeze:GetAbilityTextureName()
     end,
     CheckState = function(self)
         return {
@@ -352,9 +352,9 @@ modifier_crystal_sorceress_sheer_cold_stun = class({
     end
 })
 
-LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_deep_freeze_stun"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_sheer_cold_stun_cd = class({
+modifier_crystal_sorceress_deep_freeze_stun_cd = class({
     IsDebuff = function(self)
         return true
     end,
@@ -371,39 +371,39 @@ modifier_crystal_sorceress_sheer_cold_stun_cd = class({
         return false
     end,
     GetTexture = function(self)
-        return crystal_sorceress_sheer_cold:GetAbilityTextureName()
+        return crystal_sorceress_deep_freeze:GetAbilityTextureName()
     end
 })
 
-LinkedModifiers["modifier_crystal_sorceress_sheer_cold_stun_cd"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_deep_freeze_stun_cd"] = LUA_MODIFIER_MOTION_NONE
 
--- crystal_sorceress_sheer_cold
-crystal_sorceress_sheer_cold = class({
+-- crystal_sorceress_deep_freeze
+crystal_sorceress_deep_freeze = class({
     GetAbilityTextureName = function(self)
-        return "crystal_sorceress_sheer_cold"
+        return "crystal_sorceress_deep_freeze"
     end
 })
 
-function crystal_sorceress_sheer_cold:OnToggle()
+function crystal_sorceress_deep_freeze:OnToggle()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    caster.crystal_sorceress_sheer_cold = caster.crystal_sorceress_sheer_cold or {}
+    caster.crystal_sorceress_deep_freeze = caster.crystal_sorceress_deep_freeze or {}
     if (self:GetToggleState()) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = caster
         modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_crystal_sorceress_sheer_cold_aura"
+        modifierTable.modifier_name = "modifier_crystal_sorceress_deep_freeze_aura"
         modifierTable.duration = -1
-        caster.crystal_sorceress_sheer_cold.modifier = GameMode:ApplyBuff(modifierTable)
+        caster.crystal_sorceress_deep_freeze.modifier = GameMode:ApplyBuff(modifierTable)
         self:EndCooldown()
         self:StartCooldown(self:GetCooldown(1))
         EmitSoundOn("Hero_Ancient_Apparition.IceVortexCast", caster)
     else
-        if (caster.crystal_sorceress_sheer_cold.modifier ~= nil) then
-            caster.crystal_sorceress_sheer_cold.modifier:Destroy()
+        if (caster.crystal_sorceress_deep_freeze.modifier ~= nil) then
+            caster.crystal_sorceress_deep_freeze.modifier:Destroy()
         end
     end
 end
@@ -751,7 +751,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_sheer_cold_aura_debuff_stacks, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
     GameMode.CRYSTAL_SORCERESS_INIT = true
 end
