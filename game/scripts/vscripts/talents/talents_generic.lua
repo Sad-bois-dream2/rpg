@@ -979,7 +979,7 @@ function modifier_generic_talent_33:OnCreated()
     self.hero = self:GetParent()
 end
 
-function modifier_generic_talent_33:GetSpellHasteBonus()
+function modifier_generic_talent_33:GetSpellHasteBonusPercent()
     local bonus = TalentTree:GetHeroTalentLevel(self.hero, 33) * 0.1
     return bonus or 0
 end
