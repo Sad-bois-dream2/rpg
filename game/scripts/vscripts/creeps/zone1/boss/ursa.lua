@@ -37,7 +37,7 @@ modifier_ursa_rend = class({
     end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }
-    end
+    end,
 })
 
 function modifier_ursa_rend:OnCreated()
@@ -53,21 +53,30 @@ end
 function modifier_ursa_rend:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_ursa_rend")
     if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.physdmg == true and damageTable.attacker:IsAlive())  then
-            local modifierTable = {}
-            modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = damageTable.victim
-            modifierTable.caster = damageTable.attacker
-            modifierTable.modifier_name = "modifier_ursa_rend_armor"
-            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
-            GameMode:ApplyDebuff(modifierTable)
-            modifierTable = {}
-            modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = damageTable.victim
-            modifierTable.caster = damageTable.attacker
-            modifierTable.modifier_name = "modifier_stunned"
-            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("stun")
-            GameMode:ApplyDebuff(modifierTable)
-            damageTable.victim:EmitSound("Hero_Slardar.Bash")
+        local modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_ursa_rend_armor"
+        modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
+        GameMode:ApplyDebuff(modifierTable)
+        modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("stun")
+        GameMode:ApplyDebuff(modifierTable)
+        modifierTable = {}
+        modifierTable.ability = modifier:GetAbility()
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_ursa_rend_armor_static"
+        modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("duration")
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = 99999
+        GameMode:ApplyStackingDebuff(modifierTable)
+        damageTable.victim:EmitSound("Hero_Slardar.Bash")
     end
 end
 
@@ -84,6 +93,17 @@ function modifier_ursa_rend:OnAttackLanded(keys)
         self.ability:ApplyRend(keys.target, self.parent)
         self.ability:StartCooldown(self.ability.abilityCooldown)
     end
+    if (keys.attacker == self.parent) then
+        local modifierTable = {}
+        modifierTable.ability = self:GetAbility()
+        modifierTable.target = keys.target
+        modifierTable.caster = keys.attacker
+        modifierTable.modifier_name = "modifier_ursa_rend_armor_static"
+        modifierTable.duration = self:GetAbility():GetSpecialValueFor("duration")
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = 99999
+        GameMode:ApplyStackingDebuff(modifierTable)
+    end
 end
 
 function ursa_rend:ApplyRend(target, parent)
@@ -92,19 +112,13 @@ function ursa_rend:ApplyRend(target, parent)
     modifierTable.ability = self
     modifierTable.target = target
     modifierTable.caster = parent
-    modifierTable.modifier_name = "modifier_ursa_rend_armor"
-    modifierTable.duration = self.armor_reduction_duration
-    GameMode:ApplyDebuff(modifierTable)
-    modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = parent
     modifierTable.modifier_name = "modifier_stunned"
     modifierTable.duration = self.stun
     GameMode:ApplyDebuff(modifierTable)
 end
 
-modifier_ursa_rend_armor = class({
+
+modifier_ursa_rend_armor_static = class({
     IsDebuff = function(self)
         return true
     end,
@@ -114,12 +128,6 @@ modifier_ursa_rend_armor = class({
     IsPurgable = function(self)
         return true
     end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_ursa/ursa_fury_swipes_debuff.vpcf"
     end,
@@ -128,21 +136,34 @@ modifier_ursa_rend_armor = class({
     end,
     GetTexture = function(self)
         return ursa_rend:GetAbilityTextureName()
-    end
+    end,
 })
 
-function modifier_ursa_rend_armor:OnCreated()
+function modifier_ursa_rend_armor_static:OnCreated()
     if not IsServer() then
         return
     end
-    self.armor_reduction_percentage = self:GetAbility():GetSpecialValueFor("armor_reduction_percentage") * -0.01
+    self.parent = self:GetParent()
+    self.armor_reduction = self:GetAbility():GetSpecialValueFor("armor_reduction") * -1
+    self.armor_reduction_total = self.armor_reduction * (self:GetStackCount() + 1)
 end
 
-function modifier_ursa_rend_armor:GetArmorPercentBonus()
-    return self.armor_reduction_percentage
+
+function modifier_ursa_rend_armor_static:OnRefresh()
+    if not IsServer() then
+        return
+    end
+    self:OnCreated()
 end
 
-LinkLuaModifier("modifier_ursa_rend_armor", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+function modifier_ursa_rend_armor_static:GetArmorBonus()
+    return self.armor_reduction_total
+end
+
+
+
+LinkLuaModifier("modifier_ursa_rend_armor_static", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
+
 
 ---------
 --ursa dash
@@ -338,6 +359,7 @@ function ursa_dash:OnSpellStart(unit, special_cast)
         local enemy
         local vector
         local counter = 0
+        GameMode:ApplyDebuff({ caster = caster, target = caster, ability = self, modifier_name = "modifier_silence", duration = 9 })
         Timers:CreateTimer(0, function()
             if counter < number then
                 enemy = self:FindTargetForDash(caster)
@@ -573,6 +595,7 @@ function modifier_ursa_swift:OnCreated()
     self.ability = self:GetAbility()
 end
 
+
 function modifier_ursa_swift:OnAttackLanded(keys)
     --proc and remove teleport buff from ursa
     if (not IsServer()) then
@@ -741,7 +764,6 @@ function ursa_swift:Blink(caster)
     Aggro:Reset(caster)
     Aggro:Add(target, caster, 100)
     caster:MoveToTargetToAttack(target)
-    caster:PerformAttack(target, true, true, true, true, false, false, false)
     caster:SetForwardVector(direction)
     -- Disjoint projectiles
     ProjectileManager:ProjectileDodge(caster)
@@ -853,16 +875,16 @@ modifier_ursa_slam_slow = class({
     end
 })
 
-function modifier_ursa_slam_slow:GetAttackSpeedPercentBonus()
-    return self.as_slow
+function modifier_ursa_slam_slow:GetAttackSpeedPercentBonusMulti()
+    return self.as_slow_multi
 end
 
-function modifier_ursa_slam_slow:GetMoveSpeedPercentBonus()
-    return self.ms_slow
+function modifier_ursa_slam_slow:GetMoveSpeedPercentBonusMulti()
+    return self.ms_slow_multi
 end
 
-function modifier_ursa_slam_slow:GetSpellHastePercentBonus()
-    return self.sph_slow
+function modifier_ursa_slam_slow:GetSpellHastePercentBonusMulti()
+    return self.sph_slow_multi
 end
 
 function modifier_ursa_slam_slow:OnCreated(keys)
@@ -873,6 +895,9 @@ function modifier_ursa_slam_slow:OnCreated(keys)
     self.sph_slow = self.ability:GetSpecialValueFor("sph_slow") * -0.01
     self.as_slow = self.ability:GetSpecialValueFor("as_slow") * - 0.01
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
+    self.sph_slow_multi = self.sph_slow + 1
+    self.as_slow_multi = self.as_slow + 1
+    self.ms_slow_multi = self.ms_slow + 1
 end
 
 
@@ -966,6 +991,10 @@ function modifier_ursa_hunt_buff_stats:OnDeath(params)
             ParticleManager:ReleaseParticleIndex(healFX)
         end)
     end
+end
+
+function modifier_ursa_hunt_buff_stats:GetDebuffResistanceBonus()
+    return 1
 end
 
 LinkLuaModifier("modifier_ursa_hunt_buff_stats", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1132,7 +1161,12 @@ function modifier_ursa_jelly_channel:OnDestroy()
     if IsServer() then
         local caster = self:GetParent()
         caster:RemoveGesture(ACT_DOTA_IDLE_RARE)
+        Units:ForceStatsCalculation(caster)
     end
+end
+
+function modifier_ursa_jelly_channel:GetDamageReductionBonus()
+    return 0.75
 end
 
 LinkLuaModifier("modifier_ursa_jelly_channel", "creeps/zone1/boss/ursa.lua", LUA_MODIFIER_MOTION_NONE)

@@ -600,20 +600,21 @@ function modifier_treant_seed:OnCreated()
     self.interval = self:GetAbility():GetSpecialValueFor("tick")
     self.damage = self:GetAbility():GetSpecialValueFor("damage")
     self.slow = self:GetAbility():GetSpecialValueFor("slow")*-0.01
+    self.slowmulti = self.slow + 1
     self.mana_drain = self:GetAbility():GetSpecialValueFor("mana_drain")*0.01
     self:StartIntervalThink(self.interval)
 end
 
-function modifier_treant_seed:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_treant_seed:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_treant_seed:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_treant_seed:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_treant_seed:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_treant_seed:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 
 function modifier_treant_seed:OnIntervalThink()

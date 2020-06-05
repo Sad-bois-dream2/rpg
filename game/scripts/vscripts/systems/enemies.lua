@@ -524,10 +524,18 @@ function modifier_creep_scaling:OnCreated()
     self.armor = 2
     self.elementalArmor = 0.11
     self.healthBonus = 1
+    self.as = 0
+    self.ms = 0
+    self.debuff_resist = 0
     self.difficulty = Difficulty:GetValue()
     if (Enemies:IsBoss(self.creep)) then
         self.armor = 15
         self.elementalArmor = 0.47
+        --flat speed bonus per difficulty for boss
+        self.as = 5
+        self.ms = 50
+        --flat debuff resistance per difficulty for boss
+        self.debuff_resist = 3
         --pull boss back if they run too far 2500 range
         Timers:CreateTimer(5, function()
             self.spawn_pos = self.creep:GetAbsOrigin()
@@ -541,8 +549,13 @@ function modifier_creep_scaling:OnCreated()
             self.elementalArmor = 0.23
             self.damage = self.damage * 1.5
             self.healthBonus = 10
+            self.as = 2
+            self.ms = 20
         end
     end
+    self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
+    self.as_total = self.as  * self.difficulty
+    self.ms_total = self.ms  * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
@@ -581,7 +594,7 @@ function modifier_creep_scaling:OnCreated()
     if (castbarRequired == true) then
         Castbar:AddToUnit(self.creep)
     end
-    self.damage = self.damage * math.pow(self.difficulty, 3)
+    self.damage = self.damage * math.pow(self.difficulty, 1 + 2 *(self.difficulty - 1)/9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
@@ -607,6 +620,17 @@ function modifier_creep_scaling:OnIntervalThink()
     end
 end
 
+function modifier_creep_scaling:GetDebuffResistanceBonus()
+    return self.debuff_resist_total
+end
+
+function modifier_creep_scaling:GetMoveSpeedBonus()
+    return self.ms_total
+end
+
+function modifier_creep_scaling:GetAttackSpeedBonus()
+    return self.as_total
+end
 
 function modifier_creep_scaling:OnDeath(keys)
     if (not IsServer()) then
@@ -616,7 +640,7 @@ function modifier_creep_scaling:OnDeath(keys)
         if (Enemies:IsBoss(self.creep)) then
             Enemies.dropChanceFactor = Enemies.dropChanceFactor + 0.05
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
-            Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName(), duration = 3, continue = true })
+            Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName().." ", duration = 3, continue = true })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_BossDead", duration = 3, continue = true })
             Notifications:BottomToAll({ text = (math.floor((Enemies.dropChanceFactor - 1) * 10000) / 100) .. "%!", duration = 3, continue = true })
         end

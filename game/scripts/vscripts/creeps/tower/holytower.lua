@@ -307,17 +307,17 @@ end
 function modifier_holytower_frostbite:GetModifierTurnRate_Percentage() --% add to current turnrate -- tested this one add not subtract
     return -100
 end
---reduce these by 1000%
-function modifier_holytower_frostbite:GetSpellDamageBonus()
-    return -10
+--set 0
+function modifier_holytower_frostbite:GetSpellDamageBonusMulti()
+    return 0
 end
 
-function modifier_holytower_frostbite:GetAttackDamagePercentBonus()
-    return -10
+function modifier_holytower_frostbite:GetAttackDamagePercentBonusMulti()
+    return 0
 end
 
-function modifier_holytower_frostbite:GetHealingCausedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_holytower_frostbite:GetHealingCausedPercentBonusMulti()
+    return 0
 end
 
 function modifier_holytower_frostbite:OnIntervalThink()

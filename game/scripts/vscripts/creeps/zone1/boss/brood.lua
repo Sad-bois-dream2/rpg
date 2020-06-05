@@ -191,6 +191,7 @@ function modifier_brood_toxin_slow:OnCreated()
     self.base_slow = self.ability:GetSpecialValueFor("base_slow") * -0.01
     --not fixing +1 in this because it cant get to 21 stacks at 20 stacks it become stun
     self.slow = self.ability:GetSpecialValueFor("stack_slow") * -0.01 * (self:GetStackCount() + 1) + self.base_slow
+    self.slowmulti = self.slow + 1
     self.stun = self.ability:GetSpecialValueFor("stun")
     self.max_stacks = self.ability:GetSpecialValueFor("max_stacks")
 end
@@ -214,16 +215,16 @@ function modifier_brood_toxin_slow:OnRefresh()
     end
 end
 
-function modifier_brood_toxin_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_brood_toxin_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_brood_toxin_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_brood_toxin_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_brood_toxin_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_brood_toxin_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 
 LinkLuaModifier("modifier_brood_toxin_slow", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
@@ -446,7 +447,7 @@ end
 function modifier_brood_comes_charge:CheckState()
     return {
         [MODIFIER_STATE_SILENCED] = true,
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
     }
 end
 
@@ -1138,6 +1139,7 @@ function modifier_brood_spit_burn_slow:OnCreated(kv)
 
     local interval = self:GetAbility():GetSpecialValueFor("burn_interval")
     self.slow = self:GetAbility():GetSpecialValueFor("slow") * -0.01
+    self.slowmulti = self.slow +1
     -- Start interval
     self:StartIntervalThink(interval)
     self:OnIntervalThink()
@@ -1145,29 +1147,20 @@ end
 
 LinkLuaModifier("modifier_brood_spit_burn_slow", "creeps/zone1/boss/brood.lua", LUA_MODIFIER_MOTION_NONE)
 
-function modifier_brood_spit_burn_slow:OnRefresh(kv)
-
-end
-
-function modifier_brood_spit_burn_slow:OnRemoved()
-end
-
-function modifier_brood_spit_burn_slow:OnDestroy()
-end
 
 --------------------------------------------------------------------------------
 -- Modifier Effects
 
-function modifier_brood_spit_burn_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_brood_spit_burn_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_brood_spit_burn_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_brood_spit_burn_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_brood_spit_burn_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_brood_spit_burn_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 
 
@@ -1199,9 +1192,6 @@ function modifier_brood_spit_burn_slow:GetEffectAttachType()
     return PATTACH_ABSORIGIN_FOLLOW
 end
 
---function modifier_brood_spit_burn_slow:GetStatusEffectName()
-    --return "particles/status_fx/status_effect_poison_viper.vpcf"
---end
 
 modifier_brood_spit_thinker = class({})
 
@@ -1624,14 +1614,15 @@ function modifier_brood_web_enemy:OnCreated()
     self.casterTeam = self.caster:GetTeam()
     -- Ability specials
     self.ms_slow = self.ability:GetSpecialValueFor("ms_slow") * -0.01
+    self.ms_slow_multi = self.ms_slow + 1
     self.interval = self.ability:GetSpecialValueFor("spawn_interval")
 
     --spawn spiderling on enemy in web
     self:StartIntervalThink(self.interval)
 end
 
-function modifier_brood_web_enemy:GetMoveSpeedPercentBonus()
-    return self.ms_slow
+function modifier_brood_web_enemy:GetMoveSpeedPercentBonusMulti()
+    return self.ms_slow_multi
 end
 
 function modifier_brood_web_enemy:OnIntervalThink()

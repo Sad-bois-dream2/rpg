@@ -388,7 +388,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#StrengthLabel").text = str;
 		$("#AgilityLabel").text = agi;
 		$("#IntelligenceLabel").text = int;
-		$("#SpellDamageLabel").text = Math.round(spellDamage * 100) + "%";
+		$("#SpellDamageLabel").text = Math.round((spellDamage-1) * 100) + "%";
 		spellHaste = (spellHaste) * 100;
 		$("#SpellhasteLabel").text = Math.round(spellHaste);
 		if(armor>=0){
@@ -406,6 +406,9 @@ function OnHeroStatsUpdateRequest(event) {
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
+		if(cooldownReduction>=0.5){
+        		cooldownReduction=0.5;
+        }
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
 		debuffAmplification = debuffAmplification;
 		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";

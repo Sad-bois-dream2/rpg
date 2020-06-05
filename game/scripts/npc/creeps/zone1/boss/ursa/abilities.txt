@@ -30,7 +30,7 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"armor_reduction_pct"		"50 75 100"
+				"armor_reduction"		    "0.5 1 2"
 			}
 			"03"
 			{
@@ -152,7 +152,7 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"movespeed_bonus"			"100 200 300"
+   				"movespeed_bonus"			"10 20 30"
    			}
    		}
 		"precache"

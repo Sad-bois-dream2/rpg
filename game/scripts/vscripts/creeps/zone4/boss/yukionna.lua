@@ -178,21 +178,21 @@ function modifier_yukionna_promise_stun:CheckState()
     return state
 end
 
---reduce these by 1000%
-function modifier_yukionna_promise_stun:GetSpellDamageBonus()
-    return -10
+--set 0
+function modifier_yukionna_promise_stun:GetSpellDamageBonusMulti()
+    return 0
 end
 
-function modifier_yukionna_promise_stun:GetAttackDamagePercentBonus()
-    return -10
+function modifier_yukionna_promise_stun:GetAttackDamagePercentBonusMulti()
+    return 0
 end
 
-function modifier_yukionna_promise_stun:GetHealingCausedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_yukionna_promise_stun:GetHealingCausedPercentBonusMulti()
+    return 0
 end
 
-function modifier_yukionna_promise_stun:GetHealthRegenerationPercentBonus()
-    return -10
+function modifier_yukionna_promise_stun:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
 function modifier_yukionna_promise_stun:OnDestroy()
@@ -219,11 +219,8 @@ modifier_yukionna_snowstorm_eye = class({
     IsPurgable = function(self)
         return false
     end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
     end,
 })
 
@@ -240,6 +237,10 @@ function modifier_yukionna_snowstorm_eye:OnCreated()
     self.frostbite_trigger_range = self.ability:GetSpecialValueFor("frostbite_trigger_range")
     self.frostbite_duration = self.ability:GetSpecialValueFor("frostbite_duration")
     self:StartIntervalThink(self.tick) --1
+    self.freezing_field_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf", PATTACH_CUSTOMORIGIN, self.caster)
+    self.caster:EmitSound("hero_Crystal.freezingField.wind")
+    ParticleManager:SetParticleControlEnt(self.freezing_field_particle, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true )
+    ParticleManager:SetParticleControl(self.freezing_field_particle, 1, Vector (2500, 0, 0))
 end
 
 function modifier_yukionna_snowstorm_eye:OnIntervalThink()
@@ -294,6 +295,21 @@ function modifier_yukionna_snowstorm_eye:OnIntervalThink()
 end
 
 
+function modifier_yukionna_snowstorm_eye:OnDestroy()
+    ParticleManager:DestroyParticle(self.freezing_field_particle, true)
+    ParticleManager:ReleaseParticleIndex(self.freezing_field_particle)
+    self.caster:StopSound("hero_Crystal.freezingField.wind")
+end
+
+function modifier_yukionna_snowstorm_eye:OnDeath( params ) --venge death = bubble pop
+    if IsServer() then
+        if params.unit == self.caster then
+
+            self:Destroy()
+        end
+    end
+end
+
 LinkLuaModifier("modifier_generic_motion_controller", "generic/modifier_generic_motion_controller.lua", LUA_MODIFIER_MOTION_BOTH)
 LinkLuaModifier("modifier_yukionna_snowstorm_eye", "creeps/zone4/boss/yukionna.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -316,14 +332,6 @@ function yukionna_snowstorm:OnSpellStart()
         modifierTable.modifier_name = "modifier_yukionna_snowstorm_eye"
         modifierTable.duration = duration
         GameMode:ApplyBuff(modifierTable)
-        self.freezing_field_particle = ParticleManager:CreateParticle("particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf", PATTACH_CUSTOMORIGIN, self.caster)
-        self.caster:EmitSound("hero_Crystal.freezingField.wind")
-        ParticleManager:SetParticleControlEnt(self.freezing_field_particle, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true )
-        ParticleManager:SetParticleControl(self.freezing_field_particle, 1, Vector (2500, 0, 0))
-        Timers:CreateTimer(duration, function()
-            ParticleManager:DestroyParticle(self.freezing_field_particle, true)
-            ParticleManager:ReleaseParticleIndex(self.freezing_field_particle)
-        end)
     end
 end
 
@@ -669,11 +677,8 @@ function modifier_yukionna_drain_debuff:OnIntervalThink()
     end
 end
 
-function modifier_yukionna_drain_debuff:GetMoveSpeedPercentBonus()
-    if self.solo == 1 then
-        return self.slow
-    else return 0
-    end
+function modifier_yukionna_drain_debuff:GetMoveSpeedPercentBonusMulti()
+    return 0
 end
 
 LinkLuaModifier( "modifier_yukionna_drain_debuff", "creeps/zone4/boss/yukionna.lua", LUA_MODIFIER_MOTION_NONE )

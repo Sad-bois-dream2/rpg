@@ -28,12 +28,12 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"base_slow"		            "10 15 20"
+				"base_slow"		            "20 25 30"
 			}
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"stack_slow"		         "7 10 13"
+				"stack_slow"		         "3 5 7"
 			}
 			"04"
 			{
@@ -43,7 +43,7 @@
 			"05"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"max_stacks"				"12 8 4"
+				"max_stacks"				"15 11 7"
 			}
 
 		}
@@ -99,12 +99,12 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"charge_speed"              "700 900 1200"
+   				"charge_speed"              "600"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"radius"			        "800 700 600"
+   				"radius"			        "600"
    			}
             "05"
              {

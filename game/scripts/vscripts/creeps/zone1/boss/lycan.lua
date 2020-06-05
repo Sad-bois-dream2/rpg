@@ -239,13 +239,13 @@ function modifier_lycan_wound_debuff:OnIntervalThink()
         GameMode:DamageUnit(damageTable)
     end
 end
---heal negate reduce by 1000%
-function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonus()
-    return -10
+--set 0
+function modifier_lycan_wound_debuff:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
-function modifier_lycan_wound_debuff:GetHealingReceivedPercentBonus()
-    return -10
+function modifier_lycan_wound_debuff:GetHealingReceivedPercentBonusMulti()
+    return 0
 end
 
 LinkLuaModifier("modifier_lycan_wound_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -279,16 +279,16 @@ modifier_lycan_lupine = class({
     end,
 })
 
-function modifier_lycan_lupine:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_lycan_lupine:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_lycan_lupine:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_lycan_lupine:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_lycan_lupine:GetSpellHasteBonus()
-    return self.slow
+function modifier_lycan_lupine:GetSpellHasteBonusMulti()
+    return self.slowmulti
 end
 
 function modifier_lycan_lupine:OnCreated(keys)
@@ -297,7 +297,7 @@ function modifier_lycan_lupine:OnCreated(keys)
     end
     self.ability = self:GetAbility()
     self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
-
+    self.slowmulti = self.slow + 1
 end
 
 
@@ -728,15 +728,17 @@ function modifier_lycan_howl_debuff:OnCreated()
     end
     self.ability = self:GetAbility()
     self.aa_reduction = self.ability:GetSpecialValueFor("dmg_reduce_outgoing_pct") * -0.01
+    self.aa_reduction_multi = 1 + self.aa_reduction
     self.spelldmg_reduction = self.ability:GetSpecialValueFor("dmg_reduce_outgoing_pct") * -0.01
+    self.spelldmg_reduction = 1 + self.spelldmg_reduction
 end
 
-function modifier_lycan_howl_debuff:GetAttackDamagePercentBonus()
-    return self.aa_reduction or 0
+function modifier_lycan_howl_debuff:GetAttackDamagePercentBonusMulti()
+    return self.aa_reduction_multi
 end
 
-function modifier_lycan_howl_debuff:GetSpellDamageBonus()
-    return self.spelldmg_reduction or 0
+function modifier_lycan_howl_debuff:GetSpellDamageBonusMulti()
+    return self.spelldmg_reduction_multi
 end
 
 LinkLuaModifier("modifier_lycan_howl_debuff", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)
@@ -1323,6 +1325,7 @@ function modifier_lycan_bleeding_heal_reduced:OnCreated()
     end
     --not fixing because already working first loop getstack count = 0 then get +1, every loop after get stacks - 1 but alse get +1
     self.heal_reduced = self:GetAbility():GetSpecialValueFor("heal_reduced") * (self:GetStackCount() + 1) * -0.01
+    self.heal_reduced_multi = self.heal_reduced + 1
 end
 
 function modifier_lycan_bleeding_heal_reduced:OnRefresh()
@@ -1332,12 +1335,12 @@ function modifier_lycan_bleeding_heal_reduced:OnRefresh()
     self:OnCreated()
 end
 
-function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonus()
-    return self.heal_reduced
+function modifier_lycan_bleeding_heal_reduced:GetHealthRegenerationPercentBonusMulti()
+    return self.heal_reduced_multi
 end
 
-function modifier_lycan_bleeding_heal_reduced:GetHealingReceivedPercentBonus()
-    return self.heal_reduced
+function modifier_lycan_bleeding_heal_reduced:GetHealingReceivedPercentBonusMulti()
+    return self.heal_reduced_multi
 end
 
 LinkLuaModifier("modifier_lycan_bleeding_heal_reduced", "creeps/zone1/boss/lycan.lua", LUA_MODIFIER_MOTION_NONE)

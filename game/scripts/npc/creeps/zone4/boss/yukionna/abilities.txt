@@ -512,17 +512,17 @@ DOTAAbilites
  			"01"
  			{
  				"var_type"					"FIELD_FLOAT"
- 				"dmg_reduction"			    "70 80 90"
+ 				"dmg_reduction"			    "40 70 90"
  			}
  			"02"
  			{
  				"var_type"					"FIELD_FLOAT"
- 				"amp"			            "33 50 100"
+ 				"amp"			            "10 30 100"
  			}
  			"03"
  			{
  				"var_type"					"FIELD_FLOAT"
- 				"duration"			        "7 6 5"
+ 				"duration"			        "5"
  			}
  			"04"
  			{

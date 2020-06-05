@@ -253,8 +253,12 @@ function modifier_venge_missile_slow:GetModifierTurnRate_Percentage() --% add to
     return self.turn_rate_slow
 end
 
-function modifier_venge_missile_slow:GetMoveSpeedPercentBonus()
-    return self:GetStackCount()* -0.01
+function modifier_venge_missile_slow:GetMoveSpeedPercentBonusMulti()
+    self.stacks = self:GetStackCount() -- 1% slow each stack
+    if self.stacks > 100 then
+        self.stacks = 100
+    end
+    return 1 - self.stacks* 0.01
 end
 
 LinkLuaModifier("modifier_venge_missile_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -625,19 +629,20 @@ function modifier_venge_side_frost_slow:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.slow = self.ability:GetSpecialValueFor("frost_slow") *-0.01
+    self.slow = self.ability:GetSpecialValueFor("frost_slow") *0.01
+    self.slowmulti = 1 - self.slow
 end
 
-function modifier_venge_side_frost_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_side_frost_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 LinkLuaModifier("modifier_venge_side_frost_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -1595,8 +1600,8 @@ function modifier_venge_mind_control_black:OnAttackLanded(keys)
 
 end
 
-function modifier_venge_mind_control_black:GetManaRegenerationPercentBonus()
-    return -10
+function modifier_venge_mind_control_black:GetManaRegenerationPercentBonusMulti()
+    return 0
 end
 
 function modifier_venge_mind_control_black:OnDestroy()
@@ -1951,23 +1956,25 @@ function modifier_venge_bubble:OnDestroy()
     if self.hBubble and self.hBubble:IsAlive() then
         self.hBubble:ForceKill( false )
     end
+    Units:ForceStatsCalculation(self:GetParent())
 end
--- reduce these by 1000%
-function modifier_venge_bubble:GetHealthRegenerationPercentBonus()
-    return -10
+--set 0
+function modifier_venge_bubble:GetAttackDamagePercentBonusMulti()
+    return 0
 end
-
-function modifier_venge_bubble:GetHealingReceivedPercentBonus()
-    return -10
-end
-
-function modifier_venge_bubble:GetSpellDamageBonus()
-    return -10
+function modifier_venge_bubble:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
-function modifier_venge_bubble:GetAttackDamagePercentBonus()
-    return -10
+function modifier_venge_bubble:GetHealingReceivedPercentBonusMulti()
+    return 0
 end
+
+function modifier_venge_bubble:GetSpellDamageBonusMulti()
+    return 0
+end
+
+
 
 function modifier_venge_bubble:OnDeath( params ) --venge death = bubble pop
     if IsServer() then
@@ -2969,25 +2976,26 @@ function modifier_venge_quake_pulse:OnIntervalThink()
                 modifierTable.duration = self.slow_duration
                 GameMode:ApplyBuff(modifierTable)
 
-                --rock projectile
+                --rock projectile on if party
+                if HeroList:GetHeroCount() > 1 then
+                    local vDir = enemy:GetAbsOrigin() - self:GetParent():GetOrigin()
+                    vDir.z = 0.0
+                    vDir = vDir:Normalized()
 
-                local vDir = enemy:GetAbsOrigin() - self:GetParent():GetOrigin()
-                vDir.z = 0.0
-                vDir = vDir:Normalized()
-
-                local info = {
-                    EffectName = "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf",
-                    Ability = self.ability,
-                    vSpawnOrigin = self:GetParent():GetOrigin(),
-                    fStartRadius = 250,
-                    fEndRadius = 250,
-                    vVelocity = vDir * self.projectile_speed,
-                    fDistance = self.range,
-                    Source = self:GetCaster(),
-                    iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    iUnitTargetType = DOTA_UNIT_TARGET_HERO ,
-                }
-                ProjectileManager:CreateLinearProjectile( info )
+                    local info = {
+                        EffectName = "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf",
+                        Ability = self.ability,
+                        vSpawnOrigin = self:GetParent():GetOrigin(),
+                        fStartRadius = 250,
+                        fEndRadius = 250,
+                        vVelocity = vDir * self.projectile_speed,
+                        fDistance = self.range,
+                        Source = self:GetCaster(),
+                        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+                        iUnitTargetType = DOTA_UNIT_TARGET_HERO ,
+                    }
+                    ProjectileManager:CreateLinearProjectile( info )
+                end
             end
         end
         -- Increase radius
@@ -3035,19 +3043,20 @@ function modifier_venge_quake_slow:OnCreated()
     self.ability = self:GetAbility()
 
     -- Ability specials
-    self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+    self.slow = self.ability:GetSpecialValueFor("slow") * 0.01
+    self.slowmulti = 1 - self.slow
 end
 
-function modifier_venge_quake_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_quake_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_quake_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 LinkLuaModifier("modifier_venge_quake_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
 venge_quake = class({

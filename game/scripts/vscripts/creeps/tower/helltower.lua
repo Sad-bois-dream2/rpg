@@ -295,6 +295,7 @@ function modifier_helltower_hellchain:OnCreated()
     self.dot = self.ability:GetSpecialValueFor("dot")
     self.mana_burn = self.ability:GetSpecialValueFor("mana_burn") * 0.01
     self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+    self.slowmulti = self.slow +1
     self.tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(self.tick)
 end
@@ -307,19 +308,19 @@ function modifier_helltower_hellchain:CheckState()
 end
 
 function modifier_helltower_hellchain:GetSpellHastePercentBonus()
-    return self.slow
+    return self.slowmulti
 end
 
 function modifier_helltower_hellchain:GetAttackSpeedPercentBonus()
-    return self.slow
+    return self.slowmulti
 end
---reduce these by 1000%
-function modifier_helltower_hellchain:GetHealthRegenerationPercentBonus()
-    return -10
+--set 0
+function modifier_helltower_hellchain:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
-function modifier_helltower_hellchain:GetHealingReceivedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_helltower_hellchain:GetHealingReceivedPercentBonusMulti()
+    return 0
 end
 
 function modifier_helltower_hellchain:OnIntervalThink()
