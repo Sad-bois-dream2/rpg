@@ -161,7 +161,7 @@
         "AbilityCastRange"				"2000"
         // Time
        	//-------------------------------------------------------------------------------------------------------------
-       	"AbilityCooldown"				"15"
+       	"AbilityCooldown"				"10 9 8"
 
 
    		// Special
@@ -176,7 +176,7 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"		    "600"
+   				"projectile_speed"		    "750"
    			}
    			"03"
    			{
@@ -196,7 +196,7 @@
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "20"
+   				"duration"				    "30"
    			}
 
    		}
@@ -244,17 +244,17 @@
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "16 20 25"
+   				"duration"				    "16 20 24"
    			}
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"set"				        "2 3 5"
+   				"set"				        "2 3 4"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"set_interval"				"8 6.4 5"
+   				"set_interval"				"8 6.4 5.33"
    			}
    			"05"
    			{
@@ -284,7 +284,7 @@
    			"10"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"			"500 625 800"
+   				"projectile_speed"			"500 625 750"
    			}
 
    		}
@@ -381,12 +381,12 @@
    			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"as_bonus"				    "200 500 800"
+   				"as_bonus"				    "200 350 500"
    			}
    			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_bonus"			        "100 150 200"
+   				"ms_bonus"			        "25 35 45"
    			}
    			"03"
    			{
@@ -396,12 +396,12 @@
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"as_reduce"				    "75 55 35"
+   				"as_reduce"				    "75 60 45"
    			}
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"ms_reduce"			        "75 50 25"
+   				"ms_reduce"			        "45 35 25"
    			}
    			"06"
    			{

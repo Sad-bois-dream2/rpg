@@ -146,12 +146,12 @@
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"fire_resist_reduce_min"		"50"
+				"fire_resist_reduce_min"		"-50"
 			}
 			"04"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"fire_resist_reduce_max"		"50"
+				"fire_resist_reduce_max"		"-50"
 			}
 		}
 	}
@@ -386,22 +386,22 @@
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"mana_drain_min"		"15"
+				"mana_drain_min"		"20"
 			}
 			"04"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"mana_drain_max"		"15"
+				"mana_drain_max"		"20"
 			}
 			"05"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"mana_drain_percent_min"		"1"
+				"mana_drain_percent_min"		"2"
 			}
 			"06"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"mana_drain_percent_max"		"1"
+				"mana_drain_percent_max"		"2"
 			}
 			"07"
 			{

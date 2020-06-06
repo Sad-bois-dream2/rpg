@@ -1,0 +1,51 @@
+DOTAAbilites
+{
+    //=================================================================================================================
+    // Draugr Golem : Frozen Tombs
+    //=================================================================================================================
+    "draugr_golem_tomb"
+   	{
+   		// General
+   		//-------------------------------------------------------------------------------------------------------------
+   		"BaseClass"						"ability_lua"
+        "ScriptFile"					"creeps/zone4/boss/draugr_golem"
+        "AbilityTextureName"			"draugr_golem_tomb"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_BASIC"
+   		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+  		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+  		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+   		"MaxLevel"						"3"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.4"
+        "AbilityCastRange"				"1500"
+
+   		// Time
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilityCooldown"				"30"
+
+
+   		// Special
+   		//-------------------------------------------------------------------------------------------------------------
+   		"AbilitySpecial"
+   		{
+   		    "01"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"range"				        "1500"
+             }
+   		    "02"
+             {
+               	"var_type"					"FIELD_FLOAT"
+               	"number"				    "1 2 3"
+             }
+   		}
+		"precache"
+		{
+
+		}
+	}
+}
+

@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-    "npc_creep_apostate_golem"
+    "npc_trash_apostate_golem"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General

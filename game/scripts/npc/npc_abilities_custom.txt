@@ -22,8 +22,21 @@
 #base creeps/tower/earthtower/abilities.txt
 #base creeps/zone1/boss/parasite_golem/abilities.txt
 #base creeps/zone4/boss/draugr_golem/abilities.txt
-#base creeps/zone5/boss/incurable_golem/abilities.txt
 #base creeps/zone5/boss/winterwyrm_dragon/abilities.txt
+#base creeps/zone4/boss/yukionna/abilities.txt
+#base creeps/zone4/boss/snowgiant/abilities.txt
+#base creeps/zone4/boss/hiems/abilities.txt
+#base creeps/zone4/boss/lich/abilities.txt
+#base creeps/zone4/boss/deathknight/abilities.txt
+#base creeps/zone4/boss/frostwyrm/abilities.txt
+#base creeps/zone4/boss/techies/abilities.txt
+#base creeps/zone5/boss/succubus/abilities.txt
+#base creeps/zone5/boss/executioner/abilities.txt
+#base creeps/zone5/boss/hellhound/abilities.txt
+#base creeps/zone6/boss/balanar/abilities.txt
+#base creeps/zone8/boss/rubicundus/abilities.txt
+#base creeps/zone8/boss/viridis/abilities.txt
+#base creeps/zone8/boss/coeruleus/abilities.txt
 
 "DOTAAbilities"
 {

@@ -9,7 +9,7 @@
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
         "UnitLabel"         "boss"
-        "ModelScale" 				"1.5"
+        "ModelScale" 				"1.35"
 
         // Abilities
         //----------------------------------------------------------------

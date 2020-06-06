@@ -53,7 +53,7 @@ DOTAAbilites
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"			        "50 150 1500"
+   				"dot"			        "50 150 500"
    			}
    			"08"
    			{

@@ -52,8 +52,8 @@
    		}
 	    "precache"
         {
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
-            "particle"  "particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf"
+            //"soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
+            //"particle"  "particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf"
             "particle"  "particles/status_fx/status_effect_drow_frost_arrow.vpcf"
 
     	}
@@ -251,12 +251,12 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"main_damage"				"500 2000 8000"
+   				"main_damage"				"250 750 2250"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"burn_dps"				    "50 200 800"
+   				"burn_dps"				    "25 75 225"
    			}
    			"05"
    			{
@@ -296,7 +296,7 @@
    			"10"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"number"			        "15 20 25"
+   				"number"			        "10 13 16"
    			}
    			"11"
    			{
@@ -362,12 +362,12 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"			"600"
+   				"projectile_speed"			"550"
    			}
    			"04"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_radius"			"200"
+   				"projectile_radius"			"175"
    			}
    			"05"
    			{
@@ -382,7 +382,7 @@
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"number"				    "3 4 5"
+   				"number"				    "2 3 4"
    			}
    			"08"
    			{
@@ -535,6 +535,7 @@
     	    "particle"  "particles/units/heroes/hero_rubick/rubick_spell_steal.vpcf"
     	    "particle"  "particles/frostivus_herofx/juggernaut_omnislash_ascension.vpcf"
     	    "particle"  "particles/units/npc_boss_venge/venge_moonify/countdown.vpcf"
+    	    "particle"  "particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_target_death.vpcf"
     	}
     }
     //=================================================================================================================
@@ -694,7 +695,7 @@
             "05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"target_search_radius"		"7000"
+   				"target_search_radius"		"2000"
    			}
    			"06"
    			{
@@ -784,7 +785,7 @@
             "02"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "4 5 6"
+   				"duration"				    "2 3 4"
    			}
    			"03"
    			{
@@ -855,7 +856,7 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"number"				    "7 14 21"
+   				"number"				    "6 12 18"
    			}
    			"04"
    			{
@@ -865,17 +866,17 @@
    			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"dot"				        "20 60 200"
+   				"dot"				        "15 45 150"
    			}
    			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"duration"				    "10"
+   				"duration"				    "6 7 8"
    			}
    			"07"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"projectile_speed"	        "600"
+   				"projectile_speed"	        "500"
    			}
    			"08"
             {

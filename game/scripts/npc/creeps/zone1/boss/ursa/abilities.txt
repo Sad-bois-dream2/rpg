@@ -30,7 +30,7 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"armor_reduction_pct"		"50 75 100"
+				"armor_reduction"		    "0.5 1 2"
 			}
 			"03"
 			{
@@ -152,7 +152,7 @@
    			"03"
    			{
    				"var_type"					"FIELD_FLOAT"
-   				"movespeed_bonus"			"100 200 300"
+   				"movespeed_bonus"			"10 20 30"
    			}
    		}
 		"precache"
@@ -181,8 +181,7 @@
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_3"
         "AnimationIgnoresModelScale"    "1"
-        "AnimationPlaybackRate"         "0.2"
-        "AbilityCastPoint"				"2"
+        "AbilityCastPoint"				"0.3"
         "AbilityCastRange"				"1200"
 
    		// Time
@@ -193,37 +192,32 @@
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilitySpecial"
    		{
-   		    "01"
-             {
-               	"var_type"					"FIELD_FLOAT"
-               	"radius"				    "1500"
-             }
-   			"02"
+   			"01"
    			{
    				"var_type"					"FIELD_FLOAT"
    				"damage"				    "200 600 1800"
    			}
-   			"03"
+   			"02"
    			{
    				"var_type"					"FIELD_FLOAT"
    				"stun"				        "3 6 9"
    			}
-   		    "04"
+   		    "03"
             {
                	"var_type"					"FIELD_FLOAT"
                	"travel_distance"		    "900"
             }
-            "05"
+            "04"
              {
                	"var_type"					"FIELD_FLOAT"
                	"start_radius"				"100"
              }
-   			"06"
+   			"05"
    			{
    				"var_type"					"FIELD_FLOAT"
    				"end_radius"				"450"
    			}
-   			"07"
+   			"06"
    			{
    				"var_type"					"FIELD_FLOAT"
    				"projectile_speed"		    "900"

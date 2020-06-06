@@ -1,0 +1,24 @@
+--------------------
+--hiems frost vectors  --8 vectors spawning 2000 range with 1000 projectile speed from 8 directions focusing on random target
+--------------------
+--------------------
+--hiems mindfreeze --passive aura apply undispellable stacking debuff every sec when in aura aoe. each stack increase chance to trigger atropy(self-disarm) and fumble cast(self-silence) on attack or cast. reset stack counter to 0 when trigger.
+--------------------
+--------------------
+--hiems ice shatter --send a ice path to every hero that crack and explode the ground beneath after a long delay and instakill if caught in aoe
+--------------------
+----------------------
+--hiems absolute zero --cover a random hero in an undispellable absolute zero condition(sealing frostbite + stun) for 5 s. That covered hero emit absolute zero wave like shiva guards apply absolute zero to anyone caught in wave(that caught hero will emit new wave this new wave can reapply absolute zero to already absolute zeroed hero). A hero can only emit a total of 1/2/3 absolute zero wave per cast.
+----------------------
+----------------------
+--hiems embodiment of cold --passive aura reduce all healing received/health regen of heroes nearby to 16/13/10%
+----------------------
+-----------------------
+--hiems blizzard --moving blizzard like tb invoker apply damage + omega slow on hit
+-----------------------
+-----------------------
+--hiems cold vortex --apply buff to himself for 20s making hiems randomly spawn cold vortex dealing %max health in a small aoe for 30s every 3/2.5/2s
+-----------------------
+------------------------
+--hiems hibernate ----hiems hibernate --self-purge + stun himself for 10/9/8s but gain a shield equal to 5/6.5/8% of his max health, damaging him in this state against him apply 2s absolute zero to the damage source. If shield still up when he comes out of hibernation he regains health equal to 10 times of shield health. if the shield is broken he comes out of hibernation immediately.
+------------------------

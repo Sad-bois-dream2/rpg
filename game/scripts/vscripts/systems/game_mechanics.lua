@@ -523,7 +523,7 @@ if (IsServer()) then
         end
         if (args.ability) then
             totalBlock = totalBlock + Units:GetMagicBlock(damageTable.victim)
-            damageTable.damage = damageTable.damage * (1 + Units:GetSpellDamage(damageTable.attacker))
+            damageTable.damage = damageTable.damage * (Units:GetSpellDamage(damageTable.attacker))
         end
         local totalAmplification = 1
         if (IsFireDamage == true) then

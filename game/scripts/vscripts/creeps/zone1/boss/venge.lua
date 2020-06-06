@@ -209,9 +209,9 @@ function modifier_venge_missile:OnAttackLanded(keys)
         for _, enemy in pairs(enemies) do
             self.ability:ApplyMoondaze(enemy, keys.target, self.parent)
         end
-        local ele_phys ="particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf"
-        keys.target:EmitSound("Hero_KeeperOfTheLight.BlindingLight")
-        self.ability:ExplodeFX(ele_phys, keys.target, self.radius)
+        --local ele_phys ="particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf" -- i think players' eyes will bleed repeatedly seeing this shit
+        --keys.target:EmitSound("Hero_KeeperOfTheLight.BlindingLight")
+        --self.ability:ExplodeFX(ele_phys, keys.target, self.radius)
     end
 end
 
@@ -253,8 +253,12 @@ function modifier_venge_missile_slow:GetModifierTurnRate_Percentage() --% add to
     return self.turn_rate_slow
 end
 
-function modifier_venge_missile_slow:GetMoveSpeedPercentBonus()
-    return self:GetStackCount()* -0.01
+function modifier_venge_missile_slow:GetMoveSpeedPercentBonusMulti()
+    self.stacks = self:GetStackCount() -- 1% slow each stack
+    if self.stacks > 100 then
+        self.stacks = 100
+    end
+    return 1 - self.stacks* 0.01
 end
 
 LinkLuaModifier("modifier_venge_missile_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
@@ -625,19 +629,20 @@ function modifier_venge_side_frost_slow:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.slow = self.ability:GetSpecialValueFor("frost_slow") *-0.01
+    self.slow = self.ability:GetSpecialValueFor("frost_slow") *0.01
+    self.slowmulti = 1 - self.slow
 end
 
-function modifier_venge_side_frost_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_side_frost_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_venge_side_frost_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 LinkLuaModifier("modifier_venge_side_frost_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -1595,8 +1600,8 @@ function modifier_venge_mind_control_black:OnAttackLanded(keys)
 
 end
 
-function modifier_venge_mind_control_black:GetManaRegenerationPercentBonus()
-    return -1
+function modifier_venge_mind_control_black:GetManaRegenerationPercentBonusMulti()
+    return 0
 end
 
 function modifier_venge_mind_control_black:OnDestroy()
@@ -1784,7 +1789,6 @@ function venge_mind_control:OnSpellStart()
             modifierTable.duration = 5
             GameMode:ApplyBuff(modifierTable)
         end
-        GameMode:ApplyDebuff(modifierTable)
         local range = self:GetSpecialValueFor("range")
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
                 self.caster:GetAbsOrigin(),
@@ -1952,23 +1956,25 @@ function modifier_venge_bubble:OnDestroy()
     if self.hBubble and self.hBubble:IsAlive() then
         self.hBubble:ForceKill( false )
     end
+    Units:ForceStatsCalculation(self:GetParent())
 end
--- reduce these by 1000%
-function modifier_venge_bubble:GetHealthRegenerationPercentBonus()
-    return -10
+--set 0
+function modifier_venge_bubble:GetAttackDamagePercentBonusMulti()
+    return 0
 end
-
-function modifier_venge_bubble:GetHealingReceivedPercentBonus()
-    return -10
-end
-
-function modifier_venge_bubble:GetSpellDamageBonus()
-    return -10
+function modifier_venge_bubble:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
-function modifier_venge_bubble:GetAttackDamagePercentBonus()
-    return -10
+function modifier_venge_bubble:GetHealingReceivedPercentBonusMulti()
+    return 0
 end
+
+function modifier_venge_bubble:GetSpellDamageBonusMulti()
+    return 0
+end
+
+
 
 function modifier_venge_bubble:OnDeath( params ) --venge death = bubble pop
     if IsServer() then
@@ -2558,11 +2564,11 @@ function modifier_venge_moonify_aura:UpdateHorizontalMotion(me, dt) --28 ticks p
                 GameMode:DamageUnit(damageTable)
                 if distance_to_caster < 100 then
                     self:Destroy()
-                    self.parent:ForceKill(false)
+                    self.ability:MoonAbsorb(self.parent)
                 end
             else
                 self:Destroy()
-                self.parent:ForceKill(false)
+                self.ability:MoonAbsorb(self.parent)
             end
         end
     end
@@ -2658,7 +2664,7 @@ function modifier_venge_moonify_hide:OnCreated()
                 end
                 --kill that no friend boi
                 if self.parent:HasModifier("modifier_venge_moonify_hide") and self.expire == true and self.alive == false and self.delay < 1 then
-                    self.parent:ForceKill(false)
+                    self.ability:MoonAbsorb(self.parent)
                 end
                 return 1
             end
@@ -2717,8 +2723,7 @@ function modifier_venge_moonify_hide:OnIntervalThink()
     if self.alive == false  then
         --check if moon get killed by other players and not expired by itself. if yes killed the moonified boi
         if self.expire == false then
-            self.parent:EmitSound("Hero_EarthSpirit.StoneRemnant.Destroy ")
-            self.parent:ForceKill(false)
+            self.ability:MoonAbsorb(self.parent)
         --check if this debuff should be remove when rescued( literally get kissed at 200 range kekw)
         elseif self.expire == true then
             local allies = FindUnitsInRadius(self:GetParent():GetTeamNumber(),
@@ -2768,6 +2773,20 @@ function venge_moonify:GetAOERadius()
     return self:GetSpecialValueFor("radius")
 end
 
+function venge_moonify:MoonAbsorb(target)
+    if IsServer() then
+        local death_fx ="particles/econ/items/earthshaker/earthshaker_arcana/earthshaker_arcana_target_death.vpcf"
+        self.nPreviewFX = ParticleManager:CreateParticle( death_fx, PATTACH_ABSORIGIN_FOLLOW, target )
+        ParticleManager:SetParticleControlEnt(self.nPreviewFX, 0, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(self.nPreviewFX, 2, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+        ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+        target:SetModelScale(0)
+        target:ForceKill(false)
+        Timers:CreateTimer(5,function()
+            target:SetModelScale(1)
+        end)
+    end
+end
 function venge_moonify:OnAbilityPhaseStart()
     if IsServer() then
         EmitSoundOn("DOTA_Item.HeavensHalberd.Activate", self:GetCaster() )
@@ -2957,25 +2976,26 @@ function modifier_venge_quake_pulse:OnIntervalThink()
                 modifierTable.duration = self.slow_duration
                 GameMode:ApplyBuff(modifierTable)
 
-                --rock projectile
+                --rock projectile on if party
+                if HeroList:GetHeroCount() > 1 then
+                    local vDir = enemy:GetAbsOrigin() - self:GetParent():GetOrigin()
+                    vDir.z = 0.0
+                    vDir = vDir:Normalized()
 
-                local vDir = enemy:GetAbsOrigin() - self:GetParent():GetOrigin()
-                vDir.z = 0.0
-                vDir = vDir:Normalized()
-
-                local info = {
-                    EffectName = "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf",
-                    Ability = self.ability,
-                    vSpawnOrigin = self:GetParent():GetOrigin(),
-                    fStartRadius = 250,
-                    fEndRadius = 250,
-                    vVelocity = vDir * self.projectile_speed,
-                    fDistance = self.range,
-                    Source = self:GetCaster(),
-                    iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    iUnitTargetType = DOTA_UNIT_TARGET_HERO ,
-                }
-                ProjectileManager:CreateLinearProjectile( info )
+                    local info = {
+                        EffectName = "particles/units/npc_boss_venge/venge_quake/big_rock.vpcf",
+                        Ability = self.ability,
+                        vSpawnOrigin = self:GetParent():GetOrigin(),
+                        fStartRadius = 250,
+                        fEndRadius = 250,
+                        vVelocity = vDir * self.projectile_speed,
+                        fDistance = self.range,
+                        Source = self:GetCaster(),
+                        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+                        iUnitTargetType = DOTA_UNIT_TARGET_HERO ,
+                    }
+                    ProjectileManager:CreateLinearProjectile( info )
+                end
             end
         end
         -- Increase radius
@@ -3023,19 +3043,20 @@ function modifier_venge_quake_slow:OnCreated()
     self.ability = self:GetAbility()
 
     -- Ability specials
-    self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+    self.slow = self.ability:GetSpecialValueFor("slow") * 0.01
+    self.slowmulti = 1 - self.slow
 end
 
-function modifier_venge_quake_slow:GetAttackSpeedPercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetAttackSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_quake_slow:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetMoveSpeedPercentBonusMulti()
+    return self.slowmulti
 end
 
-function modifier_venge_quake_slow:GetSpellHastePercentBonus()
-    return self.slow
+function modifier_venge_quake_slow:GetSpellHastePercentBonusMulti()
+    return self.slowmulti
 end
 LinkLuaModifier("modifier_venge_quake_slow", "creeps/zone1/boss/venge.lua", LUA_MODIFIER_MOTION_NONE)
 venge_quake = class({
@@ -3097,8 +3118,8 @@ function venge_quake:OnSpellStart()
     local range = self:GetSpecialValueFor("range")
     self.epicenter_duration = self:GetSpecialValueFor("epicenter_duration")
     if HeroList:GetHeroCount() > 1 then
-        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                caster:GetAbsOrigin(),
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.caster:GetAbsOrigin(),
                 nil,
                 range,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -3463,7 +3484,7 @@ if (IsServer() and not GameMode.ZONE1_BOSS_VENGE) then
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_bubble_passive, 'OnTakeDamage'))
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_moonify, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_frost, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_void, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_venge_side_void, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_holy, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_venge_side_inferno, 'OnTakeDamage'))
     GameMode.ZONE1_BOSS_VENGE = true

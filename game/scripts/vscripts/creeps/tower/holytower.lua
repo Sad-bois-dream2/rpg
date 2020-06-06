@@ -46,6 +46,9 @@ function modifier_holytower_holyfrost:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self.parent:StartGesture(ACT_DOTA_CUSTOM_TOWER_IDLE)
+    local mouth_fx = "particles/econ/world/towers/ti10_radiant_tower/ti10_radiant_tower_ambient.vpcf"
+    self.nPreviewFX = ParticleManager:CreateParticle( mouth_fx, PATTACH_ABSORIGIN_FOLLOW, self.parent )
+    ParticleManager:SetParticleControlEnt(self.nPreviewFX, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_mouth", self.parent:GetAbsOrigin(), true)
     self:StartIntervalThink(5)
 end
 
@@ -240,7 +243,11 @@ end
 function modifier_holytower_holyfrost:OnDeath( params )
     if IsServer() then
         if params.unit == self.parent then
-            self.parent:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_DIE, 0.5)
+            local death_fx = "particles/econ/world/towers/ti10_radiant_tower/ti10_radiant_tower_destruction.vpcf"
+            self.destruction = ParticleManager:CreateParticle( death_fx, PATTACH_ABSORIGIN_FOLLOW, self.parent )
+            ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+            ParticleManager:ReleaseParticleIndex(self.destruction)
+            self.parent:SetModelScale(0)
         end
     end
 end
@@ -300,17 +307,17 @@ end
 function modifier_holytower_frostbite:GetModifierTurnRate_Percentage() --% add to current turnrate -- tested this one add not subtract
     return -100
 end
---reduce these by 1000%
-function modifier_holytower_frostbite:GetSpellDamageBonus()
-    return -10
+--set 0
+function modifier_holytower_frostbite:GetSpellDamageBonusMulti()
+    return 0
 end
 
-function modifier_holytower_frostbite:GetAttackDamagePercentBonus()
-    return -10
+function modifier_holytower_frostbite:GetAttackDamagePercentBonusMulti()
+    return 0
 end
 
-function modifier_holytower_frostbite:GetHealingCausedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_holytower_frostbite:GetHealingCausedPercentBonusMulti()
+    return 0
 end
 
 function modifier_holytower_frostbite:OnIntervalThink()

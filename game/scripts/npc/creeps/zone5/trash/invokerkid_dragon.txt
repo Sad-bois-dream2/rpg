@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-    "npc_creep_invokerkid_dragon"
+    "npc_trash_invokerkid_dragon"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General

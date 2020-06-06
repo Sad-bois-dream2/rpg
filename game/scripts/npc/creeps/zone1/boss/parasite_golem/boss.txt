@@ -1,6 +1,6 @@
 "DOTAUnits"
 {
-    "npc_boss_parasitegolem"
+    "npc_boss_parasite_golem"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General

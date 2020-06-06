@@ -46,6 +46,9 @@ function modifier_helltower_hellfire:OnCreated()
     self.parent = self:GetParent()
     self.ability = self:GetAbility()
     self.parent:StartGesture(ACT_DOTA_CUSTOM_TOWER_IDLE)
+    local mouth_fx = "particles/econ/world/towers/ti10_dire_tower/ti10_dire_tower_ambient.vpcf"
+    self.nPreviewFX = ParticleManager:CreateParticle( mouth_fx, PATTACH_ABSORIGIN_FOLLOW, self.parent )
+    ParticleManager:SetParticleControlEnt(self.nPreviewFX, 0, self.parent, PATTACH_POINT_FOLLOW, "attach_mouth", self.parent:GetAbsOrigin(), true)
     self:StartIntervalThink(5)
 end
 
@@ -244,7 +247,11 @@ end
 function modifier_helltower_hellfire:OnDeath( params )
     if IsServer() then
         if params.unit == self.parent then
-            self.parent:StartGestureWithPlaybackRate(ACT_DOTA_CUSTOM_TOWER_DIE, 0.5)
+            local death_fx = "particles/econ/world/towers/ti10_dire_tower/ti10_dire_tower_destruction.vpcf"
+            self.destruction = ParticleManager:CreateParticle( death_fx, PATTACH_ABSORIGIN_FOLLOW, self.parent )
+            ParticleManager:ReleaseParticleIndex(self.nPreviewFX)
+            ParticleManager:ReleaseParticleIndex(self.destruction)
+            self.parent:SetModelScale(0)
         end
     end
 end
@@ -288,6 +295,7 @@ function modifier_helltower_hellchain:OnCreated()
     self.dot = self.ability:GetSpecialValueFor("dot")
     self.mana_burn = self.ability:GetSpecialValueFor("mana_burn") * 0.01
     self.slow = self.ability:GetSpecialValueFor("slow") * -0.01
+    self.slowmulti = self.slow +1
     self.tick = self.ability:GetSpecialValueFor("tick")
     self:StartIntervalThink(self.tick)
 end
@@ -300,19 +308,19 @@ function modifier_helltower_hellchain:CheckState()
 end
 
 function modifier_helltower_hellchain:GetSpellHastePercentBonus()
-    return self.slow
+    return self.slowmulti
 end
 
 function modifier_helltower_hellchain:GetAttackSpeedPercentBonus()
-    return self.slow
+    return self.slowmulti
 end
---reduce these by 1000%
-function modifier_helltower_hellchain:GetHealthRegenerationPercentBonus()
-    return -10
+--set 0
+function modifier_helltower_hellchain:GetHealthRegenerationPercentBonusMulti()
+    return 0
 end
 
-function modifier_helltower_hellchain:GetHealingReceivedPercentBonus()
-    return -10 -- finalHeal = heal * this
+function modifier_helltower_hellchain:GetHealingReceivedPercentBonusMulti()
+    return 0
 end
 
 function modifier_helltower_hellchain:OnIntervalThink()

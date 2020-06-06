@@ -1,0 +1,24 @@
+------------------------
+--snowgiant avalanche --random aoe explosion mini stun/slow
+--------------------------
+-----------------------
+--snowgiant throw --throw the closest hero to the farthest hero stunning and damage at the landing location. reset aggro on cast
+-------------------------
+-------------------------
+--snowgiant snowball -- linear projectile from 2000 range away from heroes, a rolling snowball that deal very high damage on hit
+-----------------------
+-------------------------
+--snowgiant enraged giant -- buffing himself increase ms, remove as penalty from giant slam, his attacks will knockback + stun and deal bonus pure damage.
+----------------------
+------------------------
+--snowgiant stoneskin -- passive physical dmg resist + craggy exterior that has visible rock projectile (cannot trigger on one hero more than once every 10s)
+------------------------
+----------------------
+--snowgiant giant slam -- passive increase attack damage, cleave and stun in a small radius on attack but has reduce attack speed.
+-------------------------
+------------------------
+--snowgiant living rock --throw a big rock(s) that stun on landing an spawn several young snowgiants. they have throw ability and grow passive. grow make them stronger every second (+ model change every 5s).
+----------------------------
+-----------------------
+--snowgiant icequake -- shake the screen minor damage every second and slow all enemies for a few seconds.
+----------------------

@@ -1,32 +1,33 @@
 "DOTAUnits"
 {
-    "npc_boss_incurable_golem"
+    "npc_boss_balanar"
     {
         "vscripts"					"creeps/ai/ai_generic.lua"
         // General
         "BaseClass"         "npc_dota_creature"  // Class of entity of link to.
-        "Model"           "models/items/undying/flesh_golem/incurable_pestilence_golem/incurable_pestilence_golem.vmdl"  // Model.
+        "Model"           "models/heroes/nightstalker/nightstalker.vmdl"  // Model.
         "SoundSet"          "Creep_Good_Range"          // Name of sound set.
         "Level"           "0"
         "UnitLabel"         "boss"
-        "ModelScale" 				"1"
+        "ModelScale" 				"1.15"
+
         // Abilities
         //----------------------------------------------------------------
-
           "Ability1"          ""     // Ability 1.
           "Ability2"          ""     // Ability 2.
           "Ability3"          ""      // Ability 3.
           "Ability4"          ""      // Ability 4.
-          "Ability5"          ""     // Ability 5.
+          "Ability5"          ""      // Ability 5.
           "Ability6"          ""      // Ability 6 - Extra.
           "Ability7"          ""      // Ability 7 - Extra.
           "Ability8"          ""      // Ability 8 - Extra.
+
 
         // Armor
         //----------------------------------------------------------------
         "ArmorPhysical"       "0"     // Physical protection.
         "MagicalResistance"       "0"     // Magical protection.
-        "HeathBarOffset"        "350"
+        "HeathBarOffset"        "450"
 
         // Attack
         //----------------------------------------------------------------
@@ -35,8 +36,8 @@
         "AttackDamageMax"     "10"     // Damage range max.
         "AttackDamageType"      "DAMAGE_TYPE_ArmorPhysical"
         "AttackRate"        "1.7"     // Speed of attack.
-        "AttackAnimationPoint"    "0.4"   // Normalized time in animation cycle to attack.
-        "AttackAcquisitionRange"  "1500"   // Range within a target can be acquired.
+        "AttackAnimationPoint"    "0.3"   // Normalized time in animation cycle to attack.
+        "AttackAcquisitionRange"  "800"   // Range within a target can be acquired.
         "AttackRange"       "150"   // Range within a target can be attacked.
         "ProjectileModel"     "" // Particle system model for projectile.
         "ProjectileSpeed"     "900"   // Speed of projectile.
@@ -91,6 +92,20 @@
         //----------------------------------------------------------------
         "AttackDesire"        "1.5"   // How much bots want to attack them vs other non-hero things
 
+        //Cosmetic
+        //------------------------------------------------------------------
+        "Creature"
+        {
+        "AttachWearables"
+                    {
+                        "1" { "ItemDef" "13776" }
+                        "2" { "ItemDef" "12280" }
+                        "3" { "ItemDef" "12281" }
+                        "4" { "ItemDef" "12284" }
+                        "5" { "ItemDef" "12282" }
+                    }
+
+        }
 
     }
 }

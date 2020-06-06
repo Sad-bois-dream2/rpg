@@ -1,0 +1,25 @@
+---------------------------
+--deathknight runeblade --passive stacking slow + dmg amp on attack while dk gain more speed every hit
+---------------------------
+---------------------------
+--deathknight death coil --single target tracking projectile target damage+silence+disarm
+---------------------------
+---------------------------
+--deathknight runeforge --dk can only be affected by 1 runeforge buff. Replace the current one when recast. perma buff make his attacks aoe frost explode on a random hero/apply stacking reduce armor+resist debuff/apply stacking dmg reduction buff to himself
+---------------------------
+---------------------------
+--deathknight eternal hunger --passive lose %health every second when hero is nearby but gaining more ms buff the lower health he has.  have regen buff(that is more than that health loss) applied to himself even he deals damage to a hero.
+---------------------------
+--lore: The endless hunger will soon take hold of you, death knight. When it does, you will feel pain immeasurable. There is only one remedy for the suffering: the hunger must be sated.
+---------------------------
+--deathknight animated dead --summon ghoul gargoyle ghost skeletons
+---------------------------
+---------------------------
+--deathknight unholy barrier --4/5.5/7s no damage limit aphotic shield that explode and deal 10 times damage absorbed + selfpurge every 0.25 sec
+---------------------------
+---------------------------
+--deathknight blood plague --send linear projectile to all heroes deal physical damage + apply debuff that drain health to dk
+---------------------------
+---------------------------
+--deathknight obliterate --blink next to a random hero (on ability phase start), bash that boi then deal very high damage aoe around himself after 2s uninterruptible cast time
+---------------------------

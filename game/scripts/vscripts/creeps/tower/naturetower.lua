@@ -285,33 +285,33 @@ function modifier_naturetower_felpoison:OnCreated()
     self.parent = self:GetParent()
     self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.stats = self.ability:GetSpecialValueFor("stats_decrease") * -0.01
+    self.stats = self.ability:GetSpecialValueFor("stats_decrease") * 0.01
     self.amp = self.ability:GetSpecialValueFor("amp")*-0.01
-    self.slow = self.ability:GetSpecialValueFor("slow")*-0.01
+    self.slow = self.ability:GetSpecialValueFor("slow")*0.01
     self.tick = self.ability:GetSpecialValueFor("tick")
     self.dot = self.ability:GetSpecialValueFor("dot")
     self:StartIntervalThink(self.tick)
 end
 
-function modifier_naturetower_felpoison:GetMoveSpeedPercentBonus()
-    return self.slow
+function modifier_naturetower_felpoison:GetMoveSpeedPercentBonusMulti()
+    return 1 - self.slow * self:GetStackCount()
 end
 
 --rot from with in decrease stats
-function modifier_naturetower_felpoison:GetStrengthPercentBonus() --max str reduciton that health still correct is 47% higher than this break health calcution idk why kek
-    return self.stats* self:GetStackCount()
+function modifier_naturetower_felpoison:GetStrengthPercentBonusMulti() --max str reduciton that health still correct is 47% higher than this break health calcution idk why kek
+    return 1 - self.stats* self:GetStackCount()
 end
 
-function modifier_naturetower_felpoison:GetAgilityPercentBonus()
-    return self.stats * self:GetStackCount()
+function modifier_naturetower_felpoison:GetAgilityPercentBonusMulti()
+    return 1 - self.stats * self:GetStackCount()
 end
 
-function modifier_naturetower_felpoison:GetIntellectPercentBonus()
-    return self.stats * self:GetStackCount()
+function modifier_naturetower_felpoison:GetIntellectPercentBonusMulti()
+    return 1 - self.stats * self:GetStackCount()
 end
 
-function modifier_naturetower_felpoison:GetPrimaryAttributePercentBonus()
-    return self.stats* 0.5 * self:GetStackCount()
+function modifier_naturetower_felpoison:GetPrimaryAttributePercentBonusMulti()
+    return 1 - self.stats* 0.5 * self:GetStackCount()
 end
 
 function modifier_naturetower_felpoison:GetDamageReductionBonus()
@@ -324,7 +324,7 @@ function modifier_naturetower_felpoison:OnIntervalThink()
         damageTable.caster = self.caster
         damageTable.target = self.parent
         damageTable.ability = self.ability
-        damageTable.damage = self.dot
+        damageTable.damage = self.dot * self:GetStackCount()
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
     end

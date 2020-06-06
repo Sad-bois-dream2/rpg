@@ -277,11 +277,6 @@ modifier_luna_curse_reduce = class({
         return "particles/econ/items/lycan/ti9_immortal/lycan_ti9_immortal_howl_buff.vpcf"--
     end,
 })
-luna_curse = class({
-    GetAbilityTextureName = function(self)
-        return "luna_curse"
-    end,
-})
 
 function modifier_luna_curse_reduce:OnCreated(keys)
     if not IsServer() then
@@ -290,6 +285,7 @@ function modifier_luna_curse_reduce:OnCreated(keys)
     self.ability = self:GetAbility()
     self.parent = self:GetParent()
     self.reduce = self.ability:GetSpecialValueFor("dmg_reduction") * -0.01
+    self.reducemulti = self.reduce + 1
     local healFX = ParticleManager:CreateParticle("particles/units/npc_boss_brood/brood_angry/anger_stack_gain.vpcf", PATTACH_POINT_FOLLOW, self.parent)
     Timers:CreateTimer(1, function()
         ParticleManager:DestroyParticle(healFX, false)
@@ -297,16 +293,16 @@ function modifier_luna_curse_reduce:OnCreated(keys)
     end)
 end
 
-function modifier_luna_curse_reduce:GetAttackDamagePercentBonus()
-    return self.reduce
+function modifier_luna_curse_reduce:GetAttackDamagePercentBonusMulti()
+    return self.reducemulti
 end
 
-function modifier_luna_curse_reduce:GetSpellDamageBonus()
-    return self.reduce
+function modifier_luna_curse_reduce:GetSpellDamageBonusMulti()
+    return self.reducemulti
 end
 
-function modifier_luna_curse_reduce:GetHealingCausedBonus()
-    return self.reduce
+function modifier_luna_curse_reduce:GetHealingCausedBonusMulti()
+    return self.reducemulti
 end
 
 LinkLuaModifier("modifier_luna_curse_reduce", "creeps/zone1/boss/luna.lua", LUA_MODIFIER_MOTION_NONE)
@@ -455,8 +451,7 @@ function luna_wave:OnSpellStart()
 
     for _, enemy in pairs(enemies) do
         -- This "dummy" literally only exists to attach the gush travel sound to
-        local gush_dummy = CreateModifierThinker(self:GetCaster(), self, nil, {}, self:GetCaster():GetAbsOrigin(), self:GetCaster():GetTeamNumber(), false)
-        gush_dummy:EmitSoundParams("Hero_Tidehunter.Gush.AghsProjectile",1.0, 0.2, 0)
+        caster:EmitSoundParams("Hero_Tidehunter.Gush.AghsProjectile",1.0, 0.6, 0)
 
         local direction	= (enemy:GetAbsOrigin() - self:GetCaster():GetAbsOrigin()):Normalized()
 
@@ -475,25 +470,19 @@ function luna_wave:OnSpellStart()
             iUnitTargetType		= DOTA_UNIT_TARGET_HERO ,
             fExpireTime 		= GameRules:GetGameTime() + 10.0,
             bDeleteOnHit		= true,
-            vVelocity			= direction * self:GetSpecialValueFor("projectile_speed"),
+            vVelocity			= direction * 750, --self:GetSpecialValueFor("projectile_speed"),
             bProvidesVision		= false,
 
             ExtraData			=
             {
-                gush_dummy	= gush_dummy:entindex(),
+                --gush_dummy	= gush_dummy:entindex(),
             }
         }
         self.projectile = ProjectileManager:CreateLinearProjectile(linear_projectile)
     end
 end
 
--- Make the travel sound follow the Gush
-function luna_wave:OnProjectileThink_ExtraData(location, data)
-    if not IsServer() then return end
-    if data.gush_dummy then
-        EntIndexToHScript(data.gush_dummy):SetAbsOrigin(location)
-    end
-end
+
 
 function luna_wave:OnProjectileHit_ExtraData(target, data)
     if not IsServer() then return end
@@ -530,9 +519,7 @@ function luna_wave:OnProjectileHit_ExtraData(target, data)
             ParticleManager:ReleaseParticleIndex(particle)
         end)
         -- Gush has reached its end location
-    elseif data.gush_dummy then
-        EntIndexToHScript(data.gush_dummy):StopSound("Hero_Tidehunter.Gush.AghsProjectile")
-        EntIndexToHScript(data.gush_dummy):RemoveSelf() --this is UTIL remove
+
     end
 end
 
@@ -667,9 +654,9 @@ end
 
 function modifier_luna_wax:OnIntervalThink(keys)
     local stacks = self:GetStackCount()
-    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 *stacks/5
-    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01 * stacks/5
-    self.ms_bonus  = self.ability:GetSpecialValueFor("ms_bonus") * 0.01 * stacks/5
+    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") * 0.01 *stacks * 0.2
+    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus") * 0.01 * stacks * 0.2
+    self.ms_bonus  = self.ability:GetSpecialValueFor("ms_bonus") * 0.01 * stacks * 0.2
     if self.parent:HasModifier("modifier_luna_cruelty") then
         self.dmg_reduction = self.dmg_reduction * 2
         self.as_bonus = self.as_bonus * 2
@@ -685,6 +672,7 @@ function modifier_luna_wax:OnIntervalThink(keys)
         self:SetStackCount(stacks)
     else self.go_up= false
     end
+    Units:ForceStatsCalculation(self.parent)
 end
 
 
@@ -737,9 +725,9 @@ end
 
 function modifier_luna_wane:OnIntervalThink(keys)
     local stacks = self:GetStackCount()
-    self.dmg_amp = self.ability:GetSpecialValueFor("dmg_amp") * -0.01 * stacks/5
-    self.as_reduce = self.ability:GetSpecialValueFor("as_reduce") * -0.01 * stacks/5
-    self.ms_reduce  = self.ability:GetSpecialValueFor("ms_reduce") * -0.01 * stacks/5
+    self.dmg_amp = self.ability:GetSpecialValueFor("dmg_amp") * -0.01 * stacks* 0.2
+    self.as_reduce = self.ability:GetSpecialValueFor("as_reduce") * -0.01 * stacks* 0.2
+    self.ms_reduce  = self.ability:GetSpecialValueFor("ms_reduce") * -0.01 * stacks* 0.2
     if self.parent:HasModifier("modifier_luna_cruelty") then
         self.dmg_amp = 0
         self.as_reduce = 0
@@ -756,6 +744,7 @@ function modifier_luna_wane:OnIntervalThink(keys)
         self:SetStackCount(stacks)
     else self.go_up= false
     end
+    Units:ForceStatsCalculation(self.parent)
 end
 
 function modifier_luna_wane:GetAttackSpeedPercentBonus()
@@ -971,6 +960,7 @@ function luna_cruelty:OnProjectileHit_ExtraData(target, vLocation, extraData)
             damageTable.damage = damage
             damageTable.voiddmg = true
             GameMode:DamageUnit(damageTable)
+            target:ReduceMana(damage * 0.1)
             --release
         elseif extraData.gather == 2 then
             local damage = self:GetSpecialValueFor("release_damage")
@@ -984,6 +974,7 @@ function luna_cruelty:OnProjectileHit_ExtraData(target, vLocation, extraData)
             damageTable.damage = damage
             damageTable.voiddmg = true
             GameMode:DamageUnit(damageTable)
+            target:ReduceMana(damage * 0.1)
         end
     end
 end
