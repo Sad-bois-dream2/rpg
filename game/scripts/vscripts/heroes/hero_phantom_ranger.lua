@@ -261,7 +261,7 @@ function modifier_phantom_ranger_shadow_waves_debuff:OnCreated()
     self.ability = self:GetAbility()
 end
 
-function modifier_phantom_ranger_shadow_waves_debuff:GetSpellHasteBonus()
+function modifier_phantom_ranger_shadow_waves_debuff:GetSpellHastePercentBonus()
     return self.ability.sphSlow
 end
 

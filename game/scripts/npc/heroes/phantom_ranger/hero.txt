@@ -3,10 +3,10 @@
 	"npc_dota_hero_drow_ranger"
 	{
 		"AbilityLayout" "6"
-		"Ability1"		"phantom_ranger_phantom_harmonic"
+		"Ability1"		"phantom_ranger_shadow_waves"
 		"Ability2"		"phantom_ranger_void_disciple"
 		"Ability3"		"phantom_ranger_soul_echo"
-		"Ability4"	"phantom_ranger_shadow_waves"
+		"Ability4"		"phantom_ranger_phantom_harmonic"
 		"Ability5"	"empty5"
 		"Ability6"		"antimage_blink"
 		"AbilityTalentStart"		"7"

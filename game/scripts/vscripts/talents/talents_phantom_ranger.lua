@@ -382,7 +382,7 @@ function phantom_ranger_phantom_barrage:OnProjectileHit_ExtraData(target, locati
         target:EmitSound("Hero_Bane.ProjectileImpact")
         local talent35_level = TalentTree:GetHeroTalentLevel(self.caster, 35)
         if (talent35_level > 0 and (Enemies:IsBoss(target) or Enemies:IsElite(target))) then 
-
+            
             local reduction = self.talent35_baseCdr + talent35_level * self.talent35_cdrPerLevel
             self:ReduceChargeCooldown(reduction)
 
@@ -874,7 +874,8 @@ function phantom_ranger_void_arrows:OnUpgrade()
 
     if not IsServer() then return end
     self.caster = self:GetCaster()
-    self.damage = self:GetSpecialValueFor("void_arrows_damage")
+    self.baseDamage = self:GetSpecialValueFor("base_damage")
+    self.percentAdScaling = self:GetSpecialValueFor("ad_scaling")
 
 end
 
@@ -918,7 +919,7 @@ function phantom_ranger_void_arrows:OnOrbImpact(params)
 
 	-- Power Addiction (talent 36) dmg increase
 	local talent36_percentDmgPerLevel = 100 / 3
-	if params.target ~= nil then GameMode:DamageUnit({ caster = self.caster, target = params.target, damage = self.damage * (1 + self.talent36_level * talent36_percentDmgPerLevel / 100), voiddmg = true, ability = self }) end
+	if params.target ~= nil then GameMode:DamageUnit({ caster = self.caster, target = params.target, damage = (self.baseDamage + Units:GetAttackDamage(self.caster) * self.percentAdScaling / 100) * (1 + self.talent36_level * talent36_percentDmgPerLevel / 100), voiddmg = true, ability = self }) end
 	--local sound_cast = "Hero_ObsidianDestroyer.ArcaneOrb.Impact"
 	--EmitSoundOn( sound_cast, params.target )
 end
@@ -1142,6 +1143,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_36:OnCreated()
     -- Power Addiction - talent 36 varaibles
     self.talent36_basePercentManaOnKill = 5
     self.talent36_percentManaOnKillPerLevel = 5
+    self.talent36_range = 1000
 
 end
 
@@ -1159,10 +1161,13 @@ end
 function modifier_npc_dota_hero_drow_ranger_talent_36:OnDeath(params)
 
 	if not IsServer() then return end
-	if (params.attacker ~= self.caster) then return end
+    local range = DistanceBetweenVectors(params.unit:GetAbsOrigin(), self.caster:GetAbsOrigin())
+    if  (range > self.talent36_range and params.attacker ~= self.caster) then return end
 	if (self.caster:GetTeamNumber() == params.unit:GetTeamNumber()) then return end
 	if (params.unit:IsBuilding()) then return end
-	GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = self:GetManaRestore() * self.caster:GetMaxMana() }) 
+    local manaRestore = self:GetManaRestore() * self.caster:GetMaxMana()
+	if (params.attacker ~= self.caster) then manaRestore = manaRestore / 2 end
+    GameMode:HealUnitMana({ caster = self.caster, target = self.caster, ability = self:GetAbility(), heal = manaRestore }) 
 
 end
 
@@ -1886,23 +1891,13 @@ end
 
 --------------------------------------------------------------------------------
 
-function modifier_npc_dota_hero_drow_ranger_talent_45:OnTakeDamage(damageTable)
+function modifier_npc_dota_hero_drow_ranger_talent_45:GetDamageReductionBonus()
 
-	if not IsServer() then return end
-	local drow = damageTable.victim
-    local modifier = drow:FindModifierByName("modifier_npc_dota_hero_drow_ranger_talent_45")
-	if (modifier and damageTable.damage > 0) then
 
-		local talent45_level = TalentTree:GetHeroTalentLevel(drow, 45)
-		if (drow:HasModifier("modifier_phantom_ranger_stealth")) then 
-
-			local reducedDmgTaken = (moodifier.talent45_baseReducedDmgTaken + talent45_level * modifier.talent45_reducedDmgTakenPerLevel) / 100
-			damageTable.damage = damageTable.damage * (1 - reducedDmgTaken)
-			return damageTable
-
-		end
-
-	end
+		local talent45_level = TalentTree:GetHeroTalentLevel(self.caster, 45)
+		if (self.caster:HasModifier("modifier_phantom_ranger_stealth")) then return (self.talent45_baseReducedDmgTaken + talent45_level * self.talent45_reducedDmgTakenPerLevel) / 100
+        else return 0 
+        end
 
 end
 
@@ -2249,7 +2244,8 @@ end
 
 function modifier_npc_dota_hero_drow_ranger_talent_51:GetSpellHasteBonus()
 	
-	return 1 - (100 / Units:GetAttackSpeed(self.hero))
+	--return 1 - (100 / Units:GetAttackSpeed(self.hero))
+    return Units:GetAttackSpeed(self.hero) - 100
 
 end
 
@@ -2396,7 +2392,6 @@ if (IsServer() and not GameMode.TALENTS_PHANTOM_RANGER_INIT) then
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_39, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_42, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_43, 'OnTakeDamage'))
-	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_45, 'OnTakeDamage'))
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_49, 'OnTakeDamage'), true)
 	GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_npc_dota_hero_drow_ranger_talent_50, 'OnTakeDamage'))
 	GameMode.TALENTS_PHANTOM_RANGER_INIT = true
