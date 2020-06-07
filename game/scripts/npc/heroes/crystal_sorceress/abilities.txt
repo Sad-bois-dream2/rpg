@@ -139,15 +139,16 @@
 				"var_type"				"FIELD_FLOAT"
 				"mana"				"2 3 4 5"
 			}
+		
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"800"
+				"tick"				"1"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"radius"				"800"
 			}
 		}
 		"precache"

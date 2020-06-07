@@ -641,6 +641,7 @@ function modifier_creep_scaling:OnDeath(keys)
             Enemies.dropChanceFactor = Enemies.dropChanceFactor + 0.05
             Notifications:BottomToAll({ image = "s2r://panorama/images/hud/skull_stroke_png.vtex", duration = 3 })
             Notifications:BottomToAll({ text = "#" .. self.creep:GetUnitName(), duration = 3, continue = true })
+            Notifications:BottomToAll({ text = " ", duration = 3, continue = true })
             Notifications:BottomToAll({ text = "#DOTA_Difficulty_BossDead", duration = 3, continue = true })
             Notifications:BottomToAll({ text = (math.floor((Enemies.dropChanceFactor - 1) * 10000) / 100) .. "%!", duration = 3, continue = true })
         end
