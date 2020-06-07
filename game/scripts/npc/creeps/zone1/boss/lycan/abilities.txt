@@ -65,7 +65,7 @@
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0.25"
+		"AbilityCooldown"				"3 2 1"
 
 
 		// Special
@@ -107,7 +107,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastRange"              "1200"
-        "AnimationPlaybackRate"         "0.3"
+        "AnimationPlaybackRate"         "0.15"
         "AbilityCastPoint"				"2"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -353,7 +353,7 @@
         //-------------------------------------------------------------------------------------------------------------
         "AbilityCastAnimation"			"ACT_DOTA_ATTACK"
         "AbilityCastRange"              "800 1000 1200"
-        "AnimationPlaybackRate"         "0.3"
+        "AnimationPlaybackRate"         "0.15"
         "AbilityCastPoint"				"2"
 
    		// Time
