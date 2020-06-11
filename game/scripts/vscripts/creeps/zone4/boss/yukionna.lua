@@ -388,7 +388,14 @@ function yukionna_breath:OnProjectileHit(target, location)
     local duration = self:GetSpecialValueFor("duration")
     if target:HasModifier("modifier_yukionna_frostbite") then
         local broken = self:GetSpecialValueFor("broken") * 0.5
-        target:AddNewModifier(self.caster, self.ability, "modifier_yukionna_promise_stun", {duration = broken})
+        --apply buff
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_yukionna_promise_stun"
+        modifierTable.duration = broken
+        GameMode:ApplyDebuff(modifierTable)
         local health = target:GetHealth()
         local damageTable = {}
         damageTable.caster = caster

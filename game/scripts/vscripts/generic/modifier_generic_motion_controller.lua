@@ -1,15 +1,26 @@
--- Creator: AltiV
---   July 22nd, 2019
 
 -- To use this in other files, include these two lines:
 
--- LinkLuaModifier("modifier_generic_motion_controller", "components/modifiers/generic/modifier_generic_motion_controller", LUA_MODIFIER_MOTION_BOTH)
+-- LinkLuaModifier("modifier_generic_motion_controller", "generic/modifier_generic_motion_controller.lua", LUA_MODIFIER_MOTION_BOTH)
 
 -- <<target_unit>>:AddNewModifier(<<caster>>, <<ability>>, "modifier_generic_motion_controller", {distance = <<>> , direction_x = <<>> , direction_y = <<>> , direction_z = <<>> , duration = <<>> , height = <<>> , bInterruptible = <<>> , bGroundStop = <<>> , bDecelerate = <<>> }) -- for standard usage
 
 -- Example:
 -- self:GetCaster():AddNewModifier(self:GetCaster(), self, "modifier_generic_motion_controller", {distance = 1000, direction_x = self:GetCaster():GetForwardVector().x, direction_y = self:GetCaster():GetForwardVector().y, direction_z = self:GetCaster():GetForwardVector().z, duration = 0.6, height = 250 , bGroundStop = true, bDecelerate = true})
-
+--
+--enemy:AddNewModifier(self:GetCaster(), self.ability, "modifier_generic_motion_controller",
+--                    {
+--                        distance		= self.ability:GetSpecialValueFor("pull_distance"),
+--                        direction_x 	= -unit_vector.x,
+--                        direction_y 	= -unit_vector.y,
+--                        direction_z 	= 0,
+--                        duration 		= self.ability:GetSpecialValueFor("pull_duration"),
+--                        bGroundStop 	= false,
+--                        bDecelerate 	= false,
+--                        bInterruptible 	= false,
+--                        bIgnoreTenacity	= false,
+--                        bDestroyTreesAlongPath	= true
+--                    })
 modifier_generic_motion_controller = class({})
 
 function modifier_generic_motion_controller:IsHidden()         return true end
@@ -33,7 +44,6 @@ function modifier_generic_motion_controller:OnCreated(params)
     self.bInterruptible		= params.bInterruptible
     self.bGroundStop		= params.bGroundStop
     self.bDecelerate		= params.bDecelerate
-    self.bIgnoreTenacity	= params.bIgnoreTenacity
     self.treeRadius			= params.treeRadius
     self.bStun				= params.bStun
     self.bDestroyTreesAlongPath	= params.bDestroyTreesAlongPath
@@ -106,10 +116,6 @@ function modifier_generic_motion_controller:OnCreated(params)
         self:Destroy()
     end
 
-    -- What is this Tusk stuff crashing the game...
-    if self:GetParent():HasModifier("modifier_tusk_walrus_punch_air_time") or self:GetParent():HasModifier("modifier_tusk_walrus_kick_air_time") or self:ApplyVerticalMotionController() == false then
-        self:Destroy()
-    end
 end
 
 function modifier_generic_motion_controller:OnDestroy()
