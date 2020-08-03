@@ -23,36 +23,35 @@
             <Panel class="dot12"/>
         </Panel>
         <Panel id="HeroSlotsContainer">
-            <Label class="HeroSlotsLabel" text="#DOTA_HeroSelection_SelectSlot"/>
+            <Panel id="SpinnerHeroSlots" class="lds-default">
+                <Panel class="dot1"/>
+                <Panel class="dot2"/>
+                <Panel class="dot3"/>
+                <Panel class="dot4"/>
+                <Panel class="dot5"/>
+                <Panel class="dot6"/>
+                <Panel class="dot7"/>
+                <Panel class="dot8"/>
+                <Panel class="dot9"/>
+                <Panel class="dot10"/>
+                <Panel class="dot11"/>
+                <Panel class="dot12"/>
+            </Panel>
+            <Label id="HeroSlotsLabel" text="#DOTA_HeroSelection_SelectSlot"/>
             <Panel id="HeroSlotsPanel">
                 <Panel id="HeroSlot0" class="HeroSlot New" onactivate="OnPickHeroButtonPressed('HeroSlot0')">
                     <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
+                    <Label text="" id="HeroSlotLabel"/>
                     <Panel class="HeroSlotImage"/>
                 </Panel>
-                <Panel id="HeroSlot1" class="HeroSlot New" onactivate="OnPickHeroButtonPressed('HeroSlot1')">
+                <Panel id="HeroSlot1" class="HeroSlot Locked" onactivate="OnPickHeroButtonPressed('HeroSlot1')">
                     <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
+                    <Label text="" id="HeroSlotLabel"/>
                     <Panel class="HeroSlotImage"/>
                 </Panel>
-                <Panel id="HeroSlot2" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot2')">
+                <Panel id="HeroSlot2" class="HeroSlot Locked" onactivate="OnPickHeroButtonPressed('HeroSlot2')">
                     <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
-                    <Panel class="HeroSlotImage"/>
-                </Panel>
-                <Panel id="HeroSlot3" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot3')">
-                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
-                    <Panel class="HeroSlotImage"/>
-                </Panel>
-                <Panel id="HeroSlot4" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot4')">
-                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
-                    <Panel class="HeroSlotImage"/>
-                </Panel>
-                <Panel id="HeroSlot5" class="HeroSlot New Locked" onactivate="OnPickHeroButtonPressed('HeroSlot5')">
-                    <DOTAHeroImage id="HeroSlotImage" heroname="npc_dota_hero_drow_ranger" heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect" />
-                    <Label text="+" class="HeroSlotLabel"/>
+                    <Label text="" id="HeroSlotLabel"/>
                     <Panel class="HeroSlotImage"/>
                 </Panel>
             </Panel>

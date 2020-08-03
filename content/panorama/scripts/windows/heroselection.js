@@ -10,6 +10,13 @@ var MAX_STATS = 5;
 var STATE_SELECTED = 0;
 var STATE_PICKED = 1;
 var filterData = {};
+var heroSlots = {};
+var sceneLoaded = false, heroSlotsDataRecieved = false;
+
+// Config
+var TIMEOUT_UPDATE_INTERVAL = 0.1
+var TIMEOUT = 5 + TIMEOUT_UPDATE_INTERVAL; // server load request waiting time
+var defaultLockedSlots = [1, 2];
 
 function OnHeroSelected(hero, notPlaySound) {
     if(heroPicked) {
@@ -24,7 +31,7 @@ function OnHeroSelected(hero, notPlaySound) {
 	UpdateSaveSlots(hero);
     UpdateHeroStats(hero);
     UpdateHeroAbilities(hero);
-	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero});
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_selected", {"hero" : hero, "slotNumber" : 0});
 	if(notPlaySound == true) {
 	    return;
     }
@@ -40,6 +47,16 @@ function UpdateSaveSlots(hero) {
         var slot = $("#HeroSlotsPanel").GetChild(i);
         var slotHeroImage = slot.FindChildTraverse('HeroSlotImage');
         slotHeroImage.heroname = hero;
+        var lockedSlot = (defaultLockedSlots.includes(i));
+        if(heroSlots[hero] && heroSlots[hero][i]) {
+            slot.SetHasClass("New", false);
+            slot.SetHasClass("Locked", (heroSlots[hero][i].locked == 1));
+            var slotHeroLevel = slot.FindChildTraverse('HeroSlotLabel');
+            slotHeroLevel.text = $.Localize("#DOTA_HeroSelection_HeroLevel").replace("%LVL%", heroSlots[hero][i].heroLevel);
+        } else {
+            slot.SetHasClass("New", !lockedSlot);
+            slot.SetHasClass("Locked", lockedSlot);
+        }
     }
 }
 
@@ -75,6 +92,9 @@ function UpdateHeroStats(hero) {
 }
 
 function OnMouseOverStat(container, childIndex) {
+    if(heroPicked) {
+        return;
+    }
     var statContainer = $("#" + container);
     for(var i = 0; i < childIndex; i++) {
         var statPanel = statContainer.GetChild(i);
@@ -87,6 +107,9 @@ function OnMouseOverStat(container, childIndex) {
 }
 
 function OnMouseOutOfStatPanel(container) {
+    if(heroPicked) {
+        return;
+    }
     var statContainer = $("#" + container);
     for(var i = 0; i < statContainer.GetChildCount(); i++) {
         var statPanel = statContainer.GetChild(i);
@@ -95,6 +118,9 @@ function OnMouseOutOfStatPanel(container) {
 }
 
 function OnMouseClickOverStat(container, childIndex) {
+    if(heroPicked) {
+        return;
+    }
     var statContainer = $("#" + container);
     for(var i = 0; i < childIndex; i++) {
         var statPanel = statContainer.GetChild(i);
@@ -159,9 +185,11 @@ function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
     $("#AvailableHeroesContainer").style.visibility = "visible";
     $("#HeroSlotsContainer").style.visibility = "visible";
-    if(heroSelected) {
+    if(heroSlotsDataRecieved) {
         OnHeroSelected(latestSelectedHero, true);
+        return;
     }
+    sceneLoaded = true;
 }
 
 function OnPickHeroButtonPressed(slot) {
@@ -169,9 +197,13 @@ function OnPickHeroButtonPressed(slot) {
     if(slot.BHasClass("Locked") || heroPicked) {
         return;
     }
+    var slotId = slot.id.replace('HeroSlot', '');
     Game.EmitSound("HeroPicker.Selected");
-	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_picked", {"hero" : latestSelectedHero});
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_picked", {"hero" : latestSelectedHero, "slotNumber" : slotId});
 	HideUIAfterHeroPick();
+	ResetFilter();
+    UpdateFilter();
+    heroPicked = true;
 }
 
 function HideUIAfterHeroPick() {
@@ -262,6 +294,43 @@ function OnStateDataReceived(event) {
     heroPicked = picked;
 }
 
+function CheckLoadingSlotsData()
+{
+    TIMEOUT = TIMEOUT - TIMEOUT_UPDATE_INTERVAL;
+    if(TIMEOUT <= 0) {
+        $("#SpinnerHeroSlots").style.visibility = "collapse";
+        $("#HeroSlotsLabel").style.visibility = "visible";
+        $("#HeroSlotsPanel").style.visibility = "visible";
+        heroSlotsDataRecieved = true;
+    } else {
+	    $.Schedule(TIMEOUT_UPDATE_INTERVAL, CheckLoadingSlotsData);
+	}
+}
+
+function OnHeroSlotsDataReceived(event) {
+    var data = JSON.parse(event.data);
+    var heroes = JSON.parse(event.heroes);
+    var tempArray = {};
+    Object.entries(heroes).map(entry => {
+        tempArray[entry[1]] = entry[0];
+    });
+    heroes = tempArray;
+    for(var i = 0; i < data.length; i++) {
+        data[i].hero = heroes[data[i].hero];
+        heroSlots[data[i].hero] = [];
+        heroSlots[data[i].hero][data[i].slotNumber] = data[i];
+    }
+    TIMEOUT = -1;
+}
+
+function CheckHeroSelectionScreenState() {
+    if(sceneLoaded && heroSlotsDataRecieved) {
+        OnHeroSelected(latestSelectedHero, true);
+        return;
+    }
+    $.Schedule(TIMEOUT_UPDATE_INTERVAL, CheckHeroSelectionScreenState);
+}
+
 (function() {
     var tankContainer = $("#TankStat");
     var dpsContainer = $("#DpsStat");
@@ -279,7 +348,13 @@ function OnStateDataReceived(event) {
     }
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes",{});
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_state",{});
+    $.Schedule(0.2, function () {
+        GameEvents.SendCustomGameEventToServer("rpg_saveload_get_slots", {});
+    });
 	GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesDataReceived);
 	GameEvents.Subscribe("rpg_hero_selection_get_state_from_server", OnStateDataReceived);
+	GameEvents.Subscribe("rpg_saveload_get_slots_from_server", OnHeroSlotsDataReceived);
+	CheckLoadingSlotsData();
+	CheckHeroSelectionScreenState();
 })();
 

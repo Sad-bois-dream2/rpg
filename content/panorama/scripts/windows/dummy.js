@@ -6,6 +6,7 @@ var damageEntries = [];
 var latestSelectedDummy;
 var armors = [];
 var storedDamage = 0;
+var welcomeSoundCooldown = -1;
 
 function OnClearLogButtonPressed() {
     for (var i = 0; i < MAX_CAPACITY; i++) {
@@ -13,6 +14,15 @@ function OnClearLogButtonPressed() {
 	}
     currentEntryIndex = 0;
     UpdateLogCapacityText();
+}
+
+function StartWelcomeSoundCooldown() {
+    welcomeSoundCooldown = welcomeSoundCooldown - 0.1;
+    if(welcomeSoundCooldown > 0) {
+        $.Schedule(0.1, function() {
+            StartWelcomeSoundCooldown();
+        });
+    }
 }
 
 function OnStartTestButtonPressed() {
@@ -32,11 +42,18 @@ function OnStartTestButtonPressed() {
 
 function UpdateSelection() {
     var selectedUnit = Players.GetLocalPlayerPortraitUnit();
-    if(Entities.GetUnitName(selectedUnit) == "npc_dummy_dps_unit") {
+    var localPlayer = Game.GetLocalPlayerID()
+    if(Entities.GetUnitName(selectedUnit) == "npc_dummy_dps_unit" && Game.Length2D(Entities.GetAbsOrigin(Players.GetPlayerHeroEntityIndex(localPlayer)), Entities.GetAbsOrigin(selectedUnit)) <= 800) {
         latestSelectedDummy = selectedUnit;
-        var localPlayer = Game.GetLocalPlayerID()
         GameEvents.SendCustomGameEventToServer("rpg_close_all_windows", { "player_id" : localPlayer});
         GameEvents.SendCustomGameEventToServer("rpg_dummy_open_window", { "player_id" : localPlayer});
+        if(welcomeSoundCooldown < 0) {
+            var responses = ["ogre_magi_ogmag_death_09", "ogre_magi_ogmag_respawn_10", "ogre_magi_ogmag_respawn_14",
+            "ogre_magi_ogmag_respawn_06", "ogre_magi_ogmag_respawn_13", "ogre_magi_ogmag_rival_17", "ogre_magi_ogmag_kill_02"];
+            Game.EmitSound(responses[Math.floor(Math.random() * responses.length)]);
+            welcomeSoundCooldown = 3;
+            StartWelcomeSoundCooldown();
+        }
     }
 }
 

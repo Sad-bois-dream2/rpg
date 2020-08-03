@@ -7,12 +7,8 @@
         var slotId = -1;
         var slot;
 
-        function ShowHeroInfo() {
-            slot.Data().ShowHeroInfo(slotId);
-        }
-
-        function HideHeroInfo() {
-            slot.Data().HideHeroInfo(slotId);
+        function OnClick() {
+            slot.Data().OnSaveSlotClick(slotId);
         }
 
         (function() {
@@ -20,15 +16,14 @@
             slotId = slot.id.replace("SaveSlot", "");
         })();
     </script>
-    <Panel class="SaveSlot">
+    <Panel class="SaveSlot" onactivate="OnClick()">
         <Panel class="SaveSlotLeftContent">
             <DOTAHeroImage id="SaveSlotHeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_drow_ranger" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
             <Panel class="SaveSlotLeftContentText">
-                <Label class="SaveSlotLevelLabel" text="Level 0" />
-                <Label class="SaveSlotDateLabel" text="Date()" />
+                <Label id="SaveSlotNameLabel" text="Hero Name" />
+                <Label id="SaveSlotLevelLabel" text="Level 1" />
             </Panel>
         </Panel>
-        <Image onmouseover="ShowHeroInfo()" onmouseout="HideHeroInfo()" class="SaveSlotInfoIcon" src="file://{images}/custom_game/hud/inventory.png" scaling="stretch-to-fit-preserve-aspect" />
         <Panel class="SaveSlotLockedIcon"/>
     </Panel>
 </root>

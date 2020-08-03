@@ -1,6 +1,6 @@
 .SaveLoadWindow {
     width: 350px;
-    height: 515px;
+    height: 290px;
     visibility: collapse;
 }
 
@@ -54,7 +54,7 @@
     margin-left: 5px;
 }
 
-.SaveSlotLevelLabel {
+#SaveSlotNameLabel {
     horizontal-align: center;
     vertical-align: bottom;
     color: white;
@@ -65,10 +65,10 @@
     margin-bottom: 5px;
 }
 
-.SaveSlotDateLabel {
+#SaveSlotLevelLabel {
     horizontal-align: right;
     vertical-align: bottom;
-    font-size: 12px;
+    font-size: 14px;
     color: white;
     width: fill-parent-flow(1.0);
 }
@@ -134,4 +134,29 @@
 	background-position: 50% 50%;
 	background-size: 100% 100%;
 	visibility: collapse;
+}
+
+#SaveSpinner {
+    flow-children: down;
+    horizontal-align: center;
+    vertical-align: center;
+    visibility: collapse;
+}
+
+#SaveSpinner Label {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    width: fill-parent-flow(1.0);
+}
+
+#MainWindow.SaveHeroInProcess #SaveSpinner {
+    visibility: visible;
+}
+
+#MainWindow.SaveHeroInProcess #SlotsContainer {
+	opacity: 0.5;
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
 }

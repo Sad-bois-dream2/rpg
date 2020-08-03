@@ -954,6 +954,14 @@
         "DOTA_HeroSelection_Stats_Utility"		"Utility"
         "DOTA_HeroSelection_ResetFilter"		"RESET FILTER"
 
+        "DOTA_HeroSelection_HeroLevel"		"Lv. %LVL%"
+        "DOTA_SaveLoad_SelectSlot"		"SELECT SLOT TO SAVE"
+        "DOTA_SaveLoad_SaveProgress"		"SAVING HERO"
+        "DOTA_SaveLoad_SaveSuccessful"		"Your hero has been saved successfully!"
+        "DOTA_SaveLoad_SaveError"		"There are problems during saving hero:\n"
+        "DOTA_SaveLoad_HeroLevel"		"Level %LVL%"
+        "DOTA_SaveLoad_SaveCooldown"		"You need wait "
+        "DOTA_SaveLoad_SaveCooldown1"		"second(s) before next attempt to save hero!"
         // Countless items
 
         "DOTA_Tooltip_Ability_item_two_handed_sword"      "Two-handed Sword"
