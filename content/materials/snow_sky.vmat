@@ -1,0 +1,23 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "global_lit_simple.vfx"
+
+	//---- Fullbright ----
+	F_FULLBRIGHT 1
+
+	//---- Scroll UV ----
+	F_SCROLL_UV 1 // Scroll Color Only
+
+	//---- Color ----
+	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
+	TextureColor "materials/islandiya-doroga-zima-utro.jpg"
+
+	//---- Scroll UV ----
+	g_flScrollUvSpeed "0.050"
+	g_vScrollUvDirection "[0.000 0.000]"
+	TextureScrollSpeed "[1.000000 1.000000 1.000000 0.000000]"
+}
