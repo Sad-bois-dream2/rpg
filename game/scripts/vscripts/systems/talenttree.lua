@@ -126,12 +126,12 @@ function TalentTree:Init()
             "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_phantom_assassin"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
+            "abyssal_stalker_rend",
+            "abyssal_stalker_toxify",
+            "abyssal_stalker_overload",
+            "abyssal_stalker_frigid_form",
+            "abyssal_stalker_silent_strike",
+            "abyssal_stalker_impale",
         },
         ["npc_dota_hero_abyssal_underlord"] = {
             "terror_lord_flame_of_menace",
