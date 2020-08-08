@@ -247,7 +247,8 @@ function Inventory:Init()
     self.maxItemsPerRequest = 10
     -- slots count, changes here require same changes in client side inventory.js
     self.maxStoredItems = 14 * 7
-    -- slot types, changes here require changes in GetInventoryItemSlotName() in client side inventory.js
+    -- slot types, changes here require changes in GetInventoryItemSlotName() in client side inventory.js and in GetSlotIdByName() in client side saveload.js
+    -- SaveLoad:GetItemSlotName(), SaveLoad:GetItemSlotIdByName() in server side
     self.slot = {}
     self.slot.mainhand = 0
     self.slot.body = 1
@@ -289,13 +290,20 @@ function Inventory:Init()
 end
 
 --  internal stuff to make all work
---- Return item slot if it possible to add item or Inventory.slot.invalid if impossible (no space)
+
+function Inventory:IsItemNameValid(itemName)
+    if (not Inventory.itemsData[itemName]) then
+        return false
+    end
+    return true
+end
+
 ---@param hero CDOTA_BaseNPC_Hero
 ---@param item string
 ---@return number
 function Inventory:AddItem(hero, item, itemStats)
     if (hero ~= nil and item ~= nil and hero.inventory ~= nil) then
-        if (not Inventory.itemsData[item]) then
+        if (not Inventory:IsItemNameValid(item)) then
             DebugPrint("[INVENTORY] Attempt to add unknown item (" .. item .. ").")
             return Inventory.slot.invalid, nil
         end
@@ -326,7 +334,7 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
     if (slot ~= Inventory.slot.invalid) then
         local itemStats = Inventory:GetItemStatsForHero(hero, false, slot)
         local itemEntity = CreateItem(item, hero, hero)
-            local itemId = itemEntity:GetEntityIndex()
+        local itemId = itemEntity:GetEntityIndex()
         local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
         Inventory:SetItemEntityStats(itemEntity, itemStats)
         itemEntity:SetPurchaser(hero)
@@ -1001,6 +1009,64 @@ function Inventory:SendUpdateInventorySlotRequest(hero, itemName, is_equipped, i
     if (hero ~= nil and itemName ~= nil and is_equipped ~= nil and itemSlot ~= nil) then
         local player = hero:GetPlayerOwner()
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_update_slot", { item = itemName, equipped = is_equipped, slot = itemSlot, stats = json.encode(itemStats) })
+    end
+end
+
+function Inventory:GetItemStatValueFromRoll(roll, min, max)
+    if (min == max) then
+        return max
+    end
+    if (min < 0 and max >= 0) then
+        return math.floor(min * roll)
+    end
+    if (min >= 0 and max > 0) then
+        return math.floor(max * roll)
+    end
+    if (min < 0 and max < 0) then
+        return math.floor(max * roll)
+    end
+    return min
+end
+
+function Inventory:LoadItemsFromSaveData(playerHero, itemData)
+    if (not playerHero or not itemData) then
+        return
+    end
+    for _, itemEntry in pairs(itemData.inventory) do
+        if (itemEntry.name ~= "" and Inventory:IsItemNameValid(itemEntry.name) and itemEntry.slot ~= "unknown") then
+            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1)
+            for _, itemStatEntry in pairs(itemStats) do
+                for _, loadedItemStatEntry in pairs(itemEntry.stats) do
+                    if (itemStatEntry.name == loadedItemStatEntry.name) then
+                        itemStatEntry.value = Inventory:GetItemStatValueFromRoll(loadedItemStatEntry.roll, Inventory.itemsData[itemEntry.name].stats[loadedItemStatEntry.name].min, Inventory.itemsData[itemEntry.name].stats[loadedItemStatEntry.name].max)
+                        break
+                    end
+                end
+            end
+            local itemSlot = SaveLoad:GetItemSlotIdByName(itemEntry.slot, false)
+            if (not itemSlot) then
+                return
+            end
+            Inventory:SetItemInSlot(playerHero, itemEntry.name, false, itemSlot, itemStats)
+        end
+    end
+    for _, itemEntry in pairs(itemData.equipped) do
+        if (itemEntry.name ~= "" and Inventory:IsItemNameValid(itemEntry.name) and itemEntry.slot ~= "unknown") then
+            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1)
+            for _, itemStatEntry in pairs(itemStats) do
+                for _, loadedItemStatEntry in pairs(itemEntry.stats) do
+                    if (itemStatEntry.name == loadedItemStatEntry.name) then
+                        itemStatEntry.value = Inventory:GetItemStatValueFromRoll(loadedItemStatEntry.roll, Inventory.itemsData[itemEntry.name].stats[loadedItemStatEntry.name].min, Inventory.itemsData[itemEntry.name].stats[loadedItemStatEntry.name].max)
+                        break
+                    end
+                end
+            end
+            local itemSlot = SaveLoad:GetItemSlotIdByName(itemEntry.slot, true)
+            if (not itemSlot) then
+                return
+            end
+            Inventory:SetItemInSlot(playerHero, itemEntry.name, true, itemSlot, itemStats)
+        end
     end
 end
 
