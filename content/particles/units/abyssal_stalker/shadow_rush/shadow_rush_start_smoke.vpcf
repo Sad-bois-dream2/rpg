@@ -63,6 +63,7 @@
 			m_fRadiusMax = 20.0
 			m_fSpeedMin = 400.0
 			m_fSpeedMax = 600.0
+			m_nControlPointNumber = 1
 		},
 		{
 			_class = "C_INIT_RandomRotation"

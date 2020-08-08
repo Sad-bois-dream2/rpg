@@ -131,7 +131,6 @@
 	[
 		{
 			m_ChildRef = resource:"particles/units/abyssal_stalker/shadow_rush/shadow_rush_start.vpcf"
-			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/units/abyssal_stalker/shadow_rush/shadow_rush_trail_add.vpcf"
