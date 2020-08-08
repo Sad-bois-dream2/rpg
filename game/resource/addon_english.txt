@@ -543,6 +543,26 @@
         "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri"		"Light Iai-Giri Seeds of Destruction"
         "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri_Description"		"Amount of seeds that you collected."
 
+        // Abyssal Stalker (Phantom Assassin)
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush"		"Shadow Rush"
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_Description"		"Abyssal Stalker blinks to an enemy silently like shadow after 0.5 second delay and strikes the target multiple times by a portion of her attack damage."
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_instance"		"STRIKES: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_damage"		"%AD TO STRIKE DAMAGE: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust"		"Void Dust"
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_Description"		"Abyssal Stalker applies the void dust dispersed by the dark explosion from the deepest end of void abyss. It gives Stalker both magic and status resistance bonus for a short time."
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_magic_res"		"%ELEMENTAL RESISTANCES: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_status_res"		"%DEBUFF RESISTANCE: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_duration"		"DURATION: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness"		"Dance of Darkness"
+        "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness_Description"		"Abyssal Stalker wraps herself with void shadow and gains evasion bonus in a short duration. Each attack instance from enemy she evades in the duration grants her 1 shadow stack which gives her agility bonus up to 15 stacks. The shadow stacks will also lasts 4 seconds after the duration."
+        "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness_agi_per_stack"		"AGILITY PER STACK: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness_evasion"		"%BONUS EVASION: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness_duration"		"DURATION: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss"		"Blade of Abyss"
+        "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_Description"		"Abyssal Stalker suddenly sneaks into the disillusion shadow on the ground and drains the power from the void core underneath. During that, she will be invisible for a short time. The disillusion shadow moves on the ground silently with no threat, when she comes out of it, her first attack will be a deadly critical strike and ignores target's armor. If Abystall Stalker is behind the enemy, that strike will be a fatal backstab with even higher critical damage."
+        "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_damage"		"%CRITICAL DAMAGE: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_backstab_damage"		"%BACKSTAB DAMAGE: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_duration"		"DURATION: "
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"

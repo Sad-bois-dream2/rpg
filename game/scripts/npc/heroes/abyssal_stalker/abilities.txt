@@ -31,17 +31,17 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
+				"damage"				"200 250 300 350"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"200 250 300 350"
+				"backstab_damage"		"300 400 500 600"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"backstab_damage"		"300 400 500 600"
+				"duration"				"3 4 5 6"
 			}
 		}
 	}
@@ -64,11 +64,11 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"25"
+		"AbilityCooldown"				"25"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -77,17 +77,17 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"magic_res"				"15 20 25 30"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"magic_res"				"15 20 25 30"
+				"status_res"			"15 20 25 30"
 			}
-			"01"
+			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_res"			"15 20 25 30"
+				"duration"				"5"
 			}
 		}
 	}
@@ -109,11 +109,11 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"20"
+		"AbilityCooldown"				"20"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -122,17 +122,17 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
+				"evasion"				"20 25 30 35"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"evasion"				"20 25 30 35"
+				"agi_per_stack"			"30 40 50 60"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"agi_per_stack"			"30 40 50 60"
+				"duration"				"3 4 5 6"
 			}
 		}
 	}
@@ -156,11 +156,11 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"2.5 2 1.5 1"
+		"AbilityCooldown"				"2.5 2 1.5 1"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -198,11 +198,11 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"30"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -218,225 +218,6 @@
 				"var_type"				"FIELD_FLOAT"
 				"bonus_damage"				"8 10 12 15"
 			}
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Talent Rend
-	//=================================================================================================================
-	"abyssal_stalker_rend"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_phantom_strike"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"2.5 2 1.5 1"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Talent Toxify
-	//=================================================================================================================
-	"abyssal_stalker_toxify"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_blur"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"2.5 2 1.5 1"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Talent Redmist
-	//=================================================================================================================
-	"abyssal_stalker_redmist"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_blur"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Talent Overload
-	//=================================================================================================================
-	"abyssal_stalker_overload"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"razor_unstable_current"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Talent Frigid Form
-	//=================================================================================================================
-	"abyssal_stalker_frigid_form"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_blur"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	//=================================================================================================================
-	// Abyssal Stalker: Silent Strike
-	//=================================================================================================================
-	"abyssal_stalker_silent_strike"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"silencer_glaives_of_wisdom"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"2.5 2 1.5 1"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-		}
-	}
-	
-	//=================================================================================================================
-	// Abyssal Stalker: Impale
-	//=================================================================================================================
-	"abyssal_stalker_impale"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"queenofpain_shadow_strike"
-        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-	    "MaxLevel"               		"1"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"2.5 2 1.5 1"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
 		}
 	}
 }
