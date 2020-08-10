@@ -552,7 +552,7 @@
         "DOTA_Tooltip_modifier_abyssal_stalker_shadow_rush_shadows"		"Stolen Shadows"
         "DOTA_Tooltip_modifier_abyssal_stalker_shadow_rush_shadows_Description"		"Total amount of stolen enemy shadows from Shadow Rush."
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust"		"Void Dust"
-        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_Description"		"Abyssal Stalker applies the void dust dispersed by the dark explosion from the deepest end of void abyss. It gives Abyssal Stalker both magic and status resistance bonus for a short time."
+        "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_Description"		"Abyssal Stalker applies the void dust dispersed by the dark explosion from the deepest end of void abyss. It gives Abyssal Stalker both magic and debuff resistance bonus for a short time."
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_magic_res"		"%ELEMENTAL RESISTANCES: "
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_status_res"		"%DEBUFF RESISTANCE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_duration"		"DURATION: "

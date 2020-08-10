@@ -137,12 +137,17 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/abyssal_stalker/shadow_rush/shadow_rush_end.vpcf"
+			m_flDelay = 0.1
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/riki/riki_immortal_ti6/riki_immortal_ti6_blinkstrike_trail.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/riki/riki_immortal_ti6/riki_immortal_ti6_blinkstrike_trail_smoke.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/abyssal_stalker/shadow_rush/shadow_rush_end_slash_stab.vpcf"
+			m_flDelay = 0.1
 		},
 	]
 	m_nBehaviorVersion = 10

@@ -182,6 +182,11 @@
 				"damage"				"30 35 40 45"
 			}
 		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/shadow_rush/shadow_rush.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+		}
 	}
 	//=================================================================================================================
 	// Abyssal Stalker: Gaze of Abyss 
