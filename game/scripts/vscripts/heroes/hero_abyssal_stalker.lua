@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
 --DANCE OF DARKNESS--
-abyssal_stalker_dance_of_darkness_evade = abyssal_stalker_dance_of_darkness_evade or class({
+abyssal_stalker_dance_of_darkness_evade = class({
     IsDebuff = function(self)
         return false
     end,
@@ -21,7 +21,7 @@ abyssal_stalker_dance_of_darkness_evade = abyssal_stalker_dance_of_darkness_evad
         return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
     end,
 })
-abyssal_stalker_dance_of_darkness_agi = abyssal_stalker_dance_of_darkness_agi or class({
+abyssal_stalker_dance_of_darkness_agi = class({
     IsDebuff = function(self)
         return false
     end,
@@ -84,7 +84,7 @@ end
 LinkedModifiers["abyssal_stalker_dance_of_darkness_evade"] = LUA_MODIFIER_MOTION_NONE
 LinkedModifiers["abyssal_stalker_dance_of_darkness_agi"] = LUA_MODIFIER_MOTION_NONE
 
-abyssal_stalker_dance_of_darkness = abyssal_stalker_dance_of_darkness or class({})
+abyssal_stalker_dance_of_darkness = class({})
 
 function abyssal_stalker_dance_of_darkness:OnSpellStart()
     local caster = self:GetCaster()
@@ -99,7 +99,7 @@ end
 
 --SHADOW RUSH--
 
-modifier_abyssal_stalker_shadow_rush_instance = modifier_abyssal_stalker_shadow_rush_instance or class({
+modifier_abyssal_stalker_shadow_rush_instance = class({
     IsDebuff = function(self)
         return false
     end,
@@ -150,7 +150,7 @@ end
 
 LinkedModifiers["modifier_abyssal_stalker_shadow_rush_instance"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_abyssal_stalker_shadow_rush_shadows = modifier_abyssal_stalker_shadow_rush_shadows or class({
+modifier_abyssal_stalker_shadow_rush_shadows = class({
     IsDebuff = function(self)
         return false
     end,
@@ -198,7 +198,7 @@ end
 
 LinkedModifiers["modifier_abyssal_stalker_shadow_rush_shadows"] = LUA_MODIFIER_MOTION_NONE
 
-abyssal_stalker_shadow_rush = abyssal_stalker_shadow_rush or class({
+abyssal_stalker_shadow_rush = class({
     GetAbilityTextureName = function(self)
         return "phantom_assassin_phantom_strike"
     end,
@@ -262,7 +262,7 @@ end
 
 --ABYSSAL STRIKE--
 
-abyssal_stalker_blade_of_abyss_crit = abyssal_stalker_blade_of_abyss_crit or class({
+abyssal_stalker_blade_of_abyss_crit = class({
     IsDebuff = function(self)
         return false
     end,
@@ -313,7 +313,7 @@ end
 
 LinkedModifiers["abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
 
-abyssal_stalker_blade_of_abyss = abyssal_stalker_blade_of_abyss or class({})
+abyssal_stalker_blade_of_abyss = class({})
 
 function abyssal_stalker_blade_of_abyss:OnSpellStart()
     local modifierTable = {}
@@ -333,7 +333,7 @@ function abyssal_stalker_blade_of_abyss:OnSpellStart()
 end
 
 --VOID DUST--
-abyssal_stalker_void_dust_buff = abyssal_stalker_void_dust_buff or class({
+modifier_abyssal_stalker_void_dust_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -352,48 +352,74 @@ abyssal_stalker_void_dust_buff = abyssal_stalker_void_dust_buff or class({
     GetTexture = function(self)
         return abyssal_stalker_void_dust:GetAbilityTextureName()
     end,
+    GetEffectName = function(self)
+        return "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
+    end
 })
 
-function abyssal_stalker_void_dust_buff:GetFireProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetFrostProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetEarthProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetVoidProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetHolyProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetNatureProtectionBonus()
-    return self:GetAbility().protection
-end
-function abyssal_stalker_void_dust_buff:GetInfernoProtectionBonus()
-    return self:GetAbility().protection
+function modifier_abyssal_stalker_void_dust_buff:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
 end
 
-LinkedModifiers["abyssal_stalker_void_dust_buff"] = LUA_MODIFIER_MOTION_NONE
+function modifier_abyssal_stalker_void_dust_buff:GetFireProtectionBonus()
+    return self.ability.protection
+end
 
-abyssal_stalker_void_dust = abyssal_stalker_void_dust or class({})
+function modifier_abyssal_stalker_void_dust_buff:GetFrostProtectionBonus()
+    return self.ability.protection
+end
+
+function modifier_abyssal_stalker_void_dust_buff:GetEarthProtectionBonus()
+    return self.ability.protection
+end
+
+function modifier_abyssal_stalker_void_dust_buff:GetVoidProtectionBonus()
+    return self.ability.protection
+end
+
+function modifier_abyssal_stalker_void_dust_buff:GetHolyProtectionBonus()
+    return self.ability.protection
+end
+
+function modifier_abyssal_stalker_void_dust_buff:GetNatureProtectionBonus()
+    return self.ability.protection
+end
+
+function modifier_abyssal_stalker_void_dust_buff:GetInfernoProtectionBonus()
+    return self.ability.protection
+end
+
+LinkedModifiers["modifier_abyssal_stalker_void_dust_buff"] = LUA_MODIFIER_MOTION_NONE
+
+abyssal_stalker_void_dust = class({
+    GetAbilityTextureName = function(self)
+        return "riki_smoke_screen"
+    end,
+})
+
 function abyssal_stalker_void_dust:OnUpgrade()
     self.protection = self:GetSpecialValueFor("magic_res") / 100
+    self.duration = self:GetSpecialValueFor("duration")
 end
+
 function abyssal_stalker_void_dust:OnSpellStart()
     local modifierTable = {}
     modifierTable.caster = self:GetCaster()
-    modifierTable.target = self:GetCaster()
+    modifierTable.target = modifierTable.caster
     modifierTable.ability = self
-    modifierTable.modifier_name = "abyssal_stalker_void_dust_buff"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
+    modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_buff"
+    modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
 end
 
 --GAZE OF ABYSS--
-abyssal_stalker_gaze_of_abyss_effect = abyssal_stalker_gaze_of_abyss_effect or class({
+abyssal_stalker_gaze_of_abyss_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -414,7 +440,7 @@ abyssal_stalker_gaze_of_abyss_effect = abyssal_stalker_gaze_of_abyss_effect or c
     end,
 })
 
-abyssal_stalker_gaze_of_abyss_buff = abyssal_stalker_gaze_of_abyss_buff or class({
+abyssal_stalker_gaze_of_abyss_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -469,7 +495,7 @@ end
 ------------------------------------------
 
 --REND AND REDMIST--
-abyssal_stalker_rend_thinker = abyssal_stalker_rend_thinker or class({
+abyssal_stalker_rend_thinker = class({
     IsDebuff = function(self)
         return true
     end,
@@ -489,7 +515,7 @@ abyssal_stalker_rend_thinker = abyssal_stalker_rend_thinker or class({
         return abyssal_stalker_rend:GetAbilityTextureName()
     end,
 })
-abyssal_stalker_rend_effect = abyssal_stalker_rend_effect or class({
+abyssal_stalker_rend_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -559,7 +585,7 @@ function abyssal_stalker_rend_effect:OnIntervalThink()
     end
 end
 
-abyssal_stalker_rend = abyssal_stalker_rend or class({})
+abyssal_stalker_rend = class({})
 
 function abyssal_stalker_rend:OnSpellStart()
     local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
@@ -584,7 +610,7 @@ end
 
 --TOXIFY AND TOXIC STRIKES--
 
-abyssal_stalker_toxify_thinker = abyssal_stalker_toxify_thinker or class({
+abyssal_stalker_toxify_thinker = class({
     IsDebuff = function(self)
         return true
     end,
@@ -604,7 +630,7 @@ abyssal_stalker_toxify_thinker = abyssal_stalker_toxify_thinker or class({
         return abyssal_stalker_toxify:GetAbilityTextureName()
     end,
 })
-abyssal_stalker_toxify_effect = abyssal_stalker_toxify_effect or class({
+abyssal_stalker_toxify_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -674,7 +700,7 @@ function abyssal_stalker_toxify_effect:OnIntervalThink()
     end
 end
 
-abyssal_stalker_toxify = abyssal_stalker_toxify or class({})
+abyssal_stalker_toxify = class({})
 
 function abyssal_stalker_toxify:OnSpellStart()
     local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
@@ -699,7 +725,7 @@ end
 
 --OVERLOAD  AND IGNITION--
 
-abyssal_stalker_overload_aura = abyssal_stalker_overload_aura or class({
+abyssal_stalker_overload_aura = class({
     IsAura = function(self)
         return true
     end,
@@ -735,7 +761,7 @@ abyssal_stalker_overload_aura = abyssal_stalker_overload_aura or class({
     end,
 })
 
-abyssal_stalker_overload_effect = abyssal_stalker_overload_effect or class({
+abyssal_stalker_overload_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -756,7 +782,7 @@ abyssal_stalker_overload_effect = abyssal_stalker_overload_effect or class({
     end,
 })
 
-abyssal_stalker_ignition = abyssal_stalker_ignition or class({
+abyssal_stalker_ignition = class({
     IsDebuff = function(self)
         return true
     end,
@@ -838,7 +864,7 @@ function abyssal_stalker_ignition:OnIntervalThink()
     GameMode:DamageUnit(damageTable)
 end
 
-abyssal_stalker_overload = abyssal_stalker_overload or class({})
+abyssal_stalker_overload = class({})
 
 function abyssal_stalker_overload:OnToggle()
     local caster = self:GetCaster()
@@ -858,7 +884,7 @@ end
 
 --FRIGID FORM AND FLASH FREEZE--
 
-abyssal_stalker_frigid_form_aura = abyssal_stalker_frigid_form_aura or class({
+abyssal_stalker_frigid_form_aura = class({
     IsAura = function(self)
         return true
     end,
@@ -894,7 +920,7 @@ abyssal_stalker_frigid_form_aura = abyssal_stalker_frigid_form_aura or class({
     end,
 })
 
-abyssal_stalker_frigid_form_effect = abyssal_stalker_frigid_form_effect or class({
+abyssal_stalker_frigid_form_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -915,7 +941,7 @@ abyssal_stalker_frigid_form_effect = abyssal_stalker_frigid_form_effect or class
     end,
 })
 
-abyssal_stalker_flash_freeze = abyssal_stalker_flash_freeze or class({
+abyssal_stalker_flash_freeze = class({
     IsDebuff = function(self)
         return true
     end,
@@ -968,7 +994,7 @@ function abyssal_stalker_flash_freeze:CheckStates()
     return { [MODIFIER_STATE_FROZEN] = true, }
 end
 
-abyssal_stalker_frigid_form = abyssal_stalker_frigid_form or class({})
+abyssal_stalker_frigid_form = class({})
 
 function abyssal_stalker_frigid_form:OnToggle()
     local caster = self:GetCaster()
@@ -987,7 +1013,7 @@ function abyssal_stalker_frigid_form:OnToggle()
 end
 
 --SILENT STRIKE AND CRIPPLE--
-abyssal_stalker_silent_strike_effect = abyssal_stalker_silent_strike_effect or class({
+abyssal_stalker_silent_strike_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1008,7 +1034,7 @@ abyssal_stalker_silent_strike_effect = abyssal_stalker_silent_strike_effect or c
     end,
 })
 
-abyssal_stalker_silent_strike_blind = abyssal_stalker_silent_strike_blind or class({
+abyssal_stalker_silent_strike_blind = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1029,7 +1055,7 @@ abyssal_stalker_silent_strike_blind = abyssal_stalker_silent_strike_blind or cla
     end,
 })
 
-abyssal_stalker_cripple = abyssal_stalker_cripple or class({
+abyssal_stalker_cripple = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1095,7 +1121,7 @@ function abyssal_stalker_cripple:CheckStates()
     return { [MODIFIER_STATE_DISARMED] = true, }
 end
 
-abyssal_stalker_silent_strike = abyssal_stalker_silent_strike or class({})
+abyssal_stalker_silent_strike = class({})
 
 function abyssal_stalker_silent_strike:OnSpellStart()
     local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
@@ -1119,7 +1145,7 @@ function abyssal_stalker_silent_strike:OnSpellStart()
 end
 
 --IMPALE AND IMMOBILIZE--
-abyssal_stalker_impale_effect = abyssal_stalker_impale_effect or class({
+abyssal_stalker_impale_effect = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1140,7 +1166,7 @@ abyssal_stalker_impale_effect = abyssal_stalker_impale_effect or class({
     end,
 })
 
-abyssal_stalker_impale_maim = abyssal_stalker_impale_maim or class({
+abyssal_stalker_impale_maim = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1161,7 +1187,7 @@ abyssal_stalker_impale_maim = abyssal_stalker_impale_maim or class({
     end,
 })
 
-abyssal_stalker_immobilize = abyssal_stalker_immobilize or class({
+abyssal_stalker_immobilize = class({
     IsDebuff = function(self)
         return true
     end,
@@ -1258,7 +1284,7 @@ function abyssal_stalker_immobilize:OnIntervalThink()
     GameMode:DamageUnit(damageTable)
 end
 
-abyssal_stalker_impale = abyssal_stalker_impale or class({})
+abyssal_stalker_impale = class({})
 
 function abyssal_stalker_impale:OnSpellStart()
     local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
