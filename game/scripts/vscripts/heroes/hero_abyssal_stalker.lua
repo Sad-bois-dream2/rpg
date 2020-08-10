@@ -395,6 +395,10 @@ function modifier_abyssal_stalker_void_dust_buff:GetInfernoProtectionBonus()
     return self.ability.protection
 end
 
+function modifier_abyssal_stalker_void_dust_buff:GetDebuffResistanceBonus()
+    return self.ability.resist
+end
+
 LinkedModifiers["modifier_abyssal_stalker_void_dust_buff"] = LUA_MODIFIER_MOTION_NONE
 
 abyssal_stalker_void_dust = class({
@@ -405,6 +409,7 @@ abyssal_stalker_void_dust = class({
 
 function abyssal_stalker_void_dust:OnUpgrade()
     self.protection = self:GetSpecialValueFor("magic_res") / 100
+    self.resist = self:GetSpecialValueFor("status_res") / 100
     self.duration = self:GetSpecialValueFor("duration")
 end
 
@@ -416,6 +421,11 @@ function abyssal_stalker_void_dust:OnSpellStart()
     modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_buff"
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
+    Timers:CreateTimer(1, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 --GAZE OF ABYSS--

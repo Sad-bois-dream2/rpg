@@ -98,14 +98,12 @@
 			_class = "C_OP_LerpEndCapScalar"
 			m_flOutput = 0.0
 			m_flLerpTime = 0.25
-			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_LerpEndCapScalar"
 			m_nFieldOutput = "7"
 			m_flOutput = 0.0
 			m_flLerpTime = 0.25
-			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_RemapCPtoScalar"
@@ -229,6 +227,29 @@
 	[
 		{
 			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 2
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/phantom_assassin/phantom_assassin.vmdl"
+				m_nModSpecificData = 137
+				m_sequenceName = "phantom_assassin_idle_alt1_anim"
+				m_hitboxSetName = "default"
+			}
 		},
 	]
 	m_ForceGenerators = 
