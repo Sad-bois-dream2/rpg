@@ -354,11 +354,16 @@ modifier_abyssal_stalker_void_dust_buff = class({
     end,
     GetEffectName = function(self)
         return "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
-    end,
-    GetStatusEffectName = function(self)
-        return "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
     end
 })
+
+function modifier_abyssal_stalker_void_dust_buff:GetStatusEffectName()
+    return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+end
+
+function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
+    return 5
+end
 
 function modifier_abyssal_stalker_void_dust_buff:OnCreated()
     if(not IsServer()) then
@@ -421,7 +426,8 @@ function abyssal_stalker_void_dust:OnSpellStart()
     modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_buff"
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
-    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
+    EmitSoundOn("Hero_PhantomAssassin.Blur.Break", modifierTable.caster)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
     Timers:CreateTimer(1, function()
         ParticleManager:DestroyParticle(particle, false)
         ParticleManager:ReleaseParticleIndex(particle)

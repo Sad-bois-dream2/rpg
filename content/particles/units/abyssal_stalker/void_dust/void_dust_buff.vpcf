@@ -7,7 +7,7 @@
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/smoke/curls/smoke_curls.vtex"
+			m_hTexture = resource:"materials/particle/smoke/steam/steam.vtex"
 			m_flAnimationRate = 0.6
 			m_bSaturateColorPreAlphaBlend = false
 			m_flAddSelfAmount = 4.0
@@ -16,7 +16,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 3.0
+				m_flLiteralValue = 4.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
@@ -110,6 +110,10 @@
 			m_nCPInput = 2
 			m_nFieldOutput = "7"
 		},
+		{
+			_class = "C_OP_LockToBone"
+			m_HitboxSetName = "select_high"
+		},
 	]
 	m_Initializers = 
 	[
@@ -165,15 +169,15 @@
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 2
+			m_nSequenceMax = 8
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 80.0
-			m_flRadiusMin = 50.0
+			m_flRadiusMax = 60.0
+			m_flRadiusMin = 40.0
 		},
 		{
 			_class = "C_INIT_RandomColor"
@@ -181,9 +185,8 @@
 			m_ColorMax = [ 148, 0, 211, 255 ]
 		},
 		{
-			_class = "C_INIT_CreateOnModelAtHeight"
-			m_flDesiredHeight = 80.0
-			m_flHitBoxScale = 0.1
+			_class = "C_INIT_CreateOnModel"
+			m_flHitBoxScale = 0.8
 			m_HitboxSetName = "select_high"
 		},
 	]
