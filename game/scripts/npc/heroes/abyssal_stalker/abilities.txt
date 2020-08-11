@@ -14,7 +14,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"30 25 20 20"
@@ -173,7 +173,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
         "AbilityCastRange"  "900"
 		"AbilityCastPoint"				"0"
 		// Time		

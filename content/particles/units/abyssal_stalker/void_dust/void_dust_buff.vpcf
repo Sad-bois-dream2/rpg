@@ -87,7 +87,7 @@
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 62, 29, 71, 255 ]
+			m_ColorFade = [ 138, 43, 226, 255 ]
 		},
 		{
 			_class = "C_OP_EndCapTimedDecay"
@@ -183,11 +183,17 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 138, 43, 226, 255 ]
 			m_ColorMax = [ 148, 0, 211, 255 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_CreateOnModel"
 			m_flHitBoxScale = 0.8
 			m_HitboxSetName = "select_high"
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 138, 43, 226, 255 ]
+			m_ColorMax = [ 138, 43, 226, 255 ]
 		},
 	]
 	m_Emitters = 

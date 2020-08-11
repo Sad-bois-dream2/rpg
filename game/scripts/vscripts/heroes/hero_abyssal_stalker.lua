@@ -34,8 +34,6 @@ function modifier_abyssal_stalker_dance_of_darkness:OnCreated(kv)
     end
     self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    print(self.caster)
-    print(self.ability)
 end
 
 function modifier_abyssal_stalker_dance_of_darkness:OnAttackLanded(kv)
@@ -373,7 +371,11 @@ end
 
 LinkedModifiers["abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
 
-abyssal_stalker_blade_of_abyss = class({})
+abyssal_stalker_blade_of_abyss = class({
+    GetAbilityTextureName = function(self)
+        return "abyssal_stalker_blade_of_abyss"
+    end,
+})
 
 function abyssal_stalker_blade_of_abyss:OnSpellStart()
     local modifierTable = {}
