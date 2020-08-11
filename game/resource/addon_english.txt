@@ -566,7 +566,7 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness_duration"		"DURATION: "
         "DOTA_Tooltip_modifier_abyssal_stalker_dance_of_darkness_buff"		"Blade of Darkness"
         "DOTA_Tooltip_modifier_abyssal_stalker_dance_of_darkness_buff_Description"		"Blade of Darkness proc chance increased."
-        "DOTA_Tooltip_modifier_abyssal_stalker_dance_of_darkness_agi"		"Blade of Darkness"
+        "DOTA_Tooltip_modifier_abyssal_stalker_dance_of_darkness_agi"		"Darkness"
         "DOTA_Tooltip_modifier_abyssal_stalker_dance_of_darkness_agi_Description"		"Agility increased."
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss"		"Blade of Abyss"
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_Description"		"Abyssal Stalker suddenly sneaks into the disillusion shadow on the ground and drains the power from the void core underneath. During that, she will be invisible for a short time. The disillusion shadow moves on the ground silently with no threat, when she comes out of it, her first attack will be a deadly critical strike and ignores target's armor. If Abystall Stalker is behind the enemy, that strike will be a fatal backstab with even higher critical damage."
