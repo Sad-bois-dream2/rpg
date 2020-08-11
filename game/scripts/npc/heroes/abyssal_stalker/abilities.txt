@@ -44,6 +44,12 @@
 				"duration"				"3 4 5 6"
 			}
 		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss.vpcf"
+            "particle"  "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+		}
 	}
 	
 	//=================================================================================================================

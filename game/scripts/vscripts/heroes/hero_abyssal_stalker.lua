@@ -320,12 +320,12 @@ end
 
 --ABYSSAL STRIKE--
 
-abyssal_stalker_blade_of_abyss_crit = class({
+modifier_abyssal_stalker_blade_of_abyss_crit = class({
     IsDebuff = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -339,28 +339,36 @@ abyssal_stalker_blade_of_abyss_crit = class({
     GetTexture = function(self)
         return abyssal_stalker_blade_of_abyss:GetAbilityTextureName()
     end,
+    GetEffectName = function(self)
+        return "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss_buff.vpcf"
+    end
 })
 
-function abyssal_stalker_blade_of_abyss_crit:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_ATTACK_START, MODIFIER_EVENT_ON_ATTACK_LANDED }
+function modifier_abyssal_stalker_blade_of_abyss_crit:DeclareFunctions()
+    return { MODIFIER_EVENT_ON_ATTACK_LANDED }
 end
-function abyssal_stalker_blade_of_abyss_crit:OnAttackStart(event)
-    if not IsServer() then
+
+function modifier_abyssal_stalker_blade_of_abyss_crit:OnCreated()
+    if(IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local damage = self:GetAbility():GetSpecialValueFor("damage")
-    local backstab_damage = self:GetAbility():GetSpecialValueFor("backstab_damage")
-    if event.attacker == caster then
-        if event.target:GetForwardVector():Dot(caster:GetForwardVector()) >= 0 then
-            self:SetStackCount(backstab_damage)
+    self.caster = self:GetCaster()
+    self.ability = self:GetAbility()
+end
+
+function modifier_abyssal_stalker_blade_of_abyss_crit:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
+    if (modifier and damageTable.damage > 0 and damageTable.physdmg and not damageTable.ability) then
+        if damageTable.victim:GetForwardVector():Dot(damageTable.attacker:GetForwardVector()) >= 0 then
+            damageTable.crit = modifier.ability.critBack
         else
-            self:SetStackCount(damage)
+            damageTable.crit = modifier.ability.crit
         end
+        return damageTable
     end
 end
 
-function abyssal_stalker_blade_of_abyss_crit:OnAttackLanded(event)
+function modifier_abyssal_stalker_blade_of_abyss_crit:OnAttackLanded(event)
     if not IsServer() then
         return
     end
@@ -369,7 +377,7 @@ function abyssal_stalker_blade_of_abyss_crit:OnAttackLanded(event)
     end
 end
 
-LinkedModifiers["abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
 
 abyssal_stalker_blade_of_abyss = class({
     GetAbilityTextureName = function(self)
@@ -377,21 +385,41 @@ abyssal_stalker_blade_of_abyss = class({
     end,
 })
 
+function abyssal_stalker_blade_of_abyss:OnUpgrade()
+    if(not IsServer()) then
+        return
+    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.crit = self:GetSpecialValueFor("damage") / 100
+    self.critBack = self:GetSpecialValueFor("backstab_damage") / 100
+end
+
 function abyssal_stalker_blade_of_abyss:OnSpellStart()
+    local caster = self:GetCaster()
     local modifierTable = {}
-    modifierTable.caster = self:GetCaster()
-    modifierTable.target = self:GetCaster()
+    modifierTable.caster = caster
+    modifierTable.target = caster
     modifierTable.ability = self
-    modifierTable.modifier_name = "abyssal_stalker_blade_of_abyss_crit"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
+    modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_crit"
+    modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
     local modifierTable = {}
-    modifierTable.caster = self:GetCaster()
-    modifierTable.target = self:GetCaster()
+    modifierTable.caster = caster
+    modifierTable.target = caster
     modifierTable.ability = self
     modifierTable.modifier_name = "modifier_rune_invis"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
+    modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
+    local casterPos = modifierTable.caster:GetAbsOrigin()
+    ParticleManager:SetParticleControl(particle, 1, casterPos)
+    ParticleManager:SetParticleControl(particle, 2, casterPos)
+    ParticleManager:SetParticleControl(particle, 3, casterPos)
+    ParticleManager:SetParticleControl(particle, 4, casterPos)
+    Timers:CreateTimer(1, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 --VOID DUST--
@@ -1386,6 +1414,11 @@ function abyssal_stalker_impale:OnSpellStart()
 end
 
 -- Internal stuff
+if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_crit, 'OnTakeDamage'))
+    GameMode.ABYSSAL_STALKER_INIT = true
+end
+
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_abyssal_stalker", MotionController)
 end
