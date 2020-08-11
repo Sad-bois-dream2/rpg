@@ -344,12 +344,8 @@ modifier_abyssal_stalker_blade_of_abyss_crit = class({
     end
 })
 
-function modifier_abyssal_stalker_blade_of_abyss_crit:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_ATTACK_LANDED }
-end
-
 function modifier_abyssal_stalker_blade_of_abyss_crit:OnCreated()
-    if(IsServer()) then
+    if(not IsServer()) then
         return
     end
     self.caster = self:GetCaster()
@@ -357,23 +353,25 @@ function modifier_abyssal_stalker_blade_of_abyss_crit:OnCreated()
 end
 
 function modifier_abyssal_stalker_blade_of_abyss_crit:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
+    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
     if (modifier and damageTable.damage > 0 and damageTable.physdmg and not damageTable.ability) then
         if damageTable.victim:GetForwardVector():Dot(damageTable.attacker:GetForwardVector()) >= 0 then
             damageTable.crit = modifier.ability.critBack
         else
             damageTable.crit = modifier.ability.crit
         end
+        local victimPos = damageTable.victim:GetAbsOrigin()
+        local coup_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPos, true)
+        ParticleManager:SetParticleControl(coup_pfx, 1, victimPos)
+        ParticleManager:SetParticleControlOrientation(coup_pfx, 1, damageTable.attacker:GetForwardVector() * (-1), damageTable.attacker:GetRightVector(), damageTable.attacker:GetUpVector())
+        Timers:CreateTimer(1, function()
+            ParticleManager:DestroyParticle(coup_pfx, false)
+            ParticleManager:ReleaseParticleIndex(coup_pfx)
+        end)
+        EmitSoundOn("Hero_PhantomAssassin.CoupDeGrace", damageTable.victim)
+        modifier:Destroy()
         return damageTable
-    end
-end
-
-function modifier_abyssal_stalker_blade_of_abyss_crit:OnAttackLanded(event)
-    if not IsServer() then
-        return
-    end
-    if event.attacker == self:GetCaster() and event.target ~= self:GetCaster() then
-        self:Destroy()
     end
 end
 
@@ -420,6 +418,7 @@ function abyssal_stalker_blade_of_abyss:OnSpellStart()
         ParticleManager:DestroyParticle(particle, false)
         ParticleManager:ReleaseParticleIndex(particle)
     end)
+    EmitSoundOn("Hero_PhantomAssassin.Blur", modifierTable.caster)
 end
 
 --VOID DUST--

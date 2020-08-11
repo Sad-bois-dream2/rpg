@@ -48,6 +48,7 @@
 		{
             "particle"  "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss.vpcf"
             "particle"  "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss_buff.vpcf"
+            "particle"  "particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
 		}
 	}
