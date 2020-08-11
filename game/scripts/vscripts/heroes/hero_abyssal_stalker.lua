@@ -1,7 +1,74 @@
 local LinkedModifiers = {}
 
 --DANCE OF DARKNESS--
-abyssal_stalker_dance_of_darkness_evade = class({
+modifier_abyssal_stalker_dance_of_darkness = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+function modifier_abyssal_stalker_dance_of_darkness:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+    print(self.caster)
+    print(self.ability)
+end
+
+function modifier_abyssal_stalker_dance_of_darkness:OnAttackLanded(kv)
+    if (not IsServer()) then
+        return
+    end
+    local attacker = kv.attacker
+    local target = kv.target
+    if (attacker and target and not target:IsNull() and attacker == self.caster) then
+        local activeModifier = attacker:FindModifierByName("modifier_abyssal_stalker_dance_of_darkness_buff")
+        local proc
+        if(activeModifier) then
+            proc = RollPercentage(self.ability.chanceActive)
+        else
+            proc = RollPercentage(self.ability.chance)
+        end
+        if(proc) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_abyssal_stalker_dance_of_darkness_agi"
+            modifierTable.duration = self.ability.stackDuration
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = self.ability.maxStacks
+            GameMode:ApplyStackingBuff(modifierTable)
+        end
+    end
+end
+
+LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_dance_of_darkness_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -21,7 +88,10 @@ abyssal_stalker_dance_of_darkness_evade = class({
         return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
     end,
 })
-abyssal_stalker_dance_of_darkness_agi = class({
+
+LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_dance_of_darkness_agi = class({
     IsDebuff = function(self)
         return false
     end,
@@ -42,49 +112,39 @@ abyssal_stalker_dance_of_darkness_agi = class({
     end,
 })
 
-function abyssal_stalker_dance_of_darkness_evade:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_ATTACK_FAIL,
-             MODIFIER_PROPERTY_EVASION_CONSTANT, }
-end
-
-function abyssal_stalker_dance_of_darkness_evade:GetModifierEvasion_Constant()
-    return self:GetSpecialValueFor("evasion")
-end
-function abyssal_stalker_dance_of_darkness_evade:OnAttackFail(event)
-    local caster = self:GetCaster()
-    if not IsServer() then
+function modifier_abyssal_stalker_dance_of_darkness_agi:OnCreated()
+    if (not IsServer()) then
         return
     end
-    if not event.target == caster then
+    self.ability = self:GetAbility()
+end
+
+function modifier_abyssal_stalker_dance_of_darkness_agi:GetAgilityPercentBonus()
+    return self:GetStackCount() * self.ability.agiPerStack
+end
+
+LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_agi"] = LUA_MODIFIER_MOTION_NONE
+
+abyssal_stalker_dance_of_darkness = class({
+    GetAbilityTextureName = function(self)
+        return "abyssal_stalker_dance_of_darkness"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_abyssal_stalker_dance_of_darkness"
+    end
+})
+
+function abyssal_stalker_dance_of_darkness:OnUpgrade()
+    if (not IsServer()) then
         return
     end
-    local modifier = abyssal_stalker_dance_of_darkness_agi
-    local stacks = self:GetStackCount()
-    local maxStacks = 15
-
-    if caster:HasModifier("modifier") then
-        caster:SetModifierStackCount("modifier", caster, math.min(stacks + 1, maxStacks))
-        caster:FindModifierByName("modifier"):SetDuration(4, true)
-    else
-        local modifierTable = {}
-        modifierTable.ability = self:GetAbility()
-        modifierTable.target = caster
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier"
-        modifierTable.duration = 4
-        GameMode:ApplyBuff(modifierTable)
-    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.chance = self:GetSpecialValueFor("chance")
+    self.chanceActive = self:GetSpecialValueFor("chance_active")
+    self.agiPerStack = self:GetSpecialValueFor("agi_per_stack") / 100
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.stackDuration = self:GetSpecialValueFor("stack_duration")
 end
-
-function abyssal_stalker_dance_of_darkness_agi:GetAgilityBonus()
-    local agiPerStack = self:GetAbility():GetSpecialValueFor("agi_per_stack")
-    return agiPerStack * self:GetStackCount()
-end
-
-LinkedModifiers["abyssal_stalker_dance_of_darkness_evade"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_dance_of_darkness_agi"] = LUA_MODIFIER_MOTION_NONE
-
-abyssal_stalker_dance_of_darkness = class({})
 
 function abyssal_stalker_dance_of_darkness:OnSpellStart()
     local caster = self:GetCaster()
@@ -92,8 +152,8 @@ function abyssal_stalker_dance_of_darkness:OnSpellStart()
     modifierTable.ability = self
     modifierTable.target = caster
     modifierTable.caster = caster
-    modifierTable.modifier_name = "abyssal_stalker_dance_of_darkness_evade"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
+    modifierTable.modifier_name = "modifier_abyssal_stalker_dance_of_darkness_buff"
+    modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
 end
 
@@ -200,7 +260,7 @@ LinkedModifiers["modifier_abyssal_stalker_shadow_rush_shadows"] = LUA_MODIFIER_M
 
 abyssal_stalker_shadow_rush = class({
     GetAbilityTextureName = function(self)
-        return "phantom_assassin_phantom_strike"
+        return "abyssal_stalker_shadow_rush"
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_abyssal_stalker_shadow_rush_shadows"
@@ -214,7 +274,7 @@ function abyssal_stalker_shadow_rush:OnUpgrade()
     self.maxShadows = self:GetSpecialValueFor("shadows")
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.instances = self:GetSpecialValueFor("instance")
-    if(not self.shadowsModifier) then
+    if (not self.shadowsModifier) then
         self.shadowsModifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
     end
 end
@@ -244,7 +304,7 @@ function abyssal_stalker_shadow_rush:OnSpellStart()
     EmitSoundOn("Hero_PhantomAssassin.Strike.Start", caster)
     local totalShadows = self.shadowsModifier:GetStackCount()
     local strikes = math.min(self.instances, totalShadows)
-    if(strikes >= 0) then
+    if (strikes >= 0) then
         self.shadowsModifier:SetStackCount(math.min(0, totalShadows - strikes))
     else
         return
@@ -366,7 +426,7 @@ function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
 end
 
 function modifier_abyssal_stalker_void_dust_buff:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -408,7 +468,7 @@ LinkedModifiers["modifier_abyssal_stalker_void_dust_buff"] = LUA_MODIFIER_MOTION
 
 abyssal_stalker_void_dust = class({
     GetAbilityTextureName = function(self)
-        return "riki_smoke_screen"
+        return "abyssal_stalker_void_dust"
     end,
 })
 
