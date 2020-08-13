@@ -9,7 +9,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"queenofpain_shadow_strike"
+		"AbilityTextureName"			"abyssal_stalker_blade_of_abyss"
         "AbilityType"           		 "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -62,7 +62,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"riki_smoke_screen"
+		"AbilityTextureName"			"abyssal_stalker_void_dust"
         "AbilityType"           		 "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -114,7 +114,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"slark_shadow_dance"
+		"AbilityTextureName"			"abyssal_stalker_dance_of_darkness"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -173,7 +173,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_phantom_strike"
+		"AbilityTextureName"			"abyssal_stalker_shadow_rush"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
