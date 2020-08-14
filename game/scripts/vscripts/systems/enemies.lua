@@ -528,7 +528,8 @@ function modifier_creep_scaling:OnCreated()
     self.ms = 0
     self.debuff_resist = 0
     self.difficulty = Difficulty:GetValue()
-    if (Enemies:IsBoss(self.creep)) then
+    local IsBoss = Enemies:IsBoss(self.creep)
+    if (IsBoss) then
         self.armor = 15
         self.elementalArmor = 0.47
         --flat speed bonus per difficulty for boss
@@ -554,12 +555,16 @@ function modifier_creep_scaling:OnCreated()
         end
     end
     --self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
-    self.as_total = self.as  * self.difficulty
-    self.ms_total = self.ms  * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
+    self.as_total = self.as * self.difficulty
+    self.ms_total = self.ms * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
     local castbarRequired = false
+    if (IsBoss) then
+        local addedAbility = self.creep:AddAbility("enemies_boss_skill")
+        addedAbility:SetLevel(abilitiesLevel)
+    end
     for i, ability in pairs(abilities[1]) do
         if (not self.creep:HasAbility(ability)) then
             local addedAbility = self.creep:AddAbility(ability)
@@ -594,7 +599,7 @@ function modifier_creep_scaling:OnCreated()
     if (castbarRequired == true) then
         Castbar:AddToUnit(self.creep)
     end
-    self.damage = self.damage * math.pow(self.difficulty, 1 + 2 *(self.difficulty - 1)/9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
+    self.damage = self.damage * math.pow(self.difficulty, 1 + 2 * (self.difficulty - 1) / 9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
@@ -735,6 +740,70 @@ modifier_creep_elite = class({
 
 LinkLuaModifier("modifier_creep_elite", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
+modifier_enemies_boss_skill = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "huskar_berserkers_blood"
+    end
+})
+
+function modifier_enemies_boss_skill:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_enemies_boss_skill:GetAttackDamagePercentBonus()
+    return self.ability.aaDmgPerStack * self:GetStackCount()
+end
+
+function modifier_enemies_boss_skill:GetSpellDamageBonus()
+    return self.ability.spellDmgPerStack * self:GetStackCount()
+end
+
+function modifier_enemies_boss_skill:GetHealthPercentBonus()
+    return self.ability.maxHpPerStack * self:GetStackCount()
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+enemies_boss_skill = class({
+    GetAbilityTextureName = function(self)
+        return "huskar_berserkers_blood"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_enemies_boss_skill"
+    end
+})
+
+function enemies_boss_skill:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.aaDmgPerStack = self:GetSpecialValueFor("aa_dmg_per_creep") / 100
+    self.spellDmgPerStack = self:GetSpecialValueFor("spell_dmg_per_creep") / 100
+    self.maxHpPerStack = self:GetSpecialValueFor("maxhp_per_creep") / 100
+end
+
+-- Internal stuff
 ListenToGameEvent("npc_spawned", function(keys)
     if (not IsServer()) then
         return
