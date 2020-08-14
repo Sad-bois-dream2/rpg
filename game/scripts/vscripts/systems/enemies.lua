@@ -553,7 +553,7 @@ function modifier_creep_scaling:OnCreated()
             self.ms = 20
         end
     end
-    self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
+    --self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
     self.as_total = self.as  * self.difficulty
     self.ms_total = self.ms  * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
@@ -620,9 +620,11 @@ function modifier_creep_scaling:OnIntervalThink()
     end
 end
 
+--[[
 function modifier_creep_scaling:GetDebuffResistanceBonus()
     return self.debuff_resist_total
 end
+--]]
 
 function modifier_creep_scaling:GetMoveSpeedBonus()
     return self.ms_total
