@@ -16,6 +16,9 @@ function Think()
     if not IsServer() then
         return
     end
+    if(not thisEntity.ai.spawnPoint) then
+        thisEntity.ai.spawnPoint = thisEntity:GetAbsOrigin()
+    end
     local aggroTarget = Aggro:GetUnitCurrentTarget(thisEntity)
     if (aggroTarget and thisEntity:IsAlive()) then
         if (not (thisEntity.ai.castedAbility and (thisEntity.ai.castedAbility:IsInAbilityPhase() or thisEntity.ai.castedAbility:IsChanneling()))) then
@@ -67,7 +70,14 @@ function Think()
         end
         if (aggroTarget ~= thisEntity:GetAggroTarget()) then
             thisEntity:MoveToTargetToAttack(aggroTarget)
+            return GENERIC_AI_THINK_INTERVAL
         end
+    end
+    local position = thisEntity:GetAbsOrigin()
+    local distanceToSpawnPoint = math.pow(thisEntity.ai.spawnPoint.x - position.x, 2) + math.pow(thisEntity.ai.spawnPoint.y - position.y, 2)
+    if(distanceToSpawnPoint >= 2500) then -- 50^2
+        Aggro:Reset(thisEntity)
+        thisEntity:MoveToPositionAggressive(thisEntity.ai.spawnPoint)
     end
     return GENERIC_AI_THINK_INTERVAL
 end
