@@ -8,6 +8,7 @@
 #base heroes/crystal_sorceress/hero.txt
 #base heroes/luminous_samurai/hero.txt
 #base heroes/abyssal_stalker/hero.txt
+#base heroes/catastrophe_demolisher/hero.txt
 "DOTAHeroes"
 {
   "npc_dota_hero_doom_bringer"
