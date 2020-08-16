@@ -483,6 +483,19 @@ function Enemies:OverwriteAbilityFunctions(ability)
             local abilityLevel = context:GetLevel()
             context:EndCooldown()
             context:StartCooldown(context:GetCooldown(abilityLevel - 1))
+            local abilityOwner = context:GetCaster()
+            local bossSpecialAbility = abilityOwner:FindAbilityByName("enemies_boss_skill")
+            if(bossSpecialAbility) then
+                local modifierTable = {}
+                modifierTable.ability = bossSpecialAbility
+                modifierTable.caster = abilityOwner
+                modifierTable.target = abilityOwner
+                modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
+                modifierTable.duration = -1
+                modifierTable.stacks = 1
+                modifierTable.max_stacks = 99999
+                GameMode:ApplyStackingBuff(modifierTable)
+            end
             if (context.OnAbilityPhaseInterrupted2) then
                 context.OnAbilityPhaseInterrupted2(context)
             end
@@ -771,19 +784,96 @@ function modifier_enemies_boss_skill:OnCreated()
     self.ability = self:GetAbility()
 end
 
-function modifier_enemies_boss_skill:GetAttackDamagePercentBonus()
-    return self.ability.aaDmgPerStack * self:GetStackCount()
-end
-
-function modifier_enemies_boss_skill:GetSpellDamageBonus()
-    return self.ability.spellDmgPerStack * self:GetStackCount()
-end
-
-function modifier_enemies_boss_skill:GetHealthPercentBonus()
-    return self.ability.maxHpPerStack * self:GetStackCount()
-end
-
 LinkLuaModifier("modifier_enemies_boss_skill", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_enemies_boss_skill_will = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "huskar_berserkers_blood"
+    end
+})
+
+function modifier_enemies_boss_skill_will:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
+    return self.ability.debuffResPerStack * self:GetStackCount()
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill_will", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_enemies_boss_skill_spellfrenzy = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "ogre_magi_bloodlust"
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST
+        }
+    end
+})
+
+function modifier_enemies_boss_skill_spellfrenzy:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+end
+
+function modifier_enemies_boss_skill_spellfrenzy:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if keys.unit == self.caster and keys.ability and ((keys.ability.IsInterruptible and keys.ability.IsInterruptible(keys.ability) ~= false) or (not keys.ability.IsInterruptible)) then
+        self:Destroy()
+    end
+end
+
+function modifier_enemies_boss_skill_spellfrenzy:GetSpellHasteBonus()
+    return self.ability.spellhastePerStack * self:GetStackCount()
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill_spellfrenzy", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
 enemies_boss_skill = class({
     GetAbilityTextureName = function(self)
@@ -798,9 +888,9 @@ function enemies_boss_skill:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    self.aaDmgPerStack = self:GetSpecialValueFor("aa_dmg_per_creep") / 100
-    self.spellDmgPerStack = self:GetSpecialValueFor("spell_dmg_per_creep") / 100
-    self.maxHpPerStack = self:GetSpecialValueFor("maxhp_per_creep") / 100
+    self.spellhastePerStack = self:GetSpecialValueFor("castspeed")
+    self.debuffResPerStack = self:GetSpecialValueFor("status_res") / 100
+    self.debuffResDuration = self:GetSpecialValueFor("duration")
 end
 
 -- Internal stuff

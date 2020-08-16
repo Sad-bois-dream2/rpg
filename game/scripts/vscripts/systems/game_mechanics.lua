@@ -295,6 +295,33 @@ if (IsServer()) then
                         break
                     end
                 end
+                local bossZoneAbility = args.target:FindAbilityByName("enemies_boss_skill")
+                if (bossZoneAbility) then
+                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                    local isModifierInteractWithBossZoneAbility = false
+                    if (crowdControlModifier) then
+                        isModifierInteractWithBossZoneAbility = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.root == true) or (crowdControlModifier.hex == true)
+                    else
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                            isModifierInteractWithBossZoneAbility = true
+                        else
+                            if (args.modifier_name == "modifier_rooted") then
+                                isModifierInteractWithBossZoneAbility = true
+                            end
+                        end
+                    end
+                    if(isModifierInteractWithBossZoneAbility) then
+                        local modifierTable = {}
+                        modifierTable.ability = bossZoneAbility
+                        modifierTable.caster = args.target
+                        modifierTable.target = args.target
+                        modifierTable.modifier_name = "modifier_enemies_boss_skill_will"
+                        modifierTable.duration = -1
+                        modifierTable.stacks = 1
+                        modifierTable.max_stacks = 99999
+                        GameMode:ApplyStackingBuff(modifierTable)
+                    end
+                end
                 if (isTargetCasting == true) then
                     local isModifierWillPreventCasting = false
                     local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
@@ -476,7 +503,7 @@ if (IsServer()) then
                 if targetArmor >= 0 then
                     physReduction = (targetArmor * 0.06) / (1 + targetArmor * 0.06)
                 else
-                    physReduction = -1 + math.pow(0.94, targetArmor * - 1)
+                    physReduction = -1 + math.pow(0.94, targetArmor * -1)
                 end
                 physReduction = 1 - physReduction
                 typesCount = typesCount + 1
