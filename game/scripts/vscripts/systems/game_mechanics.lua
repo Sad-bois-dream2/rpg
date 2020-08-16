@@ -296,21 +296,17 @@ if (IsServer()) then
                     end
                 end
                 local bossZoneAbility = args.target:FindAbilityByName("enemies_boss_skill")
-                if (bossZoneAbility) then
+                if (bossZoneAbility and args.target ~= args.caster) then
                     local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
                     local isModifierInteractWithBossZoneAbility = false
                     if (crowdControlModifier) then
                         isModifierInteractWithBossZoneAbility = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.root == true) or (crowdControlModifier.hex == true)
                     else
-                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
+                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence" or args.modifier_name == "modifier_rooted") then
                             isModifierInteractWithBossZoneAbility = true
-                        else
-                            if (args.modifier_name == "modifier_rooted") then
-                                isModifierInteractWithBossZoneAbility = true
-                            end
                         end
                     end
-                    if(isModifierInteractWithBossZoneAbility) then
+                    if(isModifierInteractWithBossZoneAbility == true) then
                         local modifierTable = {}
                         modifierTable.ability = bossZoneAbility
                         modifierTable.caster = args.target

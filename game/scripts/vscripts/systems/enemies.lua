@@ -477,7 +477,10 @@ function Enemies:OverwriteAbilityFunctions(ability)
     if (IsInterruptible == false) then
         return
     end
+    print("Called for ", ability:GetAbilityName())
+    print(ability.OnAbilityPhaseInterrupted2)
     if (not ability.OnAbilityPhaseInterrupted2) then
+        print("Lel?")
         ability.OnAbilityPhaseInterrupted2 = ability.OnAbilityPhaseInterrupted
         ability.OnAbilityPhaseInterrupted = function(context)
             local abilityLevel = context:GetLevel()
@@ -810,15 +813,29 @@ modifier_enemies_boss_skill_will = class({
     end
 })
 
+-- called from game_mechanics
 function modifier_enemies_boss_skill_will:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
+    self.expireTime = GameRules:GetGameTime() + self.ability.debuffResDuration
 end
 
 function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
     return self.ability.debuffResPerStack * self:GetStackCount()
+end
+
+function modifier_enemies_boss_skill_will:OnStackCountChanged()
+    if(not IsServer()) then
+        return
+    end
+    local newExpireTime = self.expireTime - GameRules:GetGameTime()
+    if(newExpireTime > 0) then
+        self:SetDuration(newExpireTime, true)
+    else
+        self:Destroy()
+    end
 end
 
 LinkLuaModifier("modifier_enemies_boss_skill_will", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
@@ -852,6 +869,7 @@ modifier_enemies_boss_skill_spellfrenzy = class({
     end
 })
 
+-- called from Enemies:OverwriteAbilityFunctions(ability)
 function modifier_enemies_boss_skill_spellfrenzy:OnCreated()
     if (not IsServer()) then
         return
