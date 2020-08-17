@@ -174,6 +174,7 @@ function GameMode:OnCloseAllWindowsRequest(event, args)
             TalentTree:OnTalentTreeWindowCloseRequest(event, args)
             Inventory:OnInventoryWindowCloseRequest(event, args)
             Dummy:OnDummyCloseWindowRequest(event, args)
+            SaveLoad:OnSaveLoadWindowCloseRequest(event, args)
         end
     end
 end

@@ -30,6 +30,7 @@ function Precache(context)
     PrecacheResource("particle", "particles/units/dummy/dummy.vpcf", context)
     PrecacheResource("particle", "particles/units/dummy/dummy_number.vpcf", context)
     PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_ogre_magi.vsndevts", context)
+    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_ogre_magi.vsndevts", context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
     -- Boss healing mechanic particle
@@ -37,6 +38,8 @@ function Precache(context)
     -- Item drops
     PrecacheResource("particle", "particles/items/drop/projectile/item_projectile.vpcf", context)
     PrecacheResource("soundfile", "soundevents/game_sounds_ui_imported.vsndevts", context)
+    -- Save npc
+    PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_oracle.vsndevts", context)
     -- All enemy abilities
     for _, ability in pairs(Enemies.enemyAbilities) do
         PrecacheItemByNameSync(ability.name, context)

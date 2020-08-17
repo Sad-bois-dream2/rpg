@@ -528,7 +528,8 @@ function modifier_creep_scaling:OnCreated()
     self.ms = 0
     self.debuff_resist = 0
     self.difficulty = Difficulty:GetValue()
-    if (Enemies:IsBoss(self.creep)) then
+    local IsBoss = Enemies:IsBoss(self.creep)
+    if (IsBoss) then
         self.armor = 15
         self.elementalArmor = 0.47
         --flat speed bonus per difficulty for boss
@@ -553,13 +554,17 @@ function modifier_creep_scaling:OnCreated()
             self.ms = 20
         end
     end
-    self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
-    self.as_total = self.as  * self.difficulty
-    self.ms_total = self.ms  * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
+    --self.debuff_resist_total = self.debuff_resist * self.difficulty * 0.01
+    self.as_total = self.as * self.difficulty
+    self.ms_total = self.ms * self.difficulty + 150  -- base is 150 lazy to fix all to 300 so there is 150 here
     local abilitiesLevel = Enemies:GetAbilitiesLevel(self.difficulty)
     local abilities = Enemies:GetAbilityListsForEnemy(self.creep)
     local abilitiesAdded = 0
     local castbarRequired = false
+    if (IsBoss) then
+        local addedAbility = self.creep:AddAbility("enemies_boss_skill")
+        addedAbility:SetLevel(abilitiesLevel)
+    end
     for i, ability in pairs(abilities[1]) do
         if (not self.creep:HasAbility(ability)) then
             local addedAbility = self.creep:AddAbility(ability)
@@ -594,7 +599,7 @@ function modifier_creep_scaling:OnCreated()
     if (castbarRequired == true) then
         Castbar:AddToUnit(self.creep)
     end
-    self.damage = self.damage * math.pow(self.difficulty, 1 + 2 *(self.difficulty - 1)/9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
+    self.damage = self.damage * math.pow(self.difficulty, 1 + 2 * (self.difficulty - 1) / 9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
     self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
@@ -620,9 +625,11 @@ function modifier_creep_scaling:OnIntervalThink()
     end
 end
 
+--[[
 function modifier_creep_scaling:GetDebuffResistanceBonus()
     return self.debuff_resist_total
 end
+--]]
 
 function modifier_creep_scaling:GetMoveSpeedBonus()
     return self.ms_total
@@ -733,6 +740,258 @@ modifier_creep_elite = class({
 
 LinkLuaModifier("modifier_creep_elite", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
 
+modifier_enemies_boss_skill = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "huskar_berserkers_blood"
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_START,
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
+            MODIFIER_EVENT_ON_ABILITY_END_CHANNEL
+        }
+    end
+})
+
+function modifier_enemies_boss_skill:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+end
+
+function modifier_enemies_boss_skill:OnAbilityStart(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster) then
+        if (keys.ability.IsInterruptible and keys.ability.IsInterruptible(keys.ability) == false) then
+            return
+        end
+        local abilityCastPoint = keys.ability:GetCastPoint()
+        local abilityChannelTime = keys.ability:GetChannelTime()
+        local castbarModifier = self.caster:FindModifierByName("modifier_castbar")
+        if (not castbarModifier or not (keys.ability.IsRequireCastbar and keys.ability.IsRequireCastbar(keys.ability) == true)) then
+            return
+        end
+        abilityCastPoint = abilityCastPoint * castbarModifier:GetModifierPercentageCasttime() / 100
+        if (abilityChannelTime > 0) then
+            self.expectedChannelEndTime = GameRules:GetGameTime() + abilityCastPoint + abilityChannelTime
+            self.latestUsedAbility = keys.ability
+        else
+            if (abilityCastPoint > 0) then
+                self.expectedCastEndTime = GameRules:GetGameTime() + abilityCastPoint
+                self.latestUsedAbility = keys.ability
+            end
+        end
+    end
+end
+
+function modifier_enemies_boss_skill:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster and self.latestUsedAbility and self.expectedCastEndTime) then
+        if (self.expectedCastEndTime >= GameRules:GetGameTime()) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
+            modifierTable.duration = -1
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
+        else
+            local spellFrenzyModifier = self.caster:FindModifierByName("modifier_enemies_boss_skill_spellfrenzy")
+            if (spellFrenzyModifier) then
+                spellFrenzyModifier:Destroy()
+            end
+        end
+        self.expectedCastEndTime = nil
+        self.latestUsedAbility = nil
+    end
+end
+
+function modifier_enemies_boss_skill:OnAbilityEndChannel(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster and self.latestUsedAbility and self.expectedChannelEndTime) then
+        if (self.expectedChannelEndTime >= GameRules:GetGameTime()) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
+            modifierTable.duration = -1
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
+        else
+            local spellFrenzyModifier = self.caster:FindModifierByName("modifier_enemies_boss_skill_spellfrenzy")
+            if (spellFrenzyModifier) then
+                spellFrenzyModifier:Destroy()
+            end
+        end
+        self.expectedChannelEndTime = nil
+        self.latestUsedAbility = nil
+    end
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_enemies_boss_skill_will = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "huskar_berserkers_blood"
+    end
+})
+
+function modifier_enemies_boss_skill_will:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.expireTime = GameRules:GetGameTime() + self.ability.debuffResDuration
+end
+
+function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
+    local bossZoneAbility = modifierTable.target:FindAbilityByName("enemies_boss_skill")
+    if (bossZoneAbility and modifierTable.target ~= modifierTable.caster) then
+        local crowdControlModifier = GameMode.CrowdControlModifiersTable[modifierTable.modifier_name]
+        local isModifierInteractWithBossZoneAbility = false
+        if (crowdControlModifier) then
+            isModifierInteractWithBossZoneAbility = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.root == true) or (crowdControlModifier.hex == true)
+        else
+            if (modifierTable.modifier_name == "modifier_stunned" or modifierTable.modifier_name == "modifier_silence" or modifierTable.modifier_name == "modifier_rooted") then
+                isModifierInteractWithBossZoneAbility = true
+            end
+        end
+        if (isModifierInteractWithBossZoneAbility == true) then
+            local modifier = {}
+            modifier.ability = bossZoneAbility
+            modifier.caster = modifierTable.target
+            modifier.target = modifierTable.target
+            modifier.modifier_name = "modifier_enemies_boss_skill_will"
+            modifier.duration = -1
+            modifier.stacks = 1
+            modifier.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifier)
+        end
+    end
+end
+
+function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
+    return self.ability.debuffResPerStack * self:GetStackCount()
+end
+
+function modifier_enemies_boss_skill_will:OnStackCountChanged()
+    if (not IsServer()) then
+        return
+    end
+    local newExpireTime = self.expireTime - GameRules:GetGameTime()
+    if (newExpireTime > 0) then
+        self:SetDuration(newExpireTime, true)
+    else
+        self:Destroy()
+    end
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill_will", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+modifier_enemies_boss_skill_spellfrenzy = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function()
+        return "ogre_magi_bloodlust"
+    end
+})
+
+function modifier_enemies_boss_skill_spellfrenzy:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_enemies_boss_skill_spellfrenzy:GetSpellHasteBonus()
+    return self.ability.spellhastePerStack * self:GetStackCount()
+end
+
+LinkLuaModifier("modifier_enemies_boss_skill_spellfrenzy", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
+
+enemies_boss_skill = class({
+    GetAbilityTextureName = function(self)
+        return "huskar_berserkers_blood"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_enemies_boss_skill"
+    end
+})
+
+function enemies_boss_skill:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.spellhastePerStack = self:GetSpecialValueFor("castspeed")
+    self.debuffResPerStack = self:GetSpecialValueFor("status_res") / 100
+    self.debuffResDuration = self:GetSpecialValueFor("duration")
+end
+
+-- Internal stuff
 ListenToGameEvent("npc_spawned", function(keys)
     if (not IsServer()) then
         return
@@ -744,7 +1003,8 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-if not Enemies.initialized then
+if not Enemies.initialized and IsServer() then
     Enemies:Init()
     Enemies.initialized = true
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_enemies_boss_skill_will, 'OnPostModifierApplied'))
 end

@@ -275,3 +275,13 @@
 	margin-top: 4px;
 	margin-right: 5px;
 }
+
+#BossZoneAbilityImage {
+    width: 40px;
+    height: 40px;
+	horizontal-align: left;
+	border: 1px solid grey;
+	border-radius: 24px;
+	margin-left: 55px;
+	margin-top: 75px;
+}

@@ -71,6 +71,7 @@ function HeroSelection:OnAllPlayersSelectedHero()
             HeroSelection.playerHeroes["player"..i] = {}
             HeroSelection.playerHeroes["player"..i].playerId = i
             HeroSelection.playerHeroes["player"..i].hero = HeroSelection.data[math.random(1, #HeroSelection.data)].Name
+            HeroSelection.playerHeroes["player"..i].slotNumber = -1
         end
         local player = PlayerResource:GetPlayer(i)
         if(player) then
@@ -121,6 +122,7 @@ function HeroSelection:OnHeroPickedRequest(event)
     HeroSelection.playerHeroes["player" .. event.PlayerID].hero = event.hero
     HeroSelection.playerHeroes["player" .. event.PlayerID].state = HeroSelection.STATE_PICKED
     HeroSelection.playerHeroes["player" .. event.PlayerID].playerId = event.PlayerID
+    HeroSelection.playerHeroes["player" .. event.PlayerID].slotNumber = event.slotNumber
     CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_picked_from_server", { hero = event.hero, player_id = event.PlayerID })
     if (HeroSelection:IsAllPlayersPickedHero()) then
         GameRules:SetCustomGameSetupRemainingTime(5)
@@ -139,6 +141,7 @@ function HeroSelection:OnHeroSelectedRequest(event)
     HeroSelection.playerHeroes["player" .. event.PlayerID].hero = event.hero
     HeroSelection.playerHeroes["player" .. event.PlayerID].state = HeroSelection.STATE_SELECTED
     HeroSelection.playerHeroes["player" .. event.PlayerID].playerId = event.PlayerID
+    HeroSelection.playerHeroes["player" .. event.PlayerID].slotNumber = event.slotNumber
     CustomGameEventManager:Send_ServerToAllClients("rpg_hero_selection_hero_selected_from_server", { hero = event.hero, player_id = event.PlayerID })
 end
 

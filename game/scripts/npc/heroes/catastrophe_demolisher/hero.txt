@@ -1,15 +1,14 @@
 "DOTAHeroes"
 {
-	"npc_dota_hero_phantom_assassin"
+	"npc_dota_hero_skeleton_king"
 	{
 		"AbilityLayout" "6"
-		"override_hero" "npc_dota_hero_phantom_assassin"
-		"Ability1"		"abyssal_stalker_shadow_rush"
-		"Ability2"		"abyssal_stalker_void_dust"
-		"Ability3"		"abyssal_stalker_dance_of_darkness"
-		"Ability4"		"abyssal_stalker_blade_of_abyss"
-		"Ability5"		"antimage_blink"
-		"Ability6"		"empty6"
+		"Ability1"		"catastrophe_demolisher_curse_of_doom"
+		"Ability2"		"catastrophe_demolisher_flaming_blast"
+		"Ability3"		"catastrophe_demolisher_blood_oblation"
+		"Ability4"		"catastrophe_demolisher_essence_devouer"
+		"Ability5"		"catastrophe_demolisher_crimson_fanaticism"
+		"Ability6"		"catastrophe_demolisher_claymore_of_destruction"
 		"AbilityTalentStart"		"7"
 		"Ability7"	""
 		"Ability8"	""
@@ -31,21 +30,12 @@
 		"BountyGoldMax"                "0"           // Gold earned max.
 		"StatusHealthRegen"           "0"         // Health regeneration rate.
 		"StatusManaRegen"             "0"         // Mana regeneration rate.
-		"AttributePrimary"             "DOTA_ATTRIBUTE_AGILITY"
+		"AttributePrimary"             "DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"        "18"            // Base strength
 		"AttributeStrengthGain"        "1.9"            // Strength bonus per level.
 		"AttributeBaseAgility"         "20"            // Base agility
 		"AttributeAgilityGain"         "2.9"            // Agility bonus per level.
 		"AttributeBaseIntelligence"    "15"            // Base intelligence
 		"AttributeIntelligenceGain"    "1.4"            // Intelligence bonus per level.
-        "VisionDaytimeRange"        "1800"        // Range of vision during day light.
-        "VisionNighttimeRange"      "1800"        // Range of vision at night time.
-        "Roles"
-        {
-            "Tank"  "0"
-            "DPS"   "5"
-            "Support"   "0"
-            "Utility"   "0"
-        }
 	}
 }
