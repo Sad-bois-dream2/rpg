@@ -189,7 +189,7 @@ function TalentTree:Init()
             "terror_lord_ruthless_predator",
             "terror_lord_ruthless_predator"
         },
-        ["npc_dota_hero_doom_bringer"] = {
+        ["npc_dota_hero_skeleton_king"] = {
             "terror_lord_ruthless_predator",
             "terror_lord_ruthless_predator",
             "terror_lord_ruthless_predator",
