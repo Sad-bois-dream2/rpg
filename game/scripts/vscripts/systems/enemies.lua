@@ -477,28 +477,12 @@ function Enemies:OverwriteAbilityFunctions(ability)
     if (IsInterruptible == false) then
         return
     end
-    print("Called for ", ability:GetAbilityName())
-    print(ability.OnAbilityPhaseInterrupted2)
     if (not ability.OnAbilityPhaseInterrupted2) then
-        print("Lel?")
         ability.OnAbilityPhaseInterrupted2 = ability.OnAbilityPhaseInterrupted
         ability.OnAbilityPhaseInterrupted = function(context)
             local abilityLevel = context:GetLevel()
             context:EndCooldown()
             context:StartCooldown(context:GetCooldown(abilityLevel - 1))
-            local abilityOwner = context:GetCaster()
-            local bossSpecialAbility = abilityOwner:FindAbilityByName("enemies_boss_skill")
-            if(bossSpecialAbility) then
-                local modifierTable = {}
-                modifierTable.ability = bossSpecialAbility
-                modifierTable.caster = abilityOwner
-                modifierTable.target = abilityOwner
-                modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
-                modifierTable.duration = -1
-                modifierTable.stacks = 1
-                modifierTable.max_stacks = 99999
-                GameMode:ApplyStackingBuff(modifierTable)
-            end
             if (context.OnAbilityPhaseInterrupted2) then
                 context.OnAbilityPhaseInterrupted2(context)
             end
@@ -777,6 +761,13 @@ modifier_enemies_boss_skill = class({
     end,
     GetTexture = function()
         return "huskar_berserkers_blood"
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_START,
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
+            MODIFIER_EVENT_ON_ABILITY_END_CHANNEL
+        }
     end
 })
 
@@ -785,6 +776,89 @@ function modifier_enemies_boss_skill:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+end
+
+function modifier_enemies_boss_skill:OnAbilityStart(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster) then
+        if (keys.ability.IsInterruptible and keys.ability.IsInterruptible(keys.ability) == false) then
+            return
+        end
+        local abilityCastPoint = keys.ability:GetCastPoint()
+        local abilityChannelTime = keys.ability:GetChannelTime()
+        local castbarModifier = self.caster:FindModifierByName("modifier_castbar")
+        if (not castbarModifier or not (keys.ability.IsRequireCastbar and keys.ability.IsRequireCastbar(keys.ability) == true)) then
+            return
+        end
+        abilityCastPoint = abilityCastPoint * castbarModifier:GetModifierPercentageCasttime() / 100
+        if (abilityChannelTime > 0) then
+            self.expectedChannelEndTime = GameRules:GetGameTime() + abilityCastPoint + abilityChannelTime
+            self.latestUsedAbility = keys.ability
+        else
+            if (abilityCastPoint > 0) then
+                self.expectedCastEndTime = GameRules:GetGameTime() + abilityCastPoint
+                self.latestUsedAbility = keys.ability
+            end
+        end
+    end
+end
+
+function modifier_enemies_boss_skill:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster and self.latestUsedAbility and self.expectedCastEndTime) then
+        if (self.expectedCastEndTime >= GameRules:GetGameTime()) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
+            modifierTable.duration = -1
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
+        else
+            local spellFrenzyModifier = self.caster:FindModifierByName("modifier_enemies_boss_skill_spellfrenzy")
+            if (spellFrenzyModifier) then
+                spellFrenzyModifier:Destroy()
+            end
+        end
+        self.expectedCastEndTime = nil
+        self.latestUsedAbility = nil
+    end
+end
+
+function modifier_enemies_boss_skill:OnAbilityEndChannel(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster and self.latestUsedAbility and self.expectedChannelEndTime) then
+        print("End channeling")
+        print(self.latestUsedAbility:GetAbilityName())
+        print("Expected", self.expectedChannelEndTime, "Atm", GameRules:GetGameTime())
+        if (self.expectedChannelEndTime >= GameRules:GetGameTime()) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_enemies_boss_skill_spellfrenzy"
+            modifierTable.duration = -1
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
+        else
+            local spellFrenzyModifier = self.caster:FindModifierByName("modifier_enemies_boss_skill_spellfrenzy")
+            if (spellFrenzyModifier) then
+                spellFrenzyModifier:Destroy()
+            end
+        end
+        self.expectedChannelEndTime = nil
+        self.latestUsedAbility = nil
+    end
 end
 
 LinkLuaModifier("modifier_enemies_boss_skill", "systems/enemies", LUA_MODIFIER_MOTION_NONE)
@@ -833,7 +907,7 @@ function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
                 isModifierInteractWithBossZoneAbility = true
             end
         end
-        if(isModifierInteractWithBossZoneAbility == true) then
+        if (isModifierInteractWithBossZoneAbility == true) then
             local modifier = {}
             modifier.ability = bossZoneAbility
             modifier.caster = modifierTable.target
@@ -852,11 +926,11 @@ function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
 end
 
 function modifier_enemies_boss_skill_will:OnStackCountChanged()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     local newExpireTime = self.expireTime - GameRules:GetGameTime()
-    if(newExpireTime > 0) then
+    if (newExpireTime > 0) then
         self:SetDuration(newExpireTime, true)
     else
         self:Destroy()
@@ -886,30 +960,14 @@ modifier_enemies_boss_skill_spellfrenzy = class({
     end,
     GetTexture = function()
         return "ogre_magi_bloodlust"
-    end,
-    DeclareFunctions = function()
-        return {
-            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST
-        }
     end
 })
 
--- called from Enemies:OverwriteAbilityFunctions(ability)
 function modifier_enemies_boss_skill_spellfrenzy:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self:GetParent()
-end
-
-function modifier_enemies_boss_skill_spellfrenzy:OnAbilityFullyCast(keys)
-    if (not IsServer()) then
-        return
-    end
-    if keys.unit == self.caster and keys.ability and ((keys.ability.IsInterruptible and keys.ability.IsInterruptible(keys.ability) ~= false) or (not keys.ability.IsInterruptible)) then
-        self:Destroy()
-    end
 end
 
 function modifier_enemies_boss_skill_spellfrenzy:GetSpellHasteBonus()
@@ -948,9 +1006,8 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-if Enemies.initialized and IsServer() then
+if not Enemies.initialized and IsServer() then
     Enemies:Init()
     Enemies.initialized = true
-    GameMode.PostApplyModifierEventHandlersTable = {}
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_enemies_boss_skill_will, 'OnPostModifierApplied'))
 end
