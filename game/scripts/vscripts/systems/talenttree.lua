@@ -126,12 +126,12 @@ function TalentTree:Init()
             "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_phantom_assassin"] = {
-            "abyssal_stalker_rend",
-            "abyssal_stalker_toxify",
-            "abyssal_stalker_overload",
-            "abyssal_stalker_frigid_form",
-            "abyssal_stalker_silent_strike",
-            "abyssal_stalker_impale",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator",
+            "terror_lord_ruthless_predator"
         },
         ["npc_dota_hero_abyssal_underlord"] = {
             "terror_lord_flame_of_menace",
@@ -693,6 +693,24 @@ function TalentTree:OnTalentTreeWindowCloseRequest(event, args)
             CustomGameEventManager:Send_ServerToPlayer(player, "rpg_talenttree_close_window_from_server", {})
         end
     end
+end
+
+function TalentTree:LoadTalentsFromSaveData(playerHero, talentData)
+    if(not playerHero or not talentData) then
+        return
+    end
+    TalentTree:RemoveAllTalentAbilities(playerHero)
+    for talentId = 1, TalentTree.latest_talent_id do
+        local talentLevel = tonumber(talentData["talent"..talentId])
+        if(not talentLevel) then
+            talentLevel = 0
+        end
+        TalentTree:SetHeroTalentLevel(playerHero, talentId, talentLevel)
+    end
+    local new_event = {
+        player_id = playerHero:GetPlayerID()
+    }
+    TalentTree:OnTalentTreeStateRequest(new_event, nil)
 end
 
 if IsServer() and not TalentTree.initialized then

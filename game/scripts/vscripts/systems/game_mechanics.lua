@@ -476,7 +476,7 @@ if (IsServer()) then
                 if targetArmor >= 0 then
                     physReduction = (targetArmor * 0.06) / (1 + targetArmor * 0.06)
                 else
-                    physReduction = -1 + math.pow(0.94, targetArmor * - 1)
+                    physReduction = -1 + math.pow(0.94, targetArmor * -1)
                 end
                 physReduction = 1 - physReduction
                 typesCount = typesCount + 1

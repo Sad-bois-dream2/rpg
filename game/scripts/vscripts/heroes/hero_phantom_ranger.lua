@@ -751,7 +751,7 @@ end
 
 function phantom_ranger_void_disciple:OnUpgrade()
     if (not IsServer()) then
-
+        return
     end
     self.max_voids = self:GetSpecialValueFor("max_voids")
     self.void_damage = self:GetSpecialValueFor("void_damage") / 100
