@@ -761,7 +761,7 @@ modifier_enemies_boss_skill = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -813,13 +813,38 @@ modifier_enemies_boss_skill_will = class({
     end
 })
 
--- called from game_mechanics
 function modifier_enemies_boss_skill_will:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
     self.expireTime = GameRules:GetGameTime() + self.ability.debuffResDuration
+end
+
+function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
+    local bossZoneAbility = modifierTable.target:FindAbilityByName("enemies_boss_skill")
+    if (bossZoneAbility and modifierTable.target ~= modifierTable.caster) then
+        local crowdControlModifier = GameMode.CrowdControlModifiersTable[modifierTable.modifier_name]
+        local isModifierInteractWithBossZoneAbility = false
+        if (crowdControlModifier) then
+            isModifierInteractWithBossZoneAbility = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.root == true) or (crowdControlModifier.hex == true)
+        else
+            if (modifierTable.modifier_name == "modifier_stunned" or modifierTable.modifier_name == "modifier_silence" or modifierTable.modifier_name == "modifier_rooted") then
+                isModifierInteractWithBossZoneAbility = true
+            end
+        end
+        if(isModifierInteractWithBossZoneAbility == true) then
+            local modifier = {}
+            modifier.ability = bossZoneAbility
+            modifier.caster = modifierTable.target
+            modifier.target = modifierTable.target
+            modifier.modifier_name = "modifier_enemies_boss_skill_will"
+            modifier.duration = -1
+            modifier.stacks = 1
+            modifier.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifier)
+        end
+    end
 end
 
 function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
@@ -923,7 +948,9 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
 end, nil)
 
-if not Enemies.initialized then
+if Enemies.initialized and IsServer() then
     Enemies:Init()
     Enemies.initialized = true
+    GameMode.PostApplyModifierEventHandlersTable = {}
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_enemies_boss_skill_will, 'OnPostModifierApplied'))
 end

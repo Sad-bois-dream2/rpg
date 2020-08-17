@@ -295,29 +295,6 @@ if (IsServer()) then
                         break
                     end
                 end
-                local bossZoneAbility = args.target:FindAbilityByName("enemies_boss_skill")
-                if (bossZoneAbility and args.target ~= args.caster) then
-                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
-                    local isModifierInteractWithBossZoneAbility = false
-                    if (crowdControlModifier) then
-                        isModifierInteractWithBossZoneAbility = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.root == true) or (crowdControlModifier.hex == true)
-                    else
-                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence" or args.modifier_name == "modifier_rooted") then
-                            isModifierInteractWithBossZoneAbility = true
-                        end
-                    end
-                    if(isModifierInteractWithBossZoneAbility == true) then
-                        local modifierTable = {}
-                        modifierTable.ability = bossZoneAbility
-                        modifierTable.caster = args.target
-                        modifierTable.target = args.target
-                        modifierTable.modifier_name = "modifier_enemies_boss_skill_will"
-                        modifierTable.duration = -1
-                        modifierTable.stacks = 1
-                        modifierTable.max_stacks = 99999
-                        GameMode:ApplyStackingBuff(modifierTable)
-                    end
-                end
                 if (isTargetCasting == true) then
                     local isModifierWillPreventCasting = false
                     local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
