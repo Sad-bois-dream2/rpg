@@ -837,9 +837,6 @@ function modifier_enemies_boss_skill:OnAbilityEndChannel(keys)
         return
     end
     if (keys.unit == self.caster and self.latestUsedAbility and self.expectedChannelEndTime) then
-        print("End channeling")
-        print(self.latestUsedAbility:GetAbilityName())
-        print("Expected", self.expectedChannelEndTime, "Atm", GameRules:GetGameTime())
         if (self.expectedChannelEndTime >= GameRules:GetGameTime()) then
             local modifierTable = {}
             modifierTable.ability = self.ability
