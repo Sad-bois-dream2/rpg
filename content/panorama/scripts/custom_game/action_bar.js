@@ -277,6 +277,7 @@ function UpdateValues() {
 		}
 		var convertedExpPercent = Math.round(360 * (expPercent / 100));
 		expBarValue.style.clip = "radial(50% 50%, 0deg, " + convertedExpPercent + "deg);";
+		expPercent = Math.round(expPercent * 100) / 100;
 		expLabel.text = currentExp + " / " + maxExp + " (" + expPercent + "%)";
 		if(IsAltDown) {
 		    expLabel.style.visibility = "visible";
