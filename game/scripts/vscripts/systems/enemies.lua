@@ -793,7 +793,7 @@ function modifier_enemies_boss_skill:OnAbilityStart(keys)
         if (not castbarModifier or not (keys.ability.IsRequireCastbar and keys.ability.IsRequireCastbar(keys.ability) == true)) then
             return
         end
-        abilityCastPoint = abilityCastPoint * castbarModifier:GetModifierPercentageCasttime() / 100
+        abilityCastPoint = abilityCastPoint * (100 - castbarModifier:GetModifierPercentageCasttime()) / 100
         if (abilityChannelTime > 0) then
             self.expectedChannelEndTime = GameRules:GetGameTime() + abilityCastPoint + abilityChannelTime
             self.latestUsedAbility = keys.ability
