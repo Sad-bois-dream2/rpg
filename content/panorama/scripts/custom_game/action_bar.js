@@ -3,6 +3,8 @@
 var m_AbilityPanels = []; // created up to a high-water mark, but reused when selection changes
 
 var hpBar, hpBarValue, hpBarRegValue, mpBar, mpBarValue, mpBarRegValue, expBar, expBarValue, strValue, agiValue, intValue, heroPortrait, deathTimerValue, heroNameValue;
+var attackDamageValue, armorValue, spellArmorValue, movespeedValue;
+var expBarValue, levelValue, expLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -273,13 +275,14 @@ function UpdateValues() {
 			expPercent = 100;
 			maxExp = currentExp;
 		}
-        /*expBar.style.width = Math.floor(expPercent) + "%";
-        if (IsAltDown) {
-            expBarValue.text = currentExp + " / " + maxExp;
-        } else {
-            expBarValue.text = (Math.floor(expPercent * 100) / 100) + "%";
-        }
-        heroNameValue.text = $.Localize("#" + Entities.GetUnitName(hero)); */
+		var convertedExpPercent = Math.round(360 * (expPercent / 100));
+		expBarValue.style.clip = "radial(50% 50%, 0deg, " + convertedExpPercent + "deg);";
+		expLabel.text = currentExp + " / " + maxExp + " (" + expPercent + "%)";
+		if(IsAltDown) {
+		    expLabel.style.visibility = "visible";
+		} else {
+		    expLabel.style.visibility = "collapse";
+		}
 		lastSelectedUnit = hero;
     }
 }
@@ -330,6 +333,13 @@ function Init() {
     heroPortrait = $("#HeroPortrait");
     deathTimerValue = $("#HeroDeathTimer");
     heroNameValue = $("#HeroName");
+    attackDamageValue = $("#AttackDamageLabel");
+    armorValue = $("#ArmorLabel");
+    spellArmorValue = $("#SpellArmorLabel");
+    movespeedValue = $("#MovespeedLabel");
+    expBarValue = $("#HeroLevelExpBackground");
+    levelValue = $("#HeroLevelLabel");
+    expLabel = $("#HeroExpAltLabel");
     // Modifier lists
     $("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
 }

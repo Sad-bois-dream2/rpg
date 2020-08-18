@@ -48,12 +48,13 @@
                             <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon Attribute"/>
                         </Panel>
                     </Panel>
-                    <Panel class="HeroLevelContainer">
-                        <Panel class="HeroLevelExpBackground" style="clip: radial(50% 50%, 0deg, 100deg);"/>
+                    <Panel class="HeroLevelContainer" onactivate="OnExpBarClick()">
+                        <Panel id="HeroLevelExpBackground" class="HeroLevelExpBackground"/>
                         <Panel class="HeroLeveLevelBackground">
-                            <Label text="1"/>
+                            <Label id="HeroLevelLabel" text="1"/>
                         </Panel>
                     </Panel>
+                    <Label class="HeroExpBarAltValue" id="HeroExpAltLabel" text = "0 / 0 (0%)"/>
                 </Panel>
                 <Panel class="HeroPanelRightContainer">
                     <Panel class="AbilityOverlayRoot">
