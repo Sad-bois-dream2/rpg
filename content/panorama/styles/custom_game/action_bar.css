@@ -3,29 +3,6 @@
 	height: 100%;
 }
 
-.LeftBackground, .RightBackground {
-	height: 100px;
-	vertical-align: bottom;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	border-radius: 10px;
-	border: 1px solid gray;
-}
-
-.LeftBackground {
-	horizontal-align: center;
-	margin-right: 520px;
-	width: 410px;
-	flow-children: right;
-}
-
-.RightBackground {
-	horizontal-align: center;
-	margin-left: 620px;
-	width: 516px;
-}
-
 .HPMPBars {
 	flow-children: down;
 	width: fill-parent-flow(1.0);
@@ -126,7 +103,7 @@
 }
 
 .HeroPortrait {
-    width: 160px;
+    width: 140px;
 	height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
@@ -443,42 +420,6 @@
 	vertical-align: center;
 }
 
-#Strength
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
-}
-
-#StrengthIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_str_png.vtex");
-    brightness: 1.3;
-}
-
-#Agility
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
-}
-
-#AgilityIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_agi_png.vtex");
-    brightness: 1.6;
-}
-
-#Intelligence
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
-}
-
-#IntelligenceIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_int_png.vtex");
-    brightness: 1.3;
-}
-
 .HeroStats {
 	width: fill-parent-flow(1.0);
 	height: fill-parent-flow(1.0);
@@ -488,6 +429,7 @@
 	padding-right: 0px;
 	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
 	border-right: 1px solid #ffffff04;
+	padding-top: 5px;
 }
 
 .AttrIconContainer
@@ -520,7 +462,7 @@
 
 .ActionPanelContainer {
     width: 600px;
-    height: 170px;
+    height: 160px;
     horizontal-align: center;
     vertical-align: bottom;
     flow-children: right;
