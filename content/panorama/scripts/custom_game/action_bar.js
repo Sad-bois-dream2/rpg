@@ -331,7 +331,7 @@ function Init() {
     deathTimerValue = $("#HeroDeathTimer");
     heroNameValue = $("#HeroName");
     // Modifier lists
-    //$("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
+    $("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
 }
 
 (function() {
