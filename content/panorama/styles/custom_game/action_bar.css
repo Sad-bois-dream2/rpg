@@ -5,7 +5,7 @@
 
 .HPMPBars {
 	flow-children: down;
-	width: fill-parent-flow(1.0);
+	width: 100%;
 	vertical-align: bottom;
 	horizontal-align: center;
 	padding-left: 2px;
@@ -162,6 +162,7 @@
 
 .AbilityOverlayRoot
 {
+    width: 800px;
     height: fill-parent-flow(1.0);
 	vertical-align: bottom;
 	flow-children: down;
@@ -506,7 +507,8 @@
 }
 
 .ActionPanelContainer {
-    width: 600px;
+    width: fit-children;
+    max-width: 700px;
     height: 160px;
     horizontal-align: center;
     vertical-align: bottom;
@@ -519,7 +521,7 @@
 }
 
 .ActionPanelRightContainer {
-    width: 600px;
+    width: fit-children;
     height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;

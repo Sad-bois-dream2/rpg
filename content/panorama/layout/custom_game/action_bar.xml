@@ -53,7 +53,9 @@
                 </Panel>
             </Panel>
             <Panel class="ActionPanelRightContainer">
-                <Panel class="Abilities"/>
+                <!--<Panel class="AbilityOverlayRoot">
+                    <Panel id="ability_list" />
+                </Panel> -->
                 <Panel class="HPMPBars">
                     <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
                         <Panel id="HeroHpBar" class="HeroHpBar" style="width: 100%;">
@@ -81,10 +83,6 @@
                     </Panel> -->
                 </Panel>
             </Panel>
-            <!--
-            <Panel class="AbilityOverlayRoot">
-                <Panel id="ability_list" />
-            </Panel>-->
         </Panel>
     </Panel>
 </root>
