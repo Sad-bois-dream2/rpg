@@ -432,6 +432,45 @@
 	padding-top: 5px;
 }
 
+.HeroLevelContainer {
+	margin-left: 40px;
+	width: 44px;
+	height: 44px;
+	border-radius: 100%;
+    vertical-align: bottom;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+.HeroLevelExpBackground {
+	background-color: #A46DFF;
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.HeroLeveLevelBackground {
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	width: 36px;
+	height: 36px;
+	border-radius: 100%;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.HeroLeveLevelBackground Label {
+    font-size: 17px;
+    vertical-align: center;
+    horizontal-align: center;
+    text-align: center;
+    color: white;
+}
+
 .AttrIconContainer
 {
 	horizontal-align: right;

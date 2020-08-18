@@ -15,56 +15,64 @@
                         <Label id="HeroDeathTimer" text="20"/>
                     </Panel>
                 </Panel>
-                <Panel class="HeroStatsBackground" />
                 <Panel class="HeroStats">
-                    <Panel id="AttackDamage" class="AttrIconContainer" >
-                        <Label id="AttackDamageLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" class="StatIcon" />
+                    <Panel id="AttackDamage" class="AttrIconContainer">
+                        <Label id="AttackDamageLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" class="StatIcon"/>
                     </Panel>
-                    <Panel id="Armor" class="AttrIconContainer" >
-                        <Label id="ArmorLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" class="StatIcon" />
+                    <Panel id="Armor" class="AttrIconContainer">
+                        <Label id="ArmorLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" class="StatIcon"/>
                     </Panel>
-                    <Panel id="SpellArmor" class="AttrIconContainer" >
-                        <Label id="SpellArmorLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex" class="StatIcon" />
+                    <Panel id="SpellArmor" class="AttrIconContainer">
+                        <Label id="SpellArmorLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex" class="StatIcon"/>
                     </Panel>
-                    <Panel id="Movespeed" class="AttrIconContainer" >
-                        <Label id="MovespeedLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex" class="StatIcon" />
+                    <Panel id="Movespeed" class="AttrIconContainer">
+                        <Label id="MovespeedLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex" class="StatIcon"/>
                     </Panel>
                     <Panel id="Strength" class="AttrIconContainer">
-                        <Label id="StrengthLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon" />
+                        <Label id="StrengthLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon"/>
                     </Panel>
                     <Panel id="Agility" class="AttrIconContainer">
-                        <Label id="AgilityLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon" />
+                        <Label id="AgilityLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon"/>
                     </Panel>
                     <Panel id="Intelligence" class="AttrIconContainer">
-                        <Label id="IntelligenceLabel" class="StatLabel" text="0" hittest="false" />
-                        <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon" />
+                        <Label id="IntelligenceLabel" class="StatLabel" text="0" hittest="false"/>
+                        <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon"/>
+                    </Panel>
+                </Panel>
+                <Panel class="HeroLevelContainer">
+                    <Panel class="HeroLevelExpBackground">
+                        <Panel class="HeroLeveLevelBackground">
+                            <Label text="1"/>
+                        </Panel>
                     </Panel>
                 </Panel>
             </Panel>
             <Panel class="ActionPanelRightContainer">
-                <Panel class="Abilities">
-
-                </Panel>
+                <Panel class="Abilities" />
                 <Panel class="HPMPBars">
                     <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
                         <Panel id="HeroHpBar" class="HeroHpBar" style="width: 100%;">
-                            <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                            <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false"
+                                            rendershadows="false" camera="camera_1" hittest="false"
+                                            particleonly="true"/>
                         </Panel>
-                        <Label id="HeroHpBarValue" class="HeroHpMpBarValue" text="0 / 0" />
-                        <Label id="HeroHpBarRegValue" class="HeroHpMpBarRegValue" text="+0" />
+                        <Label id="HeroHpBarValue" class="HeroHpMpBarValue" text="0 / 0"/>
+                        <Label id="HeroHpBarRegValue" class="HeroHpMpBarRegValue" text="+0"/>
                     </Panel>
                     <Panel class="HeroMpBarPanel" onactivate="OnMPBarClick()">
                         <Panel id="HeroMpBar" class="HeroMpBar" style="width: 100%;">
-                            <DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                            <DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false"
+                                            rendershadows="false" camera="camera_1" hittest="false"
+                                            particleonly="true"/>
                         </Panel>
-                        <Label id="HeroMpBarValue" class="HeroHpMpBarValue" text="0 / 0" />
-                        <Label id="HeroMpBarRegValue" class="HeroHpMpBarRegValue" text="+0" />
+                        <Label id="HeroMpBarValue" class="HeroHpMpBarValue" text="0 / 0"/>
+                        <Label id="HeroMpBarRegValue" class="HeroHpMpBarRegValue" text="+0"/>
                     </Panel>
                     <!--<Panel class="HeroExpBarPanel" onactivate="OnExpBarClick()">
                         <Panel id="HeroExpBar" class="HeroExpBar" style="width: 100%;">
