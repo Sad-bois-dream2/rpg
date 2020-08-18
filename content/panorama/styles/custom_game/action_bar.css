@@ -507,20 +507,32 @@
 }
 
 .ActionPanelContainer {
+    flow-children: down;
+    horizontal-align: center;
+    vertical-align: bottom;
+}
+
+#ModifierListContainer {
+    width: 100%;
+    height: fit-children;
+    margin-left: 60px;
+    flow-children: up;
+}
+
+.HeroPanelContainer
+{
     width: fit-children;
     max-width: 800px;
     height: 160px;
-    horizontal-align: center;
-    vertical-align: bottom;
     flow-children: right;
 }
 
-.ActionPanelLeftContainer {
+.HeroPanelLeftContainer {
     width: 200px;
     height: fill-parent-flow(1.0);
 }
 
-.ActionPanelRightContainer {
+.HeroPanelRightContainer {
     width: fit-children;
     height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");

@@ -273,13 +273,13 @@ function UpdateValues() {
 			expPercent = 100;
 			maxExp = currentExp;
 		}
-        expBar.style.width = Math.floor(expPercent) + "%";
+        /*expBar.style.width = Math.floor(expPercent) + "%";
         if (IsAltDown) {
             expBarValue.text = currentExp + " / " + maxExp;
         } else {
             expBarValue.text = (Math.floor(expPercent * 100) / 100) + "%";
         }
-        heroNameValue.text = $.Localize("#" + Entities.GetUnitName(hero));
+        heroNameValue.text = $.Localize("#" + Entities.GetUnitName(hero)); */
 		lastSelectedUnit = hero;
     }
 }
@@ -330,11 +330,12 @@ function Init() {
     heroPortrait = $("#HeroPortrait");
     deathTimerValue = $("#HeroDeathTimer");
     heroNameValue = $("#HeroName");
+    // Modifier lists
+    //$("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
 }
 
 (function() {
     //$.RegisterForUnhandledEvent( "DOTAHUDAbilityLearnModeToggled", OnAbilityLearnModeToggled);
-
     GameEvents.Subscribe("dota_portrait_ability_layout_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateAbilityList);
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateAbilityList);
