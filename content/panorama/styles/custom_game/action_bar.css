@@ -28,16 +28,15 @@
 
 .HPMPBars {
 	flow-children: down;
-	width: 320px;
-	height: 100%;
-	padding-top: 7px;
-	padding-left: 5px;
-	padding-bottom: 5px;
+	width: fill-parent-flow(1.0);
+	vertical-align: bottom;
+	horizontal-align: center;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 .HeroHpBarPanel {
 	width: 100%;
-	border: 1px solid grey;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
 	border-radius: 4px;
 }
@@ -69,10 +68,8 @@
 
 .HeroMpBarPanel {
 	width: 100%;
-	border: 1px solid grey;
 	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	margin-top: -3px;
 }
 
 .HeroHpMpBarRegValue {
@@ -122,23 +119,20 @@
 	hue-rotation: 160deg;
 }
 
-.HeroStats {
-	width: 80px;
-	height: 100%;
-	flow-children: down;
-	margin-left: -5px;
+.HeroPortraitContainer {
+	width: 200px;
+	horizontal-align: center;
+	vertical-align: bottom;
 }
 
 .HeroPortrait {
-	border-radius: 30px;
-	border: 2px solid gray;
-	width: 130px;
-	height: 150px;
-	horizontal-align: center;
-	vertical-align: bottom;
+    width: 160px;
+	height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+    border-top-left-radius: 30px;
+	horizontal-align: right;
 }
 
 .HeroPortrait.is_dead {
@@ -191,10 +185,11 @@
 
 .AbilityOverlayRoot
 {
-	horizontal-align: center;
+    height: fill-parent-flow(1.0);
 	vertical-align: bottom;
 	flow-children: down;
 }
+
 .AbilityLevelUpPanel {
 	width: 72px; 
 	height: 150px; 
@@ -483,43 +478,64 @@
 	background-image: url("s2r://panorama/images/hud/pip_int_png.vtex");
     brightness: 1.3;
 }
-#IntelligenceIcon, #AgilityIcon, #StrengthIcon 
-{
-	width: 32px;
-	height: 32px;
-}
 
-.StatIcon
-{
-	width: 14px;
-	height: 14px;
-	background-repeat: no-repeat;
-    background-size: 100%;
+.HeroStats {
+	width: fill-parent-flow(1.0);
+	height: fill-parent-flow(1.0);
+	vertical-align: bottom;
+	horizontal-align: right;
+	flow-children: down;
+	padding-right: 0px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
+	border-right: 1px solid #ffffff04;
 }
 
 .AttrIconContainer
 {
-	width: fit-children;
-	height: fill-parent-flow( 1.0 );
-	padding-left: 5px;
-	horizontal-align: left;
-	vertical-align: center;
-	flow-children: right;
+	horizontal-align: right;
+    flow-children: right;
 }
 
 .StatIcon
 {
-	width: 14px;
-	height: 14px;
-	background-repeat: no-repeat;
-    background-size: 100%;
+	width: 20px;
+	height: 20px;
 }
 
 .StatLabel
 {
-	font-size: 16px;
-	color: offWhite;
-	font-weight: thin;
 	text-overflow: shrink;
+	text-align: center;
 	vertical-align: center;
+	horizontal-align: center;
+    font-size: 16px;
+    font-weight: thin;
+	letter-spacing: 0px;
+    color: #ccc;
+    text-shadow: 0px 0px 4px 4 #00000088;
+    font-family: RadianceM;
+    text-align: right;
+    padding-right: 2px;
+}
+
+.ActionPanelContainer {
+    width: 600px;
+    height: 170px;
+    horizontal-align: center;
+    vertical-align: bottom;
+    flow-children: right;
+}
+
+.ActionPanelLeftContainer {
+    width: 200px;
+    height: fill-parent-flow(1.0);
+}
+
+.ActionPanelRightContainer {
+    width: 600px;
+    height: fill-parent-flow(1.0);
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	border-top-right-radius: 30px;
 }
