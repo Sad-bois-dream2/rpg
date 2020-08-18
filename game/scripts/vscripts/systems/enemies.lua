@@ -223,6 +223,7 @@ function Enemies:Init()
     Enemies.enemyAbilities = {}
     Enemies.STATS_SENDING_INTERVAL = 1
     Enemies.MAX_ABILITIES = 10
+    Enemies.BOSS_ZONE_SIZE = 2500
     Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
     Enemies.DIFFICULTY1 = 1
     Enemies.DIFFICULTY1_5 = 1.5
@@ -619,9 +620,20 @@ function modifier_creep_scaling:OnIntervalThink()
     self.current_pos = self.creep:GetAbsOrigin()
     local displacement = self.spawn_pos - self.current_pos
     local distance = displacement:Length2D()
-    if distance > 2500 then
+    if distance > Enemies.BOSS_ZONE_SIZE then
+        local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_teleport.vpcf", PATTACH_ABSORIGIN, self.creep)
+        Timers:CreateTimer(2, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
         FindClearSpaceForUnit(self.creep, self.spawn_pos, true)
         Aggro:Reset(self.creep)
+        local healTable = {}
+        healTable.caster = self.creep
+        healTable.target = self.creep
+        healTable.ability = nil
+        healTable.heal = self.creep:GetMaxHealth()
+        GameMode:HealUnit(healTable)
     end
 end
 
