@@ -283,6 +283,8 @@ function UpdateValues() {
 		} else {
 		    expLabel.style.visibility = "collapse";
 		}
+		levelValue.text = Entities.GetLevel(hero);
+		attackDamageValue.text = Entities.GetDamageMin(hero);
 		lastSelectedUnit = hero;
     }
 }
@@ -315,6 +317,23 @@ function OnHeroStatsUpdateRequest(event) {
         latestStoredMana = currentMp;
         latestStoredMaxMana = maxMp;
         latestStoredManaPercent = mpPercent;
+        var armor = parsedData.statsTable.armor;
+        var armorReduction = 0;
+        if(armor >= 0){
+            armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
+        } else {
+            armorReduction = -1 + Math.pow(0.94,armor * -1);
+        }
+        armorValue.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        var elementalArmorValue = 0;
+        var arr = Object.values(parsedData.statsTable.elementsProtection);
+        var length = arr.length;
+        for(var i = 0; i < length; i++) {
+            elementalArmorValue += (1 - arr[i]);
+        }
+        elementalArmorValue = elementalArmorValue / length;
+        spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
+        movespeedValue.text = Entities.GetMoveSpeedModifier(lastSelectedUnit, Entities.GetBaseMoveSpeed(lastSelectedUnit));
     }
 }
 
