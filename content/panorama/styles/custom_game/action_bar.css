@@ -453,9 +453,10 @@
 }
 
 .HeroLeveLevelBackground {
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
+	//background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	//background-repeat: no-repeat;
+	//background-size: 100% 100%;
+	background-color: black;
 	width: 36px;
 	height: 36px;
 	border-radius: 100%;
@@ -479,6 +480,12 @@
 
 .StatIcon
 {
+	width: 18px;
+	height: 18px;
+}
+
+.StatIcon.Attribute
+{
 	width: 20px;
 	height: 20px;
 }
@@ -486,7 +493,6 @@
 .StatLabel
 {
 	text-overflow: shrink;
-	text-align: center;
 	vertical-align: center;
 	horizontal-align: center;
     font-size: 16px;
@@ -494,9 +500,9 @@
 	letter-spacing: 0px;
     color: #ccc;
     text-shadow: 0px 0px 4px 4 #00000088;
-    font-family: RadianceM;
     text-align: right;
     padding-right: 2px;
+    padding-bottom: 2px;
 }
 
 .ActionPanelContainer {

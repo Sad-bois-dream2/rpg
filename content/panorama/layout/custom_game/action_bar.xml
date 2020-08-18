@@ -34,27 +34,26 @@
                     </Panel>
                     <Panel id="Strength" class="AttrIconContainer">
                         <Label id="StrengthLabel" class="StatLabel" text="0" hittest="false"/>
-                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon"/>
+                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon Attribute"/>
                     </Panel>
                     <Panel id="Agility" class="AttrIconContainer">
                         <Label id="AgilityLabel" class="StatLabel" text="0" hittest="false"/>
-                        <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon"/>
+                        <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon Attribute"/>
                     </Panel>
                     <Panel id="Intelligence" class="AttrIconContainer">
                         <Label id="IntelligenceLabel" class="StatLabel" text="0" hittest="false"/>
-                        <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon"/>
+                        <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon Attribute"/>
                     </Panel>
                 </Panel>
                 <Panel class="HeroLevelContainer">
-                    <Panel class="HeroLevelExpBackground">
-                        <Panel class="HeroLeveLevelBackground">
-                            <Label text="1"/>
-                        </Panel>
+                    <Panel class="HeroLevelExpBackground" style="clip: radial(50% 50%, 0deg, 100deg);"/>
+                    <Panel class="HeroLeveLevelBackground">
+                        <Label text="1"/>
                     </Panel>
                 </Panel>
             </Panel>
             <Panel class="ActionPanelRightContainer">
-                <Panel class="Abilities" />
+                <Panel class="Abilities"/>
                 <Panel class="HPMPBars">
                     <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
                         <Panel id="HeroHpBar" class="HeroHpBar" style="width: 100%;">
