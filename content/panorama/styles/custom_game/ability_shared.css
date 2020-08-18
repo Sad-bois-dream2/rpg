@@ -59,6 +59,7 @@
 #Hotkey
 {
 	margin-left: -4px;
+	margin-top: -5px;
 	vertical-align: top;
 	horizontal-align: left;
 	min-width: 18px;
@@ -73,7 +74,7 @@
 
 #HotkeyText
 {
-	color: #bba995;
+	color: white;
  	text-shadow: 1px 1px 2px 2 #000000;
     font-size: 14px;
     font-weight: bold;
@@ -82,6 +83,7 @@
 	text-align: center;
 	width: 100%;
 }
+
 .no_item #Hotkey,
 .is_passive #Hotkey,
 .no_hotkey #Hotkey
