@@ -108,7 +108,7 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-    border-top-left-radius: 30px;
+    border-top-left-radius: 15px;
 	horizontal-align: right;
 }
 
@@ -552,5 +552,5 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border-top-right-radius: 30px;
+	border-top-right-radius: 15px;
 }
