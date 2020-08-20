@@ -575,8 +575,13 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_duration"		"DURATION: "
 		// Catastrophe Demolisher (wk)
         "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom"		"Curse of Doom"
-        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_Description"		"Catastrophe Demolisher inflicts an irrevocable vicious curse on an target, shows it the illusion of the doomsday and burns it in wraith fire, dealing <font color='#1f5b07'>Inferno</font> damage based on his Strength. Enemies around the primary target in <font color='white'><b>300</b></font> radius will also be damaged."
-
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_Description"		"Catastrophe Demolisher inflicts an irrevocable vicious curse on an target, shows it the illusion of the doomsday and burns it in wraith fire, dealing <font color='#1f5b07'>Inferno</font> damage based on his Strength.\nRank 2 - Enemies around the primary target in <font color='white'><b>300</b></font> radius will also be affected.\nRank 3 - Passively reduce inferno resistance of nearby enemies in radius <font color='white'><b>500</b></font> by <font color='white'><b>10%</b></font>.\nRank 4 - Increased your threat of affected enemies by <font color='white'><b>5%</b></font> of your maximum health."
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_damage"		"%STRENGTH TO DAMAGE:"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_duration"		"DURATION:"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_dot"		"Curse of Doom"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_dot_Description"		"Suffer from inferno damage."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"		"Curse of Doom"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_aura_debuff_Description"		"Inferno resistance reduced."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
