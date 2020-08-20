@@ -10,6 +10,7 @@
 #base heroes/crystal_sorceress/units.txt
 #base heroes/luminous_samurai/units.txt
 #base heroes/abyssal_stalker/units.txt
+#base heroes/catastrophe_demolisher/units.txt
 #base creeps/zone1/boss/ursa/boss.txt
 #base creeps/zone1/boss/ursa/units.txt
 #base creeps/zone1/boss/lycan/boss.txt
