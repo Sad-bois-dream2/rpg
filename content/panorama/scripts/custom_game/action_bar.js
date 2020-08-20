@@ -378,6 +378,27 @@ function Init() {
     GameEvents.Subscribe("dota_ability_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_hero_ability_points_changed", UpdateAbilityList);
     UpdateAbilityList(); // initial update
+    $.Schedule(0.1, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(0.2, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(0.5, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(1, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(2, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(3, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(4, function() {
+        UpdateAbilityList();
+    });
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
     Init();
     AutoUpdateValues();
