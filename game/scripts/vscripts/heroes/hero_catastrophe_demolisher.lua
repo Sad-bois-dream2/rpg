@@ -122,13 +122,14 @@ end
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 catastrophe_demolisher_curse_of_doom = catastrophe_demolisher_curse_of_doom or class({
-    GetAOERadius = function(self)
-        return self.aoe
-    end,
     GetIntrinsicModifierName = function(self)
         return "modifier_catastrophe_demolisher_curse_of_doom_aura"
     end
 })
+
+function catastrophe_demolisher_curse_of_doom:GetAOERadius()
+    return self:GetSpecialValueFor("damage_aoe")
+end
 
 function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     if (not IsServer()) then
@@ -180,6 +181,7 @@ function catastrophe_demolisher_curse_of_doom:OnSpellStart()
             ParticleManager:ReleaseParticleIndex(particle)
         end)
     end
+    EmitSoundOn("Hero_SkeletonKing.Hellfire_Blast", caster)
 end
 
 function catastrophe_demolisher_curse_of_doom:ApplyDot(caster, target)
