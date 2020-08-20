@@ -7,6 +7,9 @@
         <include src="file://{resources}/scripts/custom_game/action_bar.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
+        <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
+            <Panel id="ability_list" />
+        </Panel>
         <Panel class="ActionPanelContainer">
             <Panel id="ModifierListContainer">
             </Panel>
@@ -57,9 +60,7 @@
                     <Label class="HeroExpBarAltValue" id="HeroExpAltLabel" text = "0 / 0 (0%)"/>
                 </Panel>
                 <Panel class="HeroPanelRightContainer">
-                    <Panel class="AbilityOverlayRoot">
-                        <Panel id="ability_list" />
-                    </Panel>
+                    <Panel id="HeroAbilitiesPanelFiller"/>
                     <Panel class="HPMPBars">
                         <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
                             <Panel id="HeroHpBar" class="HeroHpBar" style="width: 100%;">

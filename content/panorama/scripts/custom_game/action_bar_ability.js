@@ -165,8 +165,8 @@ function RebuildAbilityUI()
 	var abilityLevelButtonFiller = $( "#AbilityLevelPanelFiller" );
 	var isValidUnitForLearnBorder = (LOCAL_PLAYER_HERO == m_QueryUnit);
 	$.GetContextPanel().SetHasClass( "learnable_ability", (canUpgrade && bPointsToSpend && isValidUnitForLearnBorder));
-	//abilityLevelButton.style.visibility = (canUpgrade && bPointsToSpend && isValidUnitForLearnBorder) ? "visible" : "collapse";
-	//abilityLevelButtonFiller.style.visibility = (canUpgrade && bPointsToSpend && isValidUnitForLearnBorder) ? "collapse" : "visible";
+	abilityLevelButton.style.visibility = (canUpgrade && bPointsToSpend && isValidUnitForLearnBorder) ? "visible" : "collapse";
+	abilityLevelButtonFiller.style.visibility = (canUpgrade && bPointsToSpend && isValidUnitForLearnBorder) ? "collapse" : "visible";
 	for ( var lvl = 0; lvl < Abilities.GetMaxLevel( m_Ability ); lvl++ )
 	{
 		var levelPanel = $.CreatePanel( "Panel", abilityLevelContainer, "" );

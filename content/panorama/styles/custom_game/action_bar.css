@@ -167,34 +167,32 @@
 	vertical-align: bottom;
 	flow-children: down;
 	padding-top: 5px;
+	z-index: 1;
 }
 
 .AbilityLevelUpPanel {
-	width: 72px; 
-	height: 150px; 
-	margin-left: 8px; 
-	margin-bottom: 2px; 
-	flow-children:down;
+	width: fit-children;
+	height: 75px;
+	margin-left: 10px;
+	margin-bottom: -8px;
 }
 
 .AbilityLevelUpPanelFiller {
-	width: 72px; 
-	height: 150px; 
-	margin-left: 8px; 
-	margin-bottom: 2px; 
+	width: fit-children;
+	height: 75px;
+	margin-bottom: -8px;
 }
 
 .LevelUpBurstFX {
-	margin-top: 18px; 
 	width: 65px; 
-	height: 100px;
+	height: 150px;
+	vertical-align: bottom;
+	margin-bottom: 35px;
 }
 
 .LevelUpTab {
 	width: 100%; 
-	vertical-align: bottom; 
-	margin-left: 1px; 
-	margin-bottom: -8px;
+	vertical-align: bottom;
 }
 
 .LevelUpButton {
@@ -202,8 +200,8 @@
 }
 
 .LevelUpIcon {
-	width: 32px; 
-	height: 32px; 
+	width: 32px;
+	height: 32px;
 	vertical-align: center; 
 	horizontal-align: center;
 }
@@ -416,8 +414,8 @@
 	background-repeat: no-repeat;
 	transition-property: background-image;
 	transition-duration: .12s;
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	horizontal-align: center;
 	vertical-align: center;
 }

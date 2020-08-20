@@ -5,6 +5,7 @@ var m_AbilityPanels = []; // created up to a high-water mark, but reused when se
 var hpBar, hpBarValue, hpBarRegValue, mpBar, mpBarValue, mpBarRegValue, expBar, expBarValue, strValue, agiValue, intValue, heroPortrait, deathTimerValue, heroNameValue;
 var attackDamageValue, armorValue, spellArmorValue, movespeedValue;
 var expBarValue, levelValue, expLabel;
+var abilitiesPanelFiller, abilitiesPanel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -201,6 +202,11 @@ function UpdateAbilityList() {
         var abilityPanel = m_AbilityPanels[i];
         abilityPanel.Data().SetAbility(-1, -1, false);
     }
+    abilitiesPanelFiller.style.width = abilitiesPanel.actuallayoutwidth + "px";
+    abilitiesPanelFiller.style.height = abilitiesPanel.actuallayoutheight + "px";
+    var panelPosition = abilitiesPanelFiller.GetPositionWithinWindow();
+    abilitiesPanel.style.marginLeft = panelPosition.x + "px";
+    abilitiesPanel.style.marginTop = (panelPosition.y - 65) + "px";
 }
 
 var IsFirstTime = true;
@@ -362,6 +368,9 @@ function Init() {
     expLabel = $("#HeroExpAltLabel");
     // Modifier lists
     $("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
+    // Abilities panels
+    abilitiesPanelFiller = $("#HeroAbilitiesPanelFiller");
+    abilitiesPanel = $("#HeroAbilitiesPanel");
 }
 
 (function() {
