@@ -164,10 +164,20 @@
 {
     width: fit-children;
     height: fill-parent-flow(1.0);
-	vertical-align: bottom;
 	flow-children: down;
-	padding-top: 5px;
 	z-index: 1;
+	margin-left: 812px;
+	margin-top: 860px;
+}
+
+.AspectRatio4x3 .AbilityOverlayRoot
+{
+	margin-left: 572px;
+}
+
+.AspectRatio16x10 .AbilityOverlayRoot
+{
+	margin-left: 718px;
 }
 
 .AbilityLevelUpPanel {

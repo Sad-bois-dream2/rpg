@@ -202,11 +202,8 @@ function UpdateAbilityList() {
         var abilityPanel = m_AbilityPanels[i];
         abilityPanel.Data().SetAbility(-1, -1, false);
     }
-    abilitiesPanelFiller.style.width = abilitiesPanel.actuallayoutwidth + "px";
-    abilitiesPanelFiller.style.height = abilitiesPanel.actuallayoutheight + "px";
-    var panelPosition = abilitiesPanelFiller.GetPositionWithinWindow();
-    abilitiesPanel.style.marginLeft = panelPosition.x + "px";
-    abilitiesPanel.style.marginTop = (panelPosition.y - 65) + "px";
+    abilitiesPanelFiller.style.width = (abilityListPanel.actuallayoutwidth / abilityListPanel.actualuiscale_x) + "px";
+    abilitiesPanelFiller.style.height = (abilityListPanel.actuallayoutheight / abilityListPanel.actualuiscale_y) + "px";
 }
 
 var IsFirstTime = true;
