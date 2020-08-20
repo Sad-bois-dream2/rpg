@@ -19,6 +19,9 @@ modifier_catastrophe_demolisher_curse_of_doom_dot = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+    GetEffectName = function(self)
+        return "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_debuff.vpcf"
     end
 })
 
@@ -164,8 +167,18 @@ function catastrophe_demolisher_curse_of_doom:OnSpellStart()
                 self:ApplyDot(caster, enemy)
             end
         end
+        local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf", PATTACH_ABSORIGIN, target)
+        Timers:CreateTimer(1, function()
+            ParticleManager:DestroyParticle(particle, false)
+            ParticleManager:ReleaseParticleIndex(particle)
+        end)
     else
         self:ApplyDot(caster, target)
+        local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_single.vpcf", PATTACH_ABSORIGIN, target)
+        Timers:CreateTimer(1, function()
+            ParticleManager:DestroyParticle(particle, false)
+            ParticleManager:ReleaseParticleIndex(particle)
+        end)
     end
 end
 

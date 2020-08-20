@@ -67,6 +67,13 @@
 				"duration"		"5"
 			}
 		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_debuff.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_single.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
+		}
 	}
 	
 	//=================================================================================================================
