@@ -21,7 +21,7 @@
 		"npc_dota_hero_silencer"	"Light Cardinal" // Support #1
 		"npc_dota_hero_enchantress"	"Priestess of the Sacred Forest" // Support #2
 		"npc_dota_hero_skeleton_king"	"Catastrophe Demolisher" // Melee srr phys dd #2
-		"npc_dota_hero_dark_willow"	"Dark Willow"
+		"npc_dota_hero_dark_willow"	"Dark Willow" // Ranged agi phys dd #1
 
 		// Countless hero abilities
 		"DOTA_Tooltip_Ability_empty5"		"Ability slot"
@@ -573,6 +573,10 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_damage"		"%CRITICAL DAMAGE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_backstab_damage"		"%BACKSTAB DAMAGE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_duration"		"DURATION: "
+		// Catastrophe Demolisher (wk)
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom"		"Curse of Doom"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_Description"		"Catastrophe Demolisher inflicts an irrevocable vicious curse on an target, shows it the illusion of the doomsday and burns it in wraith fire, dealing <font color='#1f5b07'>Inferno</font> damage based on his Strength. Enemies around the primary target in <font color='white'><b>300</b></font> radius will also be damaged."
+
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
