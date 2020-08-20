@@ -126,6 +126,7 @@ catastrophe_demolisher_curse_of_doom = catastrophe_demolisher_curse_of_doom or c
         return "modifier_catastrophe_demolisher_curse_of_doom_aura"
     end
 })
+
 function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     if (not IsServer()) then
         return
@@ -136,6 +137,7 @@ function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     self.threat = self:GetSpecialValueFor("threat") / 100
     self.infernoRes = self:GetSpecialValueFor("inferno_res") / 100
     self.tick = self:GetSpecialValueFor("tick")
+    self.duration = self:GetSpecialValueFor("duration")
 end
 
 function catastrophe_demolisher_curse_of_doom:OnSpellStart()
@@ -172,8 +174,8 @@ function catastrophe_demolisher_curse_of_doom:ApplyDot(caster, target)
     modifierTable.ability = self
     modifierTable.target = target
     modifierTable.caster = caster
-    modifierTable.modifier_name = "catastrophe_demolisher_curse_of_doom_dot"
-    modifierTable.duration = -1
+    modifierTable.modifier_name = "modifier_catastrophe_demolisher_curse_of_doom_dot"
+    modifierTable.duration = self.duration
     GameMode:ApplyDebuff(modifierTable)
 end
 
