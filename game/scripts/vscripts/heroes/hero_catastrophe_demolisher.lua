@@ -330,43 +330,43 @@ function modifier_catastrophe_demolisher_blood_oblation_toggle:OnCreated()
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetArmorBonus()
-    return self.ability.armorLoss or 0
+    return self.ability.armorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFireProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFrostProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetEarthProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetVoidProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetHolyProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetNatureProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetInfernoProtectionBonus()
-    return self.ability.spellArmorLoss or 0
+    return self.ability.spellArmorLoss
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalDamageBonus()
-    return self.ability.bonusCritDamage or 0
+    return self.ability.bonusCritDamage
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalChanceBonus()
-    return self.ability.bonusCritChance or 0
+    return self.ability.bonusCritChance
 end
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:OnCriticalDamage(damageTable)
