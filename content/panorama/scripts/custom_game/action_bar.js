@@ -6,6 +6,8 @@ var hpBar, hpBarValue, hpBarRegValue, mpBar, mpBarValue, mpBarRegValue, expBar, 
 var attackDamageValue, armorValue, spellArmorValue, movespeedValue;
 var expBarValue, levelValue, expLabel;
 var abilitiesPanelFiller, abilitiesPanel;
+var itemTooltip;
+var fireResLabel, frostResLabel, earthResLabel, natureResLabel, voidResLabel, infernoResLabel, holyResLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -325,6 +327,13 @@ function UpdateValues() {
             elementalArmorValue = elementalArmorValue / length;
             spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
             movespeedValue.text = Entities.GetMoveSpeedModifier(hero, Entities.GetBaseMoveSpeed(hero));
+            fireResLabel.text = Math.round((1 - latestStats.elementsProtection["fire"]) * 100) +"%";
+            frostResLabel.text = Math.round((1 - latestStats.elementsProtection["frost"]) * 100) +"%";
+            earthResLabel.text = Math.round((1 - latestStats.elementsProtection["earth"]) * 100) +"%";
+            natureResLabel.text = Math.round((1 - latestStats.elementsProtection["nature"]) * 100) +"%";
+            voidResLabel.text = Math.round((1 - latestStats.elementsProtection["void"]) * 100) +"%";
+            infernoResLabel.text = Math.round((1 - latestStats.elementsProtection["inferno"]) * 100) +"%";
+            holyResLabel.text = Math.round((1 - latestStats.elementsProtection["holy"]) * 100) +"%";
         }
 		lastSelectedUnit = hero;
     }
@@ -336,6 +345,7 @@ function AutoUpdateValues() {
         AutoUpdateValues();
     });
 }
+
 var latestStoredManaPercent = 100, latestStoredMana = 0, latestStoredMaxMana = 0;
 var latestStats;
 
@@ -376,6 +386,34 @@ function Init() {
     // Abilities panels
     abilitiesPanelFiller = $("#HeroAbilitiesPanelFiller");
     abilitiesPanel = $("#HeroAbilitiesPanel");
+    // Stats tooltips
+    fireResLabel = $("#FireResistanceLabel");
+    frostResLabel = $("#FrostResistanceLabel");
+    earthResLabel = $("#EarthResistanceLabel");
+    natureResLabel = $("#NatureResistanceLabel");
+    voidResLabel = $("#VoidResistanceLabel");
+    infernoResLabel = $("#InfernoResistanceLabel");
+    holyResLabel = $("#HolyResistanceLabel");
+    itemTooltip = $("#ItemTooltip");
+}
+
+function ShowElementalResistancesTooltip() {
+    var cursorPosition = GameUI.GetCursorPosition();
+    var x = cursorPosition[0];
+    var y = cursorPosition[1];
+	if(itemTooltip.actuallayoutwidth + x > Game.GetScreenWidth()) {
+	    x -= itemTooltip.actuallayoutwidth;
+	}
+	if(itemTooltip.actuallayoutheight + y > Game.GetScreenHeight()) {
+	    y -= itemTooltip.actuallayoutheight;
+	}
+	itemTooltip.style.marginLeft = x + "px";
+	itemTooltip.style.marginTop = y + "px";
+    itemTooltip.style.visibility = "visible";
+}
+
+function HideElementalResistancesTooltip() {
+    itemTooltip.style.visibility = "collapse";
 }
 
 (function() {

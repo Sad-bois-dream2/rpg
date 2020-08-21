@@ -1,14 +1,45 @@
 <root>
     <styles>
         <include src="file://{resources}/styles/dotastyles.css"/>
+        <include src="file://{resources}/styles/windows/item_tooltip.css"/>
         <include src="file://{resources}/styles/custom_game/action_bar.css"/>
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/custom_game/action_bar.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
+        <Panel id="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+            <Panel class="TooltipElementLabelContainer">
+                <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            </Panel>
+        </Panel>
         <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
-            <Panel id="ability_list" />
+            <Panel id="ability_list"/>
         </Panel>
         <Panel class="ActionPanelContainer">
             <Panel id="ModifierListContainer">
@@ -30,7 +61,7 @@
                             <Label id="ArmorLabel" class="StatLabel" text="0" hittest="false"/>
                             <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" class="StatIcon"/>
                         </Panel>
-                        <Panel id="SpellArmor" class="AttrIconContainer">
+                        <Panel id="SpellArmor" class="AttrIconContainer" onmouseover="ShowElementalResistancesTooltip()" onmouseout="HideElementalResistancesTooltip()">
                             <Label id="SpellArmorLabel" class="StatLabel" text="0" hittest="false"/>
                             <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex" class="StatIcon"/>
                         </Panel>
@@ -57,14 +88,15 @@
                             <Label id="HeroLevelLabel" text="1"/>
                         </Panel>
                     </Panel>
-                    <Label class="HeroExpBarAltValue" id="HeroExpAltLabel" text = "0 / 0 (0%)"/>
+                    <Label class="HeroExpBarAltValue" id="HeroExpAltLabel" text="0 / 0 (0%)"/>
                 </Panel>
                 <Panel class="HeroPanelRightContainer">
                     <Panel id="HeroAbilitiesPanelFiller"/>
                     <Panel class="HPMPBars">
                         <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
                             <Panel id="HeroHpBar" class="HeroHpBar" style="width: 100%;">
-                                <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false"
+                                <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner"
+                                                renderdeferred="false"
                                                 rendershadows="false" camera="camera_1" hittest="false"
                                                 particleonly="true"/>
                             </Panel>

@@ -562,3 +562,28 @@
 	background-size: 100% 100%;
 	border-top-right-radius: 15px;
 }
+
+.TooltipElementLabelContainer {
+    flow-children: right;
+    width: fit-children;
+    height: fit-children;
+}
+
+.TooltipElementLabelContainer Image {
+    width: 32px;
+    height: 32px;
+}
+
+.TooltipElementLabelContainer Label {
+    width: fit-children;
+}
+
+#ItemTooltip {
+    width: fit-children;
+    padding: 5px;
+    z-index: 2;
+}
+
+.TooltipElementLabelContainer .ItemTooltipLabel {
+    padding-left: 2px;
+}
