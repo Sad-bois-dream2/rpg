@@ -12,7 +12,9 @@ function TalentTree:SetupForHero(hero)
             hero.talents.level[i] = 0
         end
         -- for test only, remove later pls
-        hero:FindAbilityByName("antimage_blink"):SetLevel(4)
+        if(hero:FindAbilityByName("antimage_blink")) then
+            hero:FindAbilityByName("antimage_blink"):SetLevel(4)
+        end
     end
 end
 
