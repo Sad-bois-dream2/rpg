@@ -82,7 +82,7 @@ modifier_catastrophe_demolisher_curse_of_doom_aura = class({
 })
 
 function modifier_catastrophe_demolisher_curse_of_doom_aura:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -109,7 +109,7 @@ modifier_catastrophe_demolisher_curse_of_doom_aura_debuff = class({
 })
 
 function modifier_catastrophe_demolisher_curse_of_doom_aura_debuff:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -157,7 +157,7 @@ function catastrophe_demolisher_curse_of_doom:OnSpellStart()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        if(self.threat > 0) then
+        if (self.threat > 0) then
             local addedAggro = caster:GetMaxHealth() * self.threat
             for _, enemy in pairs(enemies) do
                 self:ApplyDot(caster, enemy)
@@ -222,7 +222,20 @@ end
 
 LinkedModifiers["catastrophe_demolisher_flaming_blast_stack"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_flaming_blast = catastrophe_demolisher_flaming_blast or class({})
+catastrophe_demolisher_flaming_blast = class({
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
+
+function catastrophe_demolisher_flaming_blast:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.stun_duration = self:GetSpecialValueFor("stun_duration")
+    self.StrPerStack = self:GetSpecialValueFor("str_per_stack") / 100
+    self.StrStackDuration = self:GetSpecialValueFor("str_stack_duration")
+    self.StrStackCap = self:GetSpecialValueFor("str_stack_cap")
+    self.radius = self:GetSpecialValueFor("radius")
+end
 
 function catastrophe_demolisher_flaming_blast:OnSpellStart()
     local caster = self:GetCaster()
@@ -236,24 +249,7 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
             FIND_ANY_ORDER,
             false)
     for k, unit in pairs(units) do
-        local info = {
-            Target = unit,
-            Source = caster,
-            Ability = self,
-            EffectName = "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast.vpcf",
-            iMoveSpeed = 800,
-            vSourceLoc = caster:GetAbsOrigin(),
-            bDrawsOnMinimap = false,
-            bDodgeable = true,
-            bIsAttack = false,
-            bVisibleToEnemies = true,
-            bReplaceExisting = false,
-            flExpireTime = GameRules:GetGameTime() + 10,
-            bProvidesVision = true,
-            iVisionRadius = 400,
-            iVisionTeamNumber = caster:GetTeamNumber()
-        }
-        projectile = ProjectileManager:CreateTrackingProjectile(info)
+
     end
 end
 
