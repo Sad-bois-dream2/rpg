@@ -584,9 +584,11 @@
         "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_aura_debuff_Description"		"Inferno resistance reduced."
         "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast"		"Flaming Blast"
         "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_Description"		"Catastrophe Demolisher furiously wreaks his burning wrath on nearby enemies, strikes them by a heavy blast of wraith flames and dealing <font color='#1f5b07'>Inferno</font> damage based on maximum health and stun them for a short time.\nRank 2: Each affected enemy grants Demolisher stack that increase strength by <font color='white'><b>5%</b></font> for <font color='white'><b>15</b></font> seconds, up to <font color='white'><b>10</b></font> stacks. Elite enemy and boss count as <font color='white'><b>3</b></font> and <font color='white'><b>5</b></font> enemies.\nRank 3: Each affected enemy grant <font color='white'><b>1</b></font> additional Demolisher stack.\nRank 4: Demolisher bonus strength per stack increased to <font color='white'><b>10%</b></font> and stacks max count increased to <font color='white'><b>20</b></font>."
-        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_damage"		"%STRENGTH TO DAMAGE:"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_damage"		"%MAXIMUM HEALTH TO DAMAGE:"
         "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_stun_duration"		"STUN DURATION:"
         "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_radius"		"RADIUS:"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_flaming_blast_stack"		"Demolisher"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_flaming_blast_stack_Description"		"Strength increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"

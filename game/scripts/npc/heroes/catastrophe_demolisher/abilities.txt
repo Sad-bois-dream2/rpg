@@ -111,7 +111,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"			"125 150 175 200"
+				"damage"			"25 50 75 100"
 			}
 			"02"
 			{
@@ -136,8 +136,34 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"str_stack_bonus"			"0 0 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_creep"			"0 1 1 1"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_elite"			"0 3 3 3"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_boss"			"0 5 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"radius"			"600"
 			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
 		}
 	}
 	//=================================================================================================================

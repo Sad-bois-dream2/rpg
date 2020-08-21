@@ -196,7 +196,7 @@ end
 
 --FLAMING BLAST--
 
-catastrophe_demolisher_flaming_blast_stack = catastrophe_demolisher_flaming_blast_stack or class({
+modifier_catastrophe_demolisher_flaming_blast_stack = class({
     IsDebuff = function(self)
         return false
     end,
@@ -204,7 +204,7 @@ catastrophe_demolisher_flaming_blast_stack = catastrophe_demolisher_flaming_blas
         return false
     end,
     IsPurgable = function(self)
-        return true
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -212,15 +212,27 @@ catastrophe_demolisher_flaming_blast_stack = catastrophe_demolisher_flaming_blas
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end,
+    GetEffectName = function(self)
+        return "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast_buff.vpcf"
+    end
 })
 
-function catastrophe_demolisher_flaming_blast_stack:GetAttackPercentDamageBonus()
-    local stacks = self:GetStackCount()
-    local damage_per_stack = self:GetAbility():GetSpecialValueFor("damage_per_stack")
-    return stacks * damage_per_stack
+function modifier_catastrophe_demolisher_flaming_blast_stack:OnCreated()
+    self.ability = self:GetAbility()
 end
 
-LinkedModifiers["catastrophe_demolisher_flaming_blast_stack"] = LUA_MODIFIER_MOTION_NONE
+function modifier_catastrophe_demolisher_flaming_blast_stack:GetStrengthPercentBonus()
+    return self:GetStackCount() * self.ability.strPerStack
+end
+
+function modifier_catastrophe_demolisher_flaming_blast_stack:OnTooltip()
+    return self:GetStackCount() * self.ability:GetSpecialValueFor("str_per_stack")
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_flaming_blast_stack"] = LUA_MODIFIER_MOTION_NONE
 
 catastrophe_demolisher_flaming_blast = class({
     GetCastRange = function(self)
@@ -230,52 +242,68 @@ catastrophe_demolisher_flaming_blast = class({
 
 function catastrophe_demolisher_flaming_blast:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
-    self.stun_duration = self:GetSpecialValueFor("stun_duration")
-    self.StrPerStack = self:GetSpecialValueFor("str_per_stack") / 100
-    self.StrStackDuration = self:GetSpecialValueFor("str_stack_duration")
-    self.StrStackCap = self:GetSpecialValueFor("str_stack_cap")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.strPerStack = self:GetSpecialValueFor("str_per_stack") / 100
+    self.strStackDuration = self:GetSpecialValueFor("str_stack_duration")
+    self.strStackCap = self:GetSpecialValueFor("str_stack_cap")
     self.radius = self:GetSpecialValueFor("radius")
+    self.strStackBonus = self:GetSpecialValueFor("str_stack_bonus")
+    self.strStacksPerCreep = self:GetSpecialValueFor("str_stacks_per_creep")
+    self.strStacksPerElite = self:GetSpecialValueFor("str_stacks_per_elite")
+    self.strStacksPerBoss = self:GetSpecialValueFor("str_stacks_per_boss")
 end
 
 function catastrophe_demolisher_flaming_blast:OnSpellStart()
     local caster = self:GetCaster()
+    local impactPosition = caster:GetAbsOrigin() + caster:GetForwardVector() * 150
+    local damage = caster:GetMaxHealth() * self.damage
     local units = FindUnitsInRadius(self:GetCaster():GetTeamNumber(),
-            caster:GetAbsOrigin(),
+            impactPosition,
             nil,
-            600,
+            self.radius,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    for k, unit in pairs(units) do
-
+    for _, enemy in pairs(units) do
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = self.stunDuration
+        GameMode:ApplyDebuff(modifierTable)
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = caster
+        damageTable.ability = self
+        damageTable.target = enemy
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+        local stacksPerEnemy = self.strStacksPerCreep
+        if Enemies:IsBoss(enemy) then
+            stacksPerEnemy = self.strStacksPerBoss
+        elseif Enemies:IsElite(enemy) then
+            stacksPerEnemy = self.strStacksPerElite
+        end
+        stacksPerEnemy = stacksPerEnemy + self.strStackBonus
+        local modifierTable = {}
+        modifierTable.caster = caster
+        modifierTable.target = caster
+        modifierTable.ability = self
+        modifierTable.modifier_name = "modifier_catastrophe_demolisher_flaming_blast_stack"
+        modifierTable.duration = self.strStackDuration
+        modifierTable.max_stacks = self.strStackCap
+        modifierTable.stacks = stacksPerEnemy
+        GameMode:ApplyStackingBuff(modifierTable)
     end
-end
-
-function catastrophe_demolisher_flaming_blast:OnProjectileHit(hTarget, vLocation)
-    local damage = self:GetCaster():GetMaxHealth() * self:GetSpecialValueFor("flame_damage") / 100
-    local damageTable = {}
-    damageTable.damage = damage
-    damageTable.caster = self:GetCaster()
-    damageTable.ability = self
-    damageTable.target = hTarget
-    damageTable.firedmg = true
-    GameMode:DamageUnit(damageTable)
-    local stacks_per_hit = 1
-    if Enemies:IsBoss(target) then
-        stacks_per_hit = 5
-    elseif Enemies:IsElite(target) then
-    end
-    local modifierTable = {}
-    modifierTable.caster = self:GetCaster()
-    modifierTable.target = self:GetCaster()
-    modifierTable.ability = self
-    modifierTable.modifier_name = "catastrophe_demolisher_flaming_blast_stack"
-    modifierTable.duration = 15
-    modifierTable.max_stacks = 10
-    modifierTable.stacks = stacks_per_hit
-    GameMode:ApplyStackingBuff(modifierTable)
+    local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 1, impactPosition)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 --BLOOD OBLATION--
