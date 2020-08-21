@@ -3,6 +3,11 @@
 var m_AbilityPanels = []; // created up to a high-water mark, but reused when selection changes
 
 var hpBar, hpBarValue, hpBarRegValue, mpBar, mpBarValue, mpBarRegValue, expBar, expBarValue, strValue, agiValue, intValue, heroPortrait, deathTimerValue, heroNameValue;
+var attackDamageValue, armorValue, spellArmorValue, movespeedValue;
+var expBarValue, levelValue, expLabel;
+var abilitiesPanelFiller, abilitiesPanel;
+var itemTooltip;
+var fireResLabel, frostResLabel, earthResLabel, natureResLabel, voidResLabel, infernoResLabel, holyResLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -199,6 +204,8 @@ function UpdateAbilityList() {
         var abilityPanel = m_AbilityPanels[i];
         abilityPanel.Data().SetAbility(-1, -1, false);
     }
+    abilitiesPanelFiller.style.width = (abilityListPanel.actuallayoutwidth / abilityListPanel.actualuiscale_x) + "px";
+    abilitiesPanelFiller.style.height = (abilityListPanel.actuallayoutheight / abilityListPanel.actualuiscale_y) + "px";
 }
 
 var IsFirstTime = true;
@@ -273,13 +280,61 @@ function UpdateValues() {
 			expPercent = 100;
 			maxExp = currentExp;
 		}
-        expBar.style.width = Math.floor(expPercent) + "%";
-        if (IsAltDown) {
-            expBarValue.text = currentExp + " / " + maxExp;
-        } else {
-            expBarValue.text = (Math.floor(expPercent * 100) / 100) + "%";
+		var convertedExpPercent = Math.round(360 * (expPercent / 100));
+		expBarValue.style.clip = "radial(50% 50%, 0deg, " + convertedExpPercent + "deg);";
+		expPercent = Math.round(expPercent * 100) / 100;
+		expLabel.text = currentExp + " / " + maxExp + " (" + expPercent + "%)";
+		if(IsAltDown) {
+		    expLabel.style.visibility = "visible";
+		} else {
+		    expLabel.style.visibility = "collapse";
+		}
+		levelValue.text = Entities.GetLevel(hero);
+		attackDamageValue.text = Entities.GetDamageMin(hero);
+		// Stats from server
+		if(latestStats) {
+            var str = latestStats.str;
+            var agi = latestStats.agi;
+            var int = latestStats.int;
+            strValue.text = Math.round(str);
+            agiValue.text = Math.round(agi);
+            intValue.text = Math.round(int);
+            var currentMp = latestStats.display.mana;
+            var maxMp = latestStats.display.maxmana;
+            var mpPercent = (currentMp / maxMp) * 100;
+            mpPercent = (Math.round(mpPercent * 100) / 100);
+            latestStoredMana = currentMp;
+            latestStoredMaxMana = maxMp;
+            latestStoredManaPercent = mpPercent;
+            var armor = latestStats.armor;
+            var armorReduction = 0;
+            if(armor >= 0){
+                armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
+            } else {
+                armorReduction = -1 + Math.pow(0.94,armor * -1);
+            }
+            if(IsAltDown) {
+                armorValue.text = (Math.round(armorReduction * 10000) / 100) + "%";
+            } else {
+                armorValue.text = armor;
+            }
+            var elementalArmorValue = 0;
+            var arr = Object.values(latestStats.elementsProtection);
+            var length = arr.length;
+            for(var i = 0; i < length; i++) {
+                elementalArmorValue += (1 - arr[i]);
+            }
+            elementalArmorValue = elementalArmorValue / length;
+            spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
+            movespeedValue.text = Entities.GetMoveSpeedModifier(hero, Entities.GetBaseMoveSpeed(hero));
+            fireResLabel.text = Math.round((1 - latestStats.elementsProtection["fire"]) * 100) +"%";
+            frostResLabel.text = Math.round((1 - latestStats.elementsProtection["frost"]) * 100) +"%";
+            earthResLabel.text = Math.round((1 - latestStats.elementsProtection["earth"]) * 100) +"%";
+            natureResLabel.text = Math.round((1 - latestStats.elementsProtection["nature"]) * 100) +"%";
+            voidResLabel.text = Math.round((1 - latestStats.elementsProtection["void"]) * 100) +"%";
+            infernoResLabel.text = Math.round((1 - latestStats.elementsProtection["inferno"]) * 100) +"%";
+            holyResLabel.text = Math.round((1 - latestStats.elementsProtection["holy"]) * 100) +"%";
         }
-        heroNameValue.text = $.Localize("#" + Entities.GetUnitName(hero));
 		lastSelectedUnit = hero;
     }
 }
@@ -290,28 +345,17 @@ function AutoUpdateValues() {
         AutoUpdateValues();
     });
 }
+
 var latestStoredManaPercent = 100, latestStoredMana = 0, latestStoredMaxMana = 0;
+var latestStats;
 
 function OnHeroStatsUpdateRequest(event) {
     var selectedUnit = Players.GetLocalPlayerPortraitUnit();
     var localPlayerId = Entities.GetPlayerOwnerID(selectedUnit);
 	var parsedData = JSON.parse(event.data);
     var recievedPlayerId = parsedData.player_id;
-    var IsAltDown = GameUI.IsAltDown();
     if (localPlayerId == recievedPlayerId) {
-        var str = parsedData.statsTable.str;
-        var agi = parsedData.statsTable.agi;
-        var int = parsedData.statsTable.int;
-        strValue.text = Math.round(str);
-        agiValue.text = Math.round(agi);
-        intValue.text = Math.round(int);
-        var currentMp = parsedData.statsTable.display.mana;
-        var maxMp = parsedData.statsTable.display.maxmana;
-        var mpPercent = (currentMp / maxMp) * 100;
-        mpPercent = (Math.round(mpPercent * 100) / 100);
-        latestStoredMana = currentMp;
-        latestStoredMaxMana = maxMp;
-        latestStoredManaPercent = mpPercent;
+        latestStats = parsedData.statsTable;
     }
 }
 
@@ -330,17 +374,77 @@ function Init() {
     heroPortrait = $("#HeroPortrait");
     deathTimerValue = $("#HeroDeathTimer");
     heroNameValue = $("#HeroName");
+    attackDamageValue = $("#AttackDamageLabel");
+    armorValue = $("#ArmorLabel");
+    spellArmorValue = $("#SpellArmorLabel");
+    movespeedValue = $("#MovespeedLabel");
+    expBarValue = $("#HeroLevelExpBackground");
+    levelValue = $("#HeroLevelLabel");
+    expLabel = $("#HeroExpAltLabel");
+    // Modifier lists
+    $("#ModifierListContainer").BLoadLayout("file://{resources}/layout/custom_game/buff_list.xml", false, false);
+    // Abilities panels
+    abilitiesPanelFiller = $("#HeroAbilitiesPanelFiller");
+    abilitiesPanel = $("#HeroAbilitiesPanel");
+    // Stats tooltips
+    fireResLabel = $("#FireResistanceLabel");
+    frostResLabel = $("#FrostResistanceLabel");
+    earthResLabel = $("#EarthResistanceLabel");
+    natureResLabel = $("#NatureResistanceLabel");
+    voidResLabel = $("#VoidResistanceLabel");
+    infernoResLabel = $("#InfernoResistanceLabel");
+    holyResLabel = $("#HolyResistanceLabel");
+    itemTooltip = $("#ItemTooltip");
+}
+
+function ShowElementalResistancesTooltip() {
+    var cursorPosition = GameUI.GetCursorPosition();
+    var x = cursorPosition[0];
+    var y = cursorPosition[1];
+	if(itemTooltip.actuallayoutwidth + x > Game.GetScreenWidth()) {
+	    x -= itemTooltip.actuallayoutwidth;
+	}
+	if(itemTooltip.actuallayoutheight + y > Game.GetScreenHeight()) {
+	    y -= itemTooltip.actuallayoutheight;
+	}
+	itemTooltip.style.marginLeft = x + "px";
+	itemTooltip.style.marginTop = y + "px";
+    itemTooltip.style.visibility = "visible";
+}
+
+function HideElementalResistancesTooltip() {
+    itemTooltip.style.visibility = "collapse";
 }
 
 (function() {
     //$.RegisterForUnhandledEvent( "DOTAHUDAbilityLearnModeToggled", OnAbilityLearnModeToggled);
-
     GameEvents.Subscribe("dota_portrait_ability_layout_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateAbilityList);
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateAbilityList);
     GameEvents.Subscribe("dota_ability_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_hero_ability_points_changed", UpdateAbilityList);
     UpdateAbilityList(); // initial update
+    $.Schedule(0.1, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(0.2, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(0.5, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(1, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(2, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(3, function() {
+        UpdateAbilityList();
+    });
+    $.Schedule(4, function() {
+        UpdateAbilityList();
+    });
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
     Init();
     AutoUpdateValues();

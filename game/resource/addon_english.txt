@@ -21,7 +21,7 @@
 		"npc_dota_hero_silencer"	"Light Cardinal" // Support #1
 		"npc_dota_hero_enchantress"	"Priestess of the Sacred Forest" // Support #2
 		"npc_dota_hero_skeleton_king"	"Catastrophe Demolisher" // Melee srr phys dd #2
-		"npc_dota_hero_dark_willow"	"Dark Willow"
+		"npc_dota_hero_dark_willow"	"Dark Willow" // Ranged agi phys dd #1
 
 		// Countless hero abilities
 		"DOTA_Tooltip_Ability_empty5"		"Ability slot"
@@ -573,6 +573,33 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_damage"		"%CRITICAL DAMAGE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_backstab_damage"		"%BACKSTAB DAMAGE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_blade_of_abyss_duration"		"DURATION: "
+		// Catastrophe Demolisher (wk)
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom"		"Curse of Doom"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_Description"		"Catastrophe Demolisher inflicts an irrevocable vicious curse on an target, shows it the illusion of the doomsday and burns it in wraith fire, dealing <font color='#1f5b07'>Inferno</font> damage based on his Strength.\nRank 2: Enemies around the primary target in <font color='white'><b>300</b></font> radius will also be affected.\nRank 3: Passively reduce inferno resistance of nearby enemies in radius <font color='white'><b>500</b></font> by <font color='white'><b>10%</b></font>.\nRank 4: Increased your threat of affected enemies by <font color='white'><b>5%</b></font> of your maximum health."
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_damage"		"%STRENGTH TO DAMAGE:"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom_duration"		"DURATION:"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_dot"		"Curse of Doom"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_dot_Description"		"Suffer from inferno damage."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"		"Curse of Doom"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_curse_of_doom_aura_debuff_Description"		"Inferno resistance reduced."
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast"		"Flaming Blast"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_Description"		"Catastrophe Demolisher furiously wreaks his burning wrath on nearby enemies, strikes them by a heavy blast of wraith flames and dealing <font color='#1f5b07'>Inferno</font> damage based on maximum health and stun them for a short time.\nRank 2: Each affected enemy grants Demolisher stack that increase strength by <font color='white'><b>5%</b></font> for <font color='white'><b>15</b></font> seconds, up to <font color='white'><b>10</b></font> stacks. Elite enemy and boss count as <font color='white'><b>3</b></font> and <font color='white'><b>5</b></font> enemies.\nRank 3: Each affected enemy grant <font color='white'><b>1</b></font> additional Demolisher stack.\nRank 4: Demolisher bonus strength per stack increased to <font color='white'><b>10%</b></font> and stacks max count increased to <font color='white'><b>20</b></font>."
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_damage"		"%MAXIMUM HEALTH TO DAMAGE:"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_stun_duration"		"STUN DURATION:"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_flaming_blast_radius"		"RADIUS:"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_flaming_blast_stack"		"Demolisher"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_flaming_blast_stack_Description"		"Strength increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation"		"Blood Oblation"
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_Description"		"Catastrophe Demolisher offers his defense to his master as proof of loyalty. While toggled on any damage instance he caused will keep his resistances reduced and provide bonus critical chance and bonus critical damage. Turning off instantly removes all effects.\nRank 2: While toggled on now also cause each successful auto attack cause effect of <font color='white'><b>Curse of Doom</b></font>, if this ability at least level <font color='white'><b>1</b></font>.\nRank 3: Each successful critical strike while toggled on provide Zealot Stack for <font color='white'><b>15</b></font> seconds that gives <font color='white'><b>5%</b></font> bonus critical chance, but reduce even more armor by <font color='white'><b>5</b></font> and elemental resistances by <font color='white'><b>5%</b></font>.\nRank 4: Passively increase inferno damage by <font color='white'><b>20%</b></font>. This bonus doubled, if ability toggled on."
+		"DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_armor_loss"		"ARMOR REDUCTION: "
+		"DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_spell_armor_loss"		"%ELEMENTAL RESISTANCES REDUCTION: "
+		"DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_bonus_crit_damage"		"%BONUS CRITICAL DAMAGE: "
+		"DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_bonus_crit_chance"		"%BONUS CRITICAL CHANCE: "
+		"DOTA_Tooltip_Ability_catastrophe_demolisher_blood_oblation_lore"		"Executioner of the Fallen One."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_blood_oblation_zealot"		"Zealot"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_blood_oblation_zealot_Description"		"Critical strike chance increased, resistances reduced."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_blood_oblation_toggle"		"Blood Oblation"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_blood_oblation_toggle_Description"		"Proof of loyalty."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"

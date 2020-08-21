@@ -179,8 +179,18 @@ function UpdateValues() {
     }
     if(latestStats) {
         bossAttackDamage.text = Entities.GetDamageMax(latestSelectedCreep);
-        var armorReduction = (latestStats.armor * 0.06) / (1 + latestStats.armor * 0.06);
-        bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        var armor = latestStats.armor;
+        var armorReduction = 0;
+        if(armor >= 0){
+            armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
+        } else {
+            armorReduction = -1 + Math.pow(0.94,armor * -1);
+        }
+        if(IsAltDown) {
+            bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        } else {
+            bossArmor.text = armor;
+        }
         var elementalArmorValue = 0;
         var arr = Object.values(latestStats.elementsProtection);
         var length = arr.length;

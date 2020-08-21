@@ -41,7 +41,6 @@
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/barebones_notifications.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/dota_ui_fix.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/action_bar.xml"/>
-        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/buff_list.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/party.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/screen_buttons.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/boss_hpbar.xml"/>

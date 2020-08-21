@@ -16,15 +16,18 @@
 	    "LevelsBetweenUpgrades"  		"0"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.5"
+        "AbilityCastRange"				"150"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"35"
+		"AbilityCooldown"				"25 20 15 10"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -33,18 +36,45 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"flame_damage"			"25 30 35 40"
+				"damage"			"100 110 120 130"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"			"0.8 1 1.2 1.5"
+				"inferno_res"		"0 0 -10 -10"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_per_stack"		"2 2.5 3 3.5"
+				"threat"		"0 0 0 5"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_aoe"		"0 300 300 300"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aura_radius"		"0 0 500 500"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"		"1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"		"5"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_debuff.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_single.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
 		}
 	}
 	
@@ -62,15 +92,17 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.5"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
+		"AbilityCooldown"				"35"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"30"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -79,13 +111,59 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"base_damage"			"150 200 250 300"
+				"damage"			"25 50 75 100"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spilit_damage"			"30 40 50 60"
+				"stun_duration"			"1 1.5 2 2.5"
 			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_per_stack"			"0 5 5 10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_duration"			"0 15 15 15"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_cap"			"0 10 10 20"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_bonus"			"0 0 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_creep"			"0 1 1 1"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_elite"			"0 3 3 3"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_boss"			"0 5 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"			"600"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -99,18 +177,21 @@
 		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
 		"AbilityTextureName"			"skeleton_king_hellfire_blast"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               		"4"
-	    "RequiredLevel"          		"0"
-	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
+		"AbilityCooldown"				"1"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"30"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -124,17 +205,47 @@
 			"02"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"bonus_crit_damage"			"300 300 300 300"
+				"spell_armor_loss"				"-10 -15 -20 -30"
 			}
 			"03"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"bonus_crit_chance"			"12 15 18 20"
+				"bonus_crit_damage"			"50 75 100 125"
 			}
 			"04"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"bonus_strength"			"2 3 4 5"
+				"bonus_crit_chance"			"10 20 30 40"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"crit_chance_per_stack"			"2 3 4 5"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"zealot_stack_duration"			"0 0 15 15"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"armor_loss_per_stack"			"0 5 5 5"
+			}
+			"08"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"spell_armor_loss_per_stack"			"0 5 5 5"
+			}
+			"09"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"inferno_bonus"			"0 0 0 20"
+			}
+			"10"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"inferno_bonus_active"			"0 0 0 40"
 			}
 		}
 	}

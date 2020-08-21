@@ -5,39 +5,31 @@
 
 .DebuffListRoot
 {
-	horizontal-align: center;
-	vertical-align: bottom;
-	margin-bottom: 110px;
-	margin-left: 630px;
-	width: 495px; /* 55 per debuff */
-	height: 218px;
+	width: fill-parent-flow(1.0);
+	max-width: 660px; /* 55 per debuff */
+	height: fit-children;
+	max-height: 218px;
 	transform: rotateX(180deg);
 }
 
 .BuffListRoot
 {
-	horizontal-align: center;
-	vertical-align: bottom;
 	flow-children: right;
-	margin-bottom: 110px;
-	margin-left: -260px;
-	width: 390px; /* 55 per buff */
-	height: 218px;
+	width: fill-parent-flow(1.0);
+	max-width: 660px; /* 55 per buff */
+	height: fit-children;
+	max-height: 218px;
 	transform: rotateX(180deg);
 }
 
 #debuffs_list
 {
 	flow-children: right-wrap;
-	height: 100%;
-	width: 100%;
 }
 
 #buffs_list
 {
 	flow-children: right-wrap;
-	height: 100%;
-	width: 100%;
 }
 
 .BuffRoot
