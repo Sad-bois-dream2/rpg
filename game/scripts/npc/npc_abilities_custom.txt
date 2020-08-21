@@ -163,5 +163,29 @@
 			}
 		}
       }
+	  "enemies_mist_assassin"
+      {
+        "AbilityBehavior"     "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"BaseClass"						"ability_datadriven"
+        "AbilityTextureName"            "huskar_berserkers_blood"
+        "MaxLevel"                      "1"
+       "Modifiers"
+        {
+        	"modifier_enemies_mist_assassin"
+        	{
+        		"Passive"			"1"
+        		"IsHidden"			"1"
+        		"IsDebuff"			"0"
+        		"States"
+        		{
+			        "MODIFIER_STATE_STUNNED"	"MODIFIER_STATE_VALUE_ENABLED"
+			    }
+        		"Properties"
+        		{
+			        "MODIFIER_PROPERTY_MIN_HEALTH"	"1"
+			    }
+        	}
+        }
+      }
 }
 
