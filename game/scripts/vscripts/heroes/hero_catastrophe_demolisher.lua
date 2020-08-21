@@ -461,39 +461,39 @@ function modifier_catastrophe_demolisher_blood_oblation_zealot:OnCreated()
     self.ability = self:GetAbility()
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetArmorBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetArmorBonus()
     return self:GetStackCount() * self.ability.armorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFireProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetFireProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFrostProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetFrostProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetEarthProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetEarthProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetVoidProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetVoidProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetHolyProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetHolyProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetNatureProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetNatureProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetInfernoProtectionBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetInfernoProtectionBonus()
     return self:GetStackCount() * self.ability.spellArmorLossPerStack
 end
 
-function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalChanceBonus()
+function modifier_catastrophe_demolisher_blood_oblation_zealot:GetCriticalChanceBonus()
     return self:GetStackCount() * self.ability.critChancePerStack
 end
 
