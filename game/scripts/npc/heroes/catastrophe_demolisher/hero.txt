@@ -1,0 +1,50 @@
+"DOTAHeroes"
+{
+	"npc_dota_hero_skeleton_king"
+	{
+		"AbilityLayout" "6"
+		"Ability1"		"catastrophe_demolisher_curse_of_doom"
+		"Ability2"		"catastrophe_demolisher_flaming_blast"
+		"Ability3"		"catastrophe_demolisher_blood_oblation"
+		"Ability4"		"catastrophe_demolisher_essence_devouer"
+		"Ability5"		"catastrophe_demolisher_crimson_fanaticism"
+		"Ability6"		"catastrophe_demolisher_claymore_of_destruction"
+		"AbilityTalentStart"		"7"
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+		"Ability17"	""
+		"ArmorPhysical"                "0"
+		"MagicalResistance"            "0"
+		"AttackDamageMin"            "34"       // Damage range min.
+		"AttackDamageMax"            "34"       // Damage range max.
+		"BountyXP"                    "0"            // Experience earn.
+		"BountyGoldMin"                "0"           // Gold earned min.
+		"BountyGoldMax"                "0"           // Gold earned max.
+		"StatusHealthRegen"           "0"         // Health regeneration rate.
+		"StatusManaRegen"             "0"         // Mana regeneration rate.
+		"AttributePrimary"             "DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"        "18"            // Base strength
+		"AttributeStrengthGain"        "1.9"            // Strength bonus per level.
+		"AttributeBaseAgility"         "20"            // Base agility
+		"AttributeAgilityGain"         "2.9"            // Agility bonus per level.
+		"AttributeBaseIntelligence"    "15"            // Base intelligence
+		"AttributeIntelligenceGain"    "1.4"            // Intelligence bonus per level.
+		"VisionDaytimeRange"        "1800"        // Range of vision during day light.
+        "VisionNighttimeRange"      "1800"        // Range of vision at night time.
+        "Roles"
+        {
+            "Tank"  "5"
+            "DPS"   "1"
+            "Support"   "1"
+            "Utility"   "1"
+        }
+	}
+}

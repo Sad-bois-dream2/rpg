@@ -1,6 +1,7 @@
 var localPlayerId;
 var bossPanel, bossImage, bossName, bossHpBar, bossHpBarValue, bossHpBarRegValue, bossMpBar, bossMpBarValue, bossMpBarRegValue, bossAbilitiesPanel, bossBuffPanel, bossDebuffPanel;
 var bossAttackDamage, bossArmor, bossElementalArmor, bossMovespeed;
+var bossZoneAbilityImage;
 var bossAbilties = [];
 var MAX_ABILITIES_ON_PANEL = 10;
 var latestSelectedCreep;
@@ -115,6 +116,7 @@ function UpdateSelection() {
                 break;
             }
         }
+        CheckBossZoneAbility();
     }
 }
 
@@ -177,8 +179,18 @@ function UpdateValues() {
     }
     if(latestStats) {
         bossAttackDamage.text = Entities.GetDamageMax(latestSelectedCreep);
-        var armorReduction = (latestStats.armor * 0.06) / (1 + latestStats.armor * 0.06);
-        bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        var armor = latestStats.armor;
+        var armorReduction = 0;
+        if(armor >= 0){
+            armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
+        } else {
+            armorReduction = -1 + Math.pow(0.94,armor * -1);
+        }
+        if(IsAltDown) {
+            bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        } else {
+            bossArmor.text = armor;
+        }
         var elementalArmorValue = 0;
         var arr = Object.values(latestStats.elementsProtection);
         var length = arr.length;
@@ -385,6 +397,26 @@ function ClosePanel() {
     bossPanel.style.visibility = "collapse";
 }
 
+var bossZoneAbilityLevel = 1;
+
+function BossZoneAbilityShowTooltip() {
+	$.DispatchEvent( "DOTAShowAbilityTooltipForLevel", bossZoneAbilityImage, bossZoneAbilityImage.abilityname, bossZoneAbilityLevel);
+}
+
+function BossZoneAbilityHideTooltip() {
+	$.DispatchEvent("DOTAHideAbilityTooltip", bossZoneAbilityImage);
+}
+
+function CheckBossZoneAbility() {
+    var zoneAbility = Entities.GetAbilityByName(latestSelectedCreep, bossZoneAbilityImage.abilityname);
+    if(zoneAbility > -1) {
+        bossZoneAbilityLevel = Abilities.GetLevel(zoneAbility);
+        bossZoneAbilityImage.style.visibility = "visible";
+    } else {
+        bossZoneAbilityImage.style.visibility = "collapse";
+    }
+}
+
 (function() {
     var root = $.GetContextPanel();
     bossPanel = root.GetChild(0);
@@ -403,6 +435,7 @@ function ClosePanel() {
     bossArmor = $("#BossArmor");
     bossElementalArmor = $("#BossElementArmor");
     bossMovespeed = $("#BossMoveSpeed");
+    bossZoneAbilityImage = $("#BossZoneAbilityImage");
     localPlayerId = Players.GetLocalPlayer();
     for (var i = 0; i < MAX_ABILITIES_ON_PANEL; i++) {
         var abilityPanel = $.CreatePanel("Panel", bossAbilitiesPanel, "");

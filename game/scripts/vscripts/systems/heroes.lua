@@ -64,7 +64,7 @@ function modifier_hero:OnDeath(keys)
     local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             hero:GetAbsOrigin(),
             nil,
-            FIND_UNITS_EVERYWHERE,
+            Enemies.BOSS_ZONE_SIZE,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,

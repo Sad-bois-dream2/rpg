@@ -28,6 +28,7 @@
                     </Panel>
                 </Panel>
             </Panel>
+            <DOTAAbilityImage id="BossZoneAbilityImage" onmouseover="BossZoneAbilityShowTooltip()" onmouseout="BossZoneAbilityHideTooltip()" abilityname="enemies_boss_skill" scaling="stretch-to-fit-preserve-aspect" />
             <Panel class="BossNamePanel">
                 <Label id="BossName" text="Fengu, The Mad Summoner"/>
             </Panel>

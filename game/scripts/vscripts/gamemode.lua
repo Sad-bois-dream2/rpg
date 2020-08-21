@@ -126,10 +126,18 @@ function GameMode:OnGameInProgress()
         end)
         -- Save NPC
         CreateUnitByNameAsync("npc_save_unit", Vector(-15503.247070, 15164.744141, 384), true, nil, nil, DOTA_TEAM_GOODGUYS, function(npc)
-            npc:SetForwardVector(Vector(0.936735, -0.350039,0))
+            npc:SetForwardVector(Vector(0.936735, -0.350039, 0))
         end)
         -- Vision in village
         CreateUnitByNameAsync("npc_village_vision", Vector(-14681.115234, 15143.157227, 384), false, nil, nil, DOTA_TEAM_GOODGUYS, nil)
+        if (IsInToolsMode()) then
+            -- technically not elite, but prob counts for all related elite shit
+            CreateUnitByNameAsync("npc_mistassassin", Vector(-14174.048828, 15360.906250, 384.000000), false, nil, nil, DOTA_TEAM_BADGUYS, function(npc)
+                npc:AddNewModifier(npc, nil, "modifier_creep_elite", { Duration = -1 })
+            end)
+            -- normal mist assassin
+            CreateUnitByNameAsync("npc_mistassassin", Vector(-14160.805664, 15183.201172, 384.000000), false, nil, nil, DOTA_TEAM_BADGUYS, nil)
+        end
     end)
 end
 
@@ -174,6 +182,7 @@ function GameMode:OnCloseAllWindowsRequest(event, args)
             TalentTree:OnTalentTreeWindowCloseRequest(event, args)
             Inventory:OnInventoryWindowCloseRequest(event, args)
             Dummy:OnDummyCloseWindowRequest(event, args)
+            SaveLoad:OnSaveLoadWindowCloseRequest(event, args)
         end
     end
 end
@@ -190,12 +199,12 @@ function GameMode:OnSayChatMessageRequest(event, args)
             return
         end
         event.msg = string.sub(event.msg, 1, math.min(100, messageLength))
-        if(not event.args) then
+        if (not event.args) then
             event.args = {}
         end
         event.args = json.encode(event.args)
         if (player and string.len(event.msg) > 0) then
-            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName()})
+            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName() })
         end
     end
 end

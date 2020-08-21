@@ -1,0 +1,394 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Catastrophe Demolisher : Curse of Doom
+	//=================================================================================================================
+	"catastrophe_demolisher_curse_of_doom"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"doom_bringer_doom"
+        "AbilityType"           		 "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.5"
+        "AbilityCastRange"				"150"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"25 20 15 10"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"			"100 110 120 130"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"inferno_res"		"0 0 -10 -10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"threat"		"0 0 0 5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_aoe"		"0 300 300 300"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aura_radius"		"0 0 500 500"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"		"1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"		"5"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_debuff.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom_single.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
+		}
+	}
+	
+	//=================================================================================================================
+	// Catastrophe Demolisher : Flaming Blast
+	//=================================================================================================================
+	"catastrophe_demolisher_flaming_blast"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"skeleton_king_hellfire_blast"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.5"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"35"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"			"25 50 75 100"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"			"1 1.5 2 2.5"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_per_stack"			"0 5 5 10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_duration"			"0 15 15 15"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_cap"			"0 10 10 20"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stack_bonus"			"0 0 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_creep"			"0 1 1 1"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_elite"			"0 3 3 3"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_stacks_per_boss"			"0 5 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"			"600"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/flaming_blast/flaming_blast_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Catastrophe Demolisher : Blood Oblation
+	//=================================================================================================================
+	"catastrophe_demolisher_blood_oblation"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"skeleton_king_hellfire_blast"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"1"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"armor_loss"				"-20 -25 -30 -35"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"spell_armor_loss"				"-10 -15 -20 -30"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"bonus_crit_damage"			"50 75 100 125"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"bonus_crit_chance"			"10 20 30 40"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"crit_chance_per_stack"			"2 3 4 5"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"zealot_stack_duration"			"0 0 15 15"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"armor_loss_per_stack"			"0 5 5 5"
+			}
+			"08"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"spell_armor_loss_per_stack"			"0 5 5 5"
+			}
+			"09"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"inferno_bonus"			"0 0 0 20"
+			}
+			"10"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"inferno_bonus_active"			"0 0 0 40"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Catastrophe Demolisher : Essence Devouer
+	//=================================================================================================================
+	"catastrophe_demolisher_essence_devouer"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"skeleton_king_vampiric_aura"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hp_regen"				"1 1 1 1.5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"phys_lifesteal"		"10 15 20 25"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"magic_lifesteal"		"8 10 12 15"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Catastrophe Demolisher : Crimson Fanaticism
+	//=================================================================================================================
+	"catastrophe_demolisher_crimson_fanaticism"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"skeleton_king_vampiric_aura"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_bonus"			"10 15 20 25"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"ms_bonus"				"10 15 15 20"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aspd"					"10 10 15 20"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spellhaste"			"15 15 20 25"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Catastrophe Demolisher : Claymore of Destruction
+	//=================================================================================================================
+	"catastrophe_demolisher_claymore_of_destruction"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
+		"AbilityTextureName"			"skeleton_king_mortal_strike"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
+		"AbilityChannelTime"			"1.5"
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityCooldown"				"60"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		//"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"			"1 1.5 2 2.5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"2 3 4 5"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_break"			"20 25 30 35"
+			}
+		}
+	}
+}

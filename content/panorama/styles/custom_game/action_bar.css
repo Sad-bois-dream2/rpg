@@ -3,41 +3,17 @@
 	height: 100%;
 }
 
-.LeftBackground, .RightBackground {
-	height: 100px;
-	vertical-align: bottom;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	border-radius: 10px;
-	border: 1px solid gray;
-}
-
-.LeftBackground {
-	horizontal-align: center;
-	margin-right: 520px;
-	width: 410px;
-	flow-children: right;
-}
-
-.RightBackground {
-	horizontal-align: center;
-	margin-left: 620px;
-	width: 516px;
-}
-
 .HPMPBars {
 	flow-children: down;
-	width: 320px;
-	height: 100%;
-	padding-top: 7px;
-	padding-left: 5px;
-	padding-bottom: 5px;
+	width: 100%;
+	vertical-align: bottom;
+	horizontal-align: center;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 .HeroHpBarPanel {
 	width: 100%;
-	border: 1px solid grey;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
 	border-radius: 4px;
 }
@@ -69,10 +45,8 @@
 
 .HeroMpBarPanel {
 	width: 100%;
-	border: 1px solid grey;
 	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	margin-top: -3px;
 }
 
 .HeroHpMpBarRegValue {
@@ -122,23 +96,20 @@
 	hue-rotation: 160deg;
 }
 
-.HeroStats {
-	width: 80px;
-	height: 100%;
-	flow-children: down;
-	margin-left: -5px;
+.HeroPortraitContainer {
+	width: 200px;
+	horizontal-align: center;
+	vertical-align: bottom;
 }
 
 .HeroPortrait {
-	border-radius: 30px;
-	border: 2px solid gray;
-	width: 130px;
-	height: 150px;
-	horizontal-align: center;
-	vertical-align: bottom;
+    width: 140px;
+	height: fill-parent-flow(1.0);
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+    border-top-left-radius: 15px;
+	horizontal-align: right;
 }
 
 .HeroPortrait.is_dead {
@@ -191,36 +162,47 @@
 
 .AbilityOverlayRoot
 {
-	horizontal-align: center;
-	vertical-align: bottom;
+    width: fit-children;
+    height: fill-parent-flow(1.0);
 	flow-children: down;
+	z-index: 1;
+	margin-left: 812px;
+	margin-top: 860px;
 }
+
+.AspectRatio4x3 .AbilityOverlayRoot
+{
+	margin-left: 572px;
+}
+
+.AspectRatio16x10 .AbilityOverlayRoot
+{
+	margin-left: 718px;
+}
+
 .AbilityLevelUpPanel {
-	width: 72px; 
-	height: 150px; 
-	margin-left: 8px; 
-	margin-bottom: 2px; 
-	flow-children:down;
+	width: fit-children;
+	height: 75px;
+	margin-left: 10px;
+	margin-bottom: -8px;
 }
 
 .AbilityLevelUpPanelFiller {
-	width: 72px; 
-	height: 150px; 
-	margin-left: 8px; 
-	margin-bottom: 2px; 
+	width: fit-children;
+	height: 75px;
+	margin-bottom: -8px;
 }
 
 .LevelUpBurstFX {
-	margin-top: 18px; 
 	width: 65px; 
-	height: 100px;
+	height: 150px;
+	vertical-align: bottom;
+	margin-bottom: 35px;
 }
 
 .LevelUpTab {
 	width: 100%; 
-	vertical-align: bottom; 
-	margin-left: 1px; 
-	margin-bottom: -8px;
+	vertical-align: bottom;
 }
 
 .LevelUpButton {
@@ -228,8 +210,8 @@
 }
 
 .LevelUpIcon {
-	width: 32px; 
-	height: 32px; 
+	width: 32px;
+	height: 32px;
 	vertical-align: center; 
 	horizontal-align: center;
 }
@@ -442,84 +424,166 @@
 	background-repeat: no-repeat;
 	transition-property: background-image;
 	transition-duration: .12s;
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	horizontal-align: center;
 	vertical-align: center;
 }
 
-#Strength
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
+.HeroStats {
+	width: fill-parent-flow(1.0);
+	height: fill-parent-flow(1.0);
+	vertical-align: bottom;
+	horizontal-align: right;
+	flow-children: down;
+	padding-right: 0px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
+	border-right: 1px solid #ffffff04;
+	padding-top: 5px;
 }
 
-#StrengthIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_str_png.vtex");
-    brightness: 1.3;
-}
-
-#Agility
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
-}
-
-#AgilityIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_agi_png.vtex");
-    brightness: 1.6;
-}
-
-#Intelligence
-{
-	tooltip-position: top;
-	tooltip-body-position: 0% 50%;
-}
-
-#IntelligenceIcon
-{
-	background-image: url("s2r://panorama/images/hud/pip_int_png.vtex");
-    brightness: 1.3;
-}
-#IntelligenceIcon, #AgilityIcon, #StrengthIcon 
-{
-	width: 32px;
-	height: 32px;
-}
-
-.StatIcon
-{
-	width: 14px;
-	height: 14px;
+.HeroLevelContainer {
+	margin-left: 40px;
+	width: 44px;
+	height: 44px;
+	border-radius: 100%;
+    vertical-align: bottom;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
-    background-size: 100%;
+	background-size: 100% 100%;
+}
+
+.HeroExpBarAltValue {
+    visibility: collapse;
+    font-size: 16px;
+    color: white;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+    vertical-align: bottom;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid grey;
+}
+
+.HeroLevelExpBackground {
+	background-color: #A46DFF;
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.HeroLeveLevelBackground {
+	//background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	//background-repeat: no-repeat;
+	//background-size: 100% 100%;
+	background-color: black;
+	width: 36px;
+	height: 36px;
+	border-radius: 100%;
+	vertical-align: center;
+	horizontal-align: center;
+}
+
+.HeroLeveLevelBackground Label {
+    font-size: 17px;
+    vertical-align: center;
+    horizontal-align: center;
+    text-align: center;
+    color: white;
 }
 
 .AttrIconContainer
 {
-	width: fit-children;
-	height: fill-parent-flow( 1.0 );
-	padding-left: 5px;
-	horizontal-align: left;
-	vertical-align: center;
-	flow-children: right;
+	horizontal-align: right;
+    flow-children: right;
 }
 
 .StatIcon
 {
-	width: 14px;
-	height: 14px;
-	background-repeat: no-repeat;
-    background-size: 100%;
+	width: 18px;
+	height: 18px;
+}
+
+.StatIcon.Attribute
+{
+	width: 20px;
+	height: 20px;
 }
 
 .StatLabel
 {
-	font-size: 16px;
-	color: offWhite;
-	font-weight: thin;
 	text-overflow: shrink;
 	vertical-align: center;
+	horizontal-align: center;
+    font-size: 16px;
+    font-weight: thin;
+	letter-spacing: 0px;
+    color: #ccc;
+    text-shadow: 0px 0px 4px 4 #00000088;
+    text-align: right;
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+
+.ActionPanelContainer {
+    flow-children: down;
+    horizontal-align: center;
+    vertical-align: bottom;
+}
+
+#ModifierListContainer {
+    width: 100%;
+    height: fit-children;
+    margin-left: 60px;
+    flow-children: up;
+}
+
+.HeroPanelContainer
+{
+    width: fit-children;
+    max-width: 800px;
+    height: 160px;
+    flow-children: right;
+}
+
+.HeroPanelLeftContainer {
+    width: 200px;
+    height: fill-parent-flow(1.0);
+}
+
+.HeroPanelRightContainer {
+    width: fit-children;
+    height: fill-parent-flow(1.0);
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	border-top-right-radius: 15px;
+}
+
+.TooltipElementLabelContainer {
+    flow-children: right;
+    width: fit-children;
+    height: fit-children;
+}
+
+.TooltipElementLabelContainer Image {
+    width: 32px;
+    height: 32px;
+}
+
+.TooltipElementLabelContainer Label {
+    width: fit-children;
+}
+
+#ItemTooltip {
+    width: fit-children;
+    padding: 5px;
+    z-index: 2;
+}
+
+.TooltipElementLabelContainer .ItemTooltipLabel {
+    padding-left: 2px;
 }

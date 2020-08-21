@@ -391,10 +391,11 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#SpellDamageLabel").text = Math.round((spellDamage-1) * 100) + "%";
 		spellHaste = (spellHaste) * 100;
 		$("#SpellhasteLabel").text = Math.round(spellHaste);
-		if(armor>=0){
-		var physProtection = ((armor * 0.06) / (1 + armor * 0.06));
+		var physProtection = 0;
+		if(armor >= 0){
+		    physProtection = ((armor * 0.06) / (1 + armor * 0.06));
 		} else {
-		var physProtection = -1 + Math.pow(0.94,armor * -1);
+		    physProtection = -1 + Math.pow(0.94,armor * -1);
 		}
 		physProtection = Math.round(physProtection * 100);
 		$("#PhysArmorLabel").text = armor + " (" + physProtection + "%)";
