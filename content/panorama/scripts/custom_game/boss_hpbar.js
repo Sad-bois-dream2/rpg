@@ -186,7 +186,11 @@ function UpdateValues() {
         } else {
             armorReduction = -1 + Math.pow(0.94,armor * -1);
         }
-        bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        if(IsAltDown) {
+            bossArmor.text = (Math.round(armorReduction * 10000) / 100) + "%";
+        } else {
+            bossArmor.text = armor;
+        }
         var elementalArmorValue = 0;
         var arr = Object.values(latestStats.elementsProtection);
         var length = arr.length;
