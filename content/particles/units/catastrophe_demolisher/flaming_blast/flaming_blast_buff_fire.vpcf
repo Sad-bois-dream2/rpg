@@ -62,6 +62,7 @@
 		{
 			_class = "C_OP_LockToBone"
 			m_HitboxSetName = "weapon"
+			m_bRigid = true
 		},
 	]
 	m_Initializers = 
@@ -129,6 +130,7 @@
 		{
 			_class = "C_INIT_CreateOnModel"
 			m_HitboxSetName = "weapon"
+			m_nForceInModel = 8
 		},
 	]
 	m_Emitters = 
