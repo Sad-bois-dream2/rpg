@@ -92,7 +92,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
         "AbilityCastPoint"				"0.5"
 
