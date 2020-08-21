@@ -427,6 +427,7 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
         end
     end
 end
+
 -- molten_guardian_volcanic_blow modifiers
 modifier_molten_guardian_volcanic_blow_block = class({
     IsDebuff = function(self)

@@ -307,8 +307,7 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
 end
 
 --BLOOD OBLATION--
-
-catastrophe_demolisher_blood_oblation_effect = catastrophe_demolisher_blood_oblation_effect or class({
+modifier_catastrophe_demolisher_blood_oblation_toggle = class({
     IsDebuff = function(self)
         return false
     end,
@@ -316,7 +315,7 @@ catastrophe_demolisher_blood_oblation_effect = catastrophe_demolisher_blood_obla
         return false
     end,
     IsPurgable = function(self)
-        return true
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -326,71 +325,220 @@ catastrophe_demolisher_blood_oblation_effect = catastrophe_demolisher_blood_obla
     end,
 })
 
-catastrophe_demolisher_blood_oblation_strength = catastrophe_demolisher_blood_oblation_strength or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
+function modifier_catastrophe_demolisher_blood_oblation_toggle:OnCreated()
+    self.ability = self:GetAbility()
+end
 
-function catastrophe_demolisher_blood_oblation_effect:OnCriticalDamage(damageTable)
-    if not damageTable.ability and damageTable.physdmg then
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetArmorBonus()
+    return self.ability.armorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFireProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFrostProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetEarthProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetVoidProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetHolyProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetNatureProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetInfernoProtectionBonus()
+    return self.ability.spellArmorLoss or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalDamageBonus()
+    return self.ability.bonusCritDamage or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalChanceBonus()
+    return self.ability.bonusCritChance or 0
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:OnCriticalDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_catastrophe_demolisher_blood_oblation_toggle")
+    if (modifier) then
         local modifierTable = {}
-        modifierTable.ability = self:GetAbility()
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetCaster()
-        modifierTable.modifier_name = "catastrophe_demolisher_blood_oblation_strength"
-        modifierTable.duration = 15
-        modifierTable.max_stacks = 10
+        modifierTable.ability = modifier.ability
+        modifierTable.target = damageTable.attacker
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_catastrophe_demolisher_blood_oblation_zealot"
+        modifierTable.duration = modifier.ability.stackDuration
         modifierTable.stacks = 1
+        modifierTable.max_stacks = 99999
         GameMode:ApplyStackingBuff(modifierTable)
     end
 end
 
-function catastrophe_demolisher_blood_oblation_effect:GetArmorBonus()
-    return self:GetAbility():GetSpecialValueFor("armor_loss")
+function modifier_catastrophe_demolisher_blood_oblation_toggle:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_catastrophe_demolisher_blood_oblation_toggle")
+    if (not modifier or damageTable.ability or not damageTable.physdmg) then
+        return damageTable
+    end
+    local ability = damageTable.attacker:FindAbilityByName("catastrophe_demolisher_curse_of_doom")
+    if (not ability or ability:GetLevel() < 1) then
+        return damageTable
+    end
+    local cd = ability:GetCooldownTimeRemaining()
+    ability:EndCooldown()
+    damageTable.attacker:SetCursorCastTarget(damageTable.victim)
+    ability:OnSpellStart()
+    ability:StartCooldown(cd)
 end
 
-function catastrophe_demolisher_blood_oblation_effect:GetCriticalDamageBonus()
-    return self:GetAbility():GetSpecialValueFor("bonus_crit_damage")
+LinkedModifiers["modifier_catastrophe_demolisher_blood_oblation_toggle"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_blood_oblation = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+})
+
+function modifier_catastrophe_demolisher_blood_oblation:OnCreated()
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
 end
 
-function catastrophe_demolisher_blood_oblation_effect:GetCriticalChanceBonus()
-    return self:GetAbility():GetSpecialValueFor("bonus_crit_chance")
+function modifier_catastrophe_demolisher_blood_oblation:GetInfernoDamageBonus()
+    if (self.caster:FindModifierByName("modifier_catastrophe_demolisher_blood_oblation_toggle")) then
+        return self.ability.infernoBonus
+    else
+        return self.ability.infernoBonusActive
+    end
+    return 0
 end
 
-if IsServer() then
-    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(catastrophe_demolisher_blood_oblation_effect, 'OnCriticalDamage'))
+LinkedModifiers["modifier_catastrophe_demolisher_blood_oblation"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_blood_oblation_zealot = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_catastrophe_demolisher_blood_oblation_zealot:OnCreated()
+    self.ability = self:GetAbility()
 end
 
-function catastrophe_demolisher_blood_oblation_strength:GetStrengthPercentBonus()
-    return self:GetAbility():GetSpecialValueFor("bonus_strength") * self:GetStackCount()
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetArmorBonus()
+    return self:GetStackCount() * self.ability.armorLossPerStack
 end
 
-LinkedModifiers["catastrophe_demolisher_blood_oblation_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_blood_oblation_strength"] = LUA_MODIFIER_MOTION_NONE
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFireProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
 
-catastrophe_demolisher_blood_oblation = catastrophe_demolisher_blood_oblation or class({})
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetFrostProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
 
-function catastrophe_demolisher_blood_oblation:OnSpellStart()
-    local modifierTable = {}
-    modifierTable.caster = self:GetCaster()
-    modifierTable.target = self:GetCaster()
-    modifierTable.ability = self
-    modifierTable.modifier_name = "catastrophe_demolisher_blood_oblation_effect"
-    modifierTable.duration = 15
-    GameMode:ApplyBuff(modifierTable)
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetEarthProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetVoidProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetHolyProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetNatureProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetInfernoProtectionBonus()
+    return self:GetStackCount() * self.ability.spellArmorLossPerStack
+end
+
+function modifier_catastrophe_demolisher_blood_oblation_toggle:GetCriticalChanceBonus()
+    return self:GetStackCount() * self.ability.critChancePerStack
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_blood_oblation_zealot"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_blood_oblation = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_blood_oblation"
+    end
+})
+
+function catastrophe_demolisher_blood_oblation:OnUpgrade()
+    self.armorLoss = self:GetSpecialValueFor("armor_loss")
+    self.spellArmorLoss = self:GetSpecialValueFor("spell_armor_loss") / 100
+    self.bonusCritDamage = self:GetSpecialValueFor("bonus_crit_damage") / 100
+    self.bonusCritChance = self:GetSpecialValueFor("bonus_crit_chance") / 100
+    self.critChancePerStack = self:GetSpecialValueFor("crit_chance_per_stack") / 100
+    self.armorLossPerStack = self:GetSpecialValueFor("armor_loss_per_stack")
+    self.spellArmorLossPerStack = self:GetSpecialValueFor("spell_armor_loss_per_stack") / 100
+    self.infernoBonus = self:GetSpecialValueFor("inferno_bonus") / 100
+    self.infernoBonusActive = self:GetSpecialValueFor("inferno_bonus_active") / 100
+    self.stackDuration = self:GetSpecialValueFor("zealot_stack_duration")
+end
+
+function catastrophe_demolisher_blood_oblation:OnToggle(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    caster.catastrophe_demolisher_blood_oblation = caster.catastrophe_demolisher_blood_oblation or {}
+    if (self:GetToggleState()) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_catastrophe_demolisher_blood_oblation_toggle"
+        modifierTable.duration = -1
+        caster.catastrophe_demolisher_blood_oblation.modifier = GameMode:ApplyBuff(modifierTable)
+        self:EndCooldown()
+        self:StartCooldown(self:GetCooldown(1))
+    else
+        if (caster.catastrophe_demolisher_blood_oblation.modifier ~= nil) then
+            caster.catastrophe_demolisher_blood_oblation.modifier:Destroy()
+        end
+    end
 end
 
 --ESSENCE DEVOURER--
@@ -445,7 +593,7 @@ catastrophe_demolisher_essence_devouer_effect = catastrophe_demolisher_essence_d
     end,
 })
 
-function catastrophe_demolisher_blood_oblation_effect:GetHealthRegenerationBonus()
+function catastrophe_demolisher_essence_devouer_effect:GetHealthRegenerationBonus()
     local perc = self:GetAbility():GetSpecialValueFor("hp_regen") / 100
     local regen = self:GetParent():GetMaxHealth() * perc
     return regen
@@ -680,4 +828,10 @@ end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_catastrophe_demolisher", MotionController)
+end
+
+if (IsServer() and not GameMode.CATASTROPHE_DEMOLISHER_INIT) then
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnCriticalDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnPostTakeDamage'))
+    GameMode.CATASTROPHE_DEMOLISHER_INIT = true
 end
