@@ -289,6 +289,43 @@ function UpdateValues() {
 		}
 		levelValue.text = Entities.GetLevel(hero);
 		attackDamageValue.text = Entities.GetDamageMin(hero);
+		// Stats from server
+		if(latestStats) {
+            var str = latestStats.str;
+            var agi = latestStats.agi;
+            var int = latestStats.int;
+            strValue.text = Math.round(str);
+            agiValue.text = Math.round(agi);
+            intValue.text = Math.round(int);
+            var currentMp = latestStats.display.mana;
+            var maxMp = latestStats.display.maxmana;
+            var mpPercent = (currentMp / maxMp) * 100;
+            mpPercent = (Math.round(mpPercent * 100) / 100);
+            latestStoredMana = currentMp;
+            latestStoredMaxMana = maxMp;
+            latestStoredManaPercent = mpPercent;
+            var armor = latestStats.armor;
+            var armorReduction = 0;
+            if(armor >= 0){
+                armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
+            } else {
+                armorReduction = -1 + Math.pow(0.94,armor * -1);
+            }
+            if(IsAltDown) {
+                armorValue.text = (Math.round(armorReduction * 10000) / 100) + "%";
+            } else {
+                armorValue.text = armor;
+            }
+            var elementalArmorValue = 0;
+            var arr = Object.values(latestStats.elementsProtection);
+            var length = arr.length;
+            for(var i = 0; i < length; i++) {
+                elementalArmorValue += (1 - arr[i]);
+            }
+            elementalArmorValue = elementalArmorValue / length;
+            spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
+            movespeedValue.text = Entities.GetMoveSpeedModifier(hero, Entities.GetBaseMoveSpeed(hero));
+        }
 		lastSelectedUnit = hero;
     }
 }
@@ -300,44 +337,15 @@ function AutoUpdateValues() {
     });
 }
 var latestStoredManaPercent = 100, latestStoredMana = 0, latestStoredMaxMana = 0;
+var latestStats;
 
 function OnHeroStatsUpdateRequest(event) {
     var selectedUnit = Players.GetLocalPlayerPortraitUnit();
     var localPlayerId = Entities.GetPlayerOwnerID(selectedUnit);
 	var parsedData = JSON.parse(event.data);
     var recievedPlayerId = parsedData.player_id;
-    var IsAltDown = GameUI.IsAltDown();
     if (localPlayerId == recievedPlayerId) {
-        var str = parsedData.statsTable.str;
-        var agi = parsedData.statsTable.agi;
-        var int = parsedData.statsTable.int;
-        strValue.text = Math.round(str);
-        agiValue.text = Math.round(agi);
-        intValue.text = Math.round(int);
-        var currentMp = parsedData.statsTable.display.mana;
-        var maxMp = parsedData.statsTable.display.maxmana;
-        var mpPercent = (currentMp / maxMp) * 100;
-        mpPercent = (Math.round(mpPercent * 100) / 100);
-        latestStoredMana = currentMp;
-        latestStoredMaxMana = maxMp;
-        latestStoredManaPercent = mpPercent;
-        var armor = parsedData.statsTable.armor;
-        var armorReduction = 0;
-        if(armor >= 0){
-            armorReduction = ((armor * 0.06) / (1 + armor * 0.06));
-        } else {
-            armorReduction = -1 + Math.pow(0.94,armor * -1);
-        }
-        armorValue.text = (Math.round(armorReduction * 10000) / 100) + "%";
-        var elementalArmorValue = 0;
-        var arr = Object.values(parsedData.statsTable.elementsProtection);
-        var length = arr.length;
-        for(var i = 0; i < length; i++) {
-            elementalArmorValue += (1 - arr[i]);
-        }
-        elementalArmorValue = elementalArmorValue / length;
-        spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
-        movespeedValue.text = Entities.GetMoveSpeedModifier(lastSelectedUnit, Entities.GetBaseMoveSpeed(lastSelectedUnit));
+        latestStats = parsedData.statsTable;
     }
 }
 
