@@ -714,6 +714,9 @@ modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura = class({
     end,
     GetAuraDuration = function(self)
         return 0
+    end,
+    GetEffectName = function(self)
+        return "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_ground.vpcf"
     end
 })
 
