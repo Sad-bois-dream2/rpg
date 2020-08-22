@@ -145,6 +145,9 @@ function catastrophe_demolisher_curse_of_doom:OnUpgrade()
 end
 
 function catastrophe_demolisher_curse_of_doom:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
     if (self.aoe > 0) then
@@ -254,6 +257,9 @@ function catastrophe_demolisher_flaming_blast:OnUpgrade()
 end
 
 function catastrophe_demolisher_flaming_blast:OnSpellStart()
+    if(not IsServer()) then
+        return
+    end
     local caster = self:GetCaster()
     local impactPosition = caster:GetAbsOrigin() + caster:GetForwardVector() * 150
     local damage = caster:GetMaxHealth() * self.damage
@@ -786,7 +792,7 @@ function catastrophe_demolisher_essence_devouer:OnSpellStart()
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.caster = self:GetCaster()
-    modifierTable.target = modifierTable.target
+    modifierTable.target = modifierTable.caster
     modifierTable.modifier_name = "modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura"
     modifierTable.duration = self.lifestealDuration
     GameMode:ApplyBuff(modifierTable)
