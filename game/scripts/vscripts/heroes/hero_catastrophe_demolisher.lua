@@ -121,7 +121,7 @@ end
 
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_curse_of_doom = catastrophe_demolisher_curse_of_doom or class({
+catastrophe_demolisher_curse_of_doom = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_catastrophe_demolisher_curse_of_doom_aura"
     end
@@ -550,7 +550,7 @@ function catastrophe_demolisher_blood_oblation:OnToggle(unit, special_cast)
 end
 
 --ESSENCE DEVOURER--
-modifier_catastrophe_demolisher_essence_devouer = modifier_catastrophe_demolisher_essence_devouer or class({
+modifier_catastrophe_demolisher_essence_devouer = class({
     IsPurgable = function(self)
         return false
     end,
@@ -566,10 +566,38 @@ modifier_catastrophe_demolisher_essence_devouer = modifier_catastrophe_demolishe
     RemoveOnDeath = function(self)
         return false
     end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.hpRegenAuraRadius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_catastrophe_demolisher_essence_devouer_buff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
+
+function modifier_catastrophe_demolisher_essence_devouer:GetAuraEntityReject(npc)
+    return self:GetStackCount() == 0
+end
 
 function modifier_catastrophe_demolisher_essence_devouer:OnCreated()
     if (not IsServer()) then
@@ -610,15 +638,39 @@ function modifier_catastrophe_demolisher_essence_devouer:OnIntervalThink()
     self:SetStackCount(#enemies)
 end
 
-function modifier_catastrophe_demolisher_essence_devouer:GetHealthRegenerationBonus()
-    if(self:GetStackCount() > 0) then
-        return self.ability.hpRegen * self.caster:GetMaxHealth()
-    else
-        return 0
+LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_essence_devouer_buff = class({
+    IsPurgable = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsDebuff = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
     end
+})
+
+function modifier_catastrophe_demolisher_essence_devouer_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
 end
 
-LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer"] = LUA_MODIFIER_MOTION_NONE
+function modifier_catastrophe_demolisher_essence_devouer_buff:GetHealthRegenerationBonus()
+    return (self.ability.hpRegen or 0) * self.caster:GetMaxHealth()
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer_buff"] = LUA_MODIFIER_MOTION_NONE
 
 --[[
 function catastrophe_demolisher_essence_devouer_effect:OnTakeDamage(damageTable)
@@ -667,7 +719,7 @@ function catastrophe_demolisher_essence_devouer:OnUpgrade()
 end
 
 --CRIMSON FANATICISM--
-catastrophe_demolisher_crimson_fanaticism_aura = catastrophe_demolisher_crimson_fanaticism_aura or class({
+catastrophe_demolisher_crimson_fanaticism_aura = class({
     IsAura = function(self)
         return true
     end,
@@ -700,7 +752,7 @@ catastrophe_demolisher_crimson_fanaticism_aura = catastrophe_demolisher_crimson_
     end,
 })
 
-catastrophe_demolisher_crimson_fanaticism_effect = catastrophe_demolisher_crimson_fanaticism_effect or class({
+catastrophe_demolisher_crimson_fanaticism_effect = class({
     IsDebuff = function(self)
         return false
     end,
@@ -718,7 +770,7 @@ catastrophe_demolisher_crimson_fanaticism_effect = catastrophe_demolisher_crimso
     end,
 })
 
-catastrophe_demolisher_crimson_fanaticism_buff = catastrophe_demolisher_crimson_fanaticism_buff or class({
+catastrophe_demolisher_crimson_fanaticism_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -780,7 +832,7 @@ LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_aura"] = LUA_MODIFIER
 LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_effect"] = LUA_MODIFIER_MOTION_NONE
 LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_buff"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_crimson_fanaticism = catastrophe_demolisher_crimson_fanaticism or class({})
+catastrophe_demolisher_crimson_fanaticism = class({})
 
 function catastrophe_demolisher_crimson_fanaticism:GetIntrinsicModifierName()
     return "catastrophe_demolisher_essence_devouer_aura"
@@ -788,7 +840,7 @@ end
 
 --CLAYMORE OF DESTRUCTION--
 
-catastrophe_demolisher_claymore_of_destruction_effect = catastrophe_demolisher_claymore_of_destruction_effect or class({
+catastrophe_demolisher_claymore_of_destruction_effect = class({
     IsDebuff = function(self)
         return false
     end,
@@ -810,7 +862,7 @@ function catastrophe_demolisher_claymore_of_destruction_effect:GetArmorPercentBo
     return self:GetSpecialValueFor("armor_loss") * (-1)
 end
 
-catastrophe_demolisher_claymore_of_destruction = catastrophe_demolisher_claymore_of_destruction or class({
+catastrophe_demolisher_claymore_of_destruction = class({
     IsRequireCastbar = function(self)
         return true
     end
