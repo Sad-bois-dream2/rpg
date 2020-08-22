@@ -910,7 +910,7 @@
 		"DOTA_Tooltip_ElementsDamage"		"Elemental Damage"
 		"DOTA_Tooltip_ElementsDamage_Description"		"Increases all Spell damage dealt of the respective element. The elements are <font color='#d92129'>Fire</font>, <font color='#2386f6'>Frost</font>, <font color='#583011'>Earth</font>, <font color='#238842'>Nature</font>, <font color='#9200fa'>Void</font>, <font color='#1f5b07'>Inferno</font> and <font color='#d29c0f'>Holy</font>."
 		"DOTA_Tooltip_modifier_out_of_combat_buff"		"Out of combat"
-		"DOTA_Tooltip_modifier_out_of_combat_buff_Description"		"Healing over time, Movement speed increased. You exit combat if you haven't taken or dealt damage for 5 seconds. Remove this if you heal a target that is in combat."
+		"DOTA_Tooltip_modifier_out_of_combat_buff_Description"		"Healing over time, Movement speed increased. You exit combat if you haven't taken or dealt damage for 5 seconds. This effect is removed, if you heal a target that is in combat."
         "npc_dummy_dps_unit" 		"Trainer"
         "DOTA_Dummy_DPS_Label"		"DPS"
         "DOTA_Dummy_Stats_Label"		"TRAINER STATS"
