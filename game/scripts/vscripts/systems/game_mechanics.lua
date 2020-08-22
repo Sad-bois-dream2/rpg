@@ -718,14 +718,24 @@ if (IsServer()) then
         if (not IsServer()) then
             return
         end
+        local abilitiesList = {}
+        local abilitiesData = LoadKeyValues("scripts/npc/npc_abilities_custom.txt")
+        for name, _ in pairs(abilitiesData) do
+            table.insert(abilitiesList, name)
+        end
         local modifiersList = {}
+        local innateModifiersList = {}
         for name, class in pairs(_G) do
             if (type(class) == "table" and name:find("modifier_")) then
                 modifiersList[name] = class
             end
+            if (type(class) == "table" and TableContains(abilitiesList, name)) then
+                innateModifiersList[name] = class
+            end
         end
         GameMode:BuildAuraModifiersList(modifiersList)
         GameMode:BuildCrowdControlModifiersList(modifiersList)
+        GameMode:BuildIntrinsicModifiersList(innateModifiersList)
     end
 
     function GameMode:BuildAuraModifiersList(modifiersList)
@@ -754,269 +764,283 @@ if (IsServer()) then
         end
     end
 
-    function GameMode:OverwriteModifierFunctions(modifier)
-        if (modifier.OnDestroy and not modifier.OnDestroy2) then
-            modifier.OnDestroy2 = modifier.OnDestroy
-            modifier.OnDestroy = function(context)
-                context.OnDestroy2(context)
-                if (IsServer()) then
-                    Units:ForceStatsCalculation(context:GetParent())
-                end
-            end
-        end
-        if (not modifier.SetStackCount2) then
-            modifier.SetStackCount2 = modifier.SetStackCount
-            modifier.SetStackCount = function(context, count)
-                context.SetStackCount2(context, count)
-                if (IsServer()) then
-                    Units:ForceStatsCalculation(context:GetParent())
-                end
-            end
-        end
-        if (not modifier.IncrementStackCount2) then
-            modifier.IncrementStackCount2 = modifier.IncrementStackCount
-            modifier.IncrementStackCount = function(context)
-                context.IncrementStackCount2(context)
-                if (IsServer()) then
-                    Units:ForceStatsCalculation(context:GetParent())
-                end
-            end
-        end
-        if (not modifier.DecrementStackCount2) then
-            modifier.DecrementStackCount2 = modifier.DecrementStackCount
-            modifier.DecrementStackCount = function(context)
-                context.DecrementStackCount2(context)
-                if (IsServer()) then
-                    Units:ForceStatsCalculation(context:GetParent())
+    function GameMode:BuildIntrinsicModifiersList(abilitiesList)
+        for name, class in pairs(abilitiesList) do
+            if (class.GetIntrinsicModifierName) then
+                local modifierName = class.GetIntrinsicModifierName(nil)
+                if (type(modifierName) == "string") then
+                    table.insert(GameMode.IntrinsicModifiersTable, modifierName)
+                else
+                    DebugPrint("[GAME MECHANICS] There are problems during loading intrinsic modifiers. Expected intrinsic modifier name (string) from GetIntrinsicModifierName(), but got something else. Ability with problem: " .. tostring(name))
                 end
             end
         end
     end
-end
 
-modifier_cooldown_reduction_custom = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_PERMANENT
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
-    end
-})
-
-function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
-    if (not IsServer()) then
-        return
-    end
-    if (keys.unit == self.unit) then
-        local cooldownTable = {}
-        cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
-        cooldownTable.ability = keys.ability:GetAbilityName()
-        cooldownTable.isflat = false
-        cooldownTable.target = self.unit
-        GameMode:ReduceAbilityCooldown(cooldownTable)
-    end
-end
-
-function modifier_cooldown_reduction_custom:OnCreated(keys)
-    if (not IsServer()) then
-        return
-    end
-    self.unit = self:GetParent()
-end
-
-LinkLuaModifier("modifier_cooldown_reduction_custom", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
-
-ListenToGameEvent("npc_spawned", function(keys)
-    if (not IsServer()) then
-        return
-    end
-    local unit = EntIndexToHScript(keys.entindex)
-    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_cooldown_reduction_custom") and not Summons:IsSummmon(unit) and not isUnitThinker) then
-        unit:AddNewModifier(unit, nil, "modifier_cooldown_reduction_custom", { Duration = -1 })
-    end
-end, nil)
-
-modifier_out_of_combat = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_PERMANENT
-    end
-})
-
-function modifier_out_of_combat:OnCreated(keys)
-    if (not IsServer()) then
-        return
-    end
-    self.caster = self:GetParent()
-    self.delay = 4
-    self:StartIntervalThink(1.0)
-end
-
-function modifier_out_of_combat:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
-    local stacks = self:GetStackCount() + 1
-    if (stacks > self.delay) then
-        stacks = self.delay
-        if (not self.buff) then
-            local modifierTable = {}
-            modifierTable.ability = nil
-            modifierTable.target = self.caster
-            modifierTable.caster = self.caster
-            modifierTable.modifier_name = "modifier_out_of_combat_buff"
-            modifierTable.duration = -1
-            self.buff = GameMode:ApplyBuff(modifierTable)
+        function GameMode:OverwriteModifierFunctions(modifier)
+            if (modifier.OnDestroy and not modifier.OnDestroy2) then
+                modifier.OnDestroy2 = modifier.OnDestroy
+                modifier.OnDestroy = function(context)
+                    context.OnDestroy2(context)
+                    if (IsServer()) then
+                        Units:ForceStatsCalculation(context:GetParent())
+                    end
+                end
+            end
+            if (not modifier.SetStackCount2) then
+                modifier.SetStackCount2 = modifier.SetStackCount
+                modifier.SetStackCount = function(context, count)
+                    context.SetStackCount2(context, count)
+                    if (IsServer()) then
+                        Units:ForceStatsCalculation(context:GetParent())
+                    end
+                end
+            end
+            if (not modifier.IncrementStackCount2) then
+                modifier.IncrementStackCount2 = modifier.IncrementStackCount
+                modifier.IncrementStackCount = function(context)
+                    context.IncrementStackCount2(context)
+                    if (IsServer()) then
+                        Units:ForceStatsCalculation(context:GetParent())
+                    end
+                end
+            end
+            if (not modifier.DecrementStackCount2) then
+                modifier.DecrementStackCount2 = modifier.DecrementStackCount
+                modifier.DecrementStackCount = function(context)
+                    context.DecrementStackCount2(context)
+                    if (IsServer()) then
+                        Units:ForceStatsCalculation(context:GetParent())
+                    end
+                end
+            end
         end
     end
-    self:SetStackCount(stacks)
-end
 
-function modifier_out_of_combat:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
-    if (modifier) then
-        modifier_out_of_combat:ResetTimer(damageTable.victim)
-    end
-    modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
-    if (modifier) then
-        modifier_out_of_combat:ResetTimer(damageTable.attacker)
-    end
-end
+    modifier_cooldown_reduction_custom = class({
+        IsDebuff = function(self)
+            return false
+        end,
+        IsHidden = function(self)
+            return true
+        end,
+        IsPurgable = function(self)
+            return false
+        end,
+        RemoveOnDeath = function(self)
+            return false
+        end,
+        AllowIllusionDuplicate = function(self)
+            return false
+        end,
+        GetAttributes = function(self)
+            return MODIFIER_ATTRIBUTE_PERMANENT
+        end,
+        DeclareFunctions = function(self)
+            return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
+        end
+    })
 
-function modifier_out_of_combat:OnPostHeal(healTable)
-    local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
-    if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
-        modifier_out_of_combat:ResetTimer(healTable.caster)
+    function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
+        if (not IsServer()) then
+            return
+        end
+        if (keys.unit == self.unit) then
+            local cooldownTable = {}
+            cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
+            cooldownTable.ability = keys.ability:GetAbilityName()
+            cooldownTable.isflat = false
+            cooldownTable.target = self.unit
+            GameMode:ReduceAbilityCooldown(cooldownTable)
+        end
     end
-end
 
-function modifier_out_of_combat:ResetTimer(unit)
-    if (not unit or unit:IsNull()) then
-        return
+    function modifier_cooldown_reduction_custom:OnCreated(keys)
+        if (not IsServer()) then
+            return
+        end
+        self.unit = self:GetParent()
     end
-    local buff = unit:FindModifierByName("modifier_out_of_combat_buff")
-    if (buff) then
-        buff:Destroy()
+
+    LinkLuaModifier("modifier_cooldown_reduction_custom", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+
+    ListenToGameEvent("npc_spawned", function(keys)
+        if (not IsServer()) then
+            return
+        end
+        local unit = EntIndexToHScript(keys.entindex)
+        local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+        if (not unit:HasModifier("modifier_cooldown_reduction_custom") and not Summons:IsSummmon(unit) and not isUnitThinker) then
+            unit:AddNewModifier(unit, nil, "modifier_cooldown_reduction_custom", { Duration = -1 })
+        end
+    end, nil)
+
+    modifier_out_of_combat = class({
+        IsDebuff = function(self)
+            return false
+        end,
+        IsHidden = function(self)
+            return true
+        end,
+        IsPurgable = function(self)
+            return false
+        end,
+        RemoveOnDeath = function(self)
+            return false
+        end,
+        AllowIllusionDuplicate = function(self)
+            return false
+        end,
+        GetAttributes = function(self)
+            return MODIFIER_ATTRIBUTE_PERMANENT
+        end
+    })
+
+    function modifier_out_of_combat:OnCreated(keys)
+        if (not IsServer()) then
+            return
+        end
+        self.caster = self:GetParent()
+        self.delay = 4
+        self:StartIntervalThink(1.0)
     end
-    local modifier = unit:FindModifierByName("modifier_out_of_combat")
-    if (modifier) then
-        modifier:SetStackCount(0)
-        modifier.buff = nil
+
+    function modifier_out_of_combat:OnIntervalThink()
+        if (not IsServer()) then
+            return
+        end
+        local stacks = self:GetStackCount() + 1
+        if (stacks > self.delay) then
+            stacks = self.delay
+            if (not self.buff) then
+                local modifierTable = {}
+                modifierTable.ability = nil
+                modifierTable.target = self.caster
+                modifierTable.caster = self.caster
+                modifierTable.modifier_name = "modifier_out_of_combat_buff"
+                modifierTable.duration = -1
+                self.buff = GameMode:ApplyBuff(modifierTable)
+            end
+        end
+        self:SetStackCount(stacks)
     end
-end
 
-LinkLuaModifier("modifier_out_of_combat", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
-
-modifier_out_of_combat_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_PERMANENT
-    end,
-    GetTexture = function(self)
-        return "chen_divine_favor"
+    function modifier_out_of_combat:OnPostTakeDamage(damageTable)
+        local modifier = damageTable.victim:FindModifierByName("modifier_out_of_combat")
+        if (modifier) then
+            modifier_out_of_combat:ResetTimer(damageTable.victim)
+        end
+        modifier = damageTable.attacker:FindModifierByName("modifier_out_of_combat")
+        if (modifier) then
+            modifier_out_of_combat:ResetTimer(damageTable.attacker)
+        end
     end
-})
 
-function modifier_out_of_combat_buff:GetMoveSpeedBonus()
-    return 100
-end
-
-function modifier_out_of_combat_buff:OnCreated(keys)
-    if (not IsServer()) then
-        return
+    function modifier_out_of_combat:OnPostHeal(healTable)
+        local modifier = healTable.caster:FindModifierByName("modifier_out_of_combat")
+        if (modifier and not healTable.target:HasModifier("modifier_out_of_combat_buff")) then
+            modifier_out_of_combat:ResetTimer(healTable.caster)
+        end
     end
-    self.caster = self:GetParent()
-    self:StartIntervalThink(1.0)
-    self:OnIntervalThink()
-end
 
-function modifier_out_of_combat_buff:OnIntervalThink()
-    if (not IsServer() or not self.caster:IsAlive()) then
-        return
+    function modifier_out_of_combat:ResetTimer(unit)
+        if (not unit or unit:IsNull()) then
+            return
+        end
+        local buff = unit:FindModifierByName("modifier_out_of_combat_buff")
+        if (buff) then
+            buff:Destroy()
+        end
+        local modifier = unit:FindModifierByName("modifier_out_of_combat")
+        if (modifier) then
+            modifier:SetStackCount(0)
+            modifier.buff = nil
+        end
     end
-    local healTable = {}
-    healTable.caster = self.caster
-    healTable.target = self.caster
-    healTable.ability = nil
-    healTable.heal = self.caster:GetMaxHealth() * 0.10
-    GameMode:HealUnit(healTable)
-    healTable.heal = self.caster:GetMaxMana() * 0.10
-    GameMode:HealUnitMana(healTable)
-end
 
-LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_out_of_combat", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
 
-ListenToGameEvent("npc_spawned", function(keys)
-    if (not IsServer()) then
-        return
+    modifier_out_of_combat_buff = class({
+        IsDebuff = function(self)
+            return false
+        end,
+        IsHidden = function(self)
+            return false
+        end,
+        IsPurgable = function(self)
+            return false
+        end,
+        RemoveOnDeath = function(self)
+            return false
+        end,
+        AllowIllusionDuplicate = function(self)
+            return false
+        end,
+        GetAttributes = function(self)
+            return MODIFIER_ATTRIBUTE_PERMANENT
+        end,
+        GetTexture = function(self)
+            return "chen_divine_favor"
+        end
+    })
+
+    function modifier_out_of_combat_buff:GetMoveSpeedBonus()
+        return 100
     end
-    local unit = EntIndexToHScript(keys.entindex)
-    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_out_of_combat") and not Summons:IsSummmon(unit) and not isUnitThinker and unit.IsRealHero and unit:IsRealHero()) then
-        unit:AddNewModifier(unit, nil, "modifier_out_of_combat", { Duration = -1 })
-    end
-end, nil)
 
-if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
-    GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
-    GameMode.PreDamageAfterResistancesEventHandlersTable = {}
-    GameMode.PostDamageEventHandlersTable = {}
-    GameMode.CritDamageEventHandlersTable = {}
-    GameMode.PostApplyModifierEventHandlersTable = {}
-    GameMode.PreHealEventHandlersTable = {}
-    GameMode.PostHealEventHandlersTable = {}
-    GameMode.CritHealEventHandlersTable = {}
-    GameMode.PreHealManaEventHandlersTable = {}
-    GameMode.PostHealManaEventHandlersTable = {}
-    GameMode.CritHealManaEventHandlersTable = {}
-    GameMode.CrowdControlModifiersTable = {}
-    GameMode.AuraModifiersTable = {}
-    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
-    GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
-    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
-    GameMode.GAME_MECHANICS_INIT = true
-end
+    function modifier_out_of_combat_buff:OnCreated(keys)
+        if (not IsServer()) then
+            return
+        end
+        self.caster = self:GetParent()
+        self:StartIntervalThink(1.0)
+        self:OnIntervalThink()
+    end
+
+    function modifier_out_of_combat_buff:OnIntervalThink()
+        if (not IsServer() or not self.caster:IsAlive()) then
+            return
+        end
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.caster
+        healTable.ability = nil
+        healTable.heal = self.caster:GetMaxHealth() * 0.10
+        GameMode:HealUnit(healTable)
+        healTable.heal = self.caster:GetMaxMana() * 0.10
+        GameMode:HealUnitMana(healTable)
+    end
+
+    LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+
+    ListenToGameEvent("npc_spawned", function(keys)
+        if (not IsServer()) then
+            return
+        end
+        local unit = EntIndexToHScript(keys.entindex)
+        local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+        if (not unit:HasModifier("modifier_out_of_combat") and not Summons:IsSummmon(unit) and not isUnitThinker and unit.IsRealHero and unit:IsRealHero()) then
+            unit:AddNewModifier(unit, nil, "modifier_out_of_combat", { Duration = -1 })
+        end
+    end, nil)
+
+    if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
+        GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
+        GameMode.PreDamageAfterResistancesEventHandlersTable = {}
+        GameMode.PostDamageEventHandlersTable = {}
+        GameMode.CritDamageEventHandlersTable = {}
+        GameMode.PostApplyModifierEventHandlersTable = {}
+        GameMode.PreHealEventHandlersTable = {}
+        GameMode.PostHealEventHandlersTable = {}
+        GameMode.CritHealEventHandlersTable = {}
+        GameMode.PreHealManaEventHandlersTable = {}
+        GameMode.PostHealManaEventHandlersTable = {}
+        GameMode.CritHealManaEventHandlersTable = {}
+        GameMode.CrowdControlModifiersTable = {}
+        GameMode.AuraModifiersTable = {}
+        GameMode.IntrinsicModifiersTable = {}
+        GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostTakeDamage'))
+        GameMode:RegisterPostHealEventHandler(Dynamic_Wrap(modifier_out_of_combat, 'OnPostHeal'))
+        GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(GameMode, 'OnModifierApplied'))
+        GameMode.GAME_MECHANICS_INIT = true
+    end

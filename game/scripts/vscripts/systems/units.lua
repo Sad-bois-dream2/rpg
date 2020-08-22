@@ -191,13 +191,13 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitBonusSpellDamageMulti = unitBonusSpellDamageMulti * (tonumber(unitModifiers[i].GetSpellDamageBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetSpellHasteBonus) then
-                unitBonusSpellHaste = unitBonusSpellHaste  + (tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0)
+                unitBonusSpellHaste = unitBonusSpellHaste + (tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetSpellHastePercentBonus) then
-                unitBonusPercentSpellHaste = unitBonusPercentSpellHaste  + (tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentSpellHaste = unitBonusPercentSpellHaste + (tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetSpellHastePercentBonusMulti) then
-                unitBonusPercentSpellHasteMulti = unitBonusPercentSpellHasteMulti  * (tonumber(unitModifiers[i].GetSpellHastePercentBonusMulti(unitModifiers[i])) or 1)
+                unitBonusPercentSpellHasteMulti = unitBonusPercentSpellHasteMulti * (tonumber(unitModifiers[i].GetSpellHastePercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetAttackRangeBonus) then
                 unitBonusAttackRange = unitBonusAttackRange + (tonumber(unitModifiers[i].GetAttackRangeBonus(unitModifiers[i])) or 0)
@@ -330,7 +330,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitArmorPercentMulti = unitArmorPercentMulti * (tonumber(unitModifiers[i].GetArmorPercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetCooldownReduction) then
-                unitCooldownReduction = unitCooldownReduction * ( 1 - (tonumber(unitModifiers[i].GetCooldownReduction(unitModifiers[i])) or 0))
+                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReduction(unitModifiers[i])) or 0))
             end
             if (unitModifiers[i].GetBaseAttackTime) then
                 local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]))
@@ -382,35 +382,35 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             local primaryAttributeIndex = unit:GetPrimaryAttribute()
             if (primaryAttributeIndex == 0) then
                 statsTable.str = statsTable.str + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr + unitBonusPercentPrimary)* unitBonusPercentStrMulti * unitBonusPercentPrimaryMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi)* unitBonusPercentAgiMulti
-                unitBonusPercentInt = (unitBonusPercentInt)* unitBonusPercentIntMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr )
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi )
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt )
+                unitBonusPercentStr = (unitBonusPercentStr + unitBonusPercentPrimary) * unitBonusPercentStrMulti * unitBonusPercentPrimaryMulti
+                unitBonusPercentAgi = (unitBonusPercentAgi) * unitBonusPercentAgiMulti
+                unitBonusPercentInt = (unitBonusPercentInt) * unitBonusPercentIntMulti
+                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
+                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
+                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.str
             end
             if (primaryAttributeIndex == 1) then
                 statsTable.agi = statsTable.agi + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr)* unitBonusPercentStrMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi + unitBonusPercentPrimary)* unitBonusPercentAgiMulti * unitBonusPercentPrimaryMulti
-                unitBonusPercentInt = (unitBonusPercentInt)* unitBonusPercentIntMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr )
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi )
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt )
+                unitBonusPercentStr = (unitBonusPercentStr) * unitBonusPercentStrMulti
+                unitBonusPercentAgi = (unitBonusPercentAgi + unitBonusPercentPrimary) * unitBonusPercentAgiMulti * unitBonusPercentPrimaryMulti
+                unitBonusPercentInt = (unitBonusPercentInt) * unitBonusPercentIntMulti
+                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
+                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
+                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.agi
             end
             if (primaryAttributeIndex == 2) then
                 statsTable.int = statsTable.int + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr)* unitBonusPercentStrMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi)* unitBonusPercentAgiMulti
-                unitBonusPercentInt = (unitBonusPercentInt + unitBonusPercentPrimary)* unitBonusPercentIntMulti * unitBonusPercentPrimaryMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr )
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi )
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt )
+                unitBonusPercentStr = (unitBonusPercentStr) * unitBonusPercentStrMulti
+                unitBonusPercentAgi = (unitBonusPercentAgi) * unitBonusPercentAgiMulti
+                unitBonusPercentInt = (unitBonusPercentInt + unitBonusPercentPrimary) * unitBonusPercentIntMulti * unitBonusPercentPrimaryMulti
+                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
+                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
+                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.int
             end
-        --old one primary attribute to base damage calculation is wrong
+            --old one primary attribute to base damage calculation is wrong
         else
             statsTable.str = 0
             statsTable.agi = 0
@@ -449,7 +449,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         -- hp regen
         local healthRegenPerStr = 0.1
         local baseHpRegen = (statsTable.str * healthRegenPerStr)
-        statsTable.hpRegen = (baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration  * unitBonusPercentHealthRegenerationMulti
+        statsTable.hpRegen = (baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration * unitBonusPercentHealthRegenerationMulti
         -- mana regen
         local manaRegenPerInt = 0.05
         local baseMpRegen = (statsTable.int * manaRegenPerInt)
@@ -516,7 +516,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
-        if(secondCalc == false or not secondCalc) then
+        if (secondCalc == false or not secondCalc) then
             statsTable = Units:CalculateStats(unit, statsTable, true)
         end
     end
@@ -579,6 +579,14 @@ function modifier_stats_system:OnModifierAdded(keys)
                 GameMode:OverwriteModifierFunctions(auraModifier)
                 Units:ForceStatsCalculation(self.unit)
                 auraModifier.IsMarkedByGameMechanics = true
+            end
+        end
+        for _, name in pairs(GameMode.IntrinsicModifiersTable) do
+            local innateModifier = self.unit:FindModifierByName(name)
+            if (innateModifier and not innateModifier.IsMarkedByGameMechanics) then
+                GameMode:OverwriteModifierFunctions(innateModifier)
+                Units:ForceStatsCalculation(self.unit)
+                innateModifier.IsMarkedByGameMechanics = true
             end
         end
     end
