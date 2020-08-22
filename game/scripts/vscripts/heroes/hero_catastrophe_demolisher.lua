@@ -637,11 +637,11 @@ end
 LinkedModifiers["catastrophe_demolisher_essence_devouer_aura"] = LUA_MODIFIER_MOTION_NONE
 LinkedModifiers["catastrophe_demolisher_essence_devouer_effect"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_essence_devouer = catastrophe_demolisher_essence_devouer or class({})
-
-function catastrophe_demolisher_essence_devouer:GetIntrinsicModifierName()
-    return "catastrophe_demolisher_essence_devouer_aura"
-end
+catastrophe_demolisher_essence_devouer = class({
+    GetIntrinsicModifierName = function(self)
+        return "catastrophe_demolisher_essence_devouer_aura"
+    end
+})
 
 --CRIMSON FANATICISM--
 catastrophe_demolisher_crimson_fanaticism_aura = catastrophe_demolisher_crimson_fanaticism_aura or class({

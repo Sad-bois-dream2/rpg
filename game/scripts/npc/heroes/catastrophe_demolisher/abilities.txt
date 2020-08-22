@@ -267,11 +267,11 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
+		"AbilityCooldown"				"0 0 30 30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"0 0 40 40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -280,17 +280,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"hp_regen"				"1 1 1 1.5"
+				"hp_regen"				"1 1.5 2 2.5"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"phys_lifesteal"		"10 15 20 25"
+				"damage"				"30 40 50 60"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"magic_lifesteal"		"8 10 12 15"
+				"damage_radius"				"300"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hp_regen_aura_radius"		        "0 1200 1200 1200"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal"		"0 0 10 10"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_aura_radius"		"0 0 0 1200"
 			}
 		}
 	}
