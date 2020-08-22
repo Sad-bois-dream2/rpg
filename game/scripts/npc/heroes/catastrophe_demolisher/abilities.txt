@@ -268,15 +268,15 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0 0 30 30"
+		//"AbilityCooldown"				"0 0 30 30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0 0 40 40"
+		//"AbilityManaCost"				"0 0 40 40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -316,6 +316,16 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"lifesteal_aura_radius"		"0 0 0 1200"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_cd"		"0 0 30 30"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_manacost"		"0 0 40 40"
 			}
 		}
 		"precache"

@@ -706,6 +706,19 @@ catastrophe_demolisher_essence_devouer = class({
     end,
     GetCastRange = function(self)
         return self:GetSpecialValueFor("damage_radius")
+    end,
+    GetBehavior = function(self)
+        if(self:GetSpecialValueFor("lifesteal") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        else
+            return DOTA_ABILITY_BEHAVIOR_PASSIVE
+        end
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("lifesteal_cd")
+    end,
+    GetManaCost = function(self)
+        return self:GetSpecialValueFor("lifesteal_manacost")
     end
 })
 
