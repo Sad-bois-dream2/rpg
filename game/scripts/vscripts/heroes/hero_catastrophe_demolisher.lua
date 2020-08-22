@@ -659,9 +659,6 @@ modifier_catastrophe_demolisher_essence_devouer_buff = class({
 })
 
 function modifier_catastrophe_demolisher_essence_devouer_buff:OnCreated()
-    if (not IsServer()) then
-        return
-    end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
 end
@@ -672,9 +669,79 @@ end
 
 LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer_buff"] = LUA_MODIFIER_MOTION_NONE
 
---[[
-function catastrophe_demolisher_essence_devouer_effect:OnTakeDamage(damageTable)
-    if (damageTable.damage > 0) and not damageTable.ability and damageTable.physdmg then
+modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura = class({
+    IsPurgable = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsDebuff = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.lifestealAuraRadius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end
+})
+
+function modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff = class({
+    IsPurgable = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsDebuff = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end
+})
+
+function modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff")
+    if (modifier) then
         local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(healFX, false)
@@ -683,22 +750,12 @@ function catastrophe_demolisher_essence_devouer_effect:OnTakeDamage(damageTable)
         local healTable = {}
         healTable.caster = damageTable.attacker
         healTable.target = damageTable.attacker
-        healTable.heal = damageTable.damage --* self:GetAbility():GetSpecialValueFor("phys_lifesteal") / 100
-        GameMode:HealUnit(healTable)
-    elseif (damageTable.damage > 0 and (not damageTable.physdmg) and damageTable.ability) then
-        local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(healFX, false)
-            ParticleManager:ReleaseParticleIndex(healFX)
-        end)
-        local healTable = {}
-        healTable.caster = damageTable.attacker
-        healTable.target = damageTable.attacker
-        healTable.heal = damageTable.damage --* self:GetAbility():GetSpecialValueFor("magic_lifesteal") / 100
+        healTable.heal = damageTable.damage * modifier.ability.lifesteal
         GameMode:HealUnit(healTable)
     end
 end
---]]
+
+LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff"] = LUA_MODIFIER_MOTION_NONE
 
 catastrophe_demolisher_essence_devouer = class({
     GetIntrinsicModifierName = function(self)
@@ -708,7 +765,7 @@ catastrophe_demolisher_essence_devouer = class({
         return self:GetSpecialValueFor("damage_radius")
     end,
     GetBehavior = function(self)
-        if(self:GetSpecialValueFor("lifesteal") > 0) then
+        if (self:GetSpecialValueFor("lifesteal") > 0) then
             return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
         else
             return DOTA_ABILITY_BEHAVIOR_PASSIVE
@@ -722,12 +779,26 @@ catastrophe_demolisher_essence_devouer = class({
     end
 })
 
+function catastrophe_demolisher_essence_devouer:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = self:GetCaster()
+    modifierTable.target = modifierTable.target
+    modifierTable.modifier_name = "modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura"
+    modifierTable.duration = self.lifestealDuration
+    GameMode:ApplyBuff(modifierTable)
+end
+
 function catastrophe_demolisher_essence_devouer:OnUpgrade()
     self.hpRegen = self:GetSpecialValueFor("hp_regen") / 100
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.damageRadius = self:GetSpecialValueFor("damage_radius")
     self.hpRegenAuraRadius = self:GetSpecialValueFor("hp_regen_aura_radius")
-    self.lifesteal = self:GetSpecialValueFor("lifesteal")
+    self.lifesteal = self:GetSpecialValueFor("lifesteal") / 100
+    self.lifestealDuration = self:GetSpecialValueFor("lifesteal_duration")
     self.lifestealAuraRadius = self:GetSpecialValueFor("lifesteal_aura_radius")
 end
 
@@ -925,5 +996,6 @@ end
 if (IsServer() and not GameMode.CATASTROPHE_DEMOLISHER_INIT) then
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnCriticalDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff, 'OnPostTakeDamage'))
     GameMode.CATASTROPHE_DEMOLISHER_INIT = true
 end

@@ -608,6 +608,8 @@
         "DOTA_Tooltip_Ability_catastrophe_demolisher_essence_devouer_damage_radius"		"RADIUS: "
         "DOTA_Tooltip_modifier_catastrophe_demolisher_essence_devouer_buff"		"Essence Devourer"
         "DOTA_Tooltip_modifier_catastrophe_demolisher_essence_devouer_buff_Description"		"Health regeneration increased."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff"		"Essence Devourer"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff_Description"		"Steal life force of enemies."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
