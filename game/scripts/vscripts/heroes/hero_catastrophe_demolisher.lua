@@ -555,7 +555,7 @@ modifier_catastrophe_demolisher_essence_devouer = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsDebuff = function(self)
         return false
