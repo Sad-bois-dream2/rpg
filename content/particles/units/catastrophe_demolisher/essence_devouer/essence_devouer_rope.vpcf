@@ -26,10 +26,6 @@
 		{
 			_class = "C_OP_Decay"
 		},
-		{
-			_class = "C_OP_SetChildControlPoints"
-			m_nFirstControlPoint = 2
-		},
 	]
 	m_Initializers = 
 	[
