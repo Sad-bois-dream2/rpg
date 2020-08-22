@@ -251,6 +251,7 @@
 		"precache"
 		{
             "particle"  "particles/units/catastrophe_demolisher/blood_oblation/blood_oblation.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
 		}
 	}
 	//=================================================================================================================

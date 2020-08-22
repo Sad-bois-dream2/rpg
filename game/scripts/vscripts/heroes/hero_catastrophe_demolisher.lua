@@ -304,6 +304,7 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
         ParticleManager:DestroyParticle(particle, false)
         ParticleManager:ReleaseParticleIndex(particle)
     end)
+    EmitSoundOn("Hero_SkeletonKing.CriticalStrike.TI8", caster)
 end
 
 --BLOOD OBLATION--
