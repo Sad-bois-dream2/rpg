@@ -1,11 +1,8 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 25
 	m_ConstantColor = [ 248, 224, 61, 255 ]
-	m_flNoDrawTimeToGoToSleep = 2.0
-	m_bShouldSort = false
 	m_Renderers = 
 	[
 		{
@@ -538,9 +535,6 @@
 	m_Operators = 
 	[
 		{
-			_class = "C_OP_Decay"
-		},
-		{
 			_class = "C_OP_InterpolateRadius"
 			m_flBias = 0.86
 			m_bEaseInAndOut = true
@@ -548,6 +542,7 @@
 		},
 		{
 			_class = "C_OP_FadeInSimple"
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
@@ -571,15 +566,6 @@
 			m_bDisableOperator = true
 		},
 		{
-			_class = "C_OP_EndCapTimedDecay"
-			m_flDecayTime = 0.25
-		},
-		{
-			_class = "C_OP_LerpEndCapScalar"
-			m_nFieldOutput = "7"
-			m_flOutput = 0.0
-		},
-		{
 			_class = "C_OP_BasicMovement"
 			m_Gravity = [ 0.0, 0.0, -2000.0 ]
 			m_nOpEndCapState = 1
@@ -596,6 +582,17 @@
 			m_HitboxSetName = "select_high"
 			m_bRigid = true
 		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_Decay"
+		},
+		{
+			_class = "C_OP_LerpEndCapScalar"
+			m_nFieldOutput = "7"
+			m_flLerpTime = 0.5
+		},
 	]
 	m_Initializers = 
 	[
@@ -611,8 +608,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 100.0
-			m_flRadiusMin = 75.0
+			m_flRadiusMax = 125.0
+			m_flRadiusMin = 100.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -652,8 +649,6 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flOpStartFadeOutTime = 1.5
-			m_flOpEndFadeOutTime = 3.0
 			m_flEmitRate = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
@@ -670,10 +665,16 @@
 				{
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/wraith_king/wraith_frost.vmdl"
+				m_sequenceName = "idle"
+				m_hitboxSetName = "default"
+			}
 		},
 	]
 	m_nBehaviorVersion = 10
