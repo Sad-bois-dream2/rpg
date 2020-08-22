@@ -550,22 +550,7 @@ function catastrophe_demolisher_blood_oblation:OnToggle(unit, special_cast)
 end
 
 --ESSENCE DEVOURER--
-catastrophe_demolisher_essence_devouer_aura = catastrophe_demolisher_essence_devouer_aura or class({
-    IsAura = function(self)
-        return true
-    end,
-    GetAuraRadius = function(self)
-        return 1200
-    end,
-    GetAuraSearchTeam = function(self)
-        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
-    end,
-    GetAuraSearchType = function(self)
-        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
-    end,
-    GetModifierAura = function(self)
-        return "catastrophe_demolisher_essence_devouer_effect"
-    end,
+modifier_catastrophe_demolisher_essence_devouer = modifier_catastrophe_demolisher_essence_devouer or class({
     IsPurgable = function(self)
         return false
     end,
@@ -581,37 +566,61 @@ catastrophe_demolisher_essence_devouer_aura = catastrophe_demolisher_essence_dev
     RemoveOnDeath = function(self)
         return false
     end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
 })
 
-catastrophe_demolisher_essence_devouer_effect = catastrophe_demolisher_essence_devouer_effect or class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-function catastrophe_demolisher_essence_devouer_effect:GetHealthRegenerationBonus()
-    local perc = self:GetAbility():GetSpecialValueFor("hp_regen") / 100
-    local regen = self:GetParent():GetMaxHealth() * perc
-    return regen
+function modifier_catastrophe_demolisher_essence_devouer:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.particlesTable = {}
+    local tick = self.ability:GetSpecialValueFor("tick")
+    self:StartIntervalThink(tick)
 end
 
-if IsServer() then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(catastrophe_demolisher_essence_devouer_effect, 'OnTakeDamage'))
+function modifier_catastrophe_demolisher_essence_devouer:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    for _, particle in pairs(self.particlesTable) do
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end
+    local damage = Units:GetHeroStrength(self.caster) * self.ability.damage
+    local casterPos = self.caster:GetAbsOrigin()
+    local enemies = FindUnitsInRadius(self.casterTeam, casterPos, nil, self.ability.damageRadius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+    for _, enemy in pairs(enemies) do
+        local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_tick_rope.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+        ParticleManager:SetParticleControlEnt(particle, 0, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
+        ParticleManager:SetParticleControlEnt(particle, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPos, true)
+        table.insert(self.particlesTable, particle)
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    self:SetStackCount(#enemies)
 end
 
----@param damageTable DAMAGE_TABLE
+function modifier_catastrophe_demolisher_essence_devouer:GetHealthRegenerationBonus()
+    if(self:GetStackCount() > 0) then
+        return self.ability.hpRegen * self.caster:GetMaxHealth()
+    else
+        return 0
+    end
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_essence_devouer"] = LUA_MODIFIER_MOTION_NONE
+
+--[[
 function catastrophe_demolisher_essence_devouer_effect:OnTakeDamage(damageTable)
     if (damageTable.damage > 0) and not damageTable.ability and damageTable.physdmg then
         local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
@@ -637,15 +646,25 @@ function catastrophe_demolisher_essence_devouer_effect:OnTakeDamage(damageTable)
         GameMode:HealUnit(healTable)
     end
 end
-
-LinkedModifiers["catastrophe_demolisher_essence_devouer_aura"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_essence_devouer_effect"] = LUA_MODIFIER_MOTION_NONE
+--]]
 
 catastrophe_demolisher_essence_devouer = class({
     GetIntrinsicModifierName = function(self)
-        return "catastrophe_demolisher_essence_devouer_aura"
+        return "modifier_catastrophe_demolisher_essence_devouer"
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("damage_radius")
     end
 })
+
+function catastrophe_demolisher_essence_devouer:OnUpgrade()
+    self.hpRegen = self:GetSpecialValueFor("hp_regen") / 100
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.damageRadius = self:GetSpecialValueFor("damage_radius")
+    self.hpRegenAuraRadius = self:GetSpecialValueFor("hp_regen_aura_radius")
+    self.lifesteal = self:GetSpecialValueFor("lifesteal")
+    self.lifestealAuraRadius = self:GetSpecialValueFor("lifesteal_aura_radius")
+end
 
 --CRIMSON FANATICISM--
 catastrophe_demolisher_crimson_fanaticism_aura = catastrophe_demolisher_crimson_fanaticism_aura or class({

@@ -302,21 +302,25 @@
 				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
 			}
-			"06"
+			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"hp_regen_aura_radius"		        "0 1200 1200 1200"
 			}
-			"07"
+			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"lifesteal"		"0 0 10 10"
 			}
-			"08"
+			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"lifesteal_aura_radius"		"0 0 0 1200"
 			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_tick_rope.vpcf"
 		}
 	}
 	//=================================================================================================================
