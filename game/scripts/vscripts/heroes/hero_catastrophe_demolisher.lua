@@ -663,7 +663,7 @@ function modifier_catastrophe_demolisher_essence_devouer_buff:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self.ability:GetCaster()
+    self.caster = self:GetParent()
 end
 
 function modifier_catastrophe_demolisher_essence_devouer_buff:GetHealthRegenerationBonus()
