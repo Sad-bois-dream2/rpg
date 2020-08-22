@@ -323,6 +323,9 @@ modifier_catastrophe_demolisher_blood_oblation_toggle = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    GetEffectName = function(self)
+        return "particles/units/catastrophe_demolisher/blood_oblation/blood_oblation.vpcf"
+    end
 })
 
 function modifier_catastrophe_demolisher_blood_oblation_toggle:OnCreated()
