@@ -538,6 +538,10 @@ function catastrophe_demolisher_blood_oblation:OnToggle(unit, special_cast)
         if (caster.catastrophe_demolisher_blood_oblation.modifier ~= nil) then
             caster.catastrophe_demolisher_blood_oblation.modifier:Destroy()
         end
+        local modifier = caster:FindModifierByName("modifier_catastrophe_demolisher_blood_oblation_zealot")
+        if (modifier) then
+            modifier:Destroy()
+        end
     end
 end
 
