@@ -1082,12 +1082,12 @@ end
 
 --CLAYMORE OF DESTRUCTION--
 
-catastrophe_demolisher_claymore_of_destruction_effect = class({
+modifier_catastrophe_demolisher_claymore_of_destruction_thinker = class({
     IsDebuff = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -1098,25 +1098,152 @@ catastrophe_demolisher_claymore_of_destruction_effect = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
 })
 
-function catastrophe_demolisher_claymore_of_destruction_effect:GetArmorPercentBonus()
-    return self:GetSpecialValueFor("armor_loss") * (-1)
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self:StartIntervalThink(self.ability.pathTick)
 end
 
-LinkedModifiers["catastrophe_demolisher_claymore_of_destruction_effect"] = LUA_MODIFIER_MOTION_NONE
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local enemies = FindUnitsInLine(self.ability.casterTeam,
+            self.ability.pathStartPosition,
+            self.ability.pathEndPosition,
+            nil,
+            self.ability.width,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = Units:GetHeroStrength(self.caster) * self.ability.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
 
-catastrophe_demolisher_claymore_of_destruction = class({})
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnDestroy()
+    if IsServer() then
+        UTIL_Remove(self:GetParent())
+    end
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_claymore_of_destruction = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_catastrophe_demolisher_claymore_of_destruction:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction:GetHealthPercentBonus()
+    return self.ability.maxHealthBonus
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_claymore_of_destruction_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetFireProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetFrostProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetEarthProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetVoidProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetHolyProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetNatureProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetInfernoProtectionBonus()
+    return self.ability.armorReduction
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_claymore_of_destruction = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_claymore_of_destruction"
+    end
+})
 
 function catastrophe_demolisher_claymore_of_destruction:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.armorReduction = self:GetSpecialValueFor("armor_reduction") / 100
+    self.armorReductionDuration = self:GetSpecialValueFor("armor_reduction_duration")
     self.range = self:GetSpecialValueFor("range")
     self.stunDuration = self:GetSpecialValueFor("stun_duration")
     self.pathDamage = self:GetSpecialValueFor("path_damage") / 100
     self.pathDuration = self:GetSpecialValueFor("path_duration")
     self.pathTick = self:GetSpecialValueFor("path_tick")
     self.maxHealthBonus = self:GetSpecialValueFor("max_health_bonus") / 100
+    self.width = self:GetSpecialValueFor("width")
 end
 
 function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
@@ -1128,6 +1255,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
     local casterForwardVector = caster:GetForwardVector()
     self.pathStartPosition = casterPosition + casterForwardVector * 100
     self.pathEndPosition = casterPosition + casterForwardVector * self.range
+    self.casterTeam = caster:GetTeamNumber()
     local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/claymore_of_destruction/claymore_of_destruction.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(particle, 0, self.pathStartPosition)
     ParticleManager:SetParticleControl(particle, 1, self.pathEndPosition)
@@ -1137,6 +1265,51 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         ParticleManager:DestroyParticle(particle, false)
         ParticleManager:ReleaseParticleIndex(particle)
     end)
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_catastrophe_demolisher_claymore_of_destruction_thinker",
+            {
+                duration = self.pathDuration,
+            },
+            casterPosition,
+            caster:GetTeamNumber(),
+            false
+    )
+    local enemies = FindUnitsInLine(self.casterTeam,
+            self.pathStartPosition,
+            self.pathEndPosition,
+            nil,
+            self.width,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = Units:GetHeroStrength(caster) * self.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
+        modifierTable.duration = self.armorReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+        if (self.stunDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_stunned"
+            modifierTable.duration = self.stunDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+    end
 end
 
 -- Internal stuff

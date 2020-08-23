@@ -630,6 +630,8 @@
         "DOTA_Tooltip_Ability_catastrophe_demolisher_claymore_of_destruction_armor_reduction"		"%ELEMENTAL RESISTANCES REDUCTION: "
         "DOTA_Tooltip_Ability_catastrophe_demolisher_claymore_of_destruction_range"		"RANGE: "
         "DOTA_Tooltip_Ability_catastrophe_demolisher_claymore_of_destruction_lore"		"Spreading the horror of the Fallen One."
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_claymore_of_destruction_debuff"		"Claymore of Destruction"
+        "DOTA_Tooltip_modifier_catastrophe_demolisher_claymore_of_destruction_debuff_Description"		"Elemental resistances reduced."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
