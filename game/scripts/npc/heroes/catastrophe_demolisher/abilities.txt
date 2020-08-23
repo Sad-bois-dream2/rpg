@@ -9,7 +9,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
-		"AbilityTextureName"			"doom_bringer_doom"
+		"AbilityTextureName"			"catastrophe_demolisher_curse_of_doom"
         "AbilityType"           		 "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -87,7 +87,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
-		"AbilityTextureName"			"skeleton_king_hellfire_blast"
+		"AbilityTextureName"			"catastrophe_demolisher_flaming_blast"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -175,7 +175,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
-		"AbilityTextureName"			"skeleton_king_hellfire_blast"
+		"AbilityTextureName"			"catastrophe_demolisher_blood_oblation"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -263,7 +263,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_catastrophe_demolisher.lua"
-		"AbilityTextureName"			"skeleton_king_vampiric_aura"
+		"AbilityTextureName"			"catastrophe_demolisher_essence_devouer"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -340,6 +340,7 @@
             "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_tick_rope.vpcf"
             "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_ground.vpcf"
             "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
+            "soundfile" "soundevents/voscripts/game_sounds_vo_skeleton_king.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -357,7 +358,8 @@
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
-
+        "AbilityCastAnimation"			"ACT_DOTA_VICTORY"
+        "AbilityCastPoint"				"0.5"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
 		//"AbilityCooldown"				"0"
@@ -378,18 +380,83 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_bonus"				"10 15 15 20"
+				"spell_damage_bonus"			"10 15 20 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aspd"					"10 10 15 20"
+				"ms_bonus"				"10 15 15 20"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spellhaste"			"15 15 20 25"
+				"aura_radius"				"1200"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"as_per_stack"					"0 0 25 25"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sph_per_stack"			"0 0 25 25"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_cap"			"0 0 5 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"			"0 0 15 15"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_normal_count"			"0 0 1 1"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_elite_count"			"0 0 3 3"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_boss_count"			"0 0 5 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"taunt_duration"			"0 5 5 5"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"taunt_cd"			"0 30 30 30"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"taunt_manacost"			"0 40 40 40"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_bonus"			"0 0 0 25"
+			}
+			"16"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spell_armor_bonus"			"0 0 0 25"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf"
+            "soundfile" "soundevents/voscripts/game_sounds_vo_skeleton_king.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -408,15 +475,17 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
-		"AbilityChannelTime"			"1.5"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_POINT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_ATTACK_EVENT"
+        "AbilityCastPoint"				"0.5"
+
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"60"
+		"AbilityCooldown"				"60"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -425,18 +494,58 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"			"1 1.5 2 2.5"
+				"damage"				"200 300 400 500"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"2 3 4 5"
+				"armor_reduction"			"-20 -25 -30 -35"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_break"			"20 25 30 35"
+				"armor_reduction_duration"			"10"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"range"			"800"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"width"			"150"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"			"0 4 4 4"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_damage"			"0 0 125 125"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_duration"			"0.95 0.95 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_tick"			"1"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_health_bonus"			"0 0 0 25"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/claymore_of_destruction/claymore_of_destruction.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
 		}
 	}
 }

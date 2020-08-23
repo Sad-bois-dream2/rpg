@@ -257,7 +257,7 @@ function catastrophe_demolisher_flaming_blast:OnUpgrade()
 end
 
 function catastrophe_demolisher_flaming_blast:OnSpellStart()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
@@ -799,6 +799,7 @@ function catastrophe_demolisher_essence_devouer:OnSpellStart()
     modifierTable.modifier_name = "modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura"
     modifierTable.duration = self.lifestealDuration
     GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("skeleton_king_wraith_ability_mortalstrike_0", modifierTable.caster)
 end
 
 function catastrophe_demolisher_essence_devouer:OnUpgrade()
@@ -812,12 +813,12 @@ function catastrophe_demolisher_essence_devouer:OnUpgrade()
 end
 
 --CRIMSON FANATICISM--
-catastrophe_demolisher_crimson_fanaticism_aura = class({
+modifier_catastrophe_demolisher_crimson_fanaticism_aura = class({
     IsAura = function(self)
         return true
     end,
     GetAuraRadius = function(self)
-        return 1200
+        return self.ability.auraRadius
     end,
     GetAuraSearchTeam = function(self)
         return DOTA_UNIT_TARGET_TEAM_FRIENDLY
@@ -826,13 +827,13 @@ catastrophe_demolisher_crimson_fanaticism_aura = class({
         return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
     end,
     GetModifierAura = function(self)
-        return "catastrophe_demolisher_crimson_fanaticism_effect"
+        return "modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff"
     end,
     IsPurgable = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsDebuff = function(self)
         return false
@@ -843,9 +844,53 @@ catastrophe_demolisher_crimson_fanaticism_aura = class({
     RemoveOnDeath = function(self)
         return false
     end,
+    GetAuraDuration = function(self)
+        return 0
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
 })
 
-catastrophe_demolisher_crimson_fanaticism_effect = class({
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetArmorPercentBonus()
+    return self.ability.armorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetFireProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetFrostProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetEarthProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetVoidProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetHolyProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetNatureProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetInfernoProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -861,84 +906,188 @@ catastrophe_demolisher_crimson_fanaticism_effect = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end
 })
 
-catastrophe_demolisher_crimson_fanaticism_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-function catastrophe_demolisher_crimson_fanaticism_effect:GetAttackDamagePercentBonus()
-    return self:GetAbility():GetSpecialValueFor("damage_bonus")
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnCreated()
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.auraOwner = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:GetMoveSpeedBonus()
-    return self:GetAbility():GetSpecialValueFor("ms_bonus")
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetAttackDamagePercentBonus()
+    return self.ability.damageBonus
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_DEATH }
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedPercentBonus()
+    return self.ability.msBonus
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:OnDeath(event)
-    if event.attacker == self:GetParent() then
-        local stacks = 1
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetSpellDamageBonus()
+    return self.ability.spellDamageBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnDeath(event)
+    if event.attacker == self.caster and self.ability.asPerStack > 0 then
+        local stacks = self.ability.stacksNormalCount
         if Enemies:IsBoss(event.unit) then
-            stacks = 5
+            stacks = self.ability.stacksBossCount
         elseif Enemies:IsElite(event.unit) then
-            stacks = 3
+            stacks = self.ability.stacksEliteCount
         end
-        local modifierTable = {}
-        modifierTable.ability = self:GetAbility()
-        modifierTable.caster = self:GetParent()
-        modifierTable.target = self:GetParent()
-        modifierTable.modifier_name = "catastrophe_demolisher_crimson_fanaticism_buff"
-        modifierTable.duration = 10
-        modifierTable.stacks = stacks
-        modifierTable.max_stacks = 5
-        GameMode:ApplyStackingBuff(modifierTable)
+        local allies = FindUnitsInRadius(self.casterTeam,
+                Vector(0, 0, 0),
+                nil,
+                FIND_UNITS_EVERYWHERE,
+                DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, ally in pairs(allies) do
+            local modifier = ally:FindModifierByName("modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff")
+            if (modifier) then
+                local modifierTable = {}
+                modifierTable.ability = self.ability
+                modifierTable.caster = self.auraOwner
+                modifierTable.target = ally
+                modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_stacks"
+                modifierTable.duration = self.ability.stacksDuration
+                modifierTable.stacks = stacks
+                modifierTable.max_stacks = self.ability.stacksCap
+                GameMode:ApplyStackingBuff(modifierTable)
+            end
+        end
     end
 end
 
-function catastrophe_demolisher_crimson_fanaticism_buff:GetAttackSpeedBonus()
-    return self:GetSpecialValueFor("aspd") * self:GetStackCount()
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_taunt = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_taunt:IsTaunt()
+    return true
 end
 
-function catastrophe_demolisher_crimson_fanaticism_buff:GetSpellHasteBonus()
-    return self:GetSpecialValueFor("spellhaste") * self:GetStackCount()
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_taunt"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:OnCreated()
+    self.ability = self:GetAbility()
 end
 
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_aura"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_buff"] = LUA_MODIFIER_MOTION_NONE
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:GetAttackSpeedBonus()
+    return self.ability.asPerStack * self:GetStackCount()
+end
 
-catastrophe_demolisher_crimson_fanaticism = class({})
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:GetSpellHasteBonus()
+    return self.ability.sphPerStack * self:GetStackCount()
+end
 
-function catastrophe_demolisher_crimson_fanaticism:GetIntrinsicModifierName()
-    return "catastrophe_demolisher_essence_devouer_aura"
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_crimson_fanaticism = class({
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("taunt_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        else
+            return DOTA_ABILITY_BEHAVIOR_AURA
+        end
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("taunt_cd")
+    end,
+    GetManaCost = function(self)
+        return self:GetSpecialValueFor("taunt_manacost")
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_crimson_fanaticism_aura"
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("aura_radius")
+    end
+})
+
+function catastrophe_demolisher_crimson_fanaticism:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = self:GetCaster()
+    modifierTable.target = modifierTable.caster
+    modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_taunt"
+    modifierTable.duration = self.tauntDuration
+    GameMode:ApplyBuff(modifierTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("skeleton_king_wraith_death_18", modifierTable.caster)
+end
+
+function catastrophe_demolisher_crimson_fanaticism:OnUpgrade()
+    self.damageBonus = self:GetSpecialValueFor("damage_bonus") / 100
+    self.spellDamageBonus = self:GetSpecialValueFor("spell_damage_bonus") / 100
+    self.msBonus = self:GetSpecialValueFor("ms_bonus") / 100
+    self.asPerStack = self:GetSpecialValueFor("as_per_stack")
+    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack")
+    self.stacksCap = self:GetSpecialValueFor("stacks_cap")
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.stacksNormalCount = self:GetSpecialValueFor("stacks_normal_count")
+    self.stacksEliteCount = self:GetSpecialValueFor("stacks_elite_count")
+    self.stacksBossCount = self:GetSpecialValueFor("stacks_boss_count")
+    self.tauntDuration = self:GetSpecialValueFor("taunt_duration")
+    self.armorBonus = self:GetSpecialValueFor("armor_bonus") / 100
+    self.spellArmorBonus = self:GetSpecialValueFor("spell_armor_bonus") / 100
+    self.auraRadius = self:GetSpecialValueFor("aura_radius")
 end
 
 --CLAYMORE OF DESTRUCTION--
 
-catastrophe_demolisher_claymore_of_destruction_effect = class({
+modifier_catastrophe_demolisher_claymore_of_destruction_thinker = class({
     IsDebuff = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -949,52 +1098,219 @@ catastrophe_demolisher_claymore_of_destruction_effect = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-})
-
-function catastrophe_demolisher_claymore_of_destruction_effect:GetArmorPercentBonus()
-    return self:GetSpecialValueFor("armor_loss") * (-1)
-end
-
-catastrophe_demolisher_claymore_of_destruction = class({
-    IsRequireCastbar = function(self)
-        return true
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
 
-LinkedModifiers["catastrophe_demolisher_claymore_of_destruction_effect"] = LUA_MODIFIER_MOTION_NONE
-
-function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self:StartIntervalThink(self.ability.pathTick)
 end
 
-function catastrophe_demolisher_claymore_of_destruction:OnChannelFinish(interrupted)
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnIntervalThink()
     if not IsServer() then
         return
     end
-    local target = self:GetCursorTarget()
-    if (interrupted and (not target or target:IsNull() or not target:IsAlive())) then
-        local caster = self:GetCaster()
+    local enemies = FindUnitsInLine(self.ability.casterTeam,
+            self.ability.pathStartPosition,
+            self.ability.pathEndPosition,
+            nil,
+            self.ability.width,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = Units:GetHeroStrength(self.caster) * self.ability.damage
+    for _, enemy in pairs(enemies) do
         local damageTable = {}
-        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.infernodmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnDestroy()
+    if IsServer() then
+        UTIL_Remove(self:GetParent())
+    end
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_claymore_of_destruction = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_catastrophe_demolisher_claymore_of_destruction:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction:GetHealthPercentBonus()
+    return self.ability.maxHealthBonus
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_claymore_of_destruction_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetFireProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetFrostProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetEarthProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetVoidProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetHolyProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetNatureProtectionBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_catastrophe_demolisher_claymore_of_destruction_debuff:GetInfernoProtectionBonus()
+    return self.ability.armorReduction
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_claymore_of_destruction = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_claymore_of_destruction"
+    end
+})
+
+function catastrophe_demolisher_claymore_of_destruction:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.armorReduction = self:GetSpecialValueFor("armor_reduction") / 100
+    self.armorReductionDuration = self:GetSpecialValueFor("armor_reduction_duration")
+    self.range = self:GetSpecialValueFor("range")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.pathDamage = self:GetSpecialValueFor("path_damage") / 100
+    self.pathDuration = self:GetSpecialValueFor("path_duration")
+    self.pathTick = self:GetSpecialValueFor("path_tick")
+    self.maxHealthBonus = self:GetSpecialValueFor("max_health_bonus") / 100
+    self.width = self:GetSpecialValueFor("width")
+end
+
+function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterPosition = caster:GetAbsOrigin()
+    local casterForwardVector = caster:GetForwardVector()
+    self.pathStartPosition = casterPosition + casterForwardVector * 100
+    self.pathEndPosition = casterPosition + casterForwardVector * self.range
+    self.casterTeam = caster:GetTeamNumber()
+    local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/claymore_of_destruction/claymore_of_destruction.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 0, self.pathStartPosition)
+    ParticleManager:SetParticleControl(particle, 1, self.pathEndPosition)
+    ParticleManager:SetParticleControl(particle, 2, Vector(self.pathDuration, 0, 0))
+    ParticleManager:SetParticleControl(particle, 4, casterPosition)
+    Timers:CreateTimer(self.pathDuration, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_catastrophe_demolisher_claymore_of_destruction_thinker",
+            {
+                duration = self.pathDuration,
+            },
+            casterPosition,
+            caster:GetTeamNumber(),
+            false
+    )
+    local enemies = FindUnitsInLine(self.casterTeam,
+            self.pathStartPosition,
+            self.pathEndPosition,
+            nil,
+            self.width,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = Units:GetHeroStrength(caster) * self.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
         damageTable.caster = caster
-        damageTable.target = target
-        damageTable.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster)
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.infernodmg = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = target
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = 1000--self:GetSpecialValueFor("stun_duration")* 1000
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
+        modifierTable.duration = self.armorReductionDuration
         GameMode:ApplyDebuff(modifierTable)
-        local caster = self:GetCaster()
-        local modifierTable1 = {}
-        modifierTable1.ability = self
-        modifierTable1.target = caster
-        modifierTable1.caster = target
-        modifierTable1.modifier_name = "catastrophe_demolisher_claymore_of_destruction_effect"
-        modifierTable1.duration = 10
-        GameMode:ApplyDebuff(modifierTable1)
+        if (self.stunDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_stunned"
+            modifierTable.duration = self.stunDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
     end
+    EmitSoundOn("Hero_SkeletonKing.Hellfire_Blast", caster)
 end
 
 -- Internal stuff

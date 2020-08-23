@@ -1,0 +1,28 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_nMaxParticles = 64
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/wraith_king/wraith_king.vmdl"
+				m_nModSpecificData = 152
+				m_sequenceName = "victory"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_ConstantColor = [ 130, 83, 129, 255 ]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 5
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism_dome.vpcf"
+			m_flDelay = 0.1
+		},
+	]
+}
