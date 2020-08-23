@@ -340,6 +340,7 @@
             "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_tick_rope.vpcf"
             "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_ground.vpcf"
             "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
+            "soundfile" "soundevents/voscripts/game_sounds_vo_skeleton_king.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -357,7 +358,8 @@
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
-
+        "AbilityCastAnimation"			"ACT_DOTA_VICTORY"
+        "AbilityCastPoint"				"0.5"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
 		//"AbilityCooldown"				"0"
@@ -388,48 +390,68 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"as_per_stack"					"0 0 25 25"
+				"aura_radius"				"1200"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"sph_per_stack"			"0 0 25 25"
+				"as_per_stack"					"0 0 25 25"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_cap"			"0 0 5 5"
+				"sph_per_stack"			"0 0 25 25"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_duration"			"0 0 15 15"
+				"stacks_cap"			"0 0 5 5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_elite_bonus"			"0 0 3 3"
+				"stacks_duration"			"0 0 15 15"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_boss_bonus"			"0 0 5 5"
+				"stacks_elite_bonus"			"0 0 3 3"
 			}
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"taunt_duration"			"0 5 5 5"
+				"stacks_boss_bonus"			"0 0 5 5"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_bonus"			"0 0 0 25"
+				"taunt_duration"			"0 5 5 5"
 			}
 			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"taunt_cd"			"0 30 30 30"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"taunt_manacost"			"0 40 40 40"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_bonus"			"0 0 0 25"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"spell_armor_bonus"			"0 0 0 25"
 			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf"
+            "soundfile" "soundevents/voscripts/game_sounds_vo_skeleton_king.vsndevts"
 		}
 	}
 	//=================================================================================================================

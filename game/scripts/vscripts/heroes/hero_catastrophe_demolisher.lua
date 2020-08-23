@@ -257,7 +257,7 @@ function catastrophe_demolisher_flaming_blast:OnUpgrade()
 end
 
 function catastrophe_demolisher_flaming_blast:OnSpellStart()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
@@ -799,6 +799,7 @@ function catastrophe_demolisher_essence_devouer:OnSpellStart()
     modifierTable.modifier_name = "modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura"
     modifierTable.duration = self.lifestealDuration
     GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("skeleton_king_wraith_ability_mortalstrike_0", modifierTable.caster)
 end
 
 function catastrophe_demolisher_essence_devouer:OnUpgrade()
@@ -812,12 +813,12 @@ function catastrophe_demolisher_essence_devouer:OnUpgrade()
 end
 
 --CRIMSON FANATICISM--
-catastrophe_demolisher_crimson_fanaticism_aura = class({
+modifier_catastrophe_demolisher_crimson_fanaticism_aura = class({
     IsAura = function(self)
         return true
     end,
     GetAuraRadius = function(self)
-        return 1200
+        return self.ability.auraRadius
     end,
     GetAuraSearchTeam = function(self)
         return DOTA_UNIT_TARGET_TEAM_FRIENDLY
@@ -826,13 +827,13 @@ catastrophe_demolisher_crimson_fanaticism_aura = class({
         return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
     end,
     GetModifierAura = function(self)
-        return "catastrophe_demolisher_crimson_fanaticism_effect"
+        return "modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff"
     end,
     IsPurgable = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsDebuff = function(self)
         return false
@@ -843,9 +844,53 @@ catastrophe_demolisher_crimson_fanaticism_aura = class({
     RemoveOnDeath = function(self)
         return false
     end,
+    GetAuraDuration = function(self)
+        return 0
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
 })
 
-catastrophe_demolisher_crimson_fanaticism_effect = class({
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetArmorPercentBonus()
+    return self.ability.armorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetFireProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetFrostProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetEarthProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetVoidProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetHolyProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetNatureProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura:GetInfernoProtectionBonus()
+    return self.ability.spellArmorBonus
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -863,37 +908,23 @@ catastrophe_demolisher_crimson_fanaticism_effect = class({
     end,
 })
 
-catastrophe_demolisher_crimson_fanaticism_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:GetAttackDamagePercentBonus()
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetAttackDamagePercentBonus()
     return self:GetAbility():GetSpecialValueFor("damage_bonus")
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:GetMoveSpeedBonus()
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedBonus()
     return self:GetAbility():GetSpecialValueFor("ms_bonus")
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:DeclareFunctions()
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:DeclareFunctions()
     return { MODIFIER_EVENT_ON_DEATH }
 end
 
-function catastrophe_demolisher_crimson_fanaticism_effect:OnDeath(event)
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnDeath(event)
     if event.attacker == self:GetParent() then
         local stacks = 1
         if Enemies:IsBoss(event.unit) then
@@ -913,22 +944,60 @@ function catastrophe_demolisher_crimson_fanaticism_effect:OnDeath(event)
     end
 end
 
-function catastrophe_demolisher_crimson_fanaticism_buff:GetAttackSpeedBonus()
-    return self:GetSpecialValueFor("aspd") * self:GetStackCount()
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_crimson_fanaticism = class({
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("taunt_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        else
+            return DOTA_ABILITY_BEHAVIOR_AURA
+        end
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("taunt_cd")
+    end,
+    GetManaCost = function(self)
+        return self:GetSpecialValueFor("taunt_manacost")
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_crimson_fanaticism_aura"
+    end
+})
+
+function catastrophe_demolisher_crimson_fanaticism:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = self:GetCaster()
+    modifierTable.target = modifierTable.caster
+    modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_taunt"
+    modifierTable.duration = self.tauntDuration
+    GameMode:ApplyBuff(modifierTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf", PATTACH_ABSORIGIN_FOLLOW, modifierTable.caster)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("skeleton_king_wraith_death_18", modifierTable.caster)
 end
 
-function catastrophe_demolisher_crimson_fanaticism_buff:GetSpellHasteBonus()
-    return self:GetSpecialValueFor("spellhaste") * self:GetStackCount()
-end
-
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_aura"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["catastrophe_demolisher_crimson_fanaticism_buff"] = LUA_MODIFIER_MOTION_NONE
-
-catastrophe_demolisher_crimson_fanaticism = class({})
-
-function catastrophe_demolisher_crimson_fanaticism:GetIntrinsicModifierName()
-    return "catastrophe_demolisher_essence_devouer_aura"
+function catastrophe_demolisher_crimson_fanaticism:OnUpgrade()
+    self.damageBonus = self:GetSpecialValueFor("damage_bonus") / 100
+    self.spellDamageBonus = self:GetSpecialValueFor("spell_damage_bonus") / 100
+    self.msBonus = self:GetSpecialValueFor("ms_bonus") / 100
+    self.asPerStack = self:GetSpecialValueFor("as_per_stack")
+    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack")
+    self.stacksCap = self:GetSpecialValueFor("stacks_cap")
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.stacksEliteBonus = self:GetSpecialValueFor("stacks_elite_bonus")
+    self.stacksBossBonus = self:GetSpecialValueFor("stacks_boss_bonus")
+    self.tauntDuration = self:GetSpecialValueFor("taunt_duration")
+    self.armorBonus = self:GetSpecialValueFor("armor_bonus") / 100
+    self.spellArmorBonus = self:GetSpecialValueFor("spell_armor_bonus") / 100
+    self.auraRadius = self:GetSpecialValueFor("aura_radius")
 end
 
 --CLAYMORE OF DESTRUCTION--

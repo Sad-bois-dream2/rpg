@@ -617,6 +617,7 @@
         "DOTA_Tooltip_Ability_catastrophe_demolisher_crimson_fanaticism_damage_bonus"		"%BONUS ATTACK DAMAGE: "
         "DOTA_Tooltip_Ability_catastrophe_demolisher_crimson_fanaticism_spell_damage_bonus"		"%BONUS SPELL DAMAGE: "
         "DOTA_Tooltip_Ability_catastrophe_demolisher_crimson_fanaticism_ms_bonus"		"%BONUS MOVESPEED: "
+        "DOTA_Tooltip_Ability_catastrophe_demolisher_crimson_fanaticism_aura_radius"		"RADIUS: "
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
