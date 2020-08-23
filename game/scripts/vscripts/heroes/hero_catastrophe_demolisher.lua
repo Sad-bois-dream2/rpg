@@ -953,7 +953,7 @@ function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnDeath(ev
                 local modifierTable = {}
                 modifierTable.ability = self.ability
                 modifierTable.caster = self.auraOwner
-                modifierTable.target = self.auraOwner
+                modifierTable.target = ally
                 modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_stacks"
                 modifierTable.duration = self.ability.stacksDuration
                 modifierTable.stacks = stacks
