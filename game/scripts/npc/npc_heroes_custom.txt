@@ -9,37 +9,8 @@
 #base heroes/luminous_samurai/hero.txt
 #base heroes/abyssal_stalker/hero.txt
 #base heroes/catastrophe_demolisher/hero.txt
+#base heroes/fallen_druid/hero.txt
 
 "DOTAHeroes"
-{  
-  "npc_dota_hero_dark_willow"
-  {
-    "AbilityLayout"     "6"
-	"Ability1"	"lina_dragon_slave"
-	"Ability2"	"lina_light_strike_array"
-	"Ability3"	"lina_fiery_soul"
-    "Ability4"	"lina_laguna_blade"
-    "Ability5"	"empty5"
-	"Ability6"	"antimage_blink"
-    "Ability7"	""
-    "Ability8"	""
-    "Ability9"	""
-    "Ability10"	""
-    "Ability11"	""
-    "Ability12"	""
-    "Ability13"	""
-    "Ability14"	""
-    "Ability15"	""
-    "Ability16"	""
-	"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
-	"VisionDaytimeRange"        "1800"        // Range of vision during day light.
-    "VisionNighttimeRange"      "1800"        // Range of vision at night time.
-        "Roles"
-        {
-            "Tank"  "0"
-            "DPS"   "5"
-            "Support"   "0"
-            "Utility"   "0"
-        }
-  }
+{
 }

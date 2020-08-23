@@ -11,6 +11,7 @@
 #base heroes/luminous_samurai/abilities.txt
 #base heroes/abyssal_stalker/abilities.txt
 #base heroes/catastrophe_demolisher/abilities.txt
+#base heroes/fallen_druid/abilities.txt
 #base creeps/zone1/boss/ursa/abilities.txt
 #base creeps/zone1/boss/lycan/abilities.txt
 #base creeps/zone1/boss/brood/abilities.txt

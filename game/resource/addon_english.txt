@@ -21,7 +21,7 @@
 		"npc_dota_hero_silencer"	"Light Cardinal" // Support #1
 		"npc_dota_hero_enchantress"	"Priestess of the Sacred Forest" // Support #2
 		"npc_dota_hero_skeleton_king"	"Catastrophe Demolisher" // Melee srr phys dd #2
-		"npc_dota_hero_dark_willow"	"Dark Willow" // Ranged agi phys dd #1
+		"npc_dota_hero_dark_willow"	"Fallen Druid" // Ranged agi phys dd #1
 
 		// Countless hero abilities
 		"DOTA_Tooltip_Ability_empty5"		"Ability slot"
