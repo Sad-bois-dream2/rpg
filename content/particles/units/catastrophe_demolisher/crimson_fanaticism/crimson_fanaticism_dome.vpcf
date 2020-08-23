@@ -29,8 +29,8 @@
 		},
 		{
 			_class = "C_OP_FadeOut"
-			m_flFadeOutTimeMin = 0.75
-			m_flFadeOutTimeMax = 1.0
+			m_flFadeOutTimeMin = 1.2
+			m_flFadeOutTimeMax = 1.2
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
@@ -43,8 +43,8 @@
 	[
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.4
-			m_fLifetimeMax = 0.6
+			m_fLifetimeMin = 0.6
+			m_fLifetimeMax = 0.8
 			m_fLifetimeRandExponent = 2.0
 		},
 		{
