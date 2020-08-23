@@ -502,24 +502,29 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"			"0 4 4 4"
+				"range"			"800"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"path_damage"			"0 0 125 125"
+				"stun_duration"			"0 4 4 4"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"path_duration"			"0 0 10 10"
+				"path_damage"			"0 0 125 125"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"path_tick"			"0 0 1 1"
+				"path_duration"			"0 0 10 10"
 			}
 			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_tick"			"0 0 1 1"
+			}
+			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"max_health_bonus"			"0 0 0 25"
