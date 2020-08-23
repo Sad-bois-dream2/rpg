@@ -415,34 +415,39 @@
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_elite_bonus"			"0 0 3 3"
+				"stacks_normal_count"			"0 0 1 1"
 			}
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_boss_bonus"			"0 0 5 5"
+				"stacks_elite_count"			"0 0 3 3"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"taunt_duration"			"0 5 5 5"
+				"stacks_boss_count"			"0 0 5 5"
 			}
 			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"taunt_cd"			"0 30 30 30"
+				"taunt_duration"			"0 5 5 5"
 			}
 			"13"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"taunt_manacost"			"0 40 40 40"
+				"taunt_cd"			"0 30 30 30"
 			}
 			"14"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_bonus"			"0 0 0 25"
+				"taunt_manacost"			"0 40 40 40"
 			}
 			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_bonus"			"0 0 0 25"
+			}
+			"16"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"spell_armor_bonus"			"0 0 0 25"

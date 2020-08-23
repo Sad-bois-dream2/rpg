@@ -906,45 +906,121 @@ modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_DEATH }
+    end
 })
 
 function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnCreated()
     self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.auraOwner = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
 end
 
 function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetAttackDamagePercentBonus()
-    return self:GetAbility():GetSpecialValueFor("damage_bonus")
+    return self.ability.damageBonus
 end
 
-function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedBonus()
-    return self:GetAbility():GetSpecialValueFor("ms_bonus")
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedPercentBonus()
+    return self.ability.msBonus
 end
 
-function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_DEATH }
+function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetSpellDamageBonus()
+    return self.ability.spellDamageBonus
 end
 
 function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:OnDeath(event)
-    if event.attacker == self:GetParent() then
-        local stacks = 1
+    if event.attacker == self.caster and self.ability.asPerStack > 0 then
+        local stacks = self.ability.stacksNormalCount
         if Enemies:IsBoss(event.unit) then
-            stacks = 5
+            stacks = self.ability.stacksBossCount
         elseif Enemies:IsElite(event.unit) then
-            stacks = 3
+            stacks = self.ability.stacksEliteCount
         end
-        local modifierTable = {}
-        modifierTable.ability = self:GetAbility()
-        modifierTable.caster = self:GetParent()
-        modifierTable.target = self:GetParent()
-        modifierTable.modifier_name = "catastrophe_demolisher_crimson_fanaticism_buff"
-        modifierTable.duration = 10
-        modifierTable.stacks = stacks
-        modifierTable.max_stacks = 5
-        GameMode:ApplyStackingBuff(modifierTable)
+        local allies = FindUnitsInRadius(self.casterTeam,
+                Vector(0, 0, 0),
+                nil,
+                FIND_UNITS_EVERYWHERE,
+                DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, ally in pairs(allies) do
+            local modifier = ally:FindModifierByName("modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff")
+            if (modifier) then
+                local modifierTable = {}
+                modifierTable.ability = self.ability
+                modifierTable.caster = self.auraOwner
+                modifierTable.target = self.auraOwner
+                modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_stacks"
+                modifierTable.duration = self.ability.stacksDuration
+                modifierTable.stacks = stacks
+                modifierTable.max_stacks = self.ability.stacksCap
+                GameMode:ApplyStackingBuff(modifierTable)
+            end
+        end
     end
 end
 
 LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_taunt = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_taunt:IsTaunt()
+    return true
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_taunt"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_catastrophe_demolisher_crimson_fanaticism_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:GetAttackSpeedBonus()
+    return self.ability.asPerStack * self:GetStackCount()
+end
+
+function modifier_catastrophe_demolisher_crimson_fanaticism_stacks:GetSpellHasteBonus()
+    return self.ability.sphPerStack * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_stacks"] = LUA_MODIFIER_MOTION_NONE
 
 catastrophe_demolisher_crimson_fanaticism = class({
     GetBehavior = function(self)
@@ -976,7 +1052,7 @@ function catastrophe_demolisher_crimson_fanaticism:OnSpellStart()
     modifierTable.modifier_name = "modifier_catastrophe_demolisher_crimson_fanaticism_taunt"
     modifierTable.duration = self.tauntDuration
     GameMode:ApplyBuff(modifierTable)
-    local pidx = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf", PATTACH_ABSORIGIN_FOLLOW, modifierTable.caster)
+    local pidx = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/crimson_fanaticism/crimson_fanaticism.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
     Timers:CreateTimer(1.0, function()
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
@@ -992,8 +1068,9 @@ function catastrophe_demolisher_crimson_fanaticism:OnUpgrade()
     self.sphPerStack = self:GetSpecialValueFor("sph_per_stack")
     self.stacksCap = self:GetSpecialValueFor("stacks_cap")
     self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
-    self.stacksEliteBonus = self:GetSpecialValueFor("stacks_elite_bonus")
-    self.stacksBossBonus = self:GetSpecialValueFor("stacks_boss_bonus")
+    self.stacksNormalCount = self:GetSpecialValueFor("stacks_normal_count")
+    self.stacksEliteCount = self:GetSpecialValueFor("stacks_elite_count")
+    self.stacksBossCount = self:GetSpecialValueFor("stacks_boss_count")
     self.tauntDuration = self:GetSpecialValueFor("taunt_duration")
     self.armorBonus = self:GetSpecialValueFor("armor_bonus") / 100
     self.spellArmorBonus = self:GetSpecialValueFor("spell_armor_bonus") / 100
