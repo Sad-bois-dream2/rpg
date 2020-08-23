@@ -475,15 +475,15 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
-		"AbilityChannelTime"			"1.5"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_POINT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityCastPoint"			"1.5"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"60"
+		"AbilityCooldown"				"60"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -492,17 +492,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"			"1 1.5 2 2.5"
+				"damage"				"200 300 400 500"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"2 3 4 5"
+				"armor_reduction"			"-20 -25 -30 -35"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_break"			"20 25 30 35"
+				"stun_duration"			"0 4 4 4"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_damage"			"0 0 125 125"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_duration"			"0 0 10 10"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"path_tick"			"0 0 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_health_bonus"			"0 0 0 25"
 			}
 		}
 	}
