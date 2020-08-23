@@ -1038,6 +1038,9 @@ catastrophe_demolisher_crimson_fanaticism = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_catastrophe_demolisher_crimson_fanaticism_aura"
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("aura_radius")
     end
 })
 
