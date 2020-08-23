@@ -1310,6 +1310,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
             GameMode:ApplyDebuff(modifierTable)
         end
     end
+    EmitSoundOn("Hero_SkeletonKing.Hellfire_Blast", caster)
 end
 
 -- Internal stuff
