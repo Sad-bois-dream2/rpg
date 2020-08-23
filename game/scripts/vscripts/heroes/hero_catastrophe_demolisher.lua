@@ -1104,46 +1104,33 @@ function catastrophe_demolisher_claymore_of_destruction_effect:GetArmorPercentBo
     return self:GetSpecialValueFor("armor_loss") * (-1)
 end
 
-catastrophe_demolisher_claymore_of_destruction = class({
-    IsRequireCastbar = function(self)
-        return true
-    end
-})
-
 LinkedModifiers["catastrophe_demolisher_claymore_of_destruction_effect"] = LUA_MODIFIER_MOTION_NONE
 
-function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
+catastrophe_demolisher_claymore_of_destruction = class({})
+
+function catastrophe_demolisher_claymore_of_destruction:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.armorReduction = self:GetSpecialValueFor("armor_reduction") / 100
+    self.range = self:GetSpecialValueFor("range")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.pathDamage = self:GetSpecialValueFor("path_damage") / 100
+    self.pathDuration = self:GetSpecialValueFor("path_duration")
+    self.pathTick = self:GetSpecialValueFor("path_tick")
+    self.maxHealthBonus = self:GetSpecialValueFor("max_health_bonus") / 100
 end
 
-function catastrophe_demolisher_claymore_of_destruction:OnChannelFinish(interrupted)
+function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
     if not IsServer() then
         return
     end
-    local target = self:GetCursorTarget()
-    if (interrupted and (not target or target:IsNull() or not target:IsAlive())) then
-        local caster = self:GetCaster()
-        local damageTable = {}
-        damageTable.ability = self
-        damageTable.caster = caster
-        damageTable.target = target
-        damageTable.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster)
-        GameMode:DamageUnit(damageTable)
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = target
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = 1000--self:GetSpecialValueFor("stun_duration")* 1000
-        GameMode:ApplyDebuff(modifierTable)
-        local caster = self:GetCaster()
-        local modifierTable1 = {}
-        modifierTable1.ability = self
-        modifierTable1.target = caster
-        modifierTable1.caster = target
-        modifierTable1.modifier_name = "catastrophe_demolisher_claymore_of_destruction_effect"
-        modifierTable1.duration = 10
-        GameMode:ApplyDebuff(modifierTable1)
-    end
+    local caster = self:GetCaster()
+    local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/claymore_of_destruction/claymore_of_destruction.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 1, Vector(self.range, 0, 0))
+    ParticleManager:SetParticleControl(particle, 2, Vector(self.pathDuration, 0, 0))
+    Timers:CreateTimer(self.pathDuration, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 -- Internal stuff
