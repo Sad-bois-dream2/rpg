@@ -8,7 +8,6 @@
 		"Ability3"		"phantom_ranger_phantom_of_vengeance"
 		"Ability4"		"phantom_ranger_hunters_focus"
 		"Ability5"		"phantom_ranger_soul_echo"
-		//"Ability6"	"antimage_blink"
 		 "Ability6"		"phantom_ranger_phantom_harmonic"
 		"AbilityTalentStart"		"7"
 		"Ability7"	""

@@ -248,6 +248,11 @@
 				"inferno_bonus_active"			"0 0 0 40"
 			}
 		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/blood_oblation/blood_oblation.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_skeletonking.vsndevts"
+		}
 	}
 	//=================================================================================================================
 	// Catastrophe Demolisher : Essence Devouer
@@ -263,15 +268,17 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+        "AbilityCastAnimation"			"ACT_DOTA_IDLE_RARE"
+        "AbilityCastPoint"				"0.5"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityCooldown"				"0"
+		//"AbilityCooldown"				"0 0 30 30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		//"AbilityManaCost"				"0"
+		//"AbilityManaCost"				"0 0 40 40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -280,18 +287,59 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"hp_regen"				"1 1 1 1.5"
+				"hp_regen"				"1 1.5 2 2.5"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"phys_lifesteal"		"10 15 20 25"
+				"damage"				"30 40 50 60"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"magic_lifesteal"		"8 10 12 15"
+				"damage_radius"				"300"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hp_regen_aura_radius"		        "1 1200 1200 1200"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal"		"0 0 10 10"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_aura_radius"		"0 0 1 1200"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_duration"		"0 0 5 5"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_cd"		"0 0 30 30"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lifesteal_manacost"		"0 0 40 40"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_tick_rope.vpcf"
+            "particle"  "particles/units/catastrophe_demolisher/essence_devouer/essence_devouer_ground.vpcf"
+            "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
 		}
 	}
 	//=================================================================================================================
