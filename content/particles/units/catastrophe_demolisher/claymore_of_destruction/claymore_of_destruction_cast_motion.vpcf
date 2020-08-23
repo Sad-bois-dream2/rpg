@@ -174,6 +174,7 @@
 				m_nType = "PF_TYPE_LITERAL"
 				m_flLiteralValue = 160.0
 			}
+			m_nControlPointNumber = 4
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -209,6 +210,7 @@
 			m_OffsetMin = [ 200.0, 0.0, 0.0 ]
 			m_OffsetMax = [ 200.0, 0.0, 0.0 ]
 			m_bLocalCoords = true
+			m_nControlPointNumber = 4
 		},
 	]
 	m_Emitters = 
@@ -231,15 +233,7 @@
 	[
 		{
 			m_name = "preview"
-			m_drivers = 
-			[
-				{
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
-					m_entityName = "self"
-				},
-			]
+			m_drivers = [  ]
 		},
 	]
 	m_nBehaviorVersion = 10

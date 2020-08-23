@@ -1124,9 +1124,15 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
+    local casterPosition = caster:GetAbsOrigin()
+    local casterForwardVector = caster:GetForwardVector()
+    self.pathStartPosition = casterPosition + casterForwardVector * 100
+    self.pathEndPosition = casterPosition + casterForwardVector * self.range
     local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/claymore_of_destruction/claymore_of_destruction.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(particle, 1, Vector(self.range, 0, 0))
+    ParticleManager:SetParticleControl(particle, 0, self.pathStartPosition)
+    ParticleManager:SetParticleControl(particle, 1, self.pathEndPosition)
     ParticleManager:SetParticleControl(particle, 2, Vector(self.pathDuration, 0, 0))
+    ParticleManager:SetParticleControl(particle, 4, casterPosition)
     Timers:CreateTimer(self.pathDuration, function()
         ParticleManager:DestroyParticle(particle, false)
         ParticleManager:ReleaseParticleIndex(particle)
