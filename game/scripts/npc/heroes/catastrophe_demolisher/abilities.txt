@@ -378,17 +378,57 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_bonus"				"10 15 15 20"
+				"spell_damage_bonus"			"10 15 20 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aspd"					"10 10 15 20"
+				"ms_bonus"				"10 15 15 20"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spellhaste"			"15 15 20 25"
+				"as_per_stack"					"0 0 25 25"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sph_per_stack"			"0 0 25 25"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_cap"			"0 0 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"			"0 0 15 15"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_elite_bonus"			"0 0 3 3"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_boss_bonus"			"0 0 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"taunt_duration"			"0 5 5 5"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_bonus"			"0 0 0 25"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spell_armor_bonus"			"0 0 0 25"
 			}
 		}
 	}
