@@ -1,6 +1,113 @@
 local LinkedModifiers = {}
 
 -- fallen_druid_wisp_companion
+WISPY_STATE_ATTACHED_TO_WAIFU = 1
+WISPY_STATE_ATTACHED_TO_ALLY = 2
+WISPY_STATE_TRAVEL_TO_TARGET = 3
+WISPY_STATE_TRAVEL_BACK = 4
+
+modifier_fallen_druid_wisp_companion_ai = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMAMENT
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_INVULNERABLE] = true,
+            [MODIFIER_STATE_UNSELECTABLE] = true,
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+            [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+            [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true
+        }
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE_MIN }
+    end
+})
+
+function modifier_fallen_druid_wisp_companion_ai:GetModifierMoveSpeed_AbsoluteMin()
+    return self.ability.wispMoveSpeed
+end
+
+function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    if (self.state == WISPY_STATE_TRAVEL_BACK) then
+        local wispyPosition = self.wispy:GetAbsOrigin()
+        local targetPosition = self.holder:GetAbsOrigin()
+        if ((targetPosition - wispyPosition):Length2D() > 100) then
+            self.wispy:MoveToPosition(targetPosition)
+        else
+            if(self.holder == self.caster) then
+                self.state = WISPY_STATE_ATTACHED_TO_WAIFU
+            else
+                self.state = WISPY_STATE_ATTACHED_TO_ALLY
+            end
+        end
+    elseif (self.state == WISPY_STATE_TRAVEL_TO_TARGET) then
+        if (self.target and not self.target:IsNull()) then
+            if (self.wispy:GetAggroTarget() ~= self.target) then
+                self.wispy:MoveToTargetToAttack(self.target)
+            end
+        else
+            self.state = WISPY_STATE_TRAVEL_BACK
+        end
+    elseif (self.state == WISPY_STATE_ATTACHED_TO_ALLY) then
+        local position = self.holder:GetAbsOrigin()
+        self.wispy:SetAbsOrigin(position)
+        local angles = self.holder:GetAnglesAsVector()
+        self.wispy:SetAngles(angles[1], angles[2], angles[3])
+        ParticleManager:SetParticleControl(self.particle, 0, position)
+        ParticleManager:SetParticleControl(self.particle, 4, position)
+    else
+        local position = self.caster:GetAttachmentOrigin(self.attachId)
+        self.wispy:SetOrigin(position)
+        local angles = self.caster:GetAttachmentAngles(self.attachId)
+        self.wispy:SetAngles(angles[1], angles[2], angles[3])
+        ParticleManager:SetParticleControl(self.particle, 0, position)
+        ParticleManager:SetParticleControl(self.particle, 4, position)
+        return
+    end
+end
+
+function modifier_fallen_druid_wisp_companion_ai:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.wispy = self:GetParent()
+    self.attachId = self.caster:ScriptLookupAttachment("attach_lantern")
+    self.particle = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+    self:StartIntervalThink(0.05)
+end
+
+function modifier_fallen_druid_wisp_companion_ai:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.particle)
+    UTIL_Remove(self.wispy)
+end
+
+LinkedModifiers["modifier_fallen_druid_wisp_companion_ai"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_fallen_druid_wisp_companion = class({
     IsDebuff = function(self)
         return false
@@ -20,88 +127,75 @@ modifier_fallen_druid_wisp_companion = class({
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMAMENT
     end,
-    CheckState = function(self)
-        return {
-            [MODIFIER_STATE_INVULNERABLE] = true,
-            [MODIFIER_STATE_UNSELECTABLE] = true,
-            [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-            [MODIFIER_STATE_NO_HEALTH_BAR] = true
-        }
-    end,
-    WISPY_STATE_ATTACHED = 1,
-    WISPY_STATE_ATTACHED_TO_ALLY = 2,
-    WISPY_STATE_TRAVEL_TO_TARGET = 3,
-    WISPY_STATE_TRAVEL_BACK = 4
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
 })
 
-function modifier_fallen_druid_wisp_companion:OnIntervalThink()
+function modifier_fallen_druid_wisp_companion:OnCreated(kv)
     if (not IsServer()) then
         return
     end
-    if (self.wispy.state == self.WISPY_STATE_TRAVEL_BACK) then
-    elseif (self.wispy.state == self.WISPY_STATE_TRAVEL_TO_TARGET) then
-
-    else
-        local position = self.caster:GetAttachmentOrigin(self.attachId)
-        self.wispy:SetOrigin(position)
-        local angles = self.caster:GetAttachmentAngles(self.attachId)
-        self.wispy:SetAngles(angles[1], angles[2], angles[3])
-        ParticleManager:SetParticleControl(self.particle, 0, position)
-        ParticleManager:SetParticleControl(self.particle, 4, position)
-        return
-    end
-end
-
-function modifier_fallen_druid_wisp_companion:OnCreated()
-    if (not IsServer()) then
-        return
-    end
+    self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    self.caster = self.ability:GetCaster()
-    self.wispy = self:GetParent()
-    self.attachId = self.caster:ScriptLookupAttachment("attach_lantern")
-    self.particle = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-    self.ability:AttachWispyToLantern(self.wispy)
-    self:StartIntervalThink(0.05)
 end
 
-function modifier_fallen_druid_wisp_companion:OnDestroy()
-    if (not IsServer()) then
-        return
+function modifier_fallen_druid_wisp_companion:OnAttackLanded(kv)
+    if IsServer() then
+        local attacker = kv.attacker
+        local target = kv.target
+        if (attacker and target and not target:IsNull() and attacker == self.caster) then
+            self.ability:OrderWispyAttackTarget(self.ability.wispy, target)
+        end
     end
-    ParticleManager:DestroyParticle(self.particle, false)
-    ParticleManager:ReleaseParticleIndex(self.particle)
 end
 
 LinkedModifiers["modifier_fallen_druid_wisp_companion"] = LUA_MODIFIER_MOTION_NONE
 
-fallen_druid_wisp_companion = class({})
+fallen_druid_wisp_companion = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_fallen_druid_wisp_companion"
+    end
+})
 
 function fallen_druid_wisp_companion:CreateWispy()
     if (not self.wispy and IsServer()) then
         local caster = self:GetCaster()
-        self.wispy = CreateUnitByName("npc_dota_fallen_druid_wispy", Vector(0, 0, 0), false, caster, caster, caster:GetTeamNumber())
-        self.wispy.modifier = self.wispy:AddNewModifier(self.wispy, self, "modifier_fallen_druid_wisp_companion", {})
+        self.wispy = CreateUnitByName("npc_dota_fallen_druid_wispy", caster:GetAbsOrigin(), false, caster, caster, caster:GetTeamNumber())
+        self.wispy.modifier = self.wispy:AddNewModifier(self.wispy, self, "modifier_fallen_druid_wisp_companion_ai", {})
+        self:AttachWispyToLantern(self.wispy, caster)
     end
 end
 
 function fallen_druid_wisp_companion:AttachWispyToLantern(wispy, waifu)
-    wispy.holder = waifu
-    wispy.modifier.state = wispy.modifier.WISPY_STATE_ATTACHED_TO_ALLY
+    if (wispy and not wispy:IsNull()) then
+        wispy.modifier.holder = waifu
+        wispy.modifier.state = WISPY_STATE_ATTACHED_TO_WAIFU
+    end
 end
 
 function fallen_druid_wisp_companion:AttachWispyToAlly(wispy, ally)
-    wispy.holder = ally
-    wispy.modifier.state = wispy.modifier.WISPY_STATE_ATTACHED_TO_ALLY
+    if (wispy and not wispy:IsNull()) then
+        wispy.modifiler.holder = ally
+        wispy.modifier.state = WISPY_STATE_ATTACHED_TO_ALLY
+    end
 end
 
 function fallen_druid_wisp_companion:OrderWispyAttackTarget(wispy, target)
-    wispy.modifier.state = wispy.modifier.WISPY_STATE_TRAVEL_TO_TARGET
-    wispy.target = target
+    if (not wispy or wispy:IsNull()) then
+        return
+    end
+    if (wispy.modifier.state ~= WISPY_STATE_ATTACHED_TO_ALLY or wispy.modifier.state ~= WISPY_STATE_ATTACHED_TO_WAIFU) then
+        return
+    end
+    wispy.modifier.state = WISPY_STATE_TRAVEL_TO_TARGET
+    wispy.modifier.target = target
 end
 
 function fallen_druid_wisp_companion:OnUpgrade()
     self:CreateWispy()
+    self.wispDamage = self:GetSpecialValueFor("wisp_damage") / 100
+    self.wispMoveSpeed = self:GetSpecialValueFor("wisp_ms")
 end
 
 -- Internal stuff

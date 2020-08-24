@@ -43,6 +43,7 @@
 		//----------------------------------------------------------------
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
 		"MovementSpeed"				"1"		// Speed.
+		"MovementTurnRate"          "1"      // Turn rate
 		// Status
 		//----------------------------------------------------------------
 		"StatusHealth"				"1"		// Base health.
