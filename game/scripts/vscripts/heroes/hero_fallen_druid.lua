@@ -105,6 +105,21 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
         local attacker = kv.attacker
         local target = kv.target
         if (attacker and target and not target:IsNull() and attacker == self.wispy) then
+            local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf", PATTACH_ABSORIGIN, target)
+            ParticleManager:SetParticleControlEnt(pidx, 3, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+            Timers:CreateTimer(1.0, function()
+                ParticleManager:DestroyParticle(pidx, false)
+                ParticleManager:ReleaseParticleIndex(pidx)
+            end)
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = target
+            damageTable.ability = self.ability
+            damageTable.damage = self.ability.wispDamage * Units:GetHeroAgility(self.caster)
+            damageTable.naturedmg = true
+            damageTable.fromsummon = true
+            GameMode:DamageUnit(damageTable)
+            self.wispy:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
             self.wispy:Stop()
             self:ChangeState(WISPY_STATE_TRAVEL_BACK)
         end

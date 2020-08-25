@@ -47,7 +47,8 @@
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/wisp_companion/wispy.vpcf"
-            "soundfile" "soundevents/voscripts/game_sounds_vo_skeleton_king.vsndevts"
+            "particle"  "particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}
 }
