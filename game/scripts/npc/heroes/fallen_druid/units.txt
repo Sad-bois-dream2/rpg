@@ -27,12 +27,12 @@
 		"AttackRate"				"1.0"		// Speed of attack.
 		"AttackAnimationPoint"		"0.0"		// Normalized time in animation cycle to attack.
 		"AttackAcquisitionRange"	"100"		// Range within a target can be acquired.
-		"AttackRange"				"100"		// Range within a target can be attacked.
+		"AttackRange"				"50"		// Range within a target can be attacked.
 		"ProjectileModel"			"particles/neutral_fx/satyr_trickster_projectile.vpcf" // Particle system model for projectile.
 		"ProjectileSpeed"			"99999"		// Speed of projectile.
 		// Bounds
 		//----------------------------------------------------------------
-		"RingRadius"				"45"
+		"RingRadius"				"1"
 		"HealthBarOffset"			"190"
 		// Bounty
 		//----------------------------------------------------------------
