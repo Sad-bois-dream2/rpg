@@ -1,6 +1,37 @@
 local LinkedModifiers = {}
 
 -- fallen_druid_wisp_companion
+modifier_fallen_druid_wisp_companion_primary_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+function modifier_fallen_druid_wisp_companion_primary_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_fallen_druid_wisp_companion_primary_buff:GetPrimaryAttributePercentBonus()
+    return self.ability.wispPrimaryBuff
+end
+
+LinkedModifiers["modifier_fallen_druid_wisp_companion_primary_buff"] = LUA_MODIFIER_MOTION_NONE
+
 WISPY_STATE_ATTACHED_TO_WAIFU = 1
 WISPY_STATE_ATTACHED_TO_ALLY = 2
 WISPY_STATE_TRAVEL_TO_TARGET = 3
@@ -91,7 +122,7 @@ function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
         local wispyPosition = Vector(position[1] + distanceFromCenter * math.cos(self.wispy.rotationAngle), position[2] + distanceFromCenter * math.sin(self.wispy.rotationAngle), position[3])
         self.wispy:SetAbsOrigin(wispyPosition)
         self.wispy.rotationAngle = self.wispy.rotationAngle + 0.1
-        if(self.wispy.rotationAngle > 6) then
+        if (self.wispy.rotationAngle > 6) then
             self.wispy.rotationAngle = 0
         end
     else
@@ -120,6 +151,11 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
             damageTable.fromsummon = true
             GameMode:DamageUnit(damageTable)
             self.wispy:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
+            if (self.ability.wispDamageOnHitProc > 0) then
+                local modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_fallen_druid_wisp_companion_aa_fix", {})
+                self.caster:PerformAttack(target, true, true, true, true, false, false, true)
+                modifier:Destroy()
+            end
             self.wispy:Stop()
             self:ChangeState(WISPY_STATE_TRAVEL_BACK)
         end
@@ -162,7 +198,7 @@ modifier_fallen_druid_wisp_companion = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -201,6 +237,32 @@ end
 
 LinkedModifiers["modifier_fallen_druid_wisp_companion"] = LUA_MODIFIER_MOTION_NONE
 
+modifier_fallen_druid_wisp_companion_aa_fix = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE }
+    end,
+    GetModifierBaseDamageOutgoing_Percentage = function(self)
+        return -100
+    end
+})
+
+LinkedModifiers["modifier_fallen_druid_wisp_companion_aa_fix"] = LUA_MODIFIER_MOTION_NONE
+
 fallen_druid_wisp_companion = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_fallen_druid_wisp_companion"
@@ -211,7 +273,42 @@ function fallen_druid_wisp_companion:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    self:AttachWispyToAlly(self.wispy, self:GetCursorTarget())
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    self:AttachWispyToAlly(self.wispy, target)
+    if (self.wispPrimaryBuffDuration > 0 and caster ~= target) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_fallen_druid_wisp_companion_primary_buff"
+        modifierTable.duration = self.wispPrimaryBuffDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+function fallen_druid_wisp_companion:OnPostTakeDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("fallen_druid_wisp_companion")
+    if (not ability or not damageTable.fromsummon) then
+        return damageTable
+    end
+    if (not (ability.wispHealing > 0) or ability.wispHealingCurrentInCD) then
+        return damageTable
+    end
+    local healTable = {}
+    healTable.caster = damageTable.attacker
+    healTable.target = damageTable.attacker
+    healTable.heal = damageTable.damage * ability.wispHealing
+    GameMode:HealUnit(healTable)
+    local healFX = ParticleManager:CreateParticle("particles/generic_gameplay/generic_lifesteal.vpcf", PATTACH_POINT_FOLLOW, damageTable.attacker)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(healFX, false)
+        ParticleManager:ReleaseParticleIndex(healFX)
+    end)
+    ability.wispHealingCurrentInCD = true
+    Timers:CreateTimer(ability.wispHealingCooldown, function()
+        ability.wispHealingCurrentInCD = nil
+    end)
 end
 
 function fallen_druid_wisp_companion:CreateWispy()
@@ -257,9 +354,19 @@ function fallen_druid_wisp_companion:OnUpgrade()
     self:CreateWispy()
     self.wispDamage = self:GetSpecialValueFor("wisp_damage") / 100
     self.wispMoveSpeed = self:GetSpecialValueFor("wisp_ms")
+    self.wispHealing = self:GetSpecialValueFor("wisp_healing") / 100
+    self.wispHealingCooldown = self:GetSpecialValueFor("wisp_healing_cd")
+    self.wispPrimaryBuff = self:GetSpecialValueFor("wist_primary_buff") / 100
+    self.wispPrimaryBuffDuration = self:GetSpecialValueFor("wist_primary_buff_duration")
+    self.wispDamageOnHitProc = self:GetSpecialValueFor("wist_on_hit_proc")
 end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_fallen_druid", MotionController)
+end
+
+if (IsServer() and not GameMode.FALLEN_DRUID_INIT) then
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(fallen_druid_wisp_companion, 'OnPostTakeDamage'))
+    GameMode.FALLEN_DRUID_INIT = true
 end

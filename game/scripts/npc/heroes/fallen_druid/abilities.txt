@@ -18,7 +18,7 @@
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
         "AbilityCastRange"  "900"
-        "AbilityCastAnimation"			"ACT_DOTA_IDLE_RARE"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
         "AbilityCastPoint"				"0.5"
 
 		// Time
@@ -43,11 +43,37 @@
 				"var_type"				"FIELD_FLOAT"
 				"wisp_ms"				"600"
 			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wisp_healing"				"0 100 100 100"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wisp_healing_cd"				"0 0.5 0.5 0.5"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wist_primary_buff"				"0 0 25 25"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wist_primary_buff_duration"				"0 0 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wist_on_hit_proc"				"0 0 0 1"
+			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/wisp_companion/wispy.vpcf"
             "particle"  "particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf"
+            "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}

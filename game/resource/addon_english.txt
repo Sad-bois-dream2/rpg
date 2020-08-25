@@ -634,10 +634,12 @@
         "DOTA_Tooltip_modifier_catastrophe_demolisher_claymore_of_destruction_debuff_Description"		"Elemental resistances reduced."
 		// Fallen druid (waifu)
         "DOTA_Tooltip_Ability_fallen_druid_wisp_companion"		"Wisp Companion"
-        "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_Description"		"Passively whenever you auto attack an enemy a <font color='white'><b>Wispy</b></font> flies to attack it dealing <font color='#238842'>Nature</font> damage and then returns to its holder. Can be activated to send the <font color='white'><b>Wispy</b></font> to an ally. It will attack from the ally's position instead.\nRank 2: <font color='white'><b>Wispy</b></font> will heal its holder for the damage it dealt.\nRank 3: When you send the <font color='white'><b>Wispy</b></font> to an ally, it grants them <font color='white'><b>25%</b></font> primary attribute for <font color='white'><b>5</b></font> seconds.\nRank 4: <font color='white'><b>Wispy</b></font> now may proc on hit effects."
+        "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_Description"		"Passively whenever you auto attack an enemy a <font color='white'><b>Wispy</b></font> flies to attack it dealing <font color='#238842'>Nature</font> damage and then returns to its holder. Can be activated to send the <font color='white'><b>Wispy</b></font> to an ally. It will attack from the ally's position instead.\nRank 2: <font color='white'><b>Wispy</b></font> will heal its holder for the damage it dealt, inner cooldown <font color='white'><b>0.5</b></font> seconds.\nRank 3: When you send the <font color='white'><b>Wispy</b></font> to an ally, it grants them <font color='white'><b>25%</b></font> primary attribute for <font color='white'><b>5</b></font> seconds.\nRank 4: <font color='white'><b>Wispy</b></font> now may proc on hit effects."
         "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_Note0"		"Wispy can't attack again until it comes back and doesn't apply on hit effects."
         "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_wisp_damage"		"%AGILITY TO WISPY DAMAGE: "
         "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_wisp_ms"		"WISPY MOVESPEED: "
+        "DOTA_Tooltip_modifier_fallen_druid_wisp_companion_primary_buff"		"Wisp Companion"
+        "DOTA_Tooltip_modifier_fallen_druid_wisp_companion_primary_buff_Description"		"Primary attribute increased."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
