@@ -49,7 +49,7 @@ modifier_fallen_druid_wisp_companion_ai = class({
 
 function modifier_fallen_druid_wisp_companion_ai:GetVisualZDelta()
     local state = self:GetStackCount()
-    if (state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET) then
+    if (state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET or state == WISPY_STATE_ATTACHED_TO_ALLY) then
         return 120
     end
     return 0
@@ -73,6 +73,7 @@ function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
                 self:ChangeState(WISPY_STATE_ATTACHED_TO_WAIFU)
             else
                 self:ChangeState(WISPY_STATE_ATTACHED_TO_ALLY)
+                self.wispy.rotationAngle = math.atan2(targetPosition[2] - wispyPosition[2], targetPosition[1] - wispyPosition[1])
             end
         end
     elseif (self.state == WISPY_STATE_TRAVEL_TO_TARGET) then
@@ -84,10 +85,15 @@ function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
             self:ChangeState(WISPY_STATE_TRAVEL_BACK)
         end
     elseif (self.state == WISPY_STATE_ATTACHED_TO_ALLY) then
+        self.wispy:Stop()
         local position = self.holder:GetAbsOrigin()
-        self.wispy:SetAbsOrigin(position)
-        local angles = self.holder:GetAnglesAsVector()
-        self.wispy:SetAngles(angles[1], angles[2], angles[3])
+        local distanceFromCenter = self.holder:GetPaddedCollisionRadius() + 75
+        local wispyPosition = Vector(position[1] + distanceFromCenter * math.cos(self.wispy.rotationAngle), position[2] + distanceFromCenter * math.sin(self.wispy.rotationAngle), position[3])
+        self.wispy:SetAbsOrigin(wispyPosition)
+        self.wispy.rotationAngle = self.wispy.rotationAngle + 0.1
+        if(self.wispy.rotationAngle > 6) then
+            self.wispy.rotationAngle = 0
+        end
     else
         self.wispy:Stop()
         self.wispy:SetOrigin(self.caster:GetAttachmentOrigin(self.caster:ScriptLookupAttachment("attach_lantern")))
@@ -186,6 +192,13 @@ fallen_druid_wisp_companion = class({
     end
 })
 
+function fallen_druid_wisp_companion:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    self:AttachWispyToAlly(self.wispy, self:GetCursorTarget())
+end
+
 function fallen_druid_wisp_companion:CreateWispy()
     if (not self.wispy and IsServer()) then
         local caster = self:GetCaster()
@@ -204,9 +217,14 @@ function fallen_druid_wisp_companion:AttachWispyToLantern(wispy, waifu)
 end
 
 function fallen_druid_wisp_companion:AttachWispyToAlly(wispy, ally)
-    if (wispy and not wispy:IsNull()) then
-        wispy.modifiler.holder = ally
+    if (not wispy or wispy:IsNull()) then
+        return
     end
+    wispy.modifier.holder = ally
+    if (wispy.modifier.state == WISPY_STATE_TRAVEL_TO_TARGET) then
+        return
+    end
+    wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_BACK)
 end
 
 function fallen_druid_wisp_companion:OrderWispyAttackTarget(wispy, target)
