@@ -32,8 +32,9 @@ modifier_fallen_druid_wisp_companion_ai = class({
             [MODIFIER_STATE_UNSELECTABLE] = true,
             [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
             [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-            [MODIFIER_STATE_FLYING_FOR_PATHING_PURPOSES_ONLY] = true,
-            [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+            [MODIFIER_STATE_OUT_OF_GAME] = true,
+            [MODIFIER_STATE_FLYING] = true
         }
     end,
     DeclareFunctions = function(self)
@@ -46,16 +47,16 @@ modifier_fallen_druid_wisp_companion_ai = class({
     end
 })
 
-function modifier_fallen_druid_wisp_companion_ai:GetModifierMoveSpeed_AbsoluteMin()
-    return self.ability.wispMoveSpeed
-end
-
 function modifier_fallen_druid_wisp_companion_ai:GetVisualZDelta()
     local state = self:GetStackCount()
-    if(state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET) then
+    if (state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET) then
         return 120
     end
-    return 1
+    return 0
+end
+
+function modifier_fallen_druid_wisp_companion_ai:GetModifierMoveSpeed_AbsoluteMin()
+    return self.ability.wispMoveSpeed
 end
 
 function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
@@ -88,13 +89,8 @@ function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
         local angles = self.holder:GetAnglesAsVector()
         self.wispy:SetAngles(angles[1], angles[2], angles[3])
     else
-        local position = self.caster:GetAttachmentOrigin(self.attachId)
-        self.wispy:SetAbsOrigin(position)
-        self.wispy:SetOrigin(position)
-        self.wispy:SetLocalOrigin(position)
-        local angles = self.caster:GetAttachmentAngles(self.attachId)
-        self.wispy:SetAngles(angles[1], angles[2], angles[3])
-        return
+        self.wispy:Stop()
+        self.wispy:SetOrigin(self.caster:GetAttachmentOrigin(self.caster:ScriptLookupAttachment("attach_lantern")))
     end
 end
 
@@ -114,7 +110,7 @@ function modifier_fallen_druid_wisp_companion_ai:ChangeState(newstate)
         return
     end
     self.state = newstate
-    self:SetStackCount(newstate)
+    self:SetStackCount(self.state)
 end
 
 function modifier_fallen_druid_wisp_companion_ai:OnCreated()
@@ -197,6 +193,7 @@ function fallen_druid_wisp_companion:CreateWispy()
         self.wispy.modifier = self.wispy:AddNewModifier(self.wispy, self, "modifier_fallen_druid_wisp_companion_ai", {})
         self:AttachWispyToLantern(self.wispy, caster)
         self.wispy.modifier:ChangeState(WISPY_STATE_ATTACHED_TO_WAIFU)
+        self.wispy:SetHullRadius(0)
     end
 end
 

@@ -34,6 +34,7 @@
 		//----------------------------------------------------------------
 		"RingRadius"				"1"
 		"HealthBarOffset"			"190"
+		"BoundsHullName"            "DOTA_HULL_SIZE_HERO"
 		// Bounty
 		//----------------------------------------------------------------
 		"BountyXP"					"0"		// Experience earn.
@@ -41,7 +42,7 @@
 		"BountyGoldMax"				"0"		// Gold earned max.
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_FLY"
 		"MovementSpeed"				"1"		// Speed.
 		"MovementTurnRate"          "1"      // Turn rate
 		// Status
