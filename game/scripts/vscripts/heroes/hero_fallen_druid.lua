@@ -135,7 +135,7 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
         if (attacker and target and not target:IsNull() and attacker == self.wispy) then
             self.ability:DealWispyDamageToTarget(self.caster, target)
             local thirdSkillModifier = target:FindModifierByName("modifier_fallen_druid_grasping_roots_dot")
-            if(thirdSkillModifier and thirdSkillModifier.ability.wispyBounceRadius > 0) then
+            if (thirdSkillModifier and thirdSkillModifier.ability.wispyBounceRadius > 0) then
                 local enemies = FindUnitsInRadius(self.casterTeam,
                         target:GetAbsOrigin(),
                         nil,
@@ -146,7 +146,7 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
                         FIND_ANY_ORDER,
                         false)
                 local index = self.ability:GetUniqueInt()
-                self.ability.projectiles[index] = { targets = enemies, reachedTargets = {}, caster = self.caster}
+                self.ability.projectiles[index] = { targets = enemies, reachedTargets = {}, caster = self.caster }
                 table.insert(self.ability.projectiles[index].reachedTargets, target)
                 self.ability:CreateWispyBounceProjectile(target, target, { index = index })
             end
@@ -317,7 +317,7 @@ function fallen_druid_wisp_companion:OnProjectileHit_ExtraData(target, vLocation
     table.insert(self.projectiles[ExtraData.index].reachedTargets, target)
     while #enemies > 0 do
         local potentialJumpTarget = enemies[1]
-        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget)) then
+        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget) or potentialJumpTarget:GetHealth() < 1) then
             table.remove(enemies, 1)
         else
             jumpTarget = potentialJumpTarget
@@ -340,7 +340,7 @@ function fallen_druid_wisp_companion:CreateWispyBounceProjectile(source, target,
         Target = target,
         Source = source,
         Ability = self,
-        EffectName = "particles/units/fallen_druid/grasping_roots/wispy_bounce_projectile.vpcf",
+        EffectName = "particles/units/fallen_druid/wisp_companion/wispy_bounce_projectile.vpcf",
         bDodgeable = false,
         bProvidesVision = false,
         iMoveSpeed = 1200,
@@ -790,7 +790,7 @@ function modifier_fallen_druid_grasping_roots:OnPostTakeDamage(damageTable)
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            if(not enemy:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
+            if (not enemy:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
                 local cd = ability:GetCooldownTimeRemaining()
                 ability:EndCooldown()
                 damageTable.attacker:SetCursorCastTarget(enemy)
