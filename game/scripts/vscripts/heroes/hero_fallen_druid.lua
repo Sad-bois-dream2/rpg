@@ -361,6 +361,151 @@ function fallen_druid_wisp_companion:OnUpgrade()
     self.wispDamageOnHitProc = self:GetSpecialValueFor("wist_on_hit_proc")
 end
 
+--fallen_druid_flashbang
+modifier_fallen_druid_flashbang_miss = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return
+        {
+            MODIFIER_PROPERTY_MISS_PERCENTAGE
+        }
+    end,
+    GetModifierMiss_Percentage = function(self)
+        return self.ability.missChance
+    end
+})
+
+function modifier_fallen_druid_flashbang_miss:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_fallen_druid_flashbang_miss"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_flashbang_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetSpellDamageBonus = function(self)
+        return self.ability.spellDamageAmplify
+    end
+})
+
+function modifier_fallen_druid_flashbang_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_fallen_druid_flashbang_buff"] = LUA_MODIFIER_MOTION_NONE
+
+fallen_druid_flashbang = class({
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+})
+
+function fallen_druid_flashbang:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterPos = caster:GetAbsOrigin()
+    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/flashbang/flashbang.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx, 0, casterPos)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 1, 1))
+    ParticleManager:SetParticleControl(pidx, 2, Vector(0.5, 0.5, 0.5))
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            casterPos,
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = Units:GetHeroAgility(caster) * self.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_fallen_druid_flashbang_miss"
+        modifierTable.duration = self.missDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    if (self.spellDamageDuration > 0 and #enemies > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_fallen_druid_flashbang_buff"
+        modifierTable.duration = self.spellDamageDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+    if (self.cdrFlat > 0) then
+        for i = 0, caster:GetAbilityCount() - 1 do
+            local ability = caster:GetAbilityByIndex(i)
+            if(ability ~= self) then
+                local cooldownTable = {
+                    target = caster,
+                    ability = ability:GetAbilityName(),
+                    reduction = self.cdrFlat,
+                    isflat = true
+                }
+                GameMode:ReduceAbilityCooldown(cooldownTable)
+            end
+        end
+    end
+    EmitSoundOn("Hero_KeeperOfTheLight.BlindingLight", caster)
+end
+
+function fallen_druid_flashbang:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.missChance = self:GetSpecialValueFor("miss_chance")
+    self.missDuration = self:GetSpecialValueFor("miss_duration")
+    self.shadowAAspeed = self:GetSpecialValueFor("shadow_aaspeed")
+    self.shadowDuration = self:GetSpecialValueFor("shadow_duration")
+    self.spellDamageAmplify = self:GetSpecialValueFor("spell_damage_amplify") / 100
+    self.spellDamageDuration = self:GetSpecialValueFor("spell_damage_duration")
+    self.cdrFlat = self:GetSpecialValueFor("cdr_flat")
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_fallen_druid", MotionController)

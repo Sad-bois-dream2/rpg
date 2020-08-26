@@ -77,4 +77,89 @@
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}
+	//=================================================================================================================
+	// Fallen Druid: Flashbang
+	//=================================================================================================================
+	"fallen_druid_flashbang"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_fallen_druid.lua"
+		"AbilityTextureName"			"fallen_druid_flashbang"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+        "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+        "AbilityCastRange"  "900"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+        "AbilityCastPoint"				"0.5"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"125 150 175 200"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"600"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_chance"				"100"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_duration"				"2"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"shadow_aaspeed"				"0 100 100 100"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"shadow_duration"				"0 5 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spell_damage_amplify"				"0 0 25 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spell_damage_duration"				"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat"				"0 0 0 4"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/fallen_druid/flashbang/flashbang.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
+		}
+	}
 }

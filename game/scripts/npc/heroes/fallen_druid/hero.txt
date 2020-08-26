@@ -4,7 +4,7 @@
   {
     "AbilityLayout"     "6"
 	"Ability1"	"fallen_druid_wisp_companion"
-	"Ability2"	"lina_light_strike_array"
+	"Ability2"	"fallen_druid_flashbang"
 	"Ability3"	"lina_fiery_soul"
     "Ability4"	"lina_laguna_blade"
     "Ability5"	"empty5"
@@ -20,14 +20,24 @@
     "Ability15"	""
     "Ability16"	""
 	"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
+    "AttributeBaseStrength"		"18"
+    "AttributeStrengthGain"		"2.00000"
+    "AttributeBaseIntelligence"		"18"
+    "AttributeIntelligenceGain"		"1.800000"
+    "AttributeBaseAgility"		"20"
+    "AttributeAgilityGain"		"3.500000"
 	"VisionDaytimeRange"        "1800"        // Range of vision during day light.
     "VisionNighttimeRange"      "1800"        // Range of vision at night time.
-        "Roles"
-        {
-            "Tank"  "0"
-            "DPS"   "5"
-            "Support"   "0"
-            "Utility"   "2"
-        }
+	"AttackRate"		"1.500000"
+	"AttackAnimationPoint"		"0.30000"
+	"AttackAcquisitionRange"		"800"
+	"AttackRange"		"475"
+    "Roles"
+    {
+        "Tank"  "0"
+        "DPS"   "5"
+        "Support"   "0"
+        "Utility"   "2"
+    }
   }
 }

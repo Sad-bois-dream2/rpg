@@ -640,6 +640,15 @@
         "DOTA_Tooltip_Ability_fallen_druid_wisp_companion_wisp_ms"		"WISPY MOVESPEED: "
         "DOTA_Tooltip_modifier_fallen_druid_wisp_companion_primary_buff"		"Wisp Companion"
         "DOTA_Tooltip_modifier_fallen_druid_wisp_companion_primary_buff_Description"		"Primary attribute increased."
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang"		"Flashbang"
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_Description"		"Wispy or Fallen Druid emits a blinding flash of light around themselves, dealing <font color='#238842'>Nature</font> damage to all nearby enemies and causing enemies to miss all attacks for short time.\nRank 2: After using this ability also summons an invulnerable shadow copy of you for <font color='white'><b>5</b></font> seconds that can proc on hit effects.\nRank 3: If you hit with this ability at least one enemy you will also gain <font color='white'><b>25%</b></font> spell damage for <font color='white'><b>10</b></font> seconds.\nRank 4: After using this ability also reduces your other ability cooldowns by <font color='white'><b>4</b></font> seconds."
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_Note0"		"Rank 2 shadow has same attack speed and attack range as you, but deal 0 auto attack damage."
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_damage"		"%AGILITY TO DAMAGE: "
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_radius"		"RADIUS: "
+        "DOTA_Tooltip_modifier_fallen_druid_flashbang_miss"		"Flashbang"
+        "DOTA_Tooltip_modifier_fallen_druid_flashbang_miss_Description"		"Blinded."
+        "DOTA_Tooltip_modifier_fallen_druid_flashbang_buff"		"Flashbang"
+        "DOTA_Tooltip_modifier_fallen_druid_flashbang_buff_Description"		"Spell damage increased."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
