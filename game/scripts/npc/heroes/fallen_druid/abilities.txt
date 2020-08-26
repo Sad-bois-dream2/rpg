@@ -73,6 +73,7 @@
 		{
             "particle"  "particles/units/fallen_druid/wisp_companion/wispy.vpcf"
             "particle"  "particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf"
+            "particle"  "particles/units/fallen_druid/grasping_roots/wispy_bounce_projectile.vpcf"
             "particle"  "particles/generic_gameplay/generic_lifesteal.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
@@ -230,7 +231,7 @@
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"wispy_bounce"				"0 0 1 1"
+				"wispy_bounce_radius"				"0 0 300 300"
 			}
 			"08"
 			{

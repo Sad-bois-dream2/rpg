@@ -133,25 +133,22 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
         local attacker = kv.attacker
         local target = kv.target
         if (attacker and target and not target:IsNull() and attacker == self.wispy) then
-            local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf", PATTACH_ABSORIGIN, target)
-            ParticleManager:SetParticleControlEnt(pidx, 3, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
-            Timers:CreateTimer(1.0, function()
-                ParticleManager:DestroyParticle(pidx, false)
-                ParticleManager:ReleaseParticleIndex(pidx)
-            end)
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = target
-            damageTable.ability = self.ability
-            damageTable.damage = self.ability.wispDamage * Units:GetHeroAgility(self.caster)
-            damageTable.naturedmg = true
-            damageTable.fromsummon = true
-            GameMode:DamageUnit(damageTable)
-            self.wispy:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
-            if (self.ability.wispDamageOnHitProc > 0) then
-                local modifier = self.caster:AddNewModifier(self.caster, nil, "modifier_fallen_druid_wisp_companion_aa_fix", {})
-                self.caster:PerformAttack(target, true, true, true, true, false, false, true)
-                modifier:Destroy()
+            self.ability:DealWispyDamageToTarget(self.caster, target)
+            local thirdSkillModifier = target:FindModifierByName("modifier_fallen_druid_grasping_roots_dot")
+            if(thirdSkillModifier and thirdSkillModifier.ability.wispyBounceRadius > 0) then
+                local enemies = FindUnitsInRadius(self.casterTeam,
+                        target:GetAbsOrigin(),
+                        nil,
+                        thirdSkillModifier.ability.wispyBounceRadius,
+                        DOTA_UNIT_TARGET_TEAM_ENEMY,
+                        DOTA_UNIT_TARGET_ALL,
+                        DOTA_UNIT_TARGET_FLAG_NONE,
+                        FIND_ANY_ORDER,
+                        false)
+                local index = self.ability:GetUniqueInt()
+                self.ability.projectiles[index] = { targets = enemies, reachedTargets = {}, caster = self.caster}
+                table.insert(self.ability.projectiles[index].reachedTargets, target)
+                self.ability:CreateWispyBounceProjectile(target, target, { index = index })
             end
             self.wispy:Stop()
             self:ChangeState(WISPY_STATE_TRAVEL_BACK)
@@ -173,8 +170,8 @@ function modifier_fallen_druid_wisp_companion_ai:OnCreated()
     end
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
     self.wispy = self:GetParent()
-    self.attachId = self.caster:ScriptLookupAttachment("attach_lantern")
     self.particle = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
     self:StartIntervalThink(0.05)
 end
@@ -265,6 +262,92 @@ fallen_druid_wisp_companion = class({
         return "modifier_fallen_druid_wisp_companion"
     end
 })
+
+fallen_druid_wisp_companion.projectiles = {}
+fallen_druid_wisp_companion.unique = {}
+fallen_druid_wisp_companion.i = 0
+fallen_druid_wisp_companion.max = 65536
+
+function fallen_druid_wisp_companion:GetUniqueInt()
+    while self.unique[self.i] do
+        self.i = self.i + 1
+        if self.i == self.max then
+            self.i = 0
+        end
+    end
+
+    self.unique[self.i] = true
+    return self.i
+end
+
+function fallen_druid_wisp_companion:DelUniqueInt(i)
+    self.unique[i] = nil
+end
+
+function fallen_druid_wisp_companion:DealWispyDamageToTarget(owner, target)
+    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf", PATTACH_ABSORIGIN, target)
+    ParticleManager:SetParticleControlEnt(pidx, 3, target, PATTACH_POINT_FOLLOW, "attach_hitloc", target:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    local damageTable = {}
+    damageTable.caster = owner
+    damageTable.target = target
+    damageTable.ability = self
+    damageTable.damage = self.wispDamage * Units:GetHeroAgility(owner)
+    damageTable.naturedmg = true
+    damageTable.fromsummon = true
+    GameMode:DamageUnit(damageTable)
+    target:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
+    if (self.wispDamageOnHitProc > 0) then
+        local modifier = owner:AddNewModifier(owner, nil, "modifier_fallen_druid_wisp_companion_aa_fix", {})
+        owner:PerformAttack(target, true, true, true, true, false, false, true)
+        modifier:Destroy()
+    end
+end
+
+function fallen_druid_wisp_companion:OnProjectileHit_ExtraData(target, vLocation, ExtraData)
+    if (not IsServer() or not target or not ExtraData) then
+        return
+    end
+    local jumpTarget
+    local enemies = self.projectiles[ExtraData.index].targets
+    self:DealWispyDamageToTarget(self.projectiles[ExtraData.index].caster, target)
+    table.insert(self.projectiles[ExtraData.index].reachedTargets, target)
+    while #enemies > 0 do
+        local potentialJumpTarget = enemies[1]
+        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget)) then
+            table.remove(enemies, 1)
+        else
+            jumpTarget = potentialJumpTarget
+            break
+        end
+    end
+    self.projectiles[ExtraData.index].targets = enemies
+    if (#enemies > 0) then
+        self:CreateWispyBounceProjectile(target, jumpTarget, ExtraData)
+    else
+        self.projectiles[ExtraData.index] = nil
+        self:DelUniqueInt(ExtraData.index)
+        return true
+    end
+    return false
+end
+
+function fallen_druid_wisp_companion:CreateWispyBounceProjectile(source, target, extraData)
+    local projectile = {
+        Target = target,
+        Source = source,
+        Ability = self,
+        EffectName = "particles/units/fallen_druid/grasping_roots/wispy_bounce_projectile.vpcf",
+        bDodgeable = false,
+        bProvidesVision = false,
+        iMoveSpeed = 1200,
+        ExtraData = extraData
+    }
+    ProjectileManager:CreateTrackingProjectile(projectile)
+end
 
 function fallen_druid_wisp_companion:OnSpellStart()
     if (not IsServer()) then
@@ -710,7 +793,7 @@ function modifier_fallen_druid_grasping_roots:OnPostTakeDamage(damageTable)
             if(not enemy:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
                 local cd = ability:GetCooldownTimeRemaining()
                 ability:EndCooldown()
-                damageTable.attacker:SetCursorCastTarget(damageTable.victim)
+                damageTable.attacker:SetCursorCastTarget(enemy)
                 ability:OnSpellStart()
                 ability:StartCooldown(cd)
             end
@@ -758,7 +841,7 @@ function fallen_druid_grasping_roots:OnUpgrade()
     self.rootDuration = self:GetSpecialValueFor("root_duration")
     self.spreadChance = self:GetSpecialValueFor("spread_chance")
     self.spreadRadius = self:GetSpecialValueFor("spread_radius")
-    self.wispyBounce = self:GetSpecialValueFor("wispy_bounce")
+    self.wispyBounceRadius = self:GetSpecialValueFor("wispy_bounce_radius")
     self.earthElement = self:GetSpecialValueFor("earth_element")
     self.earthBonusDamage = self:GetSpecialValueFor("earth_bonus") / 100
 end
