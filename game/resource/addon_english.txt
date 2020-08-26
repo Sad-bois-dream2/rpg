@@ -645,6 +645,8 @@
         "DOTA_Tooltip_Ability_fallen_druid_flashbang_Note0"		"Rank 2 shadow has same attack speed and attack range as you, but deal 0 auto attack damage."
         "DOTA_Tooltip_Ability_fallen_druid_flashbang_damage"		"%AGILITY TO DAMAGE: "
         "DOTA_Tooltip_Ability_fallen_druid_flashbang_radius"		"RADIUS: "
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_miss_chance"		"%MISS CHANCE: "
+        "DOTA_Tooltip_Ability_fallen_druid_flashbang_miss_duration"		"MISS DURATION: "
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_miss"		"Flashbang"
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_miss_Description"		"Blinded."
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_buff"		"Flashbang"
