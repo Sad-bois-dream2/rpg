@@ -135,11 +135,11 @@ function modifier_fallen_druid_wisp_companion_ai:OnAttackLanded(kv)
         if (attacker and target and not target:IsNull() and attacker == self.wispy) then
             self.ability:DealWispyDamageToTarget(self.caster, target)
             local thirdSkillModifier = target:FindModifierByName("modifier_fallen_druid_grasping_roots_dot")
-            if (thirdSkillModifier and thirdSkillModifier.ability.wispyBounceRadius > 0) then
+            if (thirdSkillModifier and thirdSkillModifier.ability.wispyBounce > 0) then
                 local enemies = FindUnitsInRadius(self.casterTeam,
-                        target:GetAbsOrigin(),
+                        Vector(0, 0, 0),
                         nil,
-                        thirdSkillModifier.ability.wispyBounceRadius,
+                        FIND_UNITS_EVERYWHERE,
                         DOTA_UNIT_TARGET_TEAM_ENEMY,
                         DOTA_UNIT_TARGET_ALL,
                         DOTA_UNIT_TARGET_FLAG_NONE,
@@ -317,7 +317,7 @@ function fallen_druid_wisp_companion:OnProjectileHit_ExtraData(target, vLocation
     table.insert(self.projectiles[ExtraData.index].reachedTargets, target)
     while #enemies > 0 do
         local potentialJumpTarget = enemies[1]
-        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget) or potentialJumpTarget:GetHealth() < 1) then
+        if (not potentialJumpTarget or potentialJumpTarget:IsNull() or TableContains(self.projectiles[ExtraData.index].reachedTargets, potentialJumpTarget) or potentialJumpTarget:GetHealth() < 1 or not potentialJumpTarget:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
             table.remove(enemies, 1)
         else
             jumpTarget = potentialJumpTarget
@@ -841,7 +841,7 @@ function fallen_druid_grasping_roots:OnUpgrade()
     self.rootDuration = self:GetSpecialValueFor("root_duration")
     self.spreadChance = self:GetSpecialValueFor("spread_chance")
     self.spreadRadius = self:GetSpecialValueFor("spread_radius")
-    self.wispyBounceRadius = self:GetSpecialValueFor("wispy_bounce_radius")
+    self.wispyBounce = self:GetSpecialValueFor("wispy_bounce")
     self.earthElement = self:GetSpecialValueFor("earth_element")
     self.earthBonusDamage = self:GetSpecialValueFor("earth_bonus") / 100
 end

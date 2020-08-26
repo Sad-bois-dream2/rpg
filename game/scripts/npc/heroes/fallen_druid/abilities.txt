@@ -231,7 +231,7 @@
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"wispy_bounce_radius"				"0 0 300 300"
+				"wispy_bounce"				"0 0 1 1"
 			}
 			"08"
 			{
