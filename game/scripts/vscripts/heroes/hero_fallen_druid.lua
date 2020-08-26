@@ -422,6 +422,66 @@ end
 
 LinkedModifiers["modifier_fallen_druid_flashbang_buff"] = LUA_MODIFIER_MOTION_NONE
 
+modifier_fallen_druid_flashbang_shadow = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/fallen_druid/flashbang/flashbang_shadow.vpcf"
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
+    end,
+    StatusEffectPriority = function(self)
+        return 15
+    end,
+    DeclareFunctions = function(self)
+        return
+        {
+            MODIFIER_PROPERTY_ATTACK_RANGE_BONUS
+        }
+    end,
+    GetAttackRangeBonus = function(self)
+        return Units:GetAttackRange(self.caster, true)
+    end,
+    GetMoveSpeedBonus = function(self)
+        return Units:GetMoveSpeed(self.caster)
+    end
+})
+
+function modifier_fallen_druid_flashbang_shadow:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self:StartIntervalThink(self.ability.shadowDuration)
+end
+
+function modifier_fallen_druid_flashbang_shadow:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local shadow = self:GetParent()
+    DestroyWearables(shadow, function()
+        shadow:Destroy()
+    end)
+end
+
+LinkedModifiers["modifier_fallen_druid_flashbang_shadow"] = LUA_MODIFIER_MOTION_NONE
+
 fallen_druid_flashbang = class({
     GetCastRange = function(self)
         return self:GetSpecialValueFor("radius")
@@ -480,7 +540,7 @@ function fallen_druid_flashbang:OnSpellStart()
     if (self.cdrFlat > 0) then
         for i = 0, caster:GetAbilityCount() - 1 do
             local ability = caster:GetAbilityByIndex(i)
-            if(ability ~= self) then
+            if (ability and ability ~= self) then
                 local cooldownTable = {
                     target = caster,
                     ability = ability:GetAbilityName(),
@@ -492,6 +552,28 @@ function fallen_druid_flashbang:OnSpellStart()
         end
     end
     EmitSoundOn("Hero_KeeperOfTheLight.BlindingLight", caster)
+    if (self.shadowDuration > 0) then
+        local summonTable = {
+            caster = caster,
+            unit = "npc_dota_fallen_druid_flashbang_shadow",
+            position = casterPos,
+            damage = 0,
+            ability = self
+        }
+        local summon = Summons:SummonUnit(summonTable)
+        Summons:SetSummonHaveNatureDamageType(summon, true)
+        Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster))
+        Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = summon
+        modifierTable.caster = summon
+        modifierTable.modifier_name = "modifier_fallen_druid_flashbang_shadow"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+        local wearables = GetWearables(caster)
+        AddWearables(summon, wearables)
+    end
 end
 
 function fallen_druid_flashbang:OnUpgrade()

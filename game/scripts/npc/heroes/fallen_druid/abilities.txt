@@ -159,6 +159,8 @@
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/flashbang/flashbang.vpcf"
+            "particle"  "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
+            "particle"  "particles/units/fallen_druid/flashbang/flashbang_shadow.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_keeper_of_the_light.vsndevts"
 		}
 	}
