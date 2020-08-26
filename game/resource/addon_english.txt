@@ -651,6 +651,15 @@
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_miss_Description"		"Blinded."
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_buff"		"Flashbang"
         "DOTA_Tooltip_modifier_fallen_druid_flashbang_buff_Description"		"Spell damage increased."
+        "DOTA_Tooltip_Ability_fallen_druid_grasping_roots"		"Grasping Roots"
+        "DOTA_Tooltip_Ability_fallen_druid_grasping_roots_Description"		"Roots enemy in place (if autocast turned on) and place curse on him that <font color='#238842'>Nature</font> damage every second for short time.\nRank 2: Passively when you auto attack enemy affected by curse from this ability you has a <font color='white'><b>20%</b></font> chance to spread effect of this ability to a nearby unaffected enemies in <font color='white'><b>300</b></font> radius.\nRank 3: Passively cause all <font color='white'><b>Wispy</b></font> attacks also bounce to all enemies affected by this ability curse.\nRank 4: Passively transform all your <font color='#238842'>Nature</font> damage to <font color='#238842'>Nature</font> <font color='#583011'>Earth</font> damage and increases your <font color='#583011'>Earth</font> damage by <font color='white'><b>20%</b></font>."
+        "DOTA_Tooltip_Ability_fallen_druid_grasping_roots_dot_damage"		"%AGILITY TO DOT DAMAGE: "
+        "DOTA_Tooltip_Ability_fallen_druid_grasping_roots_dot_duration"		"DOT DURATION: "
+        "DOTA_Tooltip_Ability_fallen_druid_grasping_roots_root_duration"		"ROOT DURATION: "
+        "DOTA_Tooltip_modifier_fallen_druid_grasping_roots_dot"		"Curse"
+        "DOTA_Tooltip_modifier_fallen_druid_grasping_roots_dot_Description"		"Suffer from <font color='#238842'>Nature</font> damage."
+        "DOTA_Tooltip_modifier_fallen_druid_grasping_roots_root"		"Grasping Roots"
+        "DOTA_Tooltip_modifier_fallen_druid_grasping_roots_root_Description"		"Rooted."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"

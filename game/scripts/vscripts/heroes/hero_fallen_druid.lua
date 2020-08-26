@@ -16,10 +16,7 @@ modifier_fallen_druid_wisp_companion_primary_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_MULTIPLE
-    end,
+    end
 })
 
 function modifier_fallen_druid_wisp_companion_primary_buff:OnCreated()
@@ -447,12 +444,6 @@ modifier_fallen_druid_flashbang_shadow = class({
     StatusEffectPriority = function(self)
         return 15
     end,
-    DeclareFunctions = function(self)
-        return
-        {
-            MODIFIER_PROPERTY_ATTACK_RANGE_BONUS
-        }
-    end,
     GetAttackRangeBonus = function(self)
         return Units:GetAttackRange(self.caster, true)
     end,
@@ -588,6 +579,190 @@ function fallen_druid_flashbang:OnUpgrade()
     self.cdrFlat = self:GetSpecialValueFor("cdr_flat")
 end
 
+-- fallen_druid_grasping_roots
+modifier_fallen_druid_grasping_roots_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/fallen_druid/grasping_roots/grasping_roots.vpcf"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end
+})
+
+function modifier_fallen_druid_grasping_roots_dot:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_fallen_druid_grasping_roots_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.ability.dotDamage * Units:GetHeroAgility(self.caster)
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+LinkedModifiers["modifier_fallen_druid_grasping_roots_dot"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_grasping_roots_root = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_dark_willow/dark_willow_bramble.vpcf"
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_ROOTED] = true,
+        }
+    end
+})
+
+LinkedModifiers["modifier_fallen_druid_grasping_roots_root"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_grasping_roots = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMAMENT
+    end,
+})
+
+function modifier_fallen_druid_grasping_roots:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_fallen_druid_grasping_roots:GetEarthDamageBonus()
+    return self.ability.earthBonusDamage
+end
+
+function modifier_fallen_druid_grasping_roots:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_fallen_druid_grasping_roots")
+    if (modifier and modifier.ability.earthElement > 0 and damageTable.naturedmg) then
+        damageTable.earthdmg = true
+        return damageTable
+    end
+end
+
+function modifier_fallen_druid_grasping_roots:OnPostTakeDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("fallen_druid_grasping_roots")
+    if (ability and not damageTable.ability and damageTable.physdmg and RollPercentage(ability.spreadChance) and damageTable.victim:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
+        local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
+                damageTable.victim:GetAbsOrigin(),
+                nil,
+                ability.spreadRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            if(not enemy:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
+                local cd = ability:GetCooldownTimeRemaining()
+                ability:EndCooldown()
+                damageTable.attacker:SetCursorCastTarget(damageTable.victim)
+                ability:OnSpellStart()
+                ability:StartCooldown(cd)
+            end
+        end
+    end
+end
+
+LinkedModifiers["modifier_fallen_druid_grasping_roots"] = LUA_MODIFIER_MOTION_NONE
+
+fallen_druid_grasping_roots = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_fallen_druid_grasping_roots"
+    end
+})
+
+function fallen_druid_grasping_roots:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    if (self:GetAutoCastState()) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_fallen_druid_grasping_roots_root"
+        modifierTable.duration = self.rootDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_fallen_druid_grasping_roots_dot"
+    modifierTable.duration = self.dotDuration
+    GameMode:ApplyDebuff(modifierTable)
+    EmitSoundOn("Hero_DarkWillow.Brambles.CastTarget", target)
+end
+
+function fallen_druid_grasping_roots:OnUpgrade()
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.rootDuration = self:GetSpecialValueFor("root_duration")
+    self.spreadChance = self:GetSpecialValueFor("spread_chance")
+    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
+    self.wispyBounce = self:GetSpecialValueFor("wispy_bounce")
+    self.earthElement = self:GetSpecialValueFor("earth_element")
+    self.earthBonusDamage = self:GetSpecialValueFor("earth_bonus") / 100
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_fallen_druid", MotionController)
@@ -595,5 +770,7 @@ end
 
 if (IsServer() and not GameMode.FALLEN_DRUID_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(fallen_druid_wisp_companion, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_grasping_roots, 'OnTakeDamage'), true)
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_grasping_roots, 'OnPostTakeDamage'))
     GameMode.FALLEN_DRUID_INIT = true
 end
