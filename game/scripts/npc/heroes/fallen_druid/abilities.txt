@@ -251,4 +251,87 @@
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}
+	//=================================================================================================================
+	// Fallen Druid: Crown of Death
+	//=================================================================================================================
+	"fallen_druid_crown_of_death"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_fallen_druid.lua"
+		"AbilityTextureName"			"dark_willow_cursed_crown"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
+        "AbilityCastPoint"				"0.5"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"40"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_damage_per_stack"				"2 3 4 5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"				"10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_tick"				"1"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"explosion_damage_per_stack"				"0 10 10 10"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wispy_proc_dot"				"0 0 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_damage"				"0 0 0 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_tick"				"0 0 0 1"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_duration"				"0 0 0 5"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/heroes/hero_dark_willow/dark_willow_bramble.vpcf"
+            "particle"  "particles/units/fallen_druid/grasping_roots/grasping_roots.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
+		}
+	}
 }

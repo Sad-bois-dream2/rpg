@@ -845,6 +845,19 @@ function fallen_druid_grasping_roots:OnUpgrade()
     self.earthElement = self:GetSpecialValueFor("earth_element")
     self.earthBonusDamage = self:GetSpecialValueFor("earth_bonus") / 100
 end
+-- fallen_druid_crown_of_death
+fallen_druid_crown_of_death = class({})
+
+function fallen_druid_crown_of_death:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+end
+
+function fallen_druid_crown_of_death:OnUpgrade()
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
