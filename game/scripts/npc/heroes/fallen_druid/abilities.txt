@@ -299,29 +299,39 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"10"
+				"dot_stacks_cap"				"30"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"explosion_damage_per_stack"				"0 10 10 10"
+				"duration"				"10"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"wispy_proc_dot"				"0 0 1 1"
+				"explosion_damage_per_stack"				"0 10 10 10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"crits_dot_damage"				"0 0 0 20"
+				"explosion_radius"				"0 400 400 400"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"crits_dot_tick"				"0 0 0 1"
+				"wispy_proc_radius"				"0 0 300 300"
 			}
 			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_damage"				"0 0 0 20"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_tick"				"0 0 0 1"
+			}
+			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"crits_dot_duration"				"0 0 0 5"
@@ -329,8 +339,7 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/heroes/hero_dark_willow/dark_willow_bramble.vpcf"
-            "particle"  "particles/units/fallen_druid/grasping_roots/grasping_roots.vpcf"
+            "particle"  "particles/units/fallen_druid/crown_of_death/crown_of_death_buff.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}

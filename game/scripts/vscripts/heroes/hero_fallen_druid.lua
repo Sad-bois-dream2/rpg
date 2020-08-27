@@ -846,6 +846,206 @@ function fallen_druid_grasping_roots:OnUpgrade()
     self.earthBonusDamage = self:GetSpecialValueFor("earth_bonus") / 100
 end
 -- fallen_druid_crown_of_death
+modifier_fallen_druid_crown_of_death_crit_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_fallen_druid_crown_of_death_crit_dot:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.critDmg = kv.damage or 0
+    self.damage = (Units:GetHeroAgility(self.caster) * self.ability.critsDotDamage * self.critDmg) / (self:GetDuration() / self.ability.critsDotTick)
+    self:StartIntervalThink(self.ability.critsDotTick)
+end
+
+function modifier_fallen_druid_crown_of_death_crit_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.damage = self.damage
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_fallen_druid_crown_of_death_crit_dot:OnCriticalDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("fallen_druid_crown_of_death")
+    if (ability and ability.critsDotDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = ability
+        modifierTable.target = damageTable.attacker
+        modifierTable.caster = damageTable.victim
+        modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_crit_dot"
+        modifierTable.duration = ability.critsDotDuration
+        modifierTable.modifier_params = { damage = damageTable.damage }
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+LinkedModifiers["modifier_fallen_druid_crown_of_death_crit_dot"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_crown_of_death_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end
+})
+
+function modifier_fallen_druid_crown_of_death_dot:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_fallen_druid_crown_of_death_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damage = Units:GetHeroAgility(self.caster) * self.ability.dotDamagePerStack * self:GetStackCount()
+    local damageTable = {}
+    damageTable.damage = damage
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_fallen_druid_crown_of_death_dot:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    if (self.ability.explosionDamagePerStack > 0) then
+        local damage = Units:GetHeroAgility(self.caster) * self.ability.explosionDamagePerStack * self:GetStackCount()
+        local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
+                self.target:GetAbsOrigin(),
+                nil,
+                self.ability.explosionRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.damage = damage
+            damageTable.caster = self.caster
+            damageTable.target = enemy
+            damageTable.ability = self.ability
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+end
+
+LinkedModifiers["modifier_fallen_druid_crown_of_death_dot"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_crown_of_death = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/fallen_druid/crown_of_death/crown_of_death_buff.vpcf"
+    end
+})
+
+function modifier_fallen_druid_crown_of_death:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_fallen_druid_crown_of_death")
+    if (modifier) then
+        if (not damageTable.ability and damageTable.physdmg) then
+            local modifierTable = {}
+            modifierTable.ability = modifier.ability
+            modifierTable.caster = damageTable.attacker
+            modifierTable.target = damageTable.victim
+            modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
+            modifierTable.duration = modifier.ability.dotDuration
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = modifier.ability.dotStacksCap
+            GameMode:ApplyStackingDebuff(modifierTable)
+        end
+        if (damageTable.ability and damageTable.fromsummon and damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyProcRadius > 0) then
+            local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
+                    self.target:GetAbsOrigin(),
+                    nil,
+                    modifier.ability.wispyProcRadius,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_ALL,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            table.remove(enemies, damageTable.victim)
+            for _, enemy in pairs(enemies) do
+                local modifierTable = {}
+                modifierTable.ability = modifier.ability
+                modifierTable.caster = damageTable.attacker
+                modifierTable.target = enemy
+                modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
+                modifierTable.duration = modifier.ability.dotDuration
+                modifierTable.stacks = 1
+                modifierTable.max_stacks = modifier.ability.dotStacksCap
+                GameMode:ApplyStackingDebuff(modifierTable)
+            end
+        end
+    end
+end
+
+function modifier_fallen_druid_crown_of_death:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_fallen_druid_crown_of_death"] = LUA_MODIFIER_MOTION_NONE
+
 fallen_druid_crown_of_death = class({})
 
 function fallen_druid_crown_of_death:OnSpellStart()
@@ -853,10 +1053,27 @@ function fallen_druid_crown_of_death:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
 end
 
 function fallen_druid_crown_of_death:OnUpgrade()
+    self.dotDamagePerStack = self:GetSpecialValueFor("dot_damage_per_stack") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.explosionDamagePerStack = self:GetSpecialValueFor("explosion_damage_per_stack") / 100
+    self.explosionRadius = self:GetSpecialValueFor("explosion_radius")
+    self.wispyProcRadius = self:GetSpecialValueFor("wispy_proc_radius")
+    self.critsDotDamage = self:GetSpecialValueFor("crits_dot_damage") / 100
+    self.critsDotTick = self:GetSpecialValueFor("crits_dot_tick")
+    self.critsDotDuration = self:GetSpecialValueFor("crits_dot_duration")
+    self.dotStacksCap = self:GetSpecialValueFor("dot_stacks_cap")
 end
 
 -- Internal stuff
@@ -868,5 +1085,7 @@ if (IsServer() and not GameMode.FALLEN_DRUID_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(fallen_druid_wisp_companion, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_grasping_roots, 'OnTakeDamage'), true)
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_grasping_roots, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death, 'OnPostTakeDamage'))
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death_crit_dot, 'OnCriticalDamage'))
     GameMode.FALLEN_DRUID_INIT = true
 end
