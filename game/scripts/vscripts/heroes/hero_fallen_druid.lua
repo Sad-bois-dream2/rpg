@@ -779,7 +779,7 @@ end
 
 function modifier_fallen_druid_grasping_roots:OnPostTakeDamage(damageTable)
     local ability = damageTable.attacker:FindAbilityByName("fallen_druid_grasping_roots")
-    if (ability and not damageTable.ability and damageTable.physdmg and RollPercentage(ability.spreadChance) and damageTable.victim:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
+    if (ability and not damageTable.ability and ability:GetLevel() > 0 and damageTable.physdmg and RollPercentage(ability.spreadChance) and damageTable.victim:HasModifier("modifier_fallen_druid_grasping_roots_dot")) then
         local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
                 damageTable.victim:GetAbsOrigin(),
                 nil,
