@@ -436,6 +436,7 @@
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/whispering_doom/whispering_doom_projectile.vpcf"
+            "particle"  "particles/units/fallen_druid/whispering_doom/whispering_doom_dot.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}

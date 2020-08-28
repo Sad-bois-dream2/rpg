@@ -1118,6 +1118,41 @@ function fallen_druid_crown_of_death:OnUpgrade()
     self.critsDotCooldown = self:GetSpecialValueFor("crits_dot_cd")
 end
 -- fallen_druid_whispering_doom
+modifier_fallen_druid_whispering_doom_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_fallen_druid_whispering_doom_dot:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/whispering_doom/whispering_doom_dot.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControlEnt(pidx, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true)
+    ParticleManager:SetParticleControl(pidx, 5, Vector(100, 0, 0))
+    Timers:CreateTimer(10, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+end
+
+LinkedModifiers["modifier_fallen_druid_whispering_doom_dot"] = LUA_MODIFIER_MOTION_NONE
+
 fallen_druid_whispering_doom = class({})
 
 function fallen_druid_whispering_doom:OnProjectileHit( enemy, vLocation )
@@ -1170,6 +1205,13 @@ function fallen_druid_whispering_doom:OnSpellStart()
         }
         projectile = ProjectileManager:CreateLinearProjectile(projectile)
     end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_fallen_druid_whispering_doom_dot"
+    modifierTable.duration = 5
+    GameMode:ApplyDebuff(modifierTable)
     self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
 end
 
