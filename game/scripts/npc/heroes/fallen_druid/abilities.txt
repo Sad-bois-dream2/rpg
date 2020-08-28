@@ -435,7 +435,7 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/status_fx/status_effect_poison_venomancer.vpcf"
+            "particle"  "particles/units/fallen_druid/whispering_doom/whispering_doom_projectile.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}
