@@ -1,0 +1,30 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = [  ]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/dark_willow/dark_willow_offhand.vmdl"
+				m_nModSpecificData = 641
+				m_sequenceName = "idle"
+				m_hitboxSetName = "default"
+			}
+		},
+		{
+			m_name = "point_follow"
+			m_drivers = [  ]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/dark_willow/dark_willow.vmdl"
+				m_sequenceName = "victory"
+				m_bAnimationNonLooping = true
+			}
+		},
+	]
+	m_nMaxParticles = 0
+	m_nBehaviorVersion = 10
+}

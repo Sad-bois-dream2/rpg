@@ -425,24 +425,52 @@ function HideElementalResistancesTooltip() {
     GameEvents.Subscribe("dota_hero_ability_points_changed", UpdateAbilityList);
     UpdateAbilityList(); // initial update
     $.Schedule(0.1, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(0.2, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(0.5, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(1, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(2, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(3, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     $.Schedule(4, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        if(playerHero > -1) {
+			GameUI.SelectUnit(playerHero, false);
+        }
         UpdateAbilityList();
     });
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);

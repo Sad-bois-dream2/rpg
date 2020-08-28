@@ -166,18 +166,7 @@
     height: fill-parent-flow(1.0);
 	flow-children: down;
 	z-index: 1;
-	margin-left: 812px;
-	margin-top: 860px;
-}
-
-.AspectRatio4x3 .AbilityOverlayRoot
-{
-	margin-left: 572px;
-}
-
-.AspectRatio16x10 .AbilityOverlayRoot
-{
-	margin-left: 718px;
+	margin-top: 25px;
 }
 
 .AbilityLevelUpPanel {
@@ -549,6 +538,13 @@
     flow-children: right;
 }
 
+.HeroPanelContainer.Abilities {
+    vertical-align: bottom;
+    horizontal-align: center;
+    z-index: 20;
+    height: 250px;
+}
+
 .HeroPanelLeftContainer {
     width: 200px;
     height: fill-parent-flow(1.0);
@@ -561,6 +557,10 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	border-top-right-radius: 15px;
+}
+
+.HeroPanelRightContainer.Abilities {
+	background-image: none;
 }
 
 .TooltipElementLabelContainer {
