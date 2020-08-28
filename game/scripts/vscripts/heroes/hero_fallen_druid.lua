@@ -1117,7 +1117,36 @@ function fallen_druid_crown_of_death:OnUpgrade()
     self.dotStacksCap = self:GetSpecialValueFor("dot_stacks_cap")
     self.critsDotCooldown = self:GetSpecialValueFor("crits_dot_cd")
 end
+-- fallen_druid_whispering_doom
+fallen_druid_whispering_doom = class({})
 
+function fallen_druid_whispering_doom:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    caster:EmitSound("Hero_DarkWillow.Fear.Cast")
+end
+
+function fallen_druid_whispering_doom:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.stunDuration = self:GetSpecialValueFor("stun")
+    self.natureReduction = self:GetSpecialValueFor("nature_reduction") / 100
+    self.armorReduction = self:GetSpecialValueFor("armor_reduction") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.shadowVortexBonus = self:GetSpecialValueFor("shadow_vortex_bonus") / 100
+    self.wispyBonus = self:GetSpecialValueFor("wispy_bonus") / 100
+    self.bonusDuration = self:GetSpecialValueFor("bonus_duration")
+end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_fallen_druid", MotionController)

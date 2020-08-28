@@ -7,7 +7,7 @@
 	"Ability2"	"fallen_druid_flashbang"
 	"Ability3"	"fallen_druid_grasping_roots"
     "Ability4"	"fallen_druid_crown_of_death"
-    "Ability5"	"empty5"
+    "Ability5"	"fallen_druid_whispering_doom"
 	"Ability6"	"antimage_blink"
     "Ability7"	""
     "Ability8"	""
