@@ -567,7 +567,11 @@ function fallen_druid_flashbang:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
+    local ability = caster:FindAbilityByName("fallen_druid_wisp_companion")
     local casterPos = caster:GetAbsOrigin()
+    if(ability and ability:GetLevel() > 0) then
+        casterPos = ability.wispy:GetAbsOrigin()
+    end
     local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/flashbang/flashbang.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 0, casterPos)
     ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 1, 1))
@@ -861,6 +865,9 @@ modifier_fallen_druid_crown_of_death_crit_dot = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
     end
 })
 
@@ -891,7 +898,7 @@ end
 
 function modifier_fallen_druid_crown_of_death_crit_dot:OnCriticalDamage(damageTable)
     local ability = damageTable.attacker:FindAbilityByName("fallen_druid_crown_of_death")
-    if (ability and ability.critsDotDuration > 0) then
+    if (ability and ability.critsDotDuration > 0 and not ability.critsDotProcCooldown) then
         local modifierTable = {}
         modifierTable.ability = ability
         modifierTable.target = damageTable.attacker
@@ -900,6 +907,10 @@ function modifier_fallen_druid_crown_of_death_crit_dot:OnCriticalDamage(damageTa
         modifierTable.duration = ability.critsDotDuration
         modifierTable.modifier_params = { damage = damageTable.damage }
         GameMode:ApplyDebuff(modifierTable)
+        ability.critsDotProcCooldown = true
+        Timers:CreateTimer(ability.critsDotCooldown, function()
+            ability.critsDotProcCooldown = nil
+        end)
     end
 end
 
@@ -920,9 +931,6 @@ modifier_fallen_druid_crown_of_death_dot = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_MULTIPLE
     end
 })
 
@@ -1016,7 +1024,7 @@ function modifier_fallen_druid_crown_of_death:OnPostTakeDamage(damageTable)
         end
         if (damageTable.ability and damageTable.fromsummon and damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyProcRadius > 0) then
             local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
-                    self.target:GetAbsOrigin(),
+                    damageTable.victim:GetAbsOrigin(),
                     nil,
                     modifier.ability.wispyProcRadius,
                     DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -1074,6 +1082,7 @@ function fallen_druid_crown_of_death:OnUpgrade()
     self.critsDotTick = self:GetSpecialValueFor("crits_dot_tick")
     self.critsDotDuration = self:GetSpecialValueFor("crits_dot_duration")
     self.dotStacksCap = self:GetSpecialValueFor("dot_stacks_cap")
+    self.critsDotCooldown = self:GetSpecialValueFor("crits_dot_cd")
 end
 
 -- Internal stuff

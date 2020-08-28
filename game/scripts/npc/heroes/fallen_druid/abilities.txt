@@ -336,6 +336,11 @@
 				"var_type"				"FIELD_FLOAT"
 				"crits_dot_duration"				"0 0 0 5"
 			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crits_dot_cd"				"0 0 0 0.5"
+			}
 		}
 		"precache"
 		{
