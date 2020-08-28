@@ -37,13 +37,7 @@
 		},
 		{
 			_class = "C_OP_LockToBone"
-			m_HitboxSetName = "hands"
 			m_bRigid = true
-		},
-		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 16, 104, 24, 255 ]
-			m_flFadeStartTime = 0.25
 		},
 	]
 	m_Initializers = 
@@ -60,7 +54,6 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 0, 100, 0, 255 ]
 			m_ColorMax = [ 124, 252, 0, 255 ]
-			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -69,12 +62,6 @@
 		},
 		{
 			_class = "C_INIT_CreateOnModel"
-			m_HitboxSetName = "hands"
-		},
-		{
-			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 195, 250, 56, 255 ]
-			m_ColorMax = [ 109, 193, 0, 255 ]
 		},
 	]
 	m_Emitters = 

@@ -569,7 +569,7 @@ function fallen_druid_flashbang:OnSpellStart()
     local caster = self:GetCaster()
     local ability = caster:FindAbilityByName("fallen_druid_wisp_companion")
     local casterPos = caster:GetAbsOrigin()
-    if(ability and ability:GetLevel() > 0) then
+    if (ability and ability:GetLevel() > 0) then
         casterPos = ability.wispy:GetAbsOrigin()
     end
     local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/flashbang/flashbang.vpcf", PATTACH_ABSORIGIN, caster)
@@ -931,7 +931,16 @@ modifier_fallen_druid_crown_of_death_dot = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end
+    end,
+    GetEffectName = function(self)
+        return "particles/units/fallen_druid/crown_of_death/crown_of_death_dot_v2.vpcf"
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_poison_venomancer.vpcf"
+    end,
+    StatusEffectPriority = function(self)
+        return 15
+    end,
 })
 
 function modifier_fallen_druid_crown_of_death_dot:OnCreated()
@@ -963,9 +972,16 @@ function modifier_fallen_druid_crown_of_death_dot:OnDestroy()
         return
     end
     if (self.ability.explosionDamagePerStack > 0) then
+        local targetPosition = self.target:GetAbsOrigin()
+        local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/crown_of_death/crown_of_death_explosion.vpcf", PATTACH_ABSORIGIN, self.target)
+        --ParticleManager:SetParticleControlEnt(pidx, 0, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", self.target:GetAbsOrigin(), true)
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
         local damage = Units:GetHeroAgility(self.caster) * self.ability.explosionDamagePerStack * self:GetStackCount()
         local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(),
-                self.target:GetAbsOrigin(),
+                targetPosition,
                 nil,
                 self.ability.explosionRadius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -1005,23 +1021,37 @@ modifier_fallen_druid_crown_of_death = class({
     end,
     GetEffectName = function(self)
         return "particles/units/fallen_druid/crown_of_death/crown_of_death_buff.vpcf"
+    end,
+    DeclareFunctions = function(self)
+        return
+        {
+            MODIFIER_EVENT_ON_ATTACK_LANDED,
+        }
     end
 })
+
+function modifier_fallen_druid_crown_of_death:OnAttackLanded(kv)
+    if (not IsServer()) then
+        return
+    end
+    local attacker = kv.attacker
+    local target = kv.target
+    if (attacker and target and not target:IsNull() and attacker == self.caster) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = attacker
+        modifierTable.target = target
+        modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
+        modifierTable.duration = self.ability.dotDuration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.ability.dotStacksCap
+        GameMode:ApplyStackingDebuff(modifierTable)
+    end
+end
 
 function modifier_fallen_druid_crown_of_death:OnPostTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_fallen_druid_crown_of_death")
     if (modifier) then
-        if (not damageTable.ability and damageTable.physdmg) then
-            local modifierTable = {}
-            modifierTable.ability = modifier.ability
-            modifierTable.caster = damageTable.attacker
-            modifierTable.target = damageTable.victim
-            modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
-            modifierTable.duration = modifier.ability.dotDuration
-            modifierTable.stacks = 1
-            modifierTable.max_stacks = modifier.ability.dotStacksCap
-            GameMode:ApplyStackingDebuff(modifierTable)
-        end
         if (damageTable.ability and damageTable.fromsummon and damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyProcRadius > 0) then
             local enemies = FindUnitsInRadius(damageTable.attacker:GetTeamNumber(),
                     damageTable.victim:GetAbsOrigin(),
@@ -1033,7 +1063,7 @@ function modifier_fallen_druid_crown_of_death:OnPostTakeDamage(damageTable)
                     FIND_ANY_ORDER,
                     false)
             for _, enemy in pairs(enemies) do
-                if(enemy ~= damageTable.victim) then
+                if (enemy ~= damageTable.victim) then
                     local modifierTable = {}
                     modifierTable.ability = modifier.ability
                     modifierTable.caster = damageTable.attacker
@@ -1051,6 +1081,7 @@ end
 
 function modifier_fallen_druid_crown_of_death:OnCreated()
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
 end
 
 LinkedModifiers["modifier_fallen_druid_crown_of_death"] = LUA_MODIFIER_MOTION_NONE
