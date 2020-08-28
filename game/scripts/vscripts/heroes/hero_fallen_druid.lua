@@ -369,10 +369,10 @@ end
 
 function fallen_druid_wisp_companion:OnPostTakeDamage(damageTable)
     local ability = damageTable.attacker:FindAbilityByName("fallen_druid_wisp_companion")
-    if (not ability or not damageTable.fromsummon) then
+    if (not ability or ability:GetLevel() == 0 or not damageTable.fromsummon or not damageTable.ability) then
         return damageTable
     end
-    if (not (ability.wispHealing > 0) or ability.wispHealingCurrentInCD) then
+    if (ability.wispHealing and not (ability.wispHealing > 0) or ability.wispHealingCurrentInCD) then
         return damageTable
     end
     local healTable = {}
@@ -1120,19 +1120,57 @@ end
 -- fallen_druid_whispering_doom
 fallen_druid_whispering_doom = class({})
 
+function fallen_druid_whispering_doom:OnProjectileHit( enemy, vLocation )
+    if (not IsServer()) then
+        return
+    end
+    if(not TableContains(self.damagedEnemies, enemy)) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = self.damage * Units:GetHeroAgility(self.caster)
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        table.insert(self.damagedEnemies, enemy)
+    end
+    return false
+end
+
 function fallen_druid_whispering_doom:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = caster
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death"
-    modifierTable.duration = self.duration
-    GameMode:ApplyBuff(modifierTable)
-    caster:EmitSound("Hero_DarkWillow.Fear.Cast")
+    self.caster = self:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    local casterPosition = self.caster:GetAbsOrigin()
+    local velocity = self.caster:GetForwardVector() * 1500
+    local deathTime = GameRules:GetGameTime() + 10.0
+    self.damagedEnemies = {}
+    for _ = 1, 10 do
+        local projectile = {
+            Ability = self,
+            EffectName = "particles/units/fallen_druid/whispering_doom/whispering_doom_projectile.vpcf",
+            vSpawnOrigin = casterPosition + RandomVector(RandomInt(0, 200)),
+            fDistance = 2000,
+            fStartRadius = 100,
+            fEndRadius = 100,
+            Source = self.caster,
+            bHasFrontalCone = false,
+            bReplaceExisting = false,
+            iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+            iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+            iUnitTargetType = DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            fExpireTime = deathTime,
+            bDeleteOnHit = false,
+            vVelocity = velocity,
+            bProvidesVision = true,
+            iVisionRadius = 1000,
+            iVisionTeamNumber = self.casterTeam
+        }
+        projectile = ProjectileManager:CreateLinearProjectile(projectile)
+    end
+    self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
 end
 
 function fallen_druid_whispering_doom:OnUpgrade()

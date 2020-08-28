@@ -34,7 +34,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_dark_willow/dark_willow_lantern_ambient_dark.vpcf"
+			m_ChildRef = resource:"particles/units/fallen_druid/whispering_doom/whispering_doom_projectile_glow_ambient_dark.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/fallen_druid/wisp_companion/wispy_ambient_model.vpcf"
