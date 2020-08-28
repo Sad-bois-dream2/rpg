@@ -1100,6 +1100,7 @@ function fallen_druid_crown_of_death:OnSpellStart()
     modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death"
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
+    caster:EmitSound("Hero_DarkWillow.Ley.Cast")
 end
 
 function fallen_druid_crown_of_death:OnUpgrade()
