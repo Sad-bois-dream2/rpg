@@ -38,9 +38,17 @@
                 <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
             </Panel>
         </Panel>
-        <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
-            <Panel id="ability_list"/>
+    <Panel class="HeroPanelContainer Abilities" hittest="false">
+        <Panel class="HeroPanelLeftContainer"  hittest="false">
+            <Panel class="HeroPortraitContainer"  hittest="false">
+            </Panel>
         </Panel>
+        <Panel class="HeroPanelRightContainer Abilities" hittest="false">
+            <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
+                <Panel id="ability_list"/>
+            </Panel>
+        </Panel>
+    </Panel>
         <Panel class="ActionPanelContainer">
             <Panel id="ModifierListContainer">
             </Panel>
