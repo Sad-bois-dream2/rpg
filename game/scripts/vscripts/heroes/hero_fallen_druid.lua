@@ -1032,17 +1032,18 @@ function modifier_fallen_druid_crown_of_death:OnPostTakeDamage(damageTable)
                     DOTA_UNIT_TARGET_FLAG_NONE,
                     FIND_ANY_ORDER,
                     false)
-            table.remove(enemies, damageTable.victim)
             for _, enemy in pairs(enemies) do
-                local modifierTable = {}
-                modifierTable.ability = modifier.ability
-                modifierTable.caster = damageTable.attacker
-                modifierTable.target = enemy
-                modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
-                modifierTable.duration = modifier.ability.dotDuration
-                modifierTable.stacks = 1
-                modifierTable.max_stacks = modifier.ability.dotStacksCap
-                GameMode:ApplyStackingDebuff(modifierTable)
+                if(enemy ~= damageTable.victim) then
+                    local modifierTable = {}
+                    modifierTable.ability = modifier.ability
+                    modifierTable.caster = damageTable.attacker
+                    modifierTable.target = enemy
+                    modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_dot"
+                    modifierTable.duration = modifier.ability.dotDuration
+                    modifierTable.stacks = 1
+                    modifierTable.max_stacks = modifier.ability.dotStacksCap
+                    GameMode:ApplyStackingDebuff(modifierTable)
+                end
             end
         end
     end
