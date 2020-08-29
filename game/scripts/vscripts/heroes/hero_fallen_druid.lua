@@ -1118,9 +1118,9 @@ function fallen_druid_crown_of_death:OnUpgrade()
     self.critsDotCooldown = self:GetSpecialValueFor("crits_dot_cd")
 end
 -- fallen_druid_whispering_doom
-modifier_fallen_druid_whispering_doom_dot = class({
+modifier_fallen_druid_whispering_doom_buff = class({
     IsDebuff = function(self)
-        return true
+        return false
     end,
     IsHidden = function(self)
         return false
@@ -1136,37 +1136,128 @@ modifier_fallen_druid_whispering_doom_dot = class({
     end
 })
 
+function modifier_fallen_druid_whispering_doom_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+function modifier_fallen_druid_whispering_doom_buff:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_fallen_druid_whispering_doom_buff")
+    if (modifier and damageTable.ability) then
+        if(damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyBonus and damageTable.fromsummon) then
+            damageTable.damage = damageTable.damage * modifier.ability.wispyBonus
+        end
+        if(damageTable.ability:GetAbilityName() == "fallen_druid_shadow_vortex" and modifier.ability.shadowVortexBonus) then
+            damageTable.damage = damageTable.damage * modifier.ability.shadowVortexBonus
+        end
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_fallen_druid_whispering_doom_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_whispering_doom_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end
+})
+
 function modifier_fallen_druid_whispering_doom_dot:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
-    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/whispering_doom/whispering_doom_dot.vpcf", PATTACH_ABSORIGIN, self.caster)
-    ParticleManager:SetParticleControlEnt(pidx, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true)
-    ParticleManager:SetParticleControl(pidx, 5, Vector(100, 0, 0))
-    Timers:CreateTimer(10, function()
+    self.target = self:GetParent()
+    self.particle = ParticleManager:CreateParticle("particles/units/fallen_druid/whispering_doom/whispering_doom_dot.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.particle, 5, Vector(self.target:GetPaddedCollisionRadius() + 50, 0, 0))
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_fallen_druid_whispering_doom_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.ability.dotDamage * Units:GetHeroAgility(self.caster)
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf", PATTACH_ABSORIGIN, self.target)
+    ParticleManager:SetParticleControlEnt(pidx, 3, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", self.target:GetAbsOrigin(), true)
+    Timers:CreateTimer(1.0, function()
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
     end)
+    self.target:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
+end
+
+function modifier_fallen_druid_whispering_doom_dot:GetArmorPercentBonus()
+    return self.ability.armorReduction
+end
+
+function modifier_fallen_druid_whispering_doom_dot:GetNatureProtectionBonus()
+    return self.ability.natureReduction
+end
+
+function modifier_fallen_druid_whispering_doom_dot:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.particle)
 end
 
 LinkedModifiers["modifier_fallen_druid_whispering_doom_dot"] = LUA_MODIFIER_MOTION_NONE
 
 fallen_druid_whispering_doom = class({})
 
-function fallen_druid_whispering_doom:OnProjectileHit( enemy, vLocation )
+function fallen_druid_whispering_doom:OnProjectileHit(enemy, vLocation)
     if (not IsServer()) then
         return
     end
-    if(not TableContains(self.damagedEnemies, enemy)) then
+    if (not TableContains(self.damagedEnemies, enemy)) then
         local damageTable = {}
         damageTable.caster = self.caster
-        damageTable.target = enemy
-        damageTable.ability = self
+        damageTable.target = self.target
+        damageTable.ability = self.ability
         damageTable.damage = self.damage * Units:GetHeroAgility(self.caster)
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
+        if (self.dotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_fallen_druid_whispering_doom_dot"
+            modifierTable.duration = self.dotDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = self.stunDuration
+        GameMode:ApplyDebuff(modifierTable)
         table.insert(self.damagedEnemies, enemy)
     end
     return false
@@ -1209,9 +1300,9 @@ function fallen_druid_whispering_doom:OnSpellStart()
     modifierTable.ability = self
     modifierTable.target = self.caster
     modifierTable.caster = self.caster
-    modifierTable.modifier_name = "modifier_fallen_druid_whispering_doom_dot"
-    modifierTable.duration = 5
-    GameMode:ApplyDebuff(modifierTable)
+    modifierTable.modifier_name = "modifier_fallen_druid_whispering_doom_buff"
+    modifierTable.duration = self.bonusDuration
+    GameMode:ApplyBuff(modifierTable)
     self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
 end
 
@@ -1238,5 +1329,6 @@ if (IsServer() and not GameMode.FALLEN_DRUID_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_grasping_roots, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death, 'OnPostTakeDamage'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death_crit_dot, 'OnCriticalDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_whispering_doom_buff, 'OnTakeDamage'))
     GameMode.FALLEN_DRUID_INIT = true
 end

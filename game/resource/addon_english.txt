@@ -673,9 +673,13 @@
         "DOTA_Tooltip_modifier_fallen_druid_crown_of_death_crit_dot"		"Crown of Death"
         "DOTA_Tooltip_modifier_fallen_druid_crown_of_death_crit_dot_Description"		"Suffer additional damage from critical strike as <font color='#238842'>Nature</font> damage."
         "DOTA_Tooltip_Ability_fallen_druid_whispering_doom"		"Whispering Doom"
-        "DOTA_Tooltip_Ability_fallen_druid_whispering_doom_Description"		"Summons an army of wisps to move towards the target location. They attack enemies on their path dealing <font color='#238842'>Nature</font> damage and stun them for short time.\nRank 2: Wisps from this ability also latch to enemies in their path, dealing <font color='#238842'>Nature</font> damage equal <font color='white'><b>50%</b></font> of agility every second for <font color='white'><b>5</b></font> seconds.\nRank 3: Latched wisps also now reduce enemy armor and nature resistance by <font color='white'><b>20%</b></font>.\nRank 4: After using this ability increase your <font color='white'><b>Shadow Vortex</b></font> damage by <font color='white'><b>50%</b></font> and <font color='white'><b>Wispy</b></font> damage by <font color='white'><b>50%</b></font> for <font color='white'><b>5</b></font> seconds."
+        "DOTA_Tooltip_Ability_fallen_druid_whispering_doom_Description"		"Summons an army of wisps to move towards the target location. They attack enemies on their path dealing <font color='#238842'>Nature</font> damage and stun them for short time (if autocast turned on).\nRank 2: Wisps from this ability also latch to enemies in their path, dealing <font color='#238842'>Nature</font> damage equal <font color='white'><b>50%</b></font> of agility every second for <font color='white'><b>5</b></font> seconds.\nRank 3: Latched wisps also now reduce enemy armor and nature resistance by <font color='white'><b>20%</b></font>.\nRank 4: After using this ability increase your <font color='white'><b>Shadow Vortex</b></font> damage by <font color='white'><b>50%</b></font> and <font color='white'><b>Wispy</b></font> damage by <font color='white'><b>50%</b></font> for <font color='white'><b>5</b></font> seconds."
         "DOTA_Tooltip_Ability_fallen_druid_whispering_doom_damage"		"%AGILITY TO DAMAGE: "
         "DOTA_Tooltip_Ability_fallen_druid_whispering_doom_stun"		"STUN DURATION: "
+        "DOTA_Tooltip_modifier_fallen_druid_whispering_doom_dot"		"Whispering Doom"
+        "DOTA_Tooltip_modifier_fallen_druid_whispering_doom_dot_Description"		"Suffer from <font color='#238842'>Nature</font> damage."
+        "DOTA_Tooltip_modifier_fallen_druid_whispering_doom_buff"		"Whispering Doom"
+        "DOTA_Tooltip_modifier_fallen_druid_whispering_doom_buff_Description"		"Wispy and Shadow Vortex damage increased."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"
