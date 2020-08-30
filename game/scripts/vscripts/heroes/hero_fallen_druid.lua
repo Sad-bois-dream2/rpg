@@ -1145,11 +1145,11 @@ end
 function modifier_fallen_druid_whispering_doom_buff:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_fallen_druid_whispering_doom_buff")
     if (modifier and damageTable.ability) then
-        if(damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyBonus and damageTable.fromsummon) then
-            damageTable.damage = damageTable.damage * modifier.ability.wispyBonus
+        if (damageTable.ability:GetAbilityName() == "fallen_druid_wisp_companion" and modifier.ability.wispyBonus and damageTable.fromsummon) then
+            damageTable.damage = damageTable.damage * (1 + modifier.ability.wispyBonus)
         end
-        if(damageTable.ability:GetAbilityName() == "fallen_druid_shadow_vortex" and modifier.ability.shadowVortexBonus) then
-            damageTable.damage = damageTable.damage * modifier.ability.shadowVortexBonus
+        if (damageTable.ability:GetAbilityName() == "fallen_druid_shadow_vortex" and modifier.ability.shadowVortexBonus) then
+            damageTable.damage = damageTable.damage * (1 + modifier.ability.shadowVortexBonus)
         end
         return damageTable
     end
