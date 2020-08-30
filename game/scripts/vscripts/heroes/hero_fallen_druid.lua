@@ -1251,13 +1251,15 @@ function fallen_druid_whispering_doom:OnProjectileHit(enemy, vLocation)
             modifierTable.duration = self.dotDuration
             GameMode:ApplyDebuff(modifierTable)
         end
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = enemy
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = self.stunDuration
-        GameMode:ApplyDebuff(modifierTable)
+        if (self:GetAutoCastState()) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_stunned"
+            modifierTable.duration = self.stunDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
         table.insert(self.damagedEnemies, enemy)
     end
     return false
