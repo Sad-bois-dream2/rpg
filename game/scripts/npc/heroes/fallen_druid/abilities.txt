@@ -484,7 +484,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"400"
+				"radius"				"600"
 			}
 			"03"
 			{
@@ -519,7 +519,7 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground.vpcf"
+            "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}

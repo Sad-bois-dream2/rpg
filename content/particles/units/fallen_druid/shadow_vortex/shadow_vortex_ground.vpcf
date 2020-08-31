@@ -6,14 +6,15 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin_projection_dark.vpcf"
+			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground_projection_dark.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin_projection.vpcf"
+			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground_projection.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground_edge.vpcf"
 			m_flDelay = 0.2
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/viper/viper_immortal_tail_ti8/viper_immortal_ti8_nethertoxin_burst_b.vpcf"
@@ -67,7 +68,6 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground_impact.vpcf"
-			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground_fizz.vpcf"

@@ -69,11 +69,11 @@
 			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_funnel.vpcf"
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_ground.vpcf"
+			m_ChildRef = resource:"particles/units/fallen_druid/shadow_vortex/shadow_vortex_funnel.vpcf"
+			m_bDisableChild = true
 		},
 	]
 	m_nBehaviorVersion = 10

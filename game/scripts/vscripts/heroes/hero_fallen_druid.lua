@@ -1340,6 +1340,13 @@ function fallen_druid_shadow_vortex:OnSpellStart()
         return
     end
     self.caster = self:GetCaster()
+    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(pidx, 0, self:GetCursorPosition())
+    ParticleManager:SetParticleControl(pidx, 20, Vector(self.radius, 0, 0))
+    Timers:CreateTimer(self.duration, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
     self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
 end
 

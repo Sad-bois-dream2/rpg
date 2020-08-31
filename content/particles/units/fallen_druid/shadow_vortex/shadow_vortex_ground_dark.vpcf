@@ -120,14 +120,19 @@
 			_class = "C_INIT_RandomRotation"
 		},
 		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, 5.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 8.0 ]
-		},
-		{
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 109, 51, 195, 255 ]
 			m_ColorMax = [ 138, 43, 226, 255 ]
+		},
+		{
+			_class = "C_INIT_CreateFromParentParticles"
+		},
+		{
+			_class = "C_INIT_PositionPlaceOnGround"
+			m_flOffset = 12.0
+			m_flMaxTraceLength = 512.0
+			m_CollisionGroupName = "DEBRIS"
+			m_bIncludeWater = true
 		},
 	]
 	m_Emitters = 

@@ -16,7 +16,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 5.0
+				m_flLiteralValue = 3.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
@@ -163,6 +163,7 @@
 			m_vecOffsetMin = [ -10.0, -10.0, 5.0 ]
 			m_vecOffsetMax = [ 10.0, 10.0, 2.0 ]
 			m_bUseNormal = true
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -183,6 +184,7 @@
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ -10.0, -10.0, 6.0 ]
 			m_OffsetMax = [ 10.0, 10.0, 9.0 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RemapScalar"
@@ -193,6 +195,16 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 109, 51, 195, 255 ]
 			m_ColorMax = [ 138, 43, 226, 255 ]
+		},
+		{
+			_class = "C_INIT_CreateFromParentParticles"
+		},
+		{
+			_class = "C_INIT_PositionPlaceOnGround"
+			m_flOffset = 12.0
+			m_flMaxTraceLength = 512.0
+			m_CollisionGroupName = "DEBRIS"
+			m_bIncludeWater = true
 		},
 	]
 	m_Emitters = 
