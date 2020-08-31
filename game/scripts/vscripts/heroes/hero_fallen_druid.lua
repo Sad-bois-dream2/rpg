@@ -1320,6 +1320,40 @@ function fallen_druid_whispering_doom:OnUpgrade()
     self.wispyBonus = self:GetSpecialValueFor("wispy_bonus") / 100
     self.bonusDuration = self:GetSpecialValueFor("bonus_duration")
 end
+
+-- fallen_druid_shadow_vortex
+fallen_druid_shadow_vortex = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("bonus_silence_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
+})
+
+function fallen_druid_shadow_vortex:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetCaster()
+    self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
+end
+
+function fallen_druid_shadow_vortex:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.pull = self:GetSpecialValueFor("pull")
+    self.flashbangCast = self:GetSpecialValueFor("flashbang_cast")
+    self.stackToProc = self:GetSpecialValueFor("stacks_to_proc_bonus_dmg")
+    self.bonusDmg = self:GetSpecialValueFor("bonus_dmg") / 100
+    self.bonusSilenceDuration = self:GetSpecialValueFor("bonus_silence_duration")
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_fallen_druid", MotionController)
