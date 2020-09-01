@@ -562,15 +562,19 @@ fallen_druid_flashbang = class({
     end,
 })
 
-function fallen_druid_flashbang:OnSpellStart()
+function fallen_druid_flashbang:OnSpellStart(customPosition)
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
     local ability = caster:FindAbilityByName("fallen_druid_wisp_companion")
     local casterPos = caster:GetAbsOrigin()
-    if (ability and ability:GetLevel() > 0) then
-        casterPos = ability.wispy:GetAbsOrigin()
+    if (customPosition) then
+        casterPos = customPosition
+    else
+        if (ability and ability:GetLevel() > 0) then
+            casterPos = ability.wispy:GetAbsOrigin()
+        end
     end
     local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/flashbang/flashbang.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 0, casterPos)
@@ -1356,7 +1360,7 @@ function modifier_fallen_druid_shadow_vortex_stacks:OnStackCountChanged()
     if (not IsServer()) then
         return
     end
-    if(self:GetStackCount() >= self.ability.stackToProc and not self.ability.bonusDmgCurrentCooldown) then
+    if (self:GetStackCount() >= self.ability.stackToProc and not self.ability.bonusDmgCurrentCooldown) then
         self:Destroy()
     end
 end
@@ -1365,7 +1369,7 @@ function modifier_fallen_druid_shadow_vortex_stacks:OnDestroy()
     if (not IsServer()) then
         return
     end
-    if(self:GetStackCount() >= self.ability.stackToProc) then
+    if (self:GetStackCount() >= self.ability.stackToProc) then
         local damageTable = {}
         damageTable.caster = self.caster
         damageTable.target = self.target
@@ -1373,7 +1377,7 @@ function modifier_fallen_druid_shadow_vortex_stacks:OnDestroy()
         damageTable.damage = self.ability.damage * Units:GetHeroAgility(self.caster)
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
-        if(self:GetAutoCastState()) then
+        if (self:GetAutoCastState()) then
             local modifierTable = {}
             modifierTable.ability = self.ability
             modifierTable.target = self.target
@@ -1493,8 +1497,8 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
     end
     if (self.timer >= self.ability.tick) then
         local casterMaxMana = self.caster:GetMaxMana()
-        local casterMana = casterMaxMana - (casterMaxMana * self.manacostPerTick)
-        if(casterMana < 0) then
+        local casterMana = casterMaxMana - (casterMaxMana * self.ability.manacostPerTick)
+        if (casterMana < 0) then
             self:Destroy()
             return
         end
@@ -1525,6 +1529,14 @@ end
 function modifier_fallen_druid_shadow_vortex_thinker:OnDestroy()
     if (not IsServer()) then
         return
+    end
+    local ability = self.caster:FindAbilityByName("fallen_druid_flashbang")
+    if (self.ability.flashbangCast > 0 and ability and ability:GetLevel() > 0) then
+        local cd = ability:GetCooldownTimeRemaining()
+        ability:EndCooldown()
+        self.caster:SetCursorCastTarget(self.caster)
+        ability:OnSpellStart(self.position)
+        ability:StartCooldown(cd)
     end
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
@@ -1568,14 +1580,6 @@ function fallen_druid_shadow_vortex:OnSpellStart()
         ability:EndCooldown()
         self.caster:SetCursorCastTarget(self.caster)
         ability:OnSpellStart(self.crownOfDeathCastMultiplier)
-        ability:StartCooldown(cd)
-    end
-    local ability = self.caster:FindAbilityByName("fallen_druid_flashbang")
-    if (self.flashbangCast > 0 and ability and ability:GetLevel() > 0) then
-        local cd = ability:GetCooldownTimeRemaining()
-        ability:EndCooldown()
-        self.caster:SetCursorCastTarget(self.caster)
-        ability:OnSpellStart()
         ability:StartCooldown(cd)
     end
     self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
