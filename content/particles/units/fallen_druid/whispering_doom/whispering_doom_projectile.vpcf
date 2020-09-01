@@ -55,17 +55,38 @@
 		},
 		{
 			_class = "C_OP_PositionLock"
-			m_nControlPointNumber = 3
 			m_bLockRot = true
 		},
 		{
 			_class = "C_OP_RemapCPOrientationToYaw"
-			m_nCP = 3
+			m_nCP = 0
 			m_flRotOffset = 90.0
+		},
+		{
+			_class = "C_OP_RemapVelocityToVector"
+			m_nFieldOutput = "21"
+			m_bNormalize = true
+		},
+		{
+			_class = "C_OP_SetControlPointsToParticle"
+			m_nFirstControlPoint = 3
+			m_bSetOrientation = true
+		},
+		{
+			_class = "C_OP_MovementPlaceOnGround"
+			m_flOffset = 70.0
+			m_flMaxTraceLength = 1024.0
+			m_flTolerance = 96.0
+			m_flTraceOffset = 256.0
+			m_CollisionGroupName = "DEBRIS"
+			m_nRefCP1 = 3
+			m_nLerpCP = 3
+			m_bIncludeWater = true
 		},
 		{
 			_class = "C_OP_SetControlPointsToModelParticles"
 			m_AttachmentName = "attach_hitloc"
+			m_nFirstControlPoint = 4
 			m_bAttachment = true
 		},
 	]
@@ -73,7 +94,6 @@
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
-			m_nControlPointNumber = 3
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -88,16 +108,19 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 0.5
-			m_flRadiusMin = 0.5
+			m_flRadiusMax = 0.7
+			m_flRadiusMin = 0.7
 			m_flRadiusRandExponent = 3.0
 		},
 		{
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, -10.0 ]
 			m_OffsetMax = [ 0.0, 0.0, -5.0 ]
-			m_nControlPointNumber = 3
 			m_bLocalCoords = true
+		},
+		{
+			_class = "C_INIT_VelocityFromCP"
+			m_nControlPoint = 1
 		},
 	]
 	m_Emitters = 
@@ -114,11 +137,13 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/econ/items/weaver/weaver_immortal_ti7/weaver_swarm_projectile_ti7_ground_rocks.vpcf"
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/fallen_druid/whispering_doom/whispering_doom_projectile_glow_ambient_core.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/fallen_druid/whispering_doom/whispering_doom_projectile_glow.vpcf"
+			m_ChildRef = resource:"particles/units/fallen_druid/whispering_doom/whispering_doom_projectile_glow_ambient_trail.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/fallen_druid/whispering_doom/whispering_doom_projectile_glow_ambient_detail.vpcf"
 		},
 	]
 	m_controlPointConfigurations = 
@@ -130,8 +155,28 @@
 				{
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 2380.209229, 5.950561, 70.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 1
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 100.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]

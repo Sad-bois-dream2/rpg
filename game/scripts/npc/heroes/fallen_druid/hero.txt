@@ -8,7 +8,7 @@
 	"Ability3"	"fallen_druid_grasping_roots"
     "Ability4"	"fallen_druid_crown_of_death"
     "Ability5"	"fallen_druid_whispering_doom"
-	"Ability6"	"antimage_blink"
+	"Ability6"	"fallen_druid_shadow_vortex"
     "Ability7"	""
     "Ability8"	""
     "Ability9"	""

@@ -360,12 +360,14 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_fallen_druid.lua"
-		"AbilityTextureName"			"dark_willow_terrorize"
+		"AbilityTextureName"			"fallen_druid_whispering_doom"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+        "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
         "AbilityCastPoint"				"0.5"
         "AbilityCastRange"              "900"
@@ -436,6 +438,104 @@
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/whispering_doom/whispering_doom_projectile.vpcf"
+            "particle"  "particles/units/fallen_druid/whispering_doom/whispering_doom_dot.vpcf"
+            "particle"  "particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Fallen Druid: Shadow Vortex
+	//=================================================================================================================
+	"fallen_druid_shadow_vortex"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_fallen_druid.lua"
+		"AbilityTextureName"			"fallen_druid_shadow_vortex"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+        "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+        "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+        "AbilityCastPoint"				"0.5"
+        "AbilityCastRange"              "900"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"25"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"30 40 50 60"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"600"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"manacost_per_tick"				"5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crown_of_death_duration_multiplier"				"0 0.5 0.5 0.5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"flashbang_cast"				"0 0 1 1"
+			}
+			"08"
+             {
+             	"var_type"				"FIELD_FLOAT"
+             	"stacks_to_proc_bonus_dmg"				"0 0 0 5"
+             }
+			"09"
+             {
+             	"var_type"				"FIELD_FLOAT"
+             	"bonus_dmg"				"0 0 0 175"
+             }
+			"10"
+             {
+             	"var_type"				"FIELD_FLOAT"
+             	"bonus_silence_duration"				"0 0 0 1"
+             }
+			"11"
+             {
+             	"var_type"				"FIELD_FLOAT"
+             	"bonus_dmg_cd"				"0 0 0 0.25"
+             }
+		}
+		"precache"
+		{
+            "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf"
+            "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex_impact.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}
