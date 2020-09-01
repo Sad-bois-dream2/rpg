@@ -686,6 +686,8 @@
         "DOTA_Tooltip_Ability_fallen_druid_shadow_vortex_damage"		"%AGILITY TO DAMAGE: "
         "DOTA_Tooltip_Ability_fallen_druid_shadow_vortex_radius"		"RADIUS: "
         "DOTA_Tooltip_Ability_fallen_druid_shadow_vortex_duration"		"DURATION: "
+        "DOTA_Tooltip_modifier_fallen_druid_shadow_vortex_stacks"		"Shadow Vortex"
+        "DOTA_Tooltip_modifier_fallen_druid_shadow_vortex_stacks_Description"		"Owner will suffer <font color='#238842'>Nature</font> damage after certain number of stacks."
 		// Inventory
 
 		"DOTA_Inventory_Title"		"Inventory"

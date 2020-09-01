@@ -1377,7 +1377,7 @@ function modifier_fallen_druid_shadow_vortex_stacks:OnDestroy()
         damageTable.damage = self.ability.damage * Units:GetHeroAgility(self.caster)
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
-        if (self:GetAutoCastState()) then
+        if (self.ability:GetAutoCastState()) then
             local modifierTable = {}
             modifierTable.ability = self.ability
             modifierTable.target = self.target
@@ -1398,10 +1398,10 @@ LinkedModifiers["modifier_fallen_druid_shadow_vortex_stacks"] = LUA_MODIFIER_MOT
 
 modifier_fallen_druid_shadow_vortex_thinker_aura_buff = class({
     IsDebuff = function(self)
-        return false
+        return true
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -1445,7 +1445,7 @@ modifier_fallen_druid_shadow_vortex_thinker = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
