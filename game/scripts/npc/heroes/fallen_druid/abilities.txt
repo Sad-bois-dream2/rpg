@@ -360,7 +360,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_fallen_druid.lua"
-		"AbilityTextureName"			"dark_willow_terrorize"
+		"AbilityTextureName"			"fallen_druid_whispering_doom"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
