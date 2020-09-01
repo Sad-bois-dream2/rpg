@@ -535,6 +535,7 @@
 		"precache"
 		{
             "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf"
+            "particle"  "particles/units/fallen_druid/shadow_vortex/shadow_vortex_impact.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_dark_willow.vsndevts"
 		}
 	}

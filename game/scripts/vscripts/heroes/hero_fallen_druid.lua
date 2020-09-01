@@ -1567,6 +1567,11 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
             damageTable.damage = self.ability.bonusDmg * Units:GetHeroAgility(self.caster)
             damageTable.naturedmg = true
             GameMode:DamageUnit(damageTable)
+            local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/shadow_vortex/shadow_vortex_impact.vpcf", PATTACH_ABSORIGIN, enemy)
+            Timers:CreateTimer(1.0, function()
+                ParticleManager:DestroyParticle(pidx, false)
+                ParticleManager:ReleaseParticleIndex(pidx)
+            end)
         end
         self.timer = 0
     else
