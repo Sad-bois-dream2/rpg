@@ -1541,12 +1541,14 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
         return
     end
     if (self.timer >= self.ability.tick) then
-        local casterMana = self.caster:GetMana() - (self.caster:GetMaxMana() * self.ability.manacostPerTick)
-        if (casterMana < 0) then
-            self:Destroy()
-            return
-        else
-            self.caster:SetMana(casterMana)
+        if(not self.ability.wispyAbility) then
+            local casterMana = self.caster:GetMana() - (self.caster:GetMaxMana() * self.ability.manacostPerTick)
+            if (casterMana < 0) then
+                self:Destroy()
+                return
+            else
+                self.caster:SetMana(casterMana)
+            end
         end
         local enemies = FindUnitsInRadius(self.casterTeam,
                 self.position,
