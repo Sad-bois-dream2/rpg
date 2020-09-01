@@ -33,6 +33,8 @@ WISPY_STATE_ATTACHED_TO_WAIFU = 1
 WISPY_STATE_ATTACHED_TO_ALLY = 2
 WISPY_STATE_TRAVEL_TO_TARGET = 3
 WISPY_STATE_TRAVEL_BACK = 4
+WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX = 5
+WISPY_STATE_CASTING_SHADOW_VORTEX = 6
 
 modifier_fallen_druid_wisp_companion_ai = class({
     IsDebuff = function(self)
@@ -77,7 +79,7 @@ modifier_fallen_druid_wisp_companion_ai = class({
 
 function modifier_fallen_druid_wisp_companion_ai:GetVisualZDelta()
     local state = self:GetStackCount()
-    if (state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET or state == WISPY_STATE_ATTACHED_TO_ALLY) then
+    if (state == WISPY_STATE_TRAVEL_BACK or state == WISPY_STATE_TRAVEL_TO_TARGET or state == WISPY_STATE_ATTACHED_TO_ALLY or state == WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX or state == WISPY_STATE_CASTING_SHADOW_VORTEX) then
         return 120
     end
     return 0
@@ -116,6 +118,24 @@ function modifier_fallen_druid_wisp_companion_ai:OnIntervalThink()
         self.wispy:Stop()
         local position = self.holder:GetAbsOrigin()
         local distanceFromCenter = self.holder:GetPaddedCollisionRadius() + 75
+        local wispyPosition = Vector(position[1] + distanceFromCenter * math.cos(self.wispy.rotationAngle), position[2] + distanceFromCenter * math.sin(self.wispy.rotationAngle), position[3])
+        self.wispy:SetAbsOrigin(wispyPosition)
+        self.wispy.rotationAngle = self.wispy.rotationAngle + 0.1
+        if (self.wispy.rotationAngle > 6) then
+            self.wispy.rotationAngle = 0
+        end
+    elseif (self.state == WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX) then
+        local wispyPosition = self.wispy:GetAbsOrigin()
+        local targetPosition = self.shadowVortexPosition
+        if not ((targetPosition - wispyPosition):Length2D() > 100) then
+            self.wispy.rotationAngle = math.atan2(targetPosition[2] - wispyPosition[2], targetPosition[1] - wispyPosition[1])
+            self:ChangeState(WISPY_STATE_CASTING_SHADOW_VORTEX)
+            self.shadowVortexAbility:CreateShadowVortex(self.shadowVortexPosition)
+        end
+    elseif (self.state == WISPY_STATE_CASTING_SHADOW_VORTEX) then
+        self.wispy:Stop()
+        local position = self.shadowVortexPosition
+        local distanceFromCenter = self.shadowVortexRadius
         local wispyPosition = Vector(position[1] + distanceFromCenter * math.cos(self.wispy.rotationAngle), position[2] + distanceFromCenter * math.sin(self.wispy.rotationAngle), position[3])
         self.wispy:SetAbsOrigin(wispyPosition)
         self.wispy.rotationAngle = self.wispy.rotationAngle + 0.1
@@ -416,7 +436,29 @@ function fallen_druid_wisp_companion:AttachWispyToAlly(wispy, ally)
     if (wispy.modifier.state == WISPY_STATE_TRAVEL_TO_TARGET) then
         return
     end
+    if (wispy.modifier.state == WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX) then
+        return
+    end
+    if (wispy.modifier.state == WISPY_STATE_CASTING_SHADOW_VORTEX) then
+        return
+    end
     wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_BACK)
+end
+
+function fallen_druid_wisp_companion:OrderWispyCastShadowVortex(wispy, castPosition, shadowVortexAbility)
+    if (not wispy or wispy:IsNull()) then
+        return
+    end
+    wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX)
+    wispy.modifier.shadowVortexPosition = castPosition
+    local ability = self:GetCaster():FindAbilityByName("fallen_druid_shadow_vortex")
+    if (ability and ability:GetLevel() > 0) then
+        wispy.modifier.shadowVortexRadius = ability.radius * 0.8
+    else
+        wispy.modifier.shadowVortexRadius = 480 -- default * 0.8
+    end
+    wispy.modifier.shadowVortexAbility = shadowVortexAbility
+    wispy:MoveToPosition(wispy.modifier.shadowVortexPosition)
 end
 
 function fallen_druid_wisp_companion:OrderWispyAttackTarget(wispy, target)
@@ -424,6 +466,9 @@ function fallen_druid_wisp_companion:OrderWispyAttackTarget(wispy, target)
         return
     end
     if (wispy.modifier.state == WISPY_STATE_TRAVEL_TO_TARGET or wispy.modifier.state == WISPY_STATE_TRAVEL_BACK) then
+        return
+    end
+    if (wispy.modifier.state == WISPY_STATE_TRAVEL_TO_SHADOW_VORTEX or wispy.modifier.state == WISPY_STATE_CASTING_SHADOW_VORTEX) then
         return
     end
     wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_TO_TARGET)
@@ -1539,6 +1584,9 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnDestroy()
         ability:OnSpellStart(self.position)
         ability:StartCooldown(cd)
     end
+    if(ability.wispyAbility) then
+        self.ability.wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_BACK)
+    end
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
     UTIL_Remove(self.parent)
@@ -1559,11 +1607,10 @@ fallen_druid_shadow_vortex = class({
     end,
 })
 
-function fallen_druid_shadow_vortex:OnSpellStart()
+function fallen_druid_shadow_vortex:CreateShadowVortex(castPosition)
     if (not IsServer()) then
         return
     end
-    self.caster = self:GetCaster()
     CreateModifierThinker(
             self.caster,
             self,
@@ -1571,10 +1618,26 @@ function fallen_druid_shadow_vortex:OnSpellStart()
             {
                 duration = self.duration
             },
-            self:GetCursorPosition(),
+            castPosition,
             self.caster:GetTeamNumber(),
             false
     )
+end
+
+function fallen_druid_shadow_vortex:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    self.wispyAbility = nil
+    self.caster = self:GetCaster()
+    local cursorPosition = self:GetCursorPosition()
+    local wispyAbility = self.caster:FindAbilityByName("fallen_druid_wisp_companion")
+    if (wispyAbility and wispyAbility:GetLevel() > 0) then
+        wispyAbility:OrderWispyCastShadowVortex(wispyAbility.wispy, cursorPosition, self)
+        self.wispyAbility = wispyAbility
+    else
+        self:CreateShadowVortex(cursorPosition)
+    end
     local ability = self.caster:FindAbilityByName("fallen_druid_crown_of_death")
     if (self.crownOfDeathCastMultiplier > 0 and ability and ability:GetLevel() > 0) then
         local cd = ability:GetCooldownTimeRemaining()
