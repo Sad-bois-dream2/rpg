@@ -1088,9 +1088,12 @@ LinkedModifiers["modifier_fallen_druid_crown_of_death"] = LUA_MODIFIER_MOTION_NO
 
 fallen_druid_crown_of_death = class({})
 
-function fallen_druid_crown_of_death:OnSpellStart()
+function fallen_druid_crown_of_death:OnSpellStart(durationMultiplier)
     if (not IsServer()) then
         return
+    end
+    if (not durationMultiplier or type(durationMultiplier) ~= "number") then
+        durationMultiplier = 1
     end
     local caster = self:GetCaster()
     local modifierTable = {}
@@ -1098,7 +1101,7 @@ function fallen_druid_crown_of_death:OnSpellStart()
     modifierTable.target = caster
     modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death"
-    modifierTable.duration = self.duration
+    modifierTable.duration = self.duration * durationMultiplier
     GameMode:ApplyBuff(modifierTable)
     caster:EmitSound("Hero_DarkWillow.Ley.Cast")
 end
@@ -1322,6 +1325,214 @@ function fallen_druid_whispering_doom:OnUpgrade()
 end
 
 -- fallen_druid_shadow_vortex
+modifier_fallen_druid_shadow_vortex_stacks = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_fallen_druid_shadow_vortex_stacks:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+end
+
+function modifier_fallen_druid_shadow_vortex_stacks:OnStackCountChanged()
+    if (not IsServer()) then
+        return
+    end
+    if(self:GetStackCount() >= self.ability.stackToProc and not self.ability.bonusDmgCurrentCooldown) then
+        self:Destroy()
+    end
+end
+
+function modifier_fallen_druid_shadow_vortex_stacks:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    if(self:GetStackCount() >= self.ability.stackToProc) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = self.target
+        damageTable.ability = self.ability
+        damageTable.damage = self.ability.damage * Units:GetHeroAgility(self.caster)
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        if(self:GetAutoCastState()) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.target = self.target
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_silence"
+            modifierTable.duration = self.ability.bonusSilenceDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        self.ability.bonusDmgCurrentCooldown = true
+        local ability = self.ability
+        Timers:CreateTimer(ability.bonusDmgCooldown, function()
+            ability.bonusDmgCurrentCooldown = nil
+        end)
+    end
+end
+
+LinkedModifiers["modifier_fallen_druid_shadow_vortex_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_shadow_vortex_thinker_aura_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_fallen_druid_shadow_vortex_thinker_aura_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_fallen_druid_shadow_vortex_thinker_aura_buff:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_fallen_druid_shadow_vortex_thinker_aura_buff")
+    if (not modifier or not modifier.ability or damageTable.attacker ~= modifier.ability.caster) then
+        return damageTable
+    end
+    local modifierTable = {}
+    modifierTable.ability = modifier.ability
+    modifierTable.caster = damageTable.attacker
+    modifierTable.target = damageTable.victim
+    modifierTable.modifier_name = "modifier_fallen_druid_shadow_vortex_stacks"
+    modifierTable.duration = 5
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = modifier.ability.stackToProc
+    GameMode:ApplyStackingDebuff(modifierTable)
+end
+
+LinkedModifiers["modifier_fallen_druid_shadow_vortex_thinker_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_fallen_druid_shadow_vortex_thinker = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_fallen_druid_shadow_vortex_thinker_aura_buff"
+    end,
+})
+
+function modifier_fallen_druid_shadow_vortex_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.parent = self:GetParent()
+    self.position = self.parent:GetAbsOrigin()
+    self.pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf", PATTACH_ABSORIGIN, self.caster)
+    --self.wispy = self.caster:FindAbilityByName("fallen_druid_wisp_companion")
+    self.timer = 0
+    self.internalTick = 0.1
+    ParticleManager:SetParticleControl(self.pidx, 0, self.position)
+    ParticleManager:SetParticleControl(self.pidx, 20, Vector(self.ability.radius, 0, 0))
+    self:StartIntervalThink(self.internalTick)
+end
+
+function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    if (self.timer >= self.ability.tick) then
+        local casterMaxMana = self.caster:GetMaxMana()
+        local casterMana = casterMaxMana - (casterMaxMana * self.manacostPerTick)
+        if(casterMana < 0) then
+            self:Destroy()
+            return
+        end
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.position,
+                nil,
+                self.ability.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = enemy
+            damageTable.ability = self.ability
+            damageTable.damage = self.ability.bonusDmg * Units:GetHeroAgility(self.caster)
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+        self.timer = 0
+    else
+        self.timer = self.timer + self.internalTick
+    end
+end
+
+function modifier_fallen_druid_shadow_vortex_thinker:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    UTIL_Remove(self.parent)
+end
+
+LinkedModifiers["modifier_fallen_druid_shadow_vortex_thinker"] = LUA_MODIFIER_MOTION_NONE
+
 fallen_druid_shadow_vortex = class({
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
@@ -1340,25 +1551,48 @@ function fallen_druid_shadow_vortex:OnSpellStart()
         return
     end
     self.caster = self:GetCaster()
-    local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/shadow_vortex/shadow_vortex.vpcf", PATTACH_ABSORIGIN, self.caster)
-    ParticleManager:SetParticleControl(pidx, 0, self:GetCursorPosition())
-    ParticleManager:SetParticleControl(pidx, 20, Vector(self.radius, 0, 0))
-    Timers:CreateTimer(self.duration, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+    CreateModifierThinker(
+            self.caster,
+            self,
+            "modifier_fallen_druid_shadow_vortex_thinker",
+            {
+                duration = self.duration
+            },
+            self:GetCursorPosition(),
+            self.caster:GetTeamNumber(),
+            false
+    )
+    local ability = self.caster:FindAbilityByName("fallen_druid_crown_of_death")
+    if (self.crownOfDeathCastMultiplier > 0 and ability and ability:GetLevel() > 0) then
+        local cd = ability:GetCooldownTimeRemaining()
+        ability:EndCooldown()
+        self.caster:SetCursorCastTarget(self.caster)
+        ability:OnSpellStart(self.crownOfDeathCastMultiplier)
+        ability:StartCooldown(cd)
+    end
+    local ability = self.caster:FindAbilityByName("fallen_druid_flashbang")
+    if (self.flashbangCast > 0 and ability and ability:GetLevel() > 0) then
+        local cd = ability:GetCooldownTimeRemaining()
+        ability:EndCooldown()
+        self.caster:SetCursorCastTarget(self.caster)
+        ability:OnSpellStart()
+        ability:StartCooldown(cd)
+    end
     self.caster:EmitSound("Hero_DarkWillow.Fear.Cast")
 end
 
 function fallen_druid_shadow_vortex:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
+    self.tick = self:GetSpecialValueFor("tick")
     self.radius = self:GetSpecialValueFor("radius")
     self.duration = self:GetSpecialValueFor("duration")
-    self.pull = self:GetSpecialValueFor("pull")
+    self.crownOfDeathCastMultiplier = self:GetSpecialValueFor("crown_of_death_duration_multiplier")
     self.flashbangCast = self:GetSpecialValueFor("flashbang_cast")
+    self.manacostPerTick = self:GetSpecialValueFor("manacost_per_tick")
     self.stackToProc = self:GetSpecialValueFor("stacks_to_proc_bonus_dmg")
     self.bonusDmg = self:GetSpecialValueFor("bonus_dmg") / 100
     self.bonusSilenceDuration = self:GetSpecialValueFor("bonus_silence_duration")
+    self.bonusDmgCooldown = self:GetSpecialValueFor("bonus_dmg_cd")
 end
 
 -- Internal stuff
@@ -1373,5 +1607,6 @@ if (IsServer() and not GameMode.FALLEN_DRUID_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death, 'OnPostTakeDamage'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_crown_of_death_crit_dot, 'OnCriticalDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_whispering_doom_buff, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_fallen_druid_shadow_vortex_thinker_aura_buff, 'OnPostTakeDamage'))
     GameMode.FALLEN_DRUID_INIT = true
 end

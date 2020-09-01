@@ -457,7 +457,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
@@ -489,32 +489,47 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"manacost_per_tick"				"5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"pull"				"0 1 1 1"
+				"tick"				"1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"flashbang_cast"				"0 0 1 1"
+				"duration"				"5"
 			}
 			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crown_of_death_duration_multiplier"				"0 0.5 0.5 0.5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"flashbang_cast"				"0 0 1 1"
+			}
+			"08"
              {
              	"var_type"				"FIELD_FLOAT"
              	"stacks_to_proc_bonus_dmg"				"0 0 0 5"
              }
-			"07"
+			"09"
              {
              	"var_type"				"FIELD_FLOAT"
              	"bonus_dmg"				"0 0 0 175"
              }
-			"08"
+			"10"
              {
              	"var_type"				"FIELD_FLOAT"
              	"bonus_silence_duration"				"0 0 0 1"
+             }
+			"11"
+             {
+             	"var_type"				"FIELD_FLOAT"
+             	"bonus_dmg_cd"				"0 0 0 0.25"
              }
 		}
 		"precache"
