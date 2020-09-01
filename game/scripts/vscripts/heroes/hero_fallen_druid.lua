@@ -1496,11 +1496,12 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
         return
     end
     if (self.timer >= self.ability.tick) then
-        local casterMaxMana = self.caster:GetMaxMana()
-        local casterMana = casterMaxMana - (casterMaxMana * self.ability.manacostPerTick)
+        local casterMana = self.caster:GetMana() - (self.caster:GetMaxMana() * self.ability.manacostPerTick)
         if (casterMana < 0) then
             self:Destroy()
             return
+        else
+            self.caster:SetMana(casterMana)
         end
         local enemies = FindUnitsInRadius(self.casterTeam,
                 self.position,
@@ -1592,7 +1593,7 @@ function fallen_druid_shadow_vortex:OnUpgrade()
     self.duration = self:GetSpecialValueFor("duration")
     self.crownOfDeathCastMultiplier = self:GetSpecialValueFor("crown_of_death_duration_multiplier")
     self.flashbangCast = self:GetSpecialValueFor("flashbang_cast")
-    self.manacostPerTick = self:GetSpecialValueFor("manacost_per_tick")
+    self.manacostPerTick = self:GetSpecialValueFor("manacost_per_tick") / 100
     self.stackToProc = self:GetSpecialValueFor("stacks_to_proc_bonus_dmg")
     self.bonusDmg = self:GetSpecialValueFor("bonus_dmg") / 100
     self.bonusSilenceDuration = self:GetSpecialValueFor("bonus_silence_duration")
