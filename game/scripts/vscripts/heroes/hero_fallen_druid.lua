@@ -1586,8 +1586,8 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnDestroy()
         ability:OnSpellStart(self.position)
         ability:StartCooldown(cd)
     end
-    if(ability.wispyAbility) then
-        self.ability.wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_BACK)
+    if(self.ability.wispyAbility) then
+        self.ability.wispyAbility.wispy.modifier:ChangeState(WISPY_STATE_TRAVEL_BACK)
     end
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
