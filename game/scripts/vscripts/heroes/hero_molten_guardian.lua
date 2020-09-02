@@ -776,8 +776,75 @@ if (IsServer()) then
     end, nil)
 end
 --molten_guardian_shields_up
-molten_guardian_shields_up = class({})
+modifier_molten_guardian_shields_up = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
 
+function modifier_molten_guardian_shields_up:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_shields_up:GetDamageReductionBonus()
+    return self.ability.damageReduction
+end
+
+LinkedModifiers["modifier_molten_guardian_shields_up"] = LUA_MODIFIER_MOTION_NONE
+
+molten_guardian_shields_up = class({
+    GetChannelTime = function(self)
+        return self:GetSpecialValueFor("channel_time")
+    end
+})
+
+function molten_guardian_shields_up:OnUpgrade()
+    self.damageReduction = self:GetSpecialValueFor("damage_reduction") / 100
+    self.channelTime = self:GetSpecialValueFor("channel_time")
+    self.cdrOnProc = self:GetSpecialValueFor("cdr_on_proc")
+    self.statusImmune = self:GetSpecialValueFor("status_immune")
+    self.primalBuff = self:GetSpecialValueFor("primal_buff")
+end
+
+function molten_guardian_shields_up:OnChannelFinish()
+    if (not IsServer()) then
+        return
+    end
+    self.caster:ClearActivityModifiers()
+    self.caster:RemoveGesture(ACT_DOTA_RUN)
+    self.modifier:Destroy()
+end
+
+function molten_guardian_shields_up:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.caster = self.caster
+    modifierTable.target = self.caster
+    modifierTable.modifier_name = "modifier_molten_guardian_shields_up"
+    modifierTable.duration = self.channelTime
+    self.modifier = GameMode:ApplyBuff(modifierTable)
+    self.caster:AddActivityModifier("bulwark")
+    self.caster:StartGesture(ACT_DOTA_RUN)
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
