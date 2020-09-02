@@ -549,7 +549,7 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_Description"		"Abyssal Stalker blinks to an enemy silently like shadow and strikes the target multiple times with <font color='#9200fa'>Void</font> damage by a portion of her attack damage using stolen shadow parts. Each successful auto attack steal <font color='white'><b>1</b></font> part of enemy shadow."
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_instance"		"MAX STRIKES: "
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_shadows"		"MAX SHADOWS: "
-        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_damage"		"%AD TO STRIKE DAMAGE: "
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_damage"		"%ATTACK DAMAGE TO STRIKE DAMAGE: "
         "DOTA_Tooltip_modifier_abyssal_stalker_shadow_rush_shadows"		"Stolen Shadows"
         "DOTA_Tooltip_modifier_abyssal_stalker_shadow_rush_shadows_Description"		"Total amount of stolen enemy shadows from Shadow Rush."
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust"		"Void Dust"
