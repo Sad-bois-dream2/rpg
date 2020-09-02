@@ -120,10 +120,11 @@
 }
 
 .HeroDeathTimer {
-	width: 100px;
-	height: 90px;
+	width: fill-parent-flow(1.0);
+	height: fill-parent-flow(1.0);
 	vertical-align: bottom;
 	horizontal-align: center;
+	margin-left: 60px;
 }
 
 .HeroDeathTimer #HeroDeathTimer {
@@ -133,7 +134,7 @@
 	color: white;
 	font-family: platformfont;
 	visibility: collapse;
-	margin-top: -30px;
+	text-align: center;
 }
 
 .HeroNamePanel {
@@ -582,6 +583,11 @@
     width: fit-children;
     padding: 5px;
     z-index: 2;
+}
+
+.HeroStatsTooltip {
+    width: 200px;
+    height: 100px;
 }
 
 .TooltipElementLabelContainer .ItemTooltipLabel {

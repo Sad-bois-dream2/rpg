@@ -398,6 +398,7 @@ function Init() {
 }
 
 function ShowElementalResistancesTooltip() {
+    return;
     var cursorPosition = GameUI.GetCursorPosition();
     var x = cursorPosition[0];
     var y = cursorPosition[1];
@@ -413,6 +414,7 @@ function ShowElementalResistancesTooltip() {
 }
 
 function HideElementalResistancesTooltip() {
+    return;
     itemTooltip.style.visibility = "collapse";
 }
 

@@ -8,7 +8,7 @@
         <include src="file://{resources}/scripts/custom_game/action_bar.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
-        <Panel id="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+        <Panel id="ItemTooltip" class="HeroStatsTooltip" style="visibility: visible;" hittest="false" hittestchildren="false">
             <Panel class="TooltipElementLabelContainer">
                 <Image src="file://{images}/custom_game/hud/fire_element.png"/>
                 <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
