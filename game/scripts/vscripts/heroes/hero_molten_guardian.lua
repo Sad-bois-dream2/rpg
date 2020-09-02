@@ -775,6 +775,9 @@ if (IsServer()) then
         end
     end, nil)
 end
+--molten_guardian_shields_up
+molten_guardian_shields_up = class({})
+
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do

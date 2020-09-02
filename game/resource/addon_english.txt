@@ -108,7 +108,6 @@
 //		"DOTA_Tooltip_modifier_phantom_ranger_black_arrow_bane_Description"		"Taking %dMODIFIER_PROPERTY_TOOLTIP%%% additional damage from Black Arrow."
 //
 		// Molten Guardian (mars)
-
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash"		"Scorching Clash"
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Description"		"Molten Guardian dashes forward furiously with his battle shield, damaging all enemies along the way. Enemies hit are set aflame and take <font color='#d92129'>Fire</font> damage over time (based on his maximum Health) for <font color='white'><b>3</b></font> seconds.<br><br>At level <font color='white'><b>4</b></font>, he also stuns all enemies in <font color='white'><b>300</b></font> radius around the target location for <font color='white'><b>0.5</b></font> seconds."
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_base_damage"		"BASE DAMAGE:"
@@ -149,7 +148,10 @@
         "DOTA_Tooltip_Ability_mars_arena_of_blood_sph_bonus"  "BONUS CAST SPEED:"
         "DOTA_Tooltip_modifier_molten_guardian_molten_fortress_thinker_buff"		"Molten Fortress"
         "DOTA_Tooltip_modifier_molten_guardian_molten_fortress_thinker_buff_Description"		"Attack damage, Attack speed and Cast speed increased."
-
+		"DOTA_Tooltip_Ability_molten_guardian_shields_up"		"Shields Up"
+		"DOTA_Tooltip_Ability_molten_guardian_shields_up_Description"		"Molten Guardian rise his shield to protect himself and reduce all incoming damage. Block any damage instance once that you take during channeling this ability.\nRank 2: If you manage to block damage instance with this ability reduce cooldown of this ability by <font color='white'><b>5</b></font> seconds.\nRank 3: You gain immunity to all crowd control effects (stun, silence, root) as long as you channel this ability.\nRank 4: Passievly grant you Guardian effect that increase all your aggro caused by <font color='white'><b>5%</b></font> per armor, <font color='white'><b>10%</b></font> per average elemental resistance and by <font color='white'><b>100%</b></font> per <font color='white'><b>5000</b></font> health. All three aggro caused sources from this ability stacks multiplicative with each other."
+        "DOTA_Tooltip_Ability_molten_guardian_shields_up_damage_reduction"		"%DAMAGE REDUCTION: "
+        "DOTA_Tooltip_Ability_molten_guardian_shields_up_channel_time"		"CHANNEL TIME: "
         // Priestess of Sacred Forest (ench)
 
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence"		"Herbaceous Essence"

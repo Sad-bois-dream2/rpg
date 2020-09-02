@@ -337,4 +337,66 @@
             "particle"  "particles/units/molten_guardian/molten_fortress/lava_thing.vpcf"
 		}
 	}
+	//=================================================================================================================
+	// Molten Guardian: Shields Up
+	//=================================================================================================================
+	"molten_guardian_shields_up"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_scorching_clash"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_reduction"				"10 15 20 25"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"channel_time"				"0.55 0.70 0.85 1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_on_proc"				"0 5 5 5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"status_immune"				"0 0 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff"				"0 0 0 1"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+		}
+	}
 }
