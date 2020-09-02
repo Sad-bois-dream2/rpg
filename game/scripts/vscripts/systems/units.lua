@@ -308,18 +308,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetInfernoProtectionBonus) then
                 unitInfernoProtection = unitInfernoProtection * (1 - (tonumber(unitModifiers[i].GetInfernoProtectionBonus(unitModifiers[i])) or 0))
             end
-            if (unitModifiers[i].GetBlockBonus) then
-                unitBlock = unitBlock + (tonumber(unitModifiers[i].GetBlockBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetBlockPercentBonus) then
-                unitBlockPercent = unitBlockPercent + (tonumber(unitModifiers[i].GetBlockPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetMagicBlockBonus) then
-                unitMagicBlock = unitMagicBlock + (tonumber(unitModifiers[i].GetMagicBlockBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetMagicBlockPercentBonus) then
-                unitMagicBlockPercent = unitMagicBlockPercent + (tonumber(unitModifiers[i].GetMagicBlockPercentBonus(unitModifiers[i])) or 0)
-            end
             if (unitModifiers[i].GetArmorBonus) then
                 unitArmor = unitArmor + (tonumber(unitModifiers[i].GetArmorBonus(unitModifiers[i])) or 0)
             end

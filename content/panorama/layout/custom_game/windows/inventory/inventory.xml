@@ -213,16 +213,6 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HealthRegen" />
 							<Label id="HealthRegenLabel" class="WindowText InventoryAttributeValue" text="0" />
 						</Panel>
-						<Panel id="PhysBlock" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_Block', '#DOTA_Tooltip_Block_Description')" onmouseout="DOTAHideTitleTextTooltip()">
-							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
-							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_Block"/>
-							<Label id="PhysBlockLabel" class="WindowText InventoryAttributeValue" text="0" />
-						</Panel>
-						<Panel id="MagicBlock" class="InventoryAttributeWithValue" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_MagicBlock', '#DOTA_Tooltip_MagicBlock_Description')" onmouseout="DOTAHideTitleTextTooltip()">
-							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
-							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_MagicBlock" />
-							<Label id="MagicBlockLabel" class="WindowText InventoryAttributeValue" text="0" />
-						</Panel>
 						<Panel id="DamageReduction" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_DamageReduction', '#DOTA_Tooltip_DamageReduction_Description')" onmouseout="DOTAHideTitleTextTooltip()">
 							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DamageReduction" />

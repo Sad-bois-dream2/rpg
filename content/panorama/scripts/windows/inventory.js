@@ -399,8 +399,6 @@ function OnHeroStatsUpdateRequest(event) {
 		}
 		physProtection = Math.round(physProtection * 100);
 		$("#PhysArmorLabel").text = armor + " (" + physProtection + "%)";
-		$("#PhysBlockLabel").text = block;
-		$("#MagicBlockLabel").text = magicBlock;
 		var attackDelay = (currentHero > -1 ? Entities.GetSecondsPerAttack(currentHero) : "0");
 		attackDelay = Math.round(attackDelay * 100) / 100;
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
