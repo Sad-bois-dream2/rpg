@@ -8,47 +8,100 @@
         <include src="file://{resources}/scripts/custom_game/action_bar.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
-        <Panel id="ItemTooltip" class="HeroStatsTooltip" style="visibility: visible;" hittest="false" hittestchildren="false">
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/fire_element.png"/>
-                <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+        <Panel id="HeroStatsTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+            <Panel class="HeroStatsContainer">
+                <Panel class="OffensiveStats">
+                    <Label class="HeroStatsCategoryName" text="ATTACK"/>
+                    <Panel class="HeroStatsElementsContainer">
+                        <Panel class="TooltipElementLabelContainer first">
+                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                            <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                            <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                            <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                            <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                            <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                            <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                            <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                    </Panel>
+                </Panel>
+                <Panel class="DefensiveStats">
+                    <Label class="HeroStatsCategoryName" text="DEFENSE"/>
+                    <Panel class="HeroStatsElementsContainer">
+                        <Panel class="TooltipElementLabelContainer first">
+                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                            <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                            <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                            <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                            <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                            <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                            <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                        <Panel class="TooltipElementLabelContainer">
+                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                            <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                        </Panel>
+                    </Panel>
+                </Panel>
             </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/frost_element.png"/>
-                <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            <!--<Panel class="HeroMainStatsContainer">
+                <Panel class="Strength">
+                    <Panel class="HeroMainStatsMainContainer">
+                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon Attribute"/>
+                    </Panel>
+                </Panel>
+                <Panel class="Agility">
+                    <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon Attribute"/>
+                </Panel>
+                <Panel class="Intellect">
+                    <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon Attribute"/>
+                </Panel>
+            </Panel> -->
+        </Panel>
+        <Panel class="HeroPanelContainer Abilities" hittest="false">
+            <Panel class="HeroPanelLeftContainer" hittest="false">
+                <Panel class="HeroPortraitContainer" hittest="false">
+                </Panel>
             </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/earth_element.png"/>
-                <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
-            </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/nature_element.png"/>
-                <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
-            </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/void_element.png"/>
-                <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
-            </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
-                <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
-            </Panel>
-            <Panel class="TooltipElementLabelContainer">
-                <Image src="file://{images}/custom_game/hud/holy_element.png"/>
-                <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+            <Panel class="HeroPanelRightContainer Abilities" hittest="false">
+                <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
+                    <Panel id="ability_list"/>
+                </Panel>
             </Panel>
         </Panel>
-    <Panel class="HeroPanelContainer Abilities" hittest="false">
-        <Panel class="HeroPanelLeftContainer"  hittest="false">
-            <Panel class="HeroPortraitContainer"  hittest="false">
-            </Panel>
-        </Panel>
-        <Panel class="HeroPanelRightContainer Abilities" hittest="false">
-            <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
-                <Panel id="ability_list"/>
-            </Panel>
-        </Panel>
-    </Panel>
         <Panel class="ActionPanelContainer">
             <Panel id="ModifierListContainer">
             </Panel>
@@ -60,7 +113,7 @@
                             <Label id="HeroDeathTimer" text="20"/>
                         </Panel>
                     </Panel>
-                    <Panel class="HeroStats">
+                    <Panel id="HeroStats" onmouseover="ShowStatsTooltip()" onmouseout="HideStatsTooltip()">
                         <Panel id="AttackDamage" class="AttrIconContainer">
                             <Label id="AttackDamageLabel" class="StatLabel" text="0" hittest="false"/>
                             <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" class="StatIcon"/>
@@ -69,7 +122,7 @@
                             <Label id="ArmorLabel" class="StatLabel" text="0" hittest="false"/>
                             <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" class="StatIcon"/>
                         </Panel>
-                        <Panel id="SpellArmor" class="AttrIconContainer" onmouseover="ShowElementalResistancesTooltip()" onmouseout="HideElementalResistancesTooltip()">
+                        <Panel id="SpellArmor" class="AttrIconContainer">
                             <Label id="SpellArmorLabel" class="StatLabel" text="0" hittest="false"/>
                             <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex" class="StatIcon"/>
                         </Panel>

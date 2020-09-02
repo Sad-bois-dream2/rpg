@@ -420,7 +420,7 @@
 	vertical-align: center;
 }
 
-.HeroStats {
+#HeroStats {
 	width: fill-parent-flow(1.0);
 	height: fill-parent-flow(1.0);
 	vertical-align: bottom;
@@ -430,6 +430,7 @@
 	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
 	border-right: 1px solid #ffffff04;
 	padding-top: 5px;
+	margin-left: 60px;
 }
 
 .HeroLevelContainer {
@@ -565,9 +566,14 @@
 }
 
 .TooltipElementLabelContainer {
-    flow-children: right;
+    flow-children: down;
     width: fit-children;
     height: fit-children;
+    margin-right: 5px;
+}
+
+.TooltipElementLabelContainer.first {
+    margin-left: 5px;
 }
 
 .TooltipElementLabelContainer Image {
@@ -577,19 +583,61 @@
 
 .TooltipElementLabelContainer Label {
     width: fit-children;
+    text-align: center;
+    vertical-align: center;
+    horizontal-align: center;
 }
 
-#ItemTooltip {
+#HeroStatsTooltip {
     width: fit-children;
+    height: fit-children;
     padding: 5px;
-    z-index: 2;
+    horizontal-align: center;
+    vertical-align: bottom;
+    flow-children: down;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	border-radius: 5px;
+	margin-bottom: 180px;
+    z-index: 20;
 }
 
-.HeroStatsTooltip {
-    width: 200px;
-    height: 100px;
+.HeroStatsElementsContainer {
+    flow-children: right;
+    margin-bottom: 5px;
 }
 
-.TooltipElementLabelContainer .ItemTooltipLabel {
-    padding-left: 2px;
+.HeroStatsContainer {
+    width: fit-children;
+    height: fit-children;
+    flow-children: right;
+
+}
+
+.HeroMainStatsContainer {
+    width: fit-children;
+    height: fit-children;
+    flow-children: down;
+}
+
+.HeroStatsCategoryName {
+    color: white;
+    text-align: center;
+    horizontal-align: center;
+}
+
+.OffensiveStats {
+    width: fit-children;
+    height: fit-children;
+    flow-children: down;
+    border-right: 1px solid gray;
+    //border-bottom: 2px solid gray;
+}
+
+.DefensiveStats {
+    width: fit-children;
+    height: fit-children;
+    flow-children: down;
+    //border-bottom: 2px solid gray;
 }
