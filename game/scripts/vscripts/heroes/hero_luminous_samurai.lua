@@ -28,25 +28,52 @@ modifier_luminous_samurai_bankai_buff = class({
 })
 
 function modifier_luminous_samurai_bankai_buff:OnCreated()
+
     self.ability = self:GetAbility()
     self.attackDamage = self.ability:GetSpecialValueFor("attack_dmg_per_stack")
     self.critDamage = self.ability:GetSpecialValueFor("crit_dmg_per_stack") / 100
+    self.attackSpeed = self.ability:GetSpecialValueFor("attack_speed_per_stack")
+
 end
 
 function modifier_luminous_samurai_bankai_buff:GetAttackDamageBonus()
-    return self.attackDamage * self:GetStackCount()
+
+    local result = self.attackDamage * self:GetStackCount()
+    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    return result 
+
+end
+
+function modifier_luminous_samurai_bankai_buff:GetAttackSpeedBonus()
+
+    local result = self.attackSpeed * self:GetStackCount()
+    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    return result
+
 end
 
 function modifier_luminous_samurai_bankai_buff:GetCriticalDamageBonus()
-    return self.critDamage * self:GetStackCount()
+
+    local result = self.critDamage * self:GetStackCount()
+    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    return result
+
 end
 
 function modifier_luminous_samurai_bankai_buff:OnTooltip()
-    return self.attackDamage * self:GetStackCount()
+
+    local result = self.attackDamage * self:GetStackCount()
+    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    return result
+
 end
 
 function modifier_luminous_samurai_bankai_buff:OnTooltip2()
-    return self.critDamage * self:GetStackCount() * 100
+
+    local result = self.critDamage * self:GetStackCount() * 100
+    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    return result
+
 end
 
 LinkedModifiers["modifier_luminous_samurai_bankai_buff"] = LUA_MODIFIER_MOTION_NONE
@@ -87,6 +114,7 @@ function modifier_luminous_samurai_bankai:OnCreated()
     self.stackDuration = self.ability:GetSpecialValueFor("stack_duration")
     self.maxStacks = self.ability:GetSpecialValueFor("max_stacks")
     self.bonusDuration = self.ability:GetSpecialValueFor("bonus_duration")
+    self.duration = self.ability:GetSpecialValueFor("duration")
 end
 
 function modifier_luminous_samurai_bankai:OnAttackLanded(keys)
@@ -119,7 +147,11 @@ function modifier_luminous_samurai_bankai:OnDeath(keys)
         return
     end
     if (keys.attacker == self.caster) then
-        self:SetDuration(self:GetElapsedTime() + self.bonusDuration, true)
+
+        if (self.duration ~= -1) then self:SetDuration(self:GetElapsedTime() + self.bonusDuration, true) end
+        local modifier = self.caster:FindModifierByName("modifier_luminous_samurai_bankai_enhance")
+        if (modifier) then modifier:SetDuration(modifier:GetElapsedTime() + self.bonusDuration, true) end
+        
     end
 end
 
@@ -137,13 +169,22 @@ function luminous_samurai_bankai:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = caster
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_luminous_samurai_bankai"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
-    GameMode:ApplyBuff(modifierTable)
+    if (not caster:HasModifier("luminous_samurai_bankai")) then
+
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_luminous_samurai_bankai"
+        modifierTable.duration = self:GetSpecialValueFor("duration")
+        GameMode:ApplyBuff(modifierTable)
+
+    else 
+
+        GameMode:ApplyBuff ({ caster = caster, target = caster, ability = self, name = "modifier_luminous_samurai_bankai_enhance", duration = self:GetSpecialValueFor("enhance_duration") })
+
+    end
+
     EmitSoundOn("Hero_Juggernaut.HealingWard.Cast", caster)
     local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/bankai/bankai.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
     Timers:CreateTimer(3.0, function()
@@ -152,8 +193,9 @@ function luminous_samurai_bankai:OnSpellStart()
     end)
 end
 
--- luminous_samurai_jhana modifiers
-modifier_luminous_samurai_jhana_buff = class({
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_bankai_enhance = class({
     IsDebuff = function(self)
         return false
     end,
@@ -164,119 +206,21 @@ modifier_luminous_samurai_jhana_buff = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return luminous_samurai_jhana:GetAbilityTextureName()
-    end
-})
-
-function modifier_luminous_samurai_jhana_buff:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.ability = self:GetAbility()
-end
-
-function modifier_luminous_samurai_jhana_buff:GetHealthRegenerationBonus()
-    return self.ability.hpPerStack * self:GetStackCount()
-end
-
-function modifier_luminous_samurai_jhana_buff:GetManaRegenerationBonus()
-    return self.ability.mpPerStack * self:GetStackCount()
-end
-
-LinkedModifiers["modifier_luminous_samurai_jhana_buff"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_luminous_samurai_jhana = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
         return true
     end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    -- GetTexture = function(self)
+    --     return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_shadow_waves_silence_cd.png"
+    -- end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
 
-function modifier_luminous_samurai_jhana:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.caster = self:GetParent()
-    self.ability = self:GetAbility()
-end
+LinkedModifiers["modifier_luminous_samurai_bankai_enhance"] = LUA_MODIFIER_MOTION_NONE
 
-function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_luminous_samurai_jhana")
-    if (damageTable.damage > 0 and modifier and RollPercentage(modifier.ability.procChance) and modifier.ability:IsCooldownReady()) then
-        local modifierTable = {}
-        modifierTable.ability = modifier.ability
-        modifierTable.target = damageTable.victim
-        modifierTable.caster = damageTable.victim
-        modifierTable.modifier_name = "modifier_luminous_samurai_jhana_buff"
-        modifierTable.duration = -1
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = modifier.ability.maxStacks
-        local buff = GameMode:ApplyStackingBuff(modifierTable)
-        --modifier.cooldown = true
-        EmitSoundOn("Hero_Juggernaut.HealingWard.Stop", damageTable.victim)
-        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/jhana/jhana.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
-        Timers:CreateTimer(modifier.ability.stackDuration, function()
-            local stacks = buff:GetStackCount() - 1
-            if (stacks < 1) then
-                buff:Destroy()
-            else
-                buff:SetStackCount(stacks)
-            end
-        end)
-        modifier.ability:StartCooldown(modifier.ability.stackCooldown)
-        Timers:CreateTimer(modifier.ability.stackCooldown, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-            --modifier.cooldown = nil
-        end)
-        damageTable.damage = 0
-        return damageTable
-    end
-end
-
-LinkedModifiers["modifier_luminous_samurai_jhana"] = LUA_MODIFIER_MOTION_NONE
-
--- luminous_samurai_jhana
-luminous_samurai_jhana = class({
-    GetAbilityTextureName = function(self)
-        return "luminous_samurai_jhana"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_luminous_samurai_jhana"
-    end
-})
-
-function luminous_samurai_jhana:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
-    self.procChance = self:GetSpecialValueFor("proc_chance")
-    self.hpPerStack = self:GetSpecialValueFor("hp_per_stack")
-    self.mpPerStack = self:GetSpecialValueFor("mp_per_stack")
-    self.maxStacks = self:GetSpecialValueFor("max_stacks")
-    self.stackDuration = self:GetSpecialValueFor("stack_duration")
-    self.stackCooldown = self:GetSpecialValueFor("stack_cd")
-end
 
 -- luminous_samurai_judgment_of_light modifiers
 modifier_luminous_samurai_judgment_of_light_buff = class({
@@ -943,3 +887,129 @@ if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
+
+-- luminous_samurai_jhana modifiers
+-- modifier_luminous_samurai_jhana_buff = class({
+--     IsDebuff = function(self)
+--         return false
+--     end,
+--     IsHidden = function(self)
+--         return false
+--     end,
+--     IsPurgable = function(self)
+--         return false
+--     end,
+--     RemoveOnDeath = function(self)
+--         return false
+--     end,
+--     AllowIllusionDuplicate = function(self)
+--         return false
+--     end,
+--     GetTexture = function(self)
+--         return luminous_samurai_jhana:GetAbilityTextureName()
+--     end
+-- })
+
+-- function modifier_luminous_samurai_jhana_buff:OnCreated()
+--     if (not IsServer()) then
+--         return
+--     end
+--     self.ability = self:GetAbility()
+-- end
+
+-- function modifier_luminous_samurai_jhana_buff:GetHealthRegenerationBonus()
+--     return self.ability.hpPerStack * self:GetStackCount()
+-- end
+
+-- function modifier_luminous_samurai_jhana_buff:GetManaRegenerationBonus()
+--     return self.ability.mpPerStack * self:GetStackCount()
+-- end
+
+-- LinkedModifiers["modifier_luminous_samurai_jhana_buff"] = LUA_MODIFIER_MOTION_NONE
+
+-- modifier_luminous_samurai_jhana = class({
+--     IsDebuff = function(self)
+--         return false
+--     end,
+--     IsHidden = function(self)
+--         return true
+--     end,
+--     IsPurgable = function(self)
+--         return false
+--     end,
+--     RemoveOnDeath = function(self)
+--         return false
+--     end,
+--     AllowIllusionDuplicate = function(self)
+--         return false
+--     end,
+--     GetAttributes = function(self)
+--         return MODIFIER_ATTRIBUTE_PERMANENT
+--     end
+-- })
+
+-- function modifier_luminous_samurai_jhana:OnCreated()
+--     if (not IsServer()) then
+--         return
+--     end
+--     self.caster = self:GetParent()
+--     self.ability = self:GetAbility()
+-- end
+
+-- function modifier_luminous_samurai_jhana:OnTakeDamage(damageTable)
+--     local modifier = damageTable.victim:FindModifierByName("modifier_luminous_samurai_jhana")
+--     if (damageTable.damage > 0 and modifier and RollPercentage(modifier.ability.procChance) and modifier.ability:IsCooldownReady()) then
+--         local modifierTable = {}
+--         modifierTable.ability = modifier.ability
+--         modifierTable.target = damageTable.victim
+--         modifierTable.caster = damageTable.victim
+--         modifierTable.modifier_name = "modifier_luminous_samurai_jhana_buff"
+--         modifierTable.duration = -1
+--         modifierTable.stacks = 1
+--         modifierTable.max_stacks = modifier.ability.maxStacks
+--         local buff = GameMode:ApplyStackingBuff(modifierTable)
+--         --modifier.cooldown = true
+--         EmitSoundOn("Hero_Juggernaut.HealingWard.Stop", damageTable.victim)
+--         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/jhana/jhana.vpcf", PATTACH_POINT_FOLLOW, damageTable.victim)
+--         Timers:CreateTimer(modifier.ability.stackDuration, function()
+--             local stacks = buff:GetStackCount() - 1
+--             if (stacks < 1) then
+--                 buff:Destroy()
+--             else
+--                 buff:SetStackCount(stacks)
+--             end
+--         end)
+--         modifier.ability:StartCooldown(modifier.ability.stackCooldown)
+--         Timers:CreateTimer(modifier.ability.stackCooldown, function()
+--             ParticleManager:DestroyParticle(pidx, false)
+--             ParticleManager:ReleaseParticleIndex(pidx)
+--             --modifier.cooldown = nil
+--         end)
+--         damageTable.damage = 0
+--         return damageTable
+--     end
+-- end
+
+-- LinkedModifiers["modifier_luminous_samurai_jhana"] = LUA_MODIFIER_MOTION_NONE
+
+-- -- luminous_samurai_jhana
+-- luminous_samurai_jhana = class({
+--     GetAbilityTextureName = function(self)
+--         return "luminous_samurai_jhana"
+--     end,
+--     GetIntrinsicModifierName = function(self)
+--         return "modifier_luminous_samurai_jhana"
+--     end
+-- })
+
+-- function luminous_samurai_jhana:OnUpgrade()
+--     if (not IsServer()) then
+--         return
+--     end
+--     self.procChance = self:GetSpecialValueFor("proc_chance")
+--     self.hpPerStack = self:GetSpecialValueFor("hp_per_stack")
+--     self.mpPerStack = self:GetSpecialValueFor("mp_per_stack")
+--     self.maxStacks = self:GetSpecialValueFor("max_stacks")
+--     self.stackDuration = self:GetSpecialValueFor("stack_duration")
+--     self.stackCooldown = self:GetSpecialValueFor("stack_cd")
+-- end

@@ -56,12 +56,42 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5 10 15 20"
+				"duration"				"20 20 20 -1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_duration"				"2 3 4 5"
+				"bonus_duration"		"5 5 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"attack_speed_per_stack"				"0 20 20 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_duration"		"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_dr"		"0 0 80 80"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_attack_dmg"		"0 0 80 80"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_heal"		"0 0 1 1"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enhance_duration"		"0 0 0 10"
 			}
 		}
 		"precache"
@@ -207,6 +237,21 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"jump_delay"				"0.10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"reset_cdr"				"0 60 60 60"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mark_duration"			"0 0 20 20"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"execute_treshold"		"0 0 0 15"
 			}
 		}
 		"precache"
