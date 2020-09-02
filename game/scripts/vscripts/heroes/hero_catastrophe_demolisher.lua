@@ -1068,7 +1068,7 @@ function catastrophe_demolisher_crimson_fanaticism:OnUpgrade()
     self.spellDamageBonus = self:GetSpecialValueFor("spell_damage_bonus") / 100
     self.msBonus = self:GetSpecialValueFor("ms_bonus") / 100
     self.asPerStack = self:GetSpecialValueFor("as_per_stack")
-    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack")
+    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack") / 100
     self.stacksCap = self:GetSpecialValueFor("stacks_cap")
     self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
     self.stacksNormalCount = self:GetSpecialValueFor("stacks_normal_count")
