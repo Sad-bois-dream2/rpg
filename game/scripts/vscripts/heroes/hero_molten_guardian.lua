@@ -431,6 +431,29 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
 end
 
 -- molten_guardian_volcanic_blow modifiers
+modifier_molten_guardian_volcanic_blow_taunt = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetTexture = function(self)
+        return molten_guardian_volcanic_blow:GetAbilityTextureName()
+    end,
+    IsTaunt = function(self)
+        return true
+    end
+})
+
+LinkedModifiers["modifier_molten_guardian_volcanic_blow_taunt"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_volcanic_blow_block = class({
     IsDebuff = function(self)
         return false
@@ -450,70 +473,21 @@ modifier_molten_guardian_volcanic_blow_block = class({
 })
 
 function modifier_molten_guardian_volcanic_blow_block:OnCreated(kv)
-    if IsServer() then
-        local ability = self:GetAbility()
-        local ability_level = ability:GetLevel() - 1
-        self.block_chance = ability:GetLevelSpecialValueFor("block_chance", ability_level)
+    if not IsServer() then
+        return
     end
-end
-
-function modifier_molten_guardian_volcanic_blow_block:IsTaunt()
-    return true
+    self.ability = self:GetAbility()
 end
 
 function modifier_molten_guardian_volcanic_blow_block:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_volcanic_blow_block")
-    if (modifier ~= nil and damageTable.physdmg and RollPercentage(modifier.block_chance)) then
+    if (modifier and damageTable.physdmg and RollPercentage(modifier.ability.blockChance * modifier.ability.blockMultiplier)) then
         damageTable.damage = 0
         return damageTable
     end
 end
 
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_block"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_molten_guardian_volcanic_blow_stun = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return molten_guardian_volcanic_blow:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/generic_gameplay/generic_stunned.vpcf"
-    end,
-    IsStunDebuff = function(self)
-        return true
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_OVERHEAD_FOLLOW
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_OVERRIDE_ANIMATION }
-    end,
-    GetOverrideAnimation = function(self)
-        return ACT_DOTA_DISABLED
-    end,
-    CheckState = function(self)
-        local state = {
-            [MODIFIER_STATE_STUNNED] = true,
-        }
-        return state
-    end
-})
-
-LinkedModifiers["modifier_molten_guardian_volcanic_blow_stun"] = LUA_MODIFIER_MOTION_NONE
 
 -- molten_guardian_volcanic_blow
 molten_guardian_volcanic_blow = class({
@@ -523,44 +497,80 @@ molten_guardian_volcanic_blow = class({
 })
 
 function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local target = self:GetCursorTarget()
-        local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/volcanic_blow/volcanic_blow_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-        ParticleManager:SetParticleControl(pidx, 1, Vector(200, 200, 0))
-        ParticleManager:SetParticleControl(pidx, 0, caster:GetAbsOrigin())
-        Timers:CreateTimer(3.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
-        EmitSoundOn("Hero_Mars.Shield.Cast", caster)
-        local ability_level = self:GetLevel() - 1
-        self.stun_duration = self:GetLevelSpecialValueFor("stun_duration", ability_level)
-        self.damage = self:GetLevelSpecialValueFor("damage", ability_level) / 100
-        self.block_chance = self:GetLevelSpecialValueFor("block_chance", ability_level)
-        self.block_duration = self:GetLevelSpecialValueFor("block_duration", ability_level)
-        local damageTable = {}
-        damageTable.caster = caster
-        damageTable.target = target
-        damageTable.ability = self
-        damageTable.damage = target:GetHealth() * self.damage
-        damageTable.firedmg = true
-        GameMode:DamageUnit(damageTable)
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_block"
+    modifierTable.duration = self.blockDuration
+    GameMode:ApplyBuff(modifierTable)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_taunt"
+    modifierTable.duration = self.tauntDuration
+    GameMode:ApplyBuff(modifierTable)
+    self:ApplySpellEffectToTarget(caster, target)
+    local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/volcanic_blow/volcanic_blow_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    if(self.searchWidthPastTarget > 0) then
+        local targetPosition = target:GetAbsOrigin()
+        local enemies = FindUnitsInLine(DOTA_TEAM_GOODGUYS,
+                targetPosition,
+                targetPosition + target:GetForwardVector() * -self.searchRangePastTarget,
+                caster,
+                self.searchWidthPastTarget,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+                DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+        for _, enemy in pairs(enemies) do
+            self:ApplySpellEffectToTarget(caster, enemy)
+        end
+        ParticleManager:SetParticleControl(pidx, 1, Vector(self.searchWidthPastTarget, self.searchWidthPastTarget, self.searchWidthPastTarget))
+    else
+        ParticleManager:SetParticleControl(pidx, 1, Vector(200, 200, 200))
+    end
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Mars.Shield.Cast", caster)
+end
+
+function molten_guardian_volcanic_blow:ApplySpellEffectToTarget(caster, target)
+    local damageTable = {}
+    damageTable.caster = caster
+    damageTable.target = target
+    damageTable.ability = self
+    damageTable.damage = caster:GetMaxHealth() * self.damage
+    damageTable.firedmg = true
+    GameMode:DamageUnit(damageTable)
+    if (self:GetAutoCastState()) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
         modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_stun"
-        modifierTable.duration = self.stun_duration
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = self.stunDuration
         GameMode:ApplyDebuff(modifierTable)
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_block"
-        modifierTable.duration = self.block_duration
-        GameMode:ApplyBuff(modifierTable)
     end
+end
+
+function molten_guardian_volcanic_blow:OnUpgrade()
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.blockChance = self:GetSpecialValueFor("block_chance")
+    self.blockDuration = self:GetSpecialValueFor("block_duration")
+    self.blockMultiplier = self:GetSpecialValueFor("block_multiplier")
+    self.tauntDuration = self:GetSpecialValueFor("taunt_duration")
+    self.bonusMaxHpPerBlock = self:GetSpecialValueFor("bonus_maxhp_per_block") / 100
+    self.searchWidthPastTarget = self:GetSpecialValueFor("search_width_past_target")
+    self.searchRangePastTarget = self:GetSpecialValueFor("search_range_past_target")
 end
 
 --molten_guardian_molten_fortress
