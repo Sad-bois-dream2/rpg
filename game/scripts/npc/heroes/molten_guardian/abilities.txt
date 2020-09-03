@@ -391,37 +391,17 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff"				"0 0 0 1"
+				"primal_buff_per_armor_aggro"				"0 0 0 5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_armor"				"0 0 0 1"
+				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_armor_aggro"				"0 0 0 5"
-			}
-			"08"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_ele_armor"				"0 0 0 1"
-			}
-			"09"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
-			}
-			"10"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_hp"				"0 0 0 5000"
-			}
-			"11"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_hp_aggro"				"0 0 0 100"
+				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
 			}
 		}
 		"precache"

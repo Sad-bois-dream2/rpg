@@ -792,8 +792,8 @@ modifier_molten_guardian_shields_up = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetEffectName = function(self)
-        return "particles/units/molten_guardian/shields_up/shields_up.vpcf"
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
     end,
 })
 
@@ -805,16 +805,76 @@ function modifier_molten_guardian_shields_up:OnCreated()
     self.caster = self.ability:GetCaster()
 end
 
-function modifier_molten_guardian_shields_up:GetDamageReductionBonus()
+function modifier_molten_guardian_shields_up:GetAggroCausedBonus()
+    local totalResistances = 0
+    totalResistances = totalResistances + Units:GetFireProtection(self.caster)
+    totalResistances = totalResistances + Units:GetFrostProtection(self.caster)
+    totalResistances = totalResistances + Units:GetEarthProtection(self.caster)
+    totalResistances = totalResistances + Units:GetVoidProtection(self.caster)
+    totalResistances = totalResistances + Units:GetHolyProtection(self.caster)
+    totalResistances = totalResistances + Units:GetNatureProtection(self.caster)
+    totalResistances = totalResistances + Units:GetInfernoProtection(self.caster)
+    totalResistances = totalResistances - 7
+    return (totalResistances * (self.ability.primalBuffPerEleArmorAggro or 0)) + (Units:GetArmor(self.caster) * (self.ability.primalBuffPerArmorAggro or 0)) + (self.caster:GetMaxHealth() * (self.ability.primalBuffPerMaxHpAggro or 0))
+end
+
+LinkedModifiers["modifier_molten_guardian_shields_up"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_shields_up_channel = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/molten_guardian/shields_up/shields_up.vpcf"
+    end,
+})
+
+function modifier_molten_guardian_shields_up_channel:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_molten_guardian_shields_up_channel:GetDamageReductionBonus()
     return self.ability.damageReduction
 end
 
-function modifier_molten_guardian_shields_up:OnTakeDamage(damageTable)
+function modifier_molten_guardian_shields_up_channel:GetImmunityToStun()
+    return self.ability.statusImmune
+end
+
+function modifier_molten_guardian_shields_up_channel:GetImmunityToRoot()
+    return self.ability.statusImmune
+end
+
+function modifier_molten_guardian_shields_up_channel:GetImmunityToSilence()
+    return self.ability.statusImmune
+end
+
+function modifier_molten_guardian_shields_up_channel:GetImmunityToHex()
+    return self.ability.statusImmune
+end
+
+function modifier_molten_guardian_shields_up_channel:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_shields_up")
-    if (modifier and modifier:GetStackCount() < 1) then
+    if (modifier and not modifier.damageInstanceBlocked) then
         damageTable.damage = 0
-        modifier:SetStackCount(1)
-        if(modifier.ability.cdrOnProc > 0) then
+        modifier.damageInstanceBlocked = true
+        if (modifier.ability.cdrOnProc > 0) then
             local cooldownTable = {
                 target = modifier.caster,
                 ability = "molten_guardian_shields_up",
@@ -827,20 +887,25 @@ function modifier_molten_guardian_shields_up:OnTakeDamage(damageTable)
     end
 end
 
-LinkedModifiers["modifier_molten_guardian_shields_up"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_molten_guardian_shields_up_channel"] = LUA_MODIFIER_MOTION_NONE
 
 molten_guardian_shields_up = class({
     GetChannelTime = function(self)
         return self:GetSpecialValueFor("channel_time")
-    end
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_molten_guardian_shields_up"
+    end,
 })
 
 function molten_guardian_shields_up:OnUpgrade()
     self.damageReduction = self:GetSpecialValueFor("damage_reduction") / 100
     self.channelTime = self:GetSpecialValueFor("channel_time")
     self.cdrOnProc = self:GetSpecialValueFor("cdr_on_proc")
-    self.statusImmune = self:GetSpecialValueFor("status_immune")
-    self.primalBuff = self:GetSpecialValueFor("primal_buff")
+    self.statusImmune = self:GetSpecialValueFor("status_immune") > 0
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
 end
 
 function molten_guardian_shields_up:OnChannelFinish()
@@ -861,7 +926,7 @@ function molten_guardian_shields_up:OnSpellStart()
     modifierTable.ability = self
     modifierTable.caster = self.caster
     modifierTable.target = self.caster
-    modifierTable.modifier_name = "modifier_molten_guardian_shields_up"
+    modifierTable.modifier_name = "modifier_molten_guardian_shields_up_channel"
     modifierTable.duration = self.channelTime
     self.modifier = GameMode:ApplyBuff(modifierTable)
     self.caster:AddActivityModifier("bulwark")
@@ -877,6 +942,6 @@ end
 if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_toggle, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up_channel, 'OnTakeDamage'))
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end
