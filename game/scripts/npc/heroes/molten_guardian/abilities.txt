@@ -171,9 +171,14 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"search_width_past_target"				"0 400 400 400"
+				"bonus_maxhp_duration"				"0 0 10 10"
 			}
 			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"search_width_past_target"				"0 400 400 400"
+			}
+			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"search_range_past_target"				"0 300 300 300"

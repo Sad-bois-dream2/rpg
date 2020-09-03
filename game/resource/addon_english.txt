@@ -137,6 +137,8 @@
 		"DOTA_Tooltip_modifier_molten_guardian_volcanic_blow_block_Description"		"Gives a chance to block <font color='#656666'>Physical</font> damage."
 		"DOTA_Tooltip_modifier_molten_guardian_volcanic_blow_taunt"		"Volcanic Blow"
 		"DOTA_Tooltip_modifier_molten_guardian_volcanic_blow_taunt_Description"		"Taunting enemies around."
+		"DOTA_Tooltip_modifier_molten_guardian_volcanic_blow_buff"		"Volcanic Blow"
+		"DOTA_Tooltip_modifier_molten_guardian_volcanic_blow_buff_Description"		"Max health increased."
 		"DOTA_Tooltip_Ability_mars_arena_of_blood"		"Molten Fortress"
 		"DOTA_Tooltip_Ability_mars_arena_of_blood_Description"		"Molten Guardian summons the burning arena from the pool of eternal fire and locks all enemies in it while taunting them. All allies inside the arena have increased Attack damage, Attack speed and Cast speed.<br><br>The cooldown of this ability cannot be reduced below <font color='white'><b>45</b></font> seconds."
         "DOTA_Tooltip_Ability_mars_arena_of_blood_lore"		"As the final fortress to defend the sacred Molten Core, Molten Guardian becomes the incarnate of flaming willpower, unbreakable faith and fearlessness."

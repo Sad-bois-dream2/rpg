@@ -431,6 +431,34 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
 end
 
 -- molten_guardian_volcanic_blow modifiers
+modifier_molten_guardian_volcanic_blow_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_volcanic_blow_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_volcanic_blow_buff:GetHealthPercentBonus()
+    return self.ability.bonusMaxHpPerBlock * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_molten_guardian_volcanic_blow_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_volcanic_blow_taunt = class({
     IsDebuff = function(self)
         return false
@@ -444,13 +472,17 @@ modifier_molten_guardian_volcanic_blow_taunt = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return molten_guardian_volcanic_blow:GetAbilityTextureName()
-    end,
     IsTaunt = function(self)
         return true
     end
 })
+
+function modifier_molten_guardian_volcanic_blow_taunt:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
 
 LinkedModifiers["modifier_molten_guardian_volcanic_blow_taunt"] = LUA_MODIFIER_MOTION_NONE
 
@@ -466,9 +498,6 @@ modifier_molten_guardian_volcanic_blow_block = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return molten_guardian_volcanic_blow:GetAbilityTextureName()
     end
 })
 
@@ -481,7 +510,18 @@ end
 
 function modifier_molten_guardian_volcanic_blow_block:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_volcanic_blow_block")
-    if (modifier and damageTable.physdmg and RollPercentage(modifier.ability.blockChance * modifier.ability.blockMultiplier)) then
+    if (modifier and damageTable.physdmg and modifier.ability and RollPercentage(modifier.ability.blockChance * modifier.ability.blockMultiplier)) then
+        if(modifier.ability.bonusMaxHpPerBlock > 0) then
+            local modifierTable = {}
+            modifierTable.ability = modifier.ability
+            modifierTable.caster = damageTable.victim
+            modifierTable.target = damageTable.victim
+            modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_buff"
+            modifierTable.duration = modifier.ability.bonusMaxHpDuration
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
+        end
         damageTable.damage = 0
         return damageTable
     end
@@ -571,6 +611,7 @@ function molten_guardian_volcanic_blow:OnUpgrade()
     self.bonusMaxHpPerBlock = self:GetSpecialValueFor("bonus_maxhp_per_block") / 100
     self.searchWidthPastTarget = self:GetSpecialValueFor("search_width_past_target")
     self.searchRangePastTarget = self:GetSpecialValueFor("search_range_past_target")
+    self.bonusMaxHpDuration = self:GetSpecialValueFor("bonus_maxhp_duration")
 end
 
 --molten_guardian_molten_fortress
