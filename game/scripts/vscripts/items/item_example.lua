@@ -290,7 +290,10 @@ function modifier_inventory_item_example:GetCriticalChanceBonus()
     return 0
 end
 
-
+-- increase all aggro caused of owner, 1.0 = 100%
+function modifier_inventory_item_example:GetAggroCausedBonus()
+    return 0
+end
 
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)
