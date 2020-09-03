@@ -202,13 +202,13 @@ function modifier_molten_guardian_scorching_clash_motion:UpdateHorizontalMotion(
                     damageTable.damage = damage
                     damageTable.firedmg = true
                     GameMode:DamageUnit(damageTable)
-                    if (self.ability.dotDuration) then
+                    if (self.ability.dotDuration > 0) then
                         local modifierTable = {}
                         modifierTable.ability = self.ability
                         modifierTable.target = enemy
                         modifierTable.caster = self.caster
                         modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_dot"
-                        modifierTable.duration = self.dotDuration
+                        modifierTable.duration = self.ability.dotDuration
                         GameMode:ApplyDebuff(modifierTable)
                     end
                     table.insert(self.damagedEnemies, enemy)
@@ -226,14 +226,7 @@ LinkedModifiers["modifier_molten_guardian_scorching_clash_motion"] = LUA_MODIFIE
 molten_guardian_scorching_clash = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_scorching_clash"
-    end,
-    GetBehavior = function(self)
-        if (self:GetSpecialValueFor("stun_radius") > 0) then
-            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
-        else
-            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
-        end
-    end,
+    end
 })
 
 function molten_guardian_scorching_clash:OnUpgrade()
