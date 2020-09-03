@@ -976,6 +976,8 @@
         "DOTA_Tooltip_CriticalChance_Description"		"Increases your chance to critically strike (multiplicatively)."
 		"DOTA_Tooltip_BuffAmplification"		"Buff Duration"
         "DOTA_Tooltip_BuffAmplification_Description"		"Increases the duration of all buffs you cause."
+		"DOTA_Tooltip_AggroCaused"		"Threat Caused"
+        "DOTA_Tooltip_AggroCaused_Description"		"Increases all threat created from your actions."
 		"DOTA_Tooltip_BaseAttackTime"		"Base Attack Time"
 		"DOTA_Tooltip_AttackDamage"		"Attack Damage"
 		"DOTA_Tooltip_MoveSpeed"		"Move Speed"

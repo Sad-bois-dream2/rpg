@@ -218,6 +218,11 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_DamageReduction" />
 							<Label id="DamageReductionLabel" class="WindowText InventoryAttributeValue" text="0%" />
 						</Panel>
+                        <Panel id="AggroCaused" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_AggroCaused', '#DOTA_Tooltip_AggroCaused_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+						    <Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_AggroCaused" />
+							<Label id="AggroCausedLabel" class="WindowText InventoryAttributeValue" text="100%" />
+                        </Panel>
 						<Panel id="BuffAmplification" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_BuffAmplification', '#DOTA_Tooltip_BuffAmplification_Description')" onmouseout="DOTAHideTitleTextTooltip()">
 							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_BuffAmplification" />
