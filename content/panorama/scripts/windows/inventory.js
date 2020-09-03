@@ -363,6 +363,7 @@ function OnHeroStatsUpdateRequest(event) {
 		var debuffResistance = parsedData.statsTable.debuffResistance;
 		var criticalDamage = parsedData.statsTable.critDamage;
 		var criticalChance = parsedData.statsTable.critChance;
+		var aggroCaused = parsedData.statsTable.aggroCaused;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -399,17 +400,12 @@ function OnHeroStatsUpdateRequest(event) {
 		}
 		physProtection = Math.round(physProtection * 100);
 		$("#PhysArmorLabel").text = armor + " (" + physProtection + "%)";
-		$("#PhysBlockLabel").text = block;
-		$("#MagicBlockLabel").text = magicBlock;
 		var attackDelay = (currentHero > -1 ? Entities.GetSecondsPerAttack(currentHero) : "0");
 		attackDelay = Math.round(attackDelay * 100) / 100;
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
-		if(cooldownReduction>=0.5){
-        		cooldownReduction=0.5;
-        }
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
 		debuffAmplification = debuffAmplification;
 		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
@@ -421,6 +417,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
+		$("#AggroCausedLabel").text = (Math.round(aggroCaused * 10000) / 100) + "%";
     }
 }
 

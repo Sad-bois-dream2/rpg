@@ -295,19 +295,59 @@ if (IsServer()) then
                         break
                     end
                 end
-                if (isTargetCasting == true) then
-                    local isModifierWillPreventCasting = false
-                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
-                    if (crowdControlModifier) then
-                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
-                    else
-                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
-                            isModifierWillPreventCasting = true
-                        end
+                local isStun = false
+                local isRoot = false
+                local isHex = false
+                local isSilence = false
+                local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                local isModifierWillPreventCasting = false
+                if (crowdControlModifier) then
+                    isStun = (crowdControlModifier.stun == true)
+                    isRoot = (crowdControlModifier.root == true)
+                    isHex = (crowdControlModifier.hex == true)
+                    isSilence = (crowdControlModifier.silence == true)
+                else
+                    if (args.modifier_name == "modifier_stunned") then
+                        isStun = true
                     end
-                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
-                        return nil
+                    if (args.modifier_name == "modifier_silence") then
+                        isSilence = true
                     end
+                end
+                isModifierWillPreventCasting = (isStun == true) or (isHex == true) or (isSilence == true)
+                local isUnitHaveImmuneToStun = false
+                local isUnitHaveImmuneToRoot = false
+                local isUnitHaveImmuneToHex = false
+                local isUnitHaveImmuneToSilence = false
+                local unitModifiers = args.target:FindAllModifiers()
+                for i = 1, #unitModifiers do
+                    if (unitModifiers[i].GetImmunityToStun and isUnitHaveImmuneToStun == false) then
+                        isUnitHaveImmuneToStun = unitModifiers[i].GetImmunityToStun(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToRoot and isUnitHaveImmuneToRoot == false) then
+                        isUnitHaveImmuneToRoot = unitModifiers[i].GetImmunityToRoot(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToSilence and isUnitHaveImmuneToSilence == false) then
+                        isUnitHaveImmuneToSilence = unitModifiers[i].GetImmunityToSilence(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToHex and isUnitHaveImmuneToHex == false) then
+                        isUnitHaveImmuneToHex = unitModifiers[i].GetImmunityToHex(unitModifiers[i]) or false
+                    end
+                end
+                if(isStun == true and isUnitHaveImmuneToStun == true) then
+                    return nil
+                end
+                if(isRoot == true and isUnitHaveImmuneToRoot == true) then
+                    return nil
+                end
+                if(isHex == true and isUnitHaveImmuneToHex == true) then
+                    return nil
+                end
+                if(isSilence == true and isUnitHaveImmuneToSilence == true) then
+                    return nil
+                end
+                if (isTargetCasting == true and isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                    return nil
                 end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (fireEvent == nil) then
@@ -1028,15 +1068,15 @@ ListenToGameEvent("dota_player_learned_ability", function(keys)
     if (not IsServer()) then
         return
     end
-    if(not keys.PlayerID) then
+    if (not keys.PlayerID) then
         return
     end
     local player = PlayerResource:GetPlayer(keys.PlayerID)
-    if(not player) then
+    if (not player) then
         return
     end
     local hero = player:GetAssignedHero()
-    if(not hero) then
+    if (not hero) then
         return
     end
     Units:ForceStatsCalculation(hero)

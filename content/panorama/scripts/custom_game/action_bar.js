@@ -6,7 +6,7 @@ var hpBar, hpBarValue, hpBarRegValue, mpBar, mpBarValue, mpBarRegValue, expBar, 
 var attackDamageValue, armorValue, spellArmorValue, movespeedValue;
 var expBarValue, levelValue, expLabel;
 var abilitiesPanelFiller, abilitiesPanel;
-var itemTooltip;
+var statsTooltips;
 var fireResLabel, frostResLabel, earthResLabel, natureResLabel, voidResLabel, infernoResLabel, holyResLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
@@ -394,26 +394,15 @@ function Init() {
     voidResLabel = $("#VoidResistanceLabel");
     infernoResLabel = $("#InfernoResistanceLabel");
     holyResLabel = $("#HolyResistanceLabel");
-    itemTooltip = $("#ItemTooltip");
+    statsTooltips = $("#HeroStatsTooltip");
 }
 
-function ShowElementalResistancesTooltip() {
-    var cursorPosition = GameUI.GetCursorPosition();
-    var x = cursorPosition[0];
-    var y = cursorPosition[1];
-	if(itemTooltip.actuallayoutwidth + x > Game.GetScreenWidth()) {
-	    x -= itemTooltip.actuallayoutwidth;
-	}
-	if(itemTooltip.actuallayoutheight + y > Game.GetScreenHeight()) {
-	    y -= itemTooltip.actuallayoutheight;
-	}
-	itemTooltip.style.marginLeft = x + "px";
-	itemTooltip.style.marginTop = y + "px";
-    itemTooltip.style.visibility = "visible";
+function ShowStatsTooltip() {
+    statsTooltips.style.visibility = "visible";
 }
 
-function HideElementalResistancesTooltip() {
-    itemTooltip.style.visibility = "collapse";
+function HideStatsTooltip() {
+    statsTooltips.style.visibility = "collapse";
 }
 
 (function() {

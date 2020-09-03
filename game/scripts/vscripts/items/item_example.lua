@@ -290,7 +290,30 @@ function modifier_inventory_item_example:GetCriticalChanceBonus()
     return 0
 end
 
+-- increase all aggro caused of owner, 1.0 = 100%
+function modifier_inventory_item_example:GetAggroCausedBonus()
+    return 0
+end
 
+-- provide immunity to all stun modifiers
+function modifier_inventory_item_example:GetImmunityToStun()
+    return false
+end
+
+-- provide immunity to all root modifiers
+function modifier_inventory_item_example:GetImmunityToRoot()
+    return false
+end
+
+-- provide immunity to all silence modifiers
+function modifier_inventory_item_example:GetImmunityToSilence()
+    return false
+end
+
+-- provide immunity to all hex modifiers
+function modifier_inventory_item_example:GetImmunityToHex()
+    return false
+end
 
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)

@@ -162,6 +162,11 @@
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"30"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_duration_for_status_res"				"1"
+			}
 		}
       }
 	  "enemies_mist_assassin"

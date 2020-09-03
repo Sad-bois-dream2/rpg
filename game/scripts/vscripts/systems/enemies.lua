@@ -916,7 +916,7 @@ function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
                 isModifierInteractWithBossZoneAbility = true
             end
         end
-        if (isModifierInteractWithBossZoneAbility == true) then
+        if (isModifierInteractWithBossZoneAbility == true and modifierTable.duration >= bossZoneAbility.minDurationForDebuffRes) then
             local modifier = {}
             modifier.ability = bossZoneAbility
             modifier.caster = modifierTable.target
@@ -998,9 +998,10 @@ function enemies_boss_skill:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    self.spellhastePerStack = self:GetSpecialValueFor("castspeed")
+    self.spellhastePerStack = self:GetSpecialValueFor("castspeed") / 100
     self.debuffResPerStack = self:GetSpecialValueFor("status_res") / 100
     self.debuffResDuration = self:GetSpecialValueFor("duration")
+    self.minDurationForDebuffRes = self:GetSpecialValueFor("min_duration_for_status_res")
 end
 
 -- Internal stuff

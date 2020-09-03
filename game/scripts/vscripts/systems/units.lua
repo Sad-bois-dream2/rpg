@@ -124,6 +124,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitDebuffResistance = 1
         local unitCriticalChance = 1
         local unitCriticalDamage = 1
+        local unitAggroCaused = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         table.sort(unitModifiers, function(a, b)
@@ -308,18 +309,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetInfernoProtectionBonus) then
                 unitInfernoProtection = unitInfernoProtection * (1 - (tonumber(unitModifiers[i].GetInfernoProtectionBonus(unitModifiers[i])) or 0))
             end
-            if (unitModifiers[i].GetBlockBonus) then
-                unitBlock = unitBlock + (tonumber(unitModifiers[i].GetBlockBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetBlockPercentBonus) then
-                unitBlockPercent = unitBlockPercent + (tonumber(unitModifiers[i].GetBlockPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetMagicBlockBonus) then
-                unitMagicBlock = unitMagicBlock + (tonumber(unitModifiers[i].GetMagicBlockBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetMagicBlockPercentBonus) then
-                unitMagicBlockPercent = unitMagicBlockPercent + (tonumber(unitModifiers[i].GetMagicBlockPercentBonus(unitModifiers[i])) or 0)
-            end
             if (unitModifiers[i].GetArmorBonus) then
                 unitArmor = unitArmor + (tonumber(unitModifiers[i].GetArmorBonus(unitModifiers[i])) or 0)
             end
@@ -367,6 +356,9 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             end
             if (unitModifiers[i].GetCriticalChanceBonus) then
                 unitCriticalChance = unitCriticalChance + (tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetAggroCausedBonus) then
+                unitAggroCaused = unitAggroCaused + (tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i])) or 0)
             end
         end
         local primaryAttribute = 0
@@ -509,10 +501,12 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.elementsDamage.holy = unitHolyDamage
         statsTable.elementsDamage.nature = unitNatureDamage
         statsTable.elementsDamage.inferno = unitInfernoDamage
-        -- fix for panaroma float values
+        -- fix for panaroma mp values
         statsTable.display = {}
         statsTable.display.mana = unit:GetMana()
         statsTable.display.maxmana = unit:GetMaxMana()
+        -- aggro caused
+        statsTable.aggroCaused = unitAggroCaused
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
@@ -1325,6 +1319,15 @@ end
 function Units:GetCriticalDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.critDamage or 1
+    end
+    return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetAggroCaused(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.aggroCaused or 1
     end
     return 1
 end

@@ -15,17 +15,6 @@ function Precache(context)
       ]]
 
     DebugPrint("[BAREBONES] Performing pre-load precache")
-    -- not sure about all this
-    -- Light Cardinal talents
-    PrecacheResource("particle_folder", "particles/units/light_cardinal/talents/divine_cloak", context)
-    -- Terror Lord talents
-    PrecacheResource("particle_folder", "particles/units/terror_lord/talents/vengeance", context)
-    PrecacheResource("particle_folder", "particles/units/terror_lord/talents/ashes_of_terror", context)
-    -- Phantom Ranger talents
-    PrecacheResource("particle", "particles/units/heroes/hero_void_spirit/pulse/void_spirit_pulse.vpcf", context)
-    PrecacheResource("particle", "particles/units/heroes/hero_invoker/invoker_emp_explode.vpcf", context)
-    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_queenofpain.vsndevts", context)
-    PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_invoker.vsndevts", context)
     -- Dummy
     PrecacheResource("particle", "particles/units/dummy/dummy.vpcf", context)
     PrecacheResource("particle", "particles/units/dummy/dummy_number.vpcf", context)
@@ -48,14 +37,6 @@ function Precache(context)
     for _, ability in pairs(Enemies.eliteAbilities) do
         PrecacheItemByNameSync(ability, context)
     end
-    -- All talents abilities
-    for _, hero_talents in pairs(TalentTree.talent_abilities) do
-        for _, ability in pairs(hero_talents) do
-            PrecacheItemByNameSync(ability, context)
-        end
-    end
-    --enemy spawn
-    PrecacheResource("soundfile", "soundevents/voscripts/game_sounds_vo_vengefulspirit.vsndevts", context)
 end
 
 -- Create the game mode when we activate
