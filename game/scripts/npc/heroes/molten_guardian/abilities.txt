@@ -39,42 +39,52 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_range"				"800"
+				"damage"				"5 10 15 20"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dash_speed"				"1250"
+				"dash_range"				"800"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"base_damage"				"800 1000 1200 1500"
+				"dash_speed"				"1250"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dot_dmg"				"1 2 3 4"
+				"dot_search_radius"				"0 400 400 400"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dot_tick"				"1"
+				"dot_damage"				"0 5 5 5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"dot_duration"				"3"
+				"dot_tick"				"0 1 1 1"
 			}
 			"07"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"0 0 0 0.5"
+				"var_type"				"FIELD_INTEGER"
+				"dot_duration"				"0 3 3 3"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_radius"				"300"
+				"stun_duration"				"0 0 0 0.5"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_radius"				"0 0 0 300"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"shields_up_taunt_duration"				"0 0 1 1"
 			}
 		}
 		"precache"
@@ -346,7 +356,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_molten_guardian"
-		"AbilityTextureName"			"molten_guardian_scorching_clash"
+		"AbilityTextureName"			"molten_guardian_shields_up"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"

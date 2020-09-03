@@ -1,6 +1,39 @@
 local LinkedModifiers = {}
 
 -- molten_guardian_scorching_clash modifiers
+modifier_molten_guardian_scorching_clash_taunt = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return molten_guardian_shields_up:GetAbilityTextureName()
+    end,
+})
+
+function modifier_molten_guardian_scorching_clash_taunt:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_molten_guardian_scorching_clash_taunt"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_scorching_clash_dot = class({
     IsDebuff = function(self)
         return true
@@ -27,75 +60,26 @@ modifier_molten_guardian_scorching_clash_dot = class({
 
 function modifier_molten_guardian_scorching_clash_dot:OnCreated(kv)
     if IsServer() then
-        local ability = self:GetAbility()
-        local ability_level = ability:GetLevel() - 1
-        local tick = ability:GetLevelSpecialValueFor("dot_tick", ability_level)
-        self.dot_dmg = ability:GetLevelSpecialValueFor("dot_dmg", ability_level) / 100
-        self.ability = ability
-        self.unit = self:GetParent()
+        self.ability = self:GetAbility()
+        self.target = self:GetParent()
         self.caster = self:GetCaster()
-        self:StartIntervalThink(tick)
+        self:StartIntervalThink(self.ability.dotTick)
     end
 end
 
 function modifier_molten_guardian_scorching_clash_dot:OnIntervalThink()
     if IsServer() then
-        local damage = self.caster:GetMaxHealth() * self.dot_dmg
         local damageTable = {}
         damageTable.caster = self.caster
-        damageTable.target = self.unit
+        damageTable.target = self.target
         damageTable.ability = self.ability
-        damageTable.damage = damage
+        damageTable.damage = self.caster:GetMaxHealth() * self.ability.dotDamage
         damageTable.firedmg = true
         GameMode:DamageUnit(damageTable)
     end
 end
 
 LinkedModifiers["modifier_molten_guardian_scorching_clash_dot"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_molten_guardian_scorching_clash_stun = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetEffectName = function(self)
-        return "particles/generic_gameplay/generic_stunned.vpcf"
-    end,
-    IsStunDebuff = function(self)
-        return true
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_OVERHEAD_FOLLOW
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_OVERRIDE_ANIMATION }
-    end,
-    GetOverrideAnimation = function(self)
-        return ACT_DOTA_DISABLED
-    end,
-    CheckState = function(self)
-        local state = {
-            [MODIFIER_STATE_STUNNED] = true,
-        }
-        return state
-    end,
-    GetTexture = function(self)
-        return molten_guardian_scorching_clash:GetAbilityTextureName()
-    end,
-})
-
-LinkedModifiers["modifier_molten_guardian_scorching_clash_stun"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_molten_guardian_scorching_clash_motion = class({
     IsDebuff = function(self)
@@ -121,68 +105,61 @@ modifier_molten_guardian_scorching_clash_motion = class({
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+        }
     end
 })
 
-function modifier_molten_guardian_scorching_clash_motion:CheckState()
-    local state = {
-        [MODIFIER_STATE_STUNNED] = true,
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true
-    }
-    return state
-end
-
 function modifier_molten_guardian_scorching_clash_motion:OnCreated(kv)
-    if IsServer() then
-        local ability = self:GetAbility()
-        local ability_level = ability:GetLevel() - 1
-        self.ability = ability
-        self.caster = self:GetParent()
-        self.start_location = self.caster:GetAbsOrigin()
-        self.dash_speed = ability:GetLevelSpecialValueFor("dash_speed", ability_level)
-        self.dash_range = math.min(ability:GetLevelSpecialValueFor("dash_range", ability_level), DistanceBetweenVectors(self.start_location, self.ability:GetCursorPosition()))
-        self.base_damage = ability:GetLevelSpecialValueFor("base_damage", ability_level)
-        self.dot_duration = ability:GetLevelSpecialValueFor("dot_duration", ability_level)
-        self.stun_duration = ability:GetLevelSpecialValueFor("stun_duration", ability_level)
-        self.stun_radius = ability:GetLevelSpecialValueFor("stun_radius", ability_level)
-        self.damagedEnemies = {}
-        if (self:ApplyHorizontalMotionController() == false) then
-            self:Destroy()
-        end
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.startLocation = self.caster:GetAbsOrigin()
+    self.dashRange = math.min(self.ability.dashRange, DistanceBetweenVectors(self.startLocation, self.ability:GetCursorPosition()))
+    self.damagedEnemies = {}
+    if (self:ApplyHorizontalMotionController() == false) then
+        self:Destroy()
     end
 end
 
 function modifier_molten_guardian_scorching_clash_motion:OnDestroy()
-    if IsServer() then
-        self.caster:RemoveHorizontalMotionController(self)
-        self.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_1)
-        ParticleManager:DestroyParticle(self.ability.particle, false)
-        ParticleManager:ReleaseParticleIndex(self.ability.particle)
-        if (self.ability:GetLevel() >= 3) then
-            local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/scorching_clash/scorching_clash_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
-            ParticleManager:SetParticleControl(pidx, 3, self.caster:GetAbsOrigin())
-            Timers:CreateTimer(2.0, function()
-                ParticleManager:DestroyParticle(pidx, false)
-                ParticleManager:ReleaseParticleIndex(pidx)
-            end)
-            local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                    self.caster:GetAbsOrigin(),
-                    nil,
-                    self.stun_radius,
-                    DOTA_UNIT_TARGET_TEAM_ENEMY,
-                    DOTA_UNIT_TARGET_ALL,
-                    DOTA_UNIT_TARGET_FLAG_NONE,
-                    FIND_ANY_ORDER,
-                    false)
-            for _, enemy in pairs(enemies) do
-                local modifierTable = {}
-                modifierTable.ability = self.ability
-                modifierTable.target = enemy
-                modifierTable.caster = self.caster
-                modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_stun"
-                modifierTable.duration = self.stun_duration
-                GameMode:ApplyDebuff(modifierTable)
-            end
+    if not IsServer() then
+        return
+    end
+    self.caster:RemoveHorizontalMotionController(self)
+    self.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_1)
+    ParticleManager:DestroyParticle(self.ability.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.ability.particle)
+    if (self.ability.stunRadius > 0) then
+        local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/scorching_clash/scorching_clash_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+        ParticleManager:SetParticleControl(pidx, 3, self.caster:GetAbsOrigin())
+        Timers:CreateTimer(2.0, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+                self.caster:GetAbsOrigin(),
+                nil,
+                self.ability.stunRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.target = enemy
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_stunned"
+            modifierTable.duration = self.ability.stunDuration
+            GameMode:ApplyDebuff(modifierTable)
         end
     end
 end
@@ -195,42 +172,45 @@ end
 
 function modifier_molten_guardian_scorching_clash_motion:UpdateHorizontalMotion(me, dt)
     if (IsServer()) then
-        local current_location = self.caster:GetAbsOrigin()
-        local expected_location = current_location + self.caster:GetForwardVector() * self.dash_speed * dt
-        local isTraversable = GridNav:IsTraversable(expected_location)
-        local isBlocked = GridNav:IsBlocked(expected_location)
-        local isTreeNearby = GridNav:IsNearbyTree(expected_location, self.caster:GetHullRadius(), true)
-        local traveled_distance = DistanceBetweenVectors(current_location, self.start_location)
-        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dash_range) then
-            self.caster:SetAbsOrigin(expected_location)
-            local particle_location = expected_location + Vector(0, 0, 100)
-            ParticleManager:SetParticleControl(self.ability.particle, 0, particle_location)
-            ParticleManager:SetParticleControl(self.ability.particle, 1, particle_location)
+        local currentLocation = self.caster:GetAbsOrigin()
+        local expectedLocation = currentLocation + self.caster:GetForwardVector() * self.ability.dashSpeed * dt
+        local isTraversable = GridNav:IsTraversable(expectedLocation)
+        local isBlocked = GridNav:IsBlocked(expectedLocation)
+        local isTreeNearby = GridNav:IsNearbyTree(expectedLocation, self.caster:GetHullRadius(), true)
+        local traveled_distance = DistanceBetweenVectors(currentLocation, self.startLocation)
+        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dashRange) then
+            self.caster:SetAbsOrigin(expectedLocation)
+            local particleLocation = expectedLocation + Vector(0, 0, 100)
+            ParticleManager:SetParticleControl(self.ability.particle, 0, particleLocation)
+            ParticleManager:SetParticleControl(self.ability.particle, 1, particleLocation)
             local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                    expected_location,
+                    expectedLocation,
                     nil,
-                    200,
+                    self.ability.dotSearchRadius,
                     DOTA_UNIT_TARGET_TEAM_ENEMY,
                     DOTA_UNIT_TARGET_ALL,
                     DOTA_UNIT_TARGET_FLAG_NONE,
                     FIND_ANY_ORDER,
                     false)
+            local damage = self.ability.damage * self.caster:GetMaxHealth()
             for _, enemy in pairs(enemies) do
                 if (not TableContains(self.damagedEnemies, enemy)) then
                     local damageTable = {}
                     damageTable.caster = self.caster
                     damageTable.target = enemy
                     damageTable.ability = self.ability
-                    damageTable.damage = self.base_damage
+                    damageTable.damage = damage
                     damageTable.firedmg = true
                     GameMode:DamageUnit(damageTable)
-                    local modifierTable = {}
-                    modifierTable.ability = self.ability
-                    modifierTable.target = enemy
-                    modifierTable.caster = self.caster
-                    modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_dot"
-                    modifierTable.duration = self.dot_duration
-                    GameMode:ApplyDebuff(modifierTable)
+                    if (self.ability.dotDuration) then
+                        local modifierTable = {}
+                        modifierTable.ability = self.ability
+                        modifierTable.target = enemy
+                        modifierTable.caster = self.caster
+                        modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_dot"
+                        modifierTable.duration = self.dotDuration
+                        GameMode:ApplyDebuff(modifierTable)
+                    end
                     table.insert(self.damagedEnemies, enemy)
                 end
             end
@@ -247,7 +227,27 @@ molten_guardian_scorching_clash = class({
     GetAbilityTextureName = function(self)
         return "molten_guardian_scorching_clash"
     end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("stun_radius") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
 })
+
+function molten_guardian_scorching_clash:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dashRange = self:GetSpecialValueFor("dash_range")
+    self.dashSpeed = self:GetSpecialValueFor("dash_speed")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.stunRadius = self:GetSpecialValueFor("stun_radius")
+    self.shieldsUpTauntDuration = self:GetSpecialValueFor("shields_up_taunt_duration")
+    self.dotSearchRadius = self:GetSpecialValueFor("dot_search_radius")
+end
 
 function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
     if IsServer() then
@@ -267,6 +267,15 @@ function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
         modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_motion"
         modifierTable.duration = -1
         GameMode:ApplyBuff(modifierTable)
+        if (self.shieldsUpTauntDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_molten_guardian_scorching_clash_taunt"
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
+        end
     end
 end
 
@@ -776,6 +785,29 @@ if (IsServer()) then
 end
 
 --molten_guardian_shields_up
+modifier_molten_guardian_shields_up_taunt = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    IsTaunt = function(self)
+        return true
+    end
+})
+
+LinkedModifiers["modifier_molten_guardian_shields_up_taunt"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_shields_up = class({
     IsDebuff = function(self)
         return false
@@ -897,6 +929,9 @@ molten_guardian_shields_up = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_molten_guardian_shields_up"
     end,
+    GetAbilityTextureName = function(self)
+        return "molten_guardian_shields_up"
+    end
 })
 
 function molten_guardian_shields_up:OnUpgrade()
@@ -933,6 +968,17 @@ function molten_guardian_shields_up:OnSpellStart()
     self.caster:AddActivityModifier("bulwark")
     self.caster:StartGesture(ACT_DOTA_RUN)
     EmitSoundOn("Hero_Mars.Shield.Cast.Small", self.caster)
+    local tauntModifier = self.caster:FindModifierByName("modifier_molten_guardian_scorching_clash_taunt")
+    if (tauntModifier and tauntModifier.ability and tauntModifier.ability.shieldsUpTauntDuration) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_shields_up_taunt"
+        modifierTable.duration = tauntModifier.ability.shieldsUpTauntDuration
+        GameMode:ApplyBuff(modifierTable)
+        tauntModifier:Destroy()
+    end
 end
 
 -- Internal stuff

@@ -109,15 +109,13 @@
 //
 		// Molten Guardian (mars)
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash"		"Scorching Clash"
-		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Description"		"Molten Guardian dashes forward furiously with his battle shield, damaging all enemies along the way. Enemies hit are set aflame and take <font color='#d92129'>Fire</font> damage over time (based on his maximum Health) for <font color='white'><b>3</b></font> seconds.<br><br>At level <font color='white'><b>4</b></font>, he also stuns all enemies in <font color='white'><b>300</b></font> radius around the target location for <font color='white'><b>0.5</b></font> seconds."
-		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_base_damage"		"BASE DAMAGE:"
-		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_dot_dmg"		"%MAX HEALTH DAMAGE PER TICK"
-		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_dot_tick"		"DAMAGE INTERVAL:"
-		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_dot_duration"		"DURATION:"
-		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_stun"		"Scorching clash"
-		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_stun_Description"		"Stunned."
-		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_dot"		"Scorching clash"
-		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_dot_Description"		"Suffering <font color='#d92129'>Fire</font> damage from Scorching Clash."
+		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Description"		"Molten Guardian dashes forward furiously with his battle shield, dealing <font color='#d92129'>Fire</font> damage to all enemies along the way.\nRank 2: Enemies hit are set aflame and take <font color='#d92129'>Fire</font> damage equal <font color='white'><b>5%</b></font> of Molten Guardian's max health every second for <font color='white'><b>3</b></font> seconds.\nRank 3: After using this ability your next using of <font color='white'><b>Shields Up</b></font> ability will cause Taunt for <font color='white'><b>1</b></font> second.\nRank 4: Stuns all enemies in <font color='white'><b>300</b></font> radius around the target location for <font color='white'><b>0.5</b></font> seconds."
+		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_damage"		"%MAX HEALTH TO DAMAGE:"
+		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_dash_range"		"RANGE: "
+		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_dot"		"Scorching Clash"
+		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_dot_Description"		"Suffering <font color='#d92129'>Fire</font> damage."
+		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_taunt"		"Emproved Shields Up"
+		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_taunt_Description"		"Your next using of Shields Up ability will cause Taunt."
 		"DOTA_Tooltip_Ability_molten_guardian_lava_skin"		"Lava Skin"
 		"DOTA_Tooltip_Ability_molten_guardian_lava_skin_Description"		"Passively reduce all <font color='#656666'>Physical</font> damage you take. When attacked, send heat waves from your skin burn enemies in a <font color='white'><b>350</b></font> radius, slowing and dealing <font color='#d92129'>Fire</font> damage (based on your STR)."
 		"DOTA_Tooltip_Ability_molten_guardian_lava_skin_Lore"	"Molten Guardian was born from the pool of eternal fire in the Molten Core. Just coming into contact with his skin is enough to soften and corrode any weapon."
@@ -154,6 +152,8 @@
         "DOTA_Tooltip_Ability_molten_guardian_shields_up_channel_time"		"CHANNEL TIME: "
         "DOTA_Tooltip_modifier_molten_guardian_shields_up_channel"		"Shields Up"
         "DOTA_Tooltip_modifier_molten_guardian_shields_up_channel_Description"		"Damage reduction increased."
+        "DOTA_Tooltip_modifier_molten_guardian_shields_up_taunt"		"Shields Up"
+        "DOTA_Tooltip_modifier_molten_guardian_shields_up_taunt_Description"		"Taunting enemies around."
         // Priestess of Sacred Forest (ench)
 
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence"		"Herbaceous Essence"
