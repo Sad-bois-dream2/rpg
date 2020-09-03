@@ -417,7 +417,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
-		$("#AggroCausedLabel").text = (aggroCaused * 100) + "%";
+		$("#AggroCausedLabel").text = (Math.round(aggroCaused * 10000) / 100) + "%";
     }
 }
 
