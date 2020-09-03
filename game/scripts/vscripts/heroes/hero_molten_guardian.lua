@@ -561,7 +561,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
     end
 end
 
--- molten_guardian_molten_fortress modifiers
+--molten_guardian_molten_fortress
 modifier_molten_guardian_molten_fortress_helper = class({
     IsDebuff = function(self)
         return false
@@ -758,7 +758,6 @@ end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_aggro"] = LUA_MODIFIER_MOTION_NONE
 
--- molten_guardian_molten_fortress
 if (IsServer()) then
     ListenToGameEvent('npc_spawned', function(event)
         if (event ~= nil) then
@@ -775,6 +774,7 @@ if (IsServer()) then
         end
     end, nil)
 end
+
 --molten_guardian_shields_up
 modifier_molten_guardian_shields_up = class({
     IsDebuff = function(self)
@@ -791,7 +791,10 @@ modifier_molten_guardian_shields_up = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end
+    end,
+    GetEffectName = function(self)
+        return "particles/units/molten_guardian/shields_up/shields_up.vpcf"
+    end,
 })
 
 function modifier_molten_guardian_shields_up:OnCreated()
@@ -799,10 +802,29 @@ function modifier_molten_guardian_shields_up:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
 end
 
 function modifier_molten_guardian_shields_up:GetDamageReductionBonus()
     return self.ability.damageReduction
+end
+
+function modifier_molten_guardian_shields_up:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_shields_up")
+    if (modifier and modifier:GetStackCount() < 1) then
+        damageTable.damage = 0
+        modifier:SetStackCount(1)
+        if(modifier.ability.cdrOnProc > 0) then
+            local cooldownTable = {
+                target = modifier.caster,
+                ability = "molten_guardian_shields_up",
+                reduction = modifier.ability.cdrOnProc,
+                isflat = true
+            }
+            GameMode:ReduceAbilityCooldown(cooldownTable)
+        end
+        return damageTable
+    end
 end
 
 LinkedModifiers["modifier_molten_guardian_shields_up"] = LUA_MODIFIER_MOTION_NONE
@@ -844,6 +866,7 @@ function molten_guardian_shields_up:OnSpellStart()
     self.modifier = GameMode:ApplyBuff(modifierTable)
     self.caster:AddActivityModifier("bulwark")
     self.caster:StartGesture(ACT_DOTA_RUN)
+    EmitSoundOn("Hero_Mars.Shield.Cast.Small", self.caster)
 end
 
 -- Internal stuff
@@ -854,5 +877,6 @@ end
 if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_toggle, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up, 'OnTakeDamage'))
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end
