@@ -1025,6 +1025,9 @@ function molten_guardian_shields_up:OnSpellStart()
     end
 end
 
+-- molten_guardian_lava_spear
+molten_guardian_lava_spear = class({})
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_molten_guardian", MotionController)
