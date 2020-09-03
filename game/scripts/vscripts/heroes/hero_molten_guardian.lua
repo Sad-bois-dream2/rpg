@@ -781,7 +781,7 @@ modifier_molten_guardian_shields_up = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -837,7 +837,7 @@ modifier_molten_guardian_shields_up_channel = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/molten_guardian/shields_up/shields_up.vpcf"
+        return "particles/units/molten_guardian/shields_up/shields_up_v2.vpcf"
     end,
 })
 
@@ -870,8 +870,8 @@ function modifier_molten_guardian_shields_up_channel:GetImmunityToHex()
 end
 
 function modifier_molten_guardian_shields_up_channel:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_shields_up")
-    if (modifier and not modifier.damageInstanceBlocked) then
+    local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_shields_up_channel")
+    if (modifier and not modifier.damageInstanceBlocked and damageTable.damage > 0) then
         damageTable.damage = 0
         modifier.damageInstanceBlocked = true
         if (modifier.ability.cdrOnProc > 0) then
@@ -883,6 +883,7 @@ function modifier_molten_guardian_shields_up_channel:OnTakeDamage(damageTable)
             }
             GameMode:ReduceAbilityCooldown(cooldownTable)
         end
+        EmitSoundOn("Hero_Mars.Shield.Block", damageTable.victim)
         return damageTable
     end
 end

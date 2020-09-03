@@ -406,7 +406,7 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/molten_guardian/shields_up/shields_up.vpcf"
+            "particle"  "particles/units/molten_guardian/shields_up/shields_up_v2.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}

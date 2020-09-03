@@ -152,6 +152,8 @@
 		"DOTA_Tooltip_Ability_molten_guardian_shields_up_Description"		"Molten Guardian rise his shield to protect himself and reduce all incoming damage. Block any damage instance once that you take during channeling this ability.\nRank 2: If you manage to block damage instance with this ability reduce cooldown of this ability by <font color='white'><b>5</b></font> seconds.\nRank 3: You gain immunity to all crowd control effects (stun, silence, root, hex) as long as you channel this ability.\nRank 4: Passievly grant you Guardian effect that increase all your threat caused by <font color='white'><b>5%</b></font> per each armor, <font color='white'><b>1%</b></font> per each percent of elemental resistance and by <font color='white'><b>0.02%</b></font> per each max health."
         "DOTA_Tooltip_Ability_molten_guardian_shields_up_damage_reduction"		"%DAMAGE REDUCTION: "
         "DOTA_Tooltip_Ability_molten_guardian_shields_up_channel_time"		"CHANNEL TIME: "
+        "DOTA_Tooltip_modifier_molten_guardian_shields_up_channel"		"Shields Up"
+        "DOTA_Tooltip_modifier_molten_guardian_shields_up_channel_Description"		"Damage reduction increased."
         // Priestess of Sacred Forest (ench)
 
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence"		"Herbaceous Essence"
