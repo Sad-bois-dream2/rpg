@@ -346,7 +346,7 @@ if (IsServer()) then
                 if(isSilence == true and isUnitHaveImmuneToSilence == true) then
                     return nil
                 end
-                if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false and isTargetCasting == true) then
+                if (isTargetCasting == true and isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
                     return nil
                 end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
