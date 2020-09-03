@@ -1111,7 +1111,7 @@
         "DOTA_SaveLoad_SaveCooldown1"		"second(s) before next attempt to save hero!"
 
         "DOTA_Tooltip_Ability_enemies_boss_skill"      "Will of Survival"
-        "DOTA_Tooltip_Ability_enemies_boss_skill_Description"      "After receiving any crowd control effect (root, stun, silence, hex) this unit will gain <font color='white'><b>1</b></font> stack of Will of Survival effect that provide bonus debuffs resistance.<br>After one of this unit spells interrupted he will gain <font color='white'><b>1</b></font> stack of Spell Frenzy effect that provide bonus cast speed.<br><br>All Will of Survival stacks dispelled after certain time.<br><br>All Spell Frenzy stacks dispelled after successful casting of interruptible spell."
+        "DOTA_Tooltip_Ability_enemies_boss_skill_Description"      "After receiving any crowd control effect with duration at least <font color='white'><b>1</b></font> second (root, stun, silence, hex) this unit will gain <font color='white'><b>1</b></font> stack of Will of Survival effect that provide bonus debuffs resistance. New stacks of Will of Survival don't refresh total duration of Will of Survival effect.\nAfter one of this unit spells interrupted he will gain <font color='white'><b>1</b></font> stack of Spell Frenzy effect that provide bonus cast speed.<br><br>All Will of Survival stacks dispelled after certain time.<br><br>All Spell Frenzy stacks dispelled after successful casting of interruptible spell."
         "DOTA_Tooltip_Ability_enemies_boss_skill_status_res"      "%BONUS DEBUFF RESISTANCE PER STACK: "
         "DOTA_Tooltip_Ability_enemies_boss_skill_castspeed"      "BONUS CAST SPEED PER STACK: "
         "DOTA_Tooltip_Ability_enemies_boss_skill_duration"      "WILL OF SURVIVAL DURATION: "
