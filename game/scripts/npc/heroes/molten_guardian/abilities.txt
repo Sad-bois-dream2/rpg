@@ -465,9 +465,9 @@
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_5"
+		"AbilityCastGestureSlot"		"DEFAULT"
 		"AbilityCastPoint"				"0.25"
-		"AbilityCastRange"				"900"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -487,42 +487,77 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_reduction"				"10 15 20 25"
+				"damage"				"5 6 7 8"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"channel_time"				"0.55 0.70 0.85 1"
+				"ms_slow"				"10 20 30 40"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"cdr_on_proc"				"0 5 5 5"
+				"ms_slow_duration"				"0.25 0.5 0.75 1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_immune"				"0 0 1 1"
+				"dot_damage"				"0 10 10 10"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_armor_aggro"				"0 0 0 5"
+				"dot_duration"				"0 6 6 6"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+				"armor_per_stack"				"0 6 6 6"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
+				"fire_dmg_per_stack"				"0 7 7 7"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"				"0 15 15 15"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_cap"				"0 10 10 10"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_debuff"				"0 0 0 -20"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_debuff_duration"				"0 0 0 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spear_width"				"300"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spear_speed"				"1800"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spear_distance"				"1200"
 			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/molten_guardian/shields_up/shields_up_v2.vpcf"
+            "particle"  "particles/units/heroes/hero_mars/mars_spear.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}

@@ -992,8 +992,7 @@ function molten_guardian_shields_up:OnChannelFinish()
     if (not IsServer()) then
         return
     end
-    self.caster:ClearActivityModifiers()
-    self.caster:RemoveGesture(ACT_DOTA_RUN)
+    self.caster:RemoveGesture(ACT_DOTA_OVERRIDE_ABILITY_3)
     self.modifier:Destroy()
 end
 
@@ -1009,8 +1008,7 @@ function molten_guardian_shields_up:OnSpellStart()
     modifierTable.modifier_name = "modifier_molten_guardian_shields_up_channel"
     modifierTable.duration = self.channelTime
     self.modifier = GameMode:ApplyBuff(modifierTable)
-    self.caster:AddActivityModifier("bulwark")
-    self.caster:StartGesture(ACT_DOTA_RUN)
+    self.caster:StartGesture(ACT_DOTA_OVERRIDE_ABILITY_3)
     EmitSoundOn("Hero_Mars.Shield.Cast.Small", self.caster)
     local tauntModifier = self.caster:FindModifierByName("modifier_molten_guardian_scorching_clash_taunt")
     if (tauntModifier and tauntModifier.ability and tauntModifier.ability.shieldsUpTauntDuration) then
@@ -1027,6 +1025,54 @@ end
 
 -- molten_guardian_lava_spear
 molten_guardian_lava_spear = class({})
+
+function molten_guardian_lava_spear:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterLocation = caster:GetAbsOrigin()
+    local projectile =
+    {
+        Ability = self,
+        EffectName = "particles/units/heroes/hero_mars/mars_spear.vpcf",
+        vSpawnOrigin = casterLocation,
+        fDistance = self.spearDistance,
+        fStartRadius = self.spearWidth,
+        fEndRadius = self.spearWidth,
+        Source = caster,
+        bHasFrontalCone = false,
+        bReplaceExisting = false,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+        iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
+        fExpireTime = GameRules:GetGameTime() + 10.0,
+        bDeleteOnHit = true,
+        vVelocity = (self:GetCursorPosition() - casterLocation):Normalized() * self.spearSpeed,
+        bProvidesVision = true,
+        iVisionRadius = 400,
+        iVisionTeamNumber = caster:GetTeamNumber()
+    }
+    projectile = ProjectileManager:CreateLinearProjectile(projectile)
+    EmitSoundOn("Hero_Mars.Spear.Cast", caster)
+end
+
+function molten_guardian_lava_spear:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.msSlow = self:GetSpecialValueFor("ms_slow") / 100
+    self.msSlowDuration = self:GetSpecialValueFor("ms_slow_duration")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage")
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.armorPerStack = self:GetSpecialValueFor("armor_per_stack") / 100
+    self.fireDmgPerStack = self:GetSpecialValueFor("fire_dmg_per_stack") / 100
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.stacksCap = self:GetSpecialValueFor("stacks_cap")
+    self.fireResistanceDebuff = self:GetSpecialValueFor("fire_resistance_debuff") / 100
+    self.fireResistanceDebuffDuration = self:GetSpecialValueFor("fire_resistance_debuff_duration")
+    self.spearWidth = self:GetSpecialValueFor("spear_width")
+    self.spearSpeed = self:GetSpecialValueFor("spear_speed")
+    self.spearDistance = self:GetSpecialValueFor("spear_distance")
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
