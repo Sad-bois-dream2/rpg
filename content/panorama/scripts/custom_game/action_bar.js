@@ -360,7 +360,8 @@ function UpdateValues() {
             damageReductionLabel.text = Math.round((1-latestStats.damageReduction) * 100) + "%";
             aggroCausedLabel.text = (Math.round(latestStats.aggroCaused * 10000) / 100) + "%";
             buffAmplificationLabel.text = (Math.round(latestStats.buffAmplification * 10000) / 100) + "%";
-            cooldownReductionLabel.text = (Math.round((1-cooldownReduction) * 10000) / 100) + "%";
+            cooldownReductionLabel.text = (Math.round((1-latestStats.cdr) * 10000) / 100) + "%";
+
         }
 		lastSelectedUnit = hero;
     }
