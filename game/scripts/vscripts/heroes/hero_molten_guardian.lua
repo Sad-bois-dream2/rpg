@@ -1191,8 +1191,12 @@ function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
         enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
     end
     local rank2Modifier = self.ability.caster:FindModifierByName("modifier_molten_guardian_molten_fortress_buff")
-    if (rank2Modifier and DistanceBetweenVectors(self.ability.caster:GetAbsOrigin(), self.ability.castPosition) <= self.ability.radius) then
-        rank2Modifier:SetStackCount(#enemies)
+    if (rank2Modifier) then
+        if(DistanceBetweenVectors(self.ability.caster:GetAbsOrigin(), self.ability.castPosition) <= self.ability.radius) then
+            rank2Modifier:SetStackCount(#enemies)
+        else
+            rank2Modifier:SetStackCount(0)
+        end
     end
     if (not self.secondThinker) then
         self:Destroy()
