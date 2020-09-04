@@ -598,7 +598,7 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border-radius: 5px;
+	border-radius: 15px;
 	margin-bottom: 180px;
     z-index: 20;
     margin-left: -130px;
@@ -640,6 +640,14 @@
 .HeroMainStatsMainContainer.last {
     flow-children: right;
     margin-bottom: 10px;
+}
+
+.HeroMainStatsMainContainer .HeroMainStatsMainLabelsContainer Label.HeroMainStatsPrimaryLabel {
+    visibility: collapse;
+}
+
+.HeroMainStatsMainContainer.primary .HeroMainStatsMainLabelsContainer Label.HeroMainStatsPrimaryLabel {
+    visibility: visible;
 }
 
 .HeroMainStatsMainLabelsContainer {

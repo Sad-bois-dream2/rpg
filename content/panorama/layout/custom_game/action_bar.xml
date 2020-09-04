@@ -11,152 +11,154 @@
         <Panel id="HeroStatsTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
             <Panel class="HeroStatsContainer">
                 <Panel class="OffensiveStats">
-                    <Label class="HeroStatsCategoryName" text="ATTACK"/>
+                    <Label class="HeroStatsCategoryName" text="#DOTA_StatsTooltip_Attack"/>
                     <Panel class="HeroStatsLabelsContainer">
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_SpellDamage"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipSpellDamage" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_SpellHaste"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipSpellHaste" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_AttackRange"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipAttackRange" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_AttackSpeed"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipAttackSpeed" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_BaseAttackTime"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipBaseAttackTime" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_DebuffAmplification"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipDebuffAmplification" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_DebuffResistance"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipDebuffResistance" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_CriticalDamage"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipCriticalDamage" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_CriticalChance"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipCriticalChance" class="Value" text="0%"/>
                         </Panel>
                     </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
                             <Image src="file://{images}/custom_game/hud/fire_element.png"/>
-                            <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipFireAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/frost_element.png"/>
-                            <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipFrostAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/earth_element.png"/>
-                            <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipEarthAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/nature_element.png"/>
-                            <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipNatureAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/void_element.png"/>
-                            <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipVoidAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
-                            <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipInfernoAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/holy_element.png"/>
-                            <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipHolyAmpLabel" class="ItemTooltipLabel" text="-1"/>
                         </Panel>
                     </Panel>
                 </Panel>
                 <Panel class="DefensiveStats">
-                    <Label class="HeroStatsCategoryName" text="DEFENSE"/>
+                    <Label class="HeroStatsCategoryName" text="#DOTA_StatsTooltip_Defense"/>
                     <Panel class="HeroStatsLabelsContainer">
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_DamageReduction"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipDamageReduction" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_AggroCaused"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipAggroCaused" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_BuffAmplification"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipBuffAmplification" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
                             <Label class="Title" text="#DOTA_Tooltip_CooldownReduction"/>
-                            <Label id="CustomValue" class="Value" text="0%"/>
+                            <Label id="StatsTooltipCooldownReduction" class="Value" text="0%"/>
                         </Panel>
                     </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
                             <Image src="file://{images}/custom_game/hud/fire_element.png"/>
-                            <Label id="FireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipFireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/frost_element.png"/>
-                            <Label id="FrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipFrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/earth_element.png"/>
-                            <Label id="EarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipEarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/nature_element.png"/>
-                            <Label id="NatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipNatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/void_element.png"/>
-                            <Label id="VoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipVoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
-                            <Label id="InfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipInfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
                             <Image src="file://{images}/custom_game/hud/holy_element.png"/>
-                            <Label id="HolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
+                            <Label id="StatsTooltipHolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                     </Panel>
                 </Panel>
             </Panel>
             <Panel class="HeroMainStatsContainer">
-                <Panel class="Strength HeroMainStatsMainContainer">
+                <Panel id="StatsTooltipStrengthLabel" class="Strength HeroMainStatsMainContainer">
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="26 (Gains 3.5 per lvl)"/>
-                        <Label text="= 26 Damage (Primary Attribute Bonus)"/>
-                        <Label text="= 10% Elemental Resistances"/>
+                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label text="#DOTA_StatsTooltip_StrStatBonus"/>
                     </Panel>
                 </Panel>
-                <Panel class="Agility HeroMainStatsMainContainer">
+                <Panel id="StatsTooltipAgilityLabel" class="Agility HeroMainStatsMainContainer">
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="13 (Gains 3.2 per lvl)"/>
-                        <Label text="= 20% Evasion"/>
+                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label text="#DOTA_StatsTooltip_AgiStatBonus"/>
                     </Panel>
                 </Panel>
-                <Panel class="Intellect HeroMainStatsMainContainer last">
+                <Panel id="StatsTooltipIntellectLabel" class="Intellect HeroMainStatsMainContainer last primary">
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="18 (Gains 3.5 per lvl)"/>
-                        <Label text="= 40% Spell Damage"/>
+                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label text="#DOTA_StatsTooltip_IntStatBonus"/>
                     </Panel>
                 </Panel>
             </Panel>

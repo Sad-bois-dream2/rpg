@@ -8,6 +8,10 @@ var expBarValue, levelValue, expLabel;
 var abilitiesPanelFiller, abilitiesPanel;
 var statsTooltips;
 var fireResLabel, frostResLabel, earthResLabel, natureResLabel, voidResLabel, infernoResLabel, holyResLabel;
+var fireAmpLabel, frostAmpLabel, earthAmpLabel, natureAmpLabel, voidAmpLabel, infernoAmpLabel, holyAmpLabel;
+var spellDamageLabel, spellHasteLabel, attackRangeLabel, attackSpeedLabel, baseAttackTimeLabel, DebuffAmplificationLabel, DebuffResistanceLabel;
+var criticalDamageLabel, criticalChanceLabel;
+var damageReductionLabel, aggroCausedLabel, buffAmplificationLabel, cooldownReductionLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -327,6 +331,7 @@ function UpdateValues() {
             elementalArmorValue = elementalArmorValue / length;
             spellArmorValue.text = Math.round(elementalArmorValue * 10000) / 100 + "%";
             movespeedValue.text = Entities.GetMoveSpeedModifier(hero, Entities.GetBaseMoveSpeed(hero));
+            // statsTooltip
             fireResLabel.text = Math.round((1 - latestStats.elementsProtection["fire"]) * 100) +"%";
             frostResLabel.text = Math.round((1 - latestStats.elementsProtection["frost"]) * 100) +"%";
             earthResLabel.text = Math.round((1 - latestStats.elementsProtection["earth"]) * 100) +"%";
@@ -334,6 +339,28 @@ function UpdateValues() {
             voidResLabel.text = Math.round((1 - latestStats.elementsProtection["void"]) * 100) +"%";
             infernoResLabel.text = Math.round((1 - latestStats.elementsProtection["inferno"]) * 100) +"%";
             holyResLabel.text = Math.round((1 - latestStats.elementsProtection["holy"]) * 100) +"%";
+            fireAmpLabel.text = Math.round((1 - latestStats.elementsDamage["fire"]) * 100) +"%";
+            frostAmpLabel.text = Math.round((1 - latestStats.elementsDamage["frost"]) * 100) +"%";
+            earthAmpLabel.text = Math.round((1 - latestStats.elementsDamage["earth"]) * 100) +"%";
+            natureAmpLabel.text = Math.round((1 - latestStats.elementsDamage["nature"]) * 100) +"%";
+            voidAmpLabel.text = Math.round((1 - latestStats.elementsDamage["void"]) * 100) +"%";
+            infernoAmpLabel.text = Math.round((1 - latestStats.elementsDamage["inferno"]) * 100) +"%";
+            holyAmpLabel.text = Math.round((1 - latestStats.elementsDamage["holy"]) * 100) +"%";
+            spellDamageLabel.text = Math.round((latestStats.spellDamage-1) * 100) + "%";
+            spellHasteLabel.text = Math.round((latestStats.spellHaste-1)*100);
+            attackRangeLabel.text = Entities.GetAttackRange(hero);
+            var attackDelay = (hero > -1 ? Entities.GetSecondsPerAttack(hero) : "0");
+            attackDelay = Math.round(attackDelay * 100) / 100;
+            attackSpeedLabel.text = latestStats.attackSpeed + " (" + attackDelay + ")";
+            baseAttackTimeLabel.text = Math.round(Entities.GetBaseAttackTime(hero) * 100) / 100;
+            DebuffAmplificationLabel.text = (Math.round(latestStats.debuffAmplification * 10000) / 100) + "%";
+            DebuffResistanceLabel.text = (Math.round((1-latestStats.debuffResistance) * 10000) / 100) + "%";
+            criticalDamageLabel.text = (Math.round((latestStats.critDamage-1) * 10000) / 100) + "%";
+            criticalChanceLabel.text = (Math.round((latestStats.critChance-1) * 10000) / 100) + "%";
+            damageReductionLabel.text = Math.round((1-latestStats.damageReduction) * 100) + "%";
+            aggroCausedLabel.text = (Math.round(latestStats.aggroCaused * 10000) / 100) + "%";
+            buffAmplificationLabel.text = (Math.round(latestStats.buffAmplification * 10000) / 100) + "%";
+            cooldownReductionLabel.text = (Math.round((1-cooldownReduction) * 10000) / 100) + "%";
         }
 		lastSelectedUnit = hero;
     }
@@ -387,14 +414,34 @@ function Init() {
     abilitiesPanelFiller = $("#HeroAbilitiesPanelFiller");
     abilitiesPanel = $("#HeroAbilitiesPanel");
     // Stats tooltips
-    fireResLabel = $("#FireResistanceLabel");
-    frostResLabel = $("#FrostResistanceLabel");
-    earthResLabel = $("#EarthResistanceLabel");
-    natureResLabel = $("#NatureResistanceLabel");
-    voidResLabel = $("#VoidResistanceLabel");
-    infernoResLabel = $("#InfernoResistanceLabel");
-    holyResLabel = $("#HolyResistanceLabel");
     statsTooltips = $("#HeroStatsTooltip");
+    fireResLabel = $("#StatsTooltipFireResistanceLabel");
+    frostResLabel = $("#StatsTooltipFrostResistanceLabel");
+    earthResLabel = $("#StatsTooltipEarthResistanceLabel");
+    natureResLabel = $("#StatsTooltipNatureResistanceLabel");
+    voidResLabel = $("#StatsTooltipVoidResistanceLabel");
+    infernoResLabel = $("#StatsTooltipInfernoResistanceLabel");
+    holyResLabel = $("#StatsTooltipHolyResistanceLabel");
+    fireAmpLabel = $("#StatsTooltipFireAmpLabel");
+    frostAmpLabel = $("#StatsTooltipFrostAmpLabel");
+    earthAmpLabel = $("#StatsTooltipEarthAmpLabel");
+    natureAmpLabel = $("#StatsTooltipNatureAmpLabel");
+    voidAmpLabel = $("#StatsTooltipVoidAmpLabel");
+    infernoAmpLabel = $("#StatsTooltipInfernoAmpLabel");
+    holyAmpLabel = $("#StatsTooltipHolyAmpLabel");
+    spellDamageLabel = $("#StatsTooltipSpellDamage");
+    spellHasteLabel = $("#StatsTooltipSpellHaste");
+    attackRangeLabel = $("#StatsTooltipAttackRange");
+    attackSpeedLabel = $("#StatsTooltipAttackSpeed");
+    baseAttackTimeLabel = $("#StatsTooltipBaseAttackTime");
+    DebuffAmplificationLabel = $("#StatsTooltipDebuffAmplification");
+    DebuffResistanceLabel = $("#StatsTooltipDebuffResistance");
+    criticalDamageLabel = $("#StatsTooltipCriticalDamage");
+    criticalChanceLabel = $("#StatsTooltipCriticalChance");
+    damageReductionLabel = $("#StatsTooltipDamageReduction");
+    aggroCausedLabel = $("#StatsTooltipAggroCaused");
+    buffAmplificationLabel = $("#StatsTooltipBuffAmplification");
+    cooldownReductionLabel = $("#StatsTooltipCooldownReduction");
 }
 
 function ShowStatsTooltip() {

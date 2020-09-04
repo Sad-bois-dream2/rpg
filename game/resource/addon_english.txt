@@ -1139,6 +1139,14 @@
         "DOTA_Tooltip_modifier_enemies_boss_skill_will_Description"       "Debuffs resistance increased."
         "DOTA_Tooltip_modifier_enemies_boss_skill_spellfrenzy"       "Spell Frenzy"
         "DOTA_Tooltip_modifier_enemies_boss_skill_spellfrenzy_Description"       "Cast speed increased."
+
+        "DOTA_StatsTooltip_Attack"		"ATTACK"
+        "DOTA_StatsTooltip_Defense"		"DEFENSE"
+        "DOTA_StatsTooltip_StatAmount"		"%VALUE% (Gains %GAIN% per lvl)"
+        "DOTA_StatsTooltip_PrimaryStatBonus"		"= %DAMAGE% Damage (Primary Attribute Bonus)"
+        "DOTA_StatsTooltip_StrStatBonus"		"= %VALUE% Elemental Resistances"
+        "DOTA_StatsTooltip_AgiStatBonus"		"= %VALUE% Evasion"
+        "DOTA_StatsTooltip_IntStatBonus"		"= %VALUE% Spell Damage"
         // Countless items
 
         "DOTA_Tooltip_Ability_item_two_handed_sword"      "Two-handed Sword"
