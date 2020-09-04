@@ -421,7 +421,7 @@
 }
 
 #HeroStats {
-	width: fill-parent-flow(1.0);
+	width: fit-children;
 	height: fill-parent-flow(1.0);
 	vertical-align: bottom;
 	horizontal-align: right;
@@ -431,6 +431,7 @@
 	border-right: 1px solid #ffffff04;
 	padding-top: 5px;
 	margin-left: 60px;
+	max-width: 100%;
 }
 
 .HeroLevelContainer {
