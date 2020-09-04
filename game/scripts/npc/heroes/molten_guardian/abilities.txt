@@ -339,22 +339,22 @@
 		{
 			"01"
 			{
-				"var_type"			"FIELD_INTEGER"
+				"var_type"			"FIELD_FLOAT"
 				"dmg_bonus"			"10 15 20 25"
 			}
 			"02"
 			{
-				"var_type"			"FIELD_INTEGER"
+				"var_type"			"FIELD_FLOAT"
 				"spelldmg_bonus"			"10 15 20 25"
 			}
 			"03"
 			{
-				"var_type"			"FIELD_INTEGER"
+				"var_type"			"FIELD_FLOAT"
 				"as_bonus"			"50 75 100 125"
 			}
 			"04"
 			{
-				"var_type"			"FIELD_INTEGER"
+				"var_type"			"FIELD_FLOAT"
 				"sph_bonus"			"50 75 100 125"
 			}
 			"05"
@@ -364,14 +364,44 @@
 			}
 			"06"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"duration"			"10"
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"5"
+			}
+			"07"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"maxhp_per_stack"			"0 10 10 10"
+			}
+			"08"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"armor_per_stack"			"0 5 5 5"
+			}
+			"09"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"ele_armor_per_stack"			"0 5 5 5"
+			}
+			"10"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"damage_redirect"			"0 0 30 30"
+			}
+			"11"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"deathproc"			"0 0 0 1"
+			}
+			"12"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"deathproc_heal"			"0 0 0 80"
 			}
 		}
 		"precache"
 		{
 		    "particle"  "particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf"
-            "particle"  "particles/units/molten_guardian/molten_fortress/lava_buff.vpcf"
+            "particle"  "particles/units/molten_guardian/molten_fortress/molten_fortress_buff.vpcf"
 		}
 	}
 	//=================================================================================================================

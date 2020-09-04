@@ -726,6 +726,196 @@ function molten_guardian_volcanic_blow:OnUpgrade()
 end
 
 --molten_guardian_molten_fortress
+modifier_molten_guardian_molten_fortress_pull = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true
+        }
+    end
+})
+
+function modifier_molten_guardian_molten_fortress_pull:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.target = self:GetParent()
+    self:StartIntervalThink(FrameTime())
+end
+
+function modifier_molten_guardian_molten_fortress_pull:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.target:InterruptMotionControllers(false)
+    local pull_distance = 1
+    local targetPosition = self.target:GetAbsOrigin()
+    local direction = (self.ability.castPosition - targetPosition):Normalized()
+    local set_point = targetPosition + direction * pull_distance
+    self.target:SetAbsOrigin(Vector(set_point.x, set_point.y, GetGroundPosition(set_point, self.target).z))
+    GridNav:DestroyTreesAroundPoint(targetPosition, pull_distance, false)
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_pull"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_barrier = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_MOVESPEED_ABSOLUTE
+        }
+    end,
+    GetModifierMoveSpeed_Absolute = function(self)
+        return 0.1
+    end
+})
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_barrier"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_check_position = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_molten_fortress_check_position:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.target = self:GetParent()
+    self:StartIntervalThink(FrameTime())
+end
+
+function modifier_molten_guardian_molten_fortress_check_position:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local modifier_barrier = "modifier_molten_guardian_molten_fortress_barrier"
+    local distance = (self.target:GetAbsOrigin() - self.ability.castPosition):Length2D()
+    local distance_from_border = distance - self.ability.radius
+
+    -- The target's angle in the world
+    local target_angle = self.target:GetAnglesAsVector().y
+
+    -- Solves for the target's angle in relation to the center of the circle in radians
+    local origin_difference = self.ability.castPosition - self.target:GetAbsOrigin()
+    local origin_difference_radian = math.atan2(origin_difference.y, origin_difference.x)
+
+    -- Converts the radians to degrees.
+    origin_difference_radian = origin_difference_radian * 180
+    local angle_from_center = origin_difference_radian / math.pi
+    -- Makes angle "0 to 360 degrees" as opposed to "-180 to 180 degrees" aka standard dota angles.
+    angle_from_center = angle_from_center + 180.0
+    -- Checks if the target is inside the field
+    if distance_from_border <= 0 and math.abs(distance_from_border) <= math.max(self.target:GetHullRadius(), 50) then
+        self.target:InterruptMotionControllers(true)
+        self.target:AddNewModifier(self.ability.caster, self.ability, modifier_barrier, {})
+        self.target:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_pull", { duration = 0.5 })
+        -- Checks if the target is outside the field,
+    elseif distance_from_border > 0 and math.abs(distance_from_border) <= math.max(self.target:GetHullRadius(), 60) then
+        self.target:InterruptMotionControllers(true)
+        self.target:AddNewModifier(self.ability.caster, self.ability, modifier_barrier, {})
+    else
+        -- Removes debuffs, so the unit can move freely
+        if self.target:HasModifier(modifier_barrier) then
+            self.target:RemoveModifierByName(modifier_barrier)
+        end
+        self:Destroy()
+    end
+end
+
+function modifier_molten_guardian_molten_fortress_check_position:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    if self.target:HasModifier("modifier_molten_guardian_molten_fortress_barrier") then
+        self.target:RemoveModifierByName("modifier_molten_guardian_molten_fortress_barrier")
+    end
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_check_position"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_thinker_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/molten_guardian/molten_fortress/molten_fortress_buff.vpcf"
+    end
+})
+
+function modifier_molten_guardian_molten_fortress_thinker_buff:GetAttackDamagePercentBonus()
+    return self.ability.dmgBonus
+end
+
+function modifier_molten_guardian_molten_fortress_thinker_buff:GetAttackSpeedBonus()
+    return self.ability.asBonus
+end
+
+function modifier_molten_guardian_molten_fortress_thinker_buff:GetSpellDamageBonus()
+    return self.ability.spelldmgBonus
+end
+
+function modifier_molten_guardian_molten_fortress_thinker_buff:GetSpellHasteBonus()
+    return self.ability.sphBonus
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_molten_fortress_thinker = class({
     IsDebuff = function(self)
         return false
@@ -744,27 +934,68 @@ modifier_molten_guardian_molten_fortress_thinker = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_molten_guardian_molten_fortress_thinker_buff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
     end
 })
 
 function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
     self.thinker = self:GetParent()
-    local castPosition = self.thinker:GetAbsOrigin()
     self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
     ParticleManager:SetParticleControl(self.particle, 1, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(self.particle, 2, self.ability.castPosition)
+    ParticleManager:SetParticleControl(self.particle, 3, self.ability.castPosition)
+    self:StartIntervalThink(FrameTime())
     EmitSoundOn("Hero_Mars.ArenaOfBlood.Start", self.thinker)
-    ParticleManager:SetParticleControl(self.particle, 2, castPosition)
-    ParticleManager:SetParticleControl(self.particle, 3, castPosition)
+end
+
+function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
+    local enemies = FindUnitsInRadius(self.ability.casterTeam,
+            self.ability.castPosition,
+            nil,
+            self.ability.radius + 200,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
+    end
 end
 
 function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
+    StopSoundOn("Hero_Mars.ArenaOfBlood", self.thinker)
+    EmitSoundOn("Hero_Mars.ArenaOfBlood.End", self.ability.caster)
     UTIL_Remove(self.thinker)
     ParticleManager:DestroyParticle(self.particle, false)
     ParticleManager:ReleaseParticleIndex(self.particle)
@@ -779,26 +1010,33 @@ molten_guardian_molten_fortress = class({
 })
 
 function molten_guardian_molten_fortress:OnSpellStart()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
+    self.caster = self:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.castPosition = self:GetCursorPosition()
     CreateModifierThinker(
-            caster,
+            self.caster,
             self,
             "modifier_molten_guardian_molten_fortress_thinker",
             {
                 duration = self.duration,
             },
-            self:GetCursorPosition(),
-            caster:GetTeamNumber(),
+            self.castPosition,
+            self.casterTeam,
             false
     )
+    AddFOWViewer(self.casterTeam, self.castPosition, self.radius, self.duration, false)
 end
 
 function molten_guardian_molten_fortress:OnUpgrade()
     self.radius = self:GetSpecialValueFor("radius")
     self.duration = self:GetSpecialValueFor("duration")
+    self.dmgBonus = self:GetSpecialValueFor("dmg_bonus")
+    self.spelldmgBonus = self:GetSpecialValueFor("spelldmg_bonus")
+    self.asBonus = self:GetSpecialValueFor("as_bonus")
+    self.sphBonus = self:GetSpecialValueFor("sph_bonus")
 end
 
 --molten_guardian_shields_up
