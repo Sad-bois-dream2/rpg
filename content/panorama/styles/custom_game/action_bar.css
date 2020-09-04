@@ -500,8 +500,7 @@
 
 .StatIcon.Attribute
 {
-	width: 20px;
-	height: 20px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
 }
 
 .StatLabel
@@ -601,6 +600,7 @@
 	border-radius: 5px;
 	margin-bottom: 180px;
     z-index: 20;
+    margin-left: -130px;
 }
 
 .HeroStatsElementsContainer {
@@ -619,6 +619,34 @@
     width: fit-children;
     height: fit-children;
     flow-children: down;
+    margin-top: 10px;
+}
+
+.HeroMainStatsIcon {
+    width: 40px;
+    height: 40px;
+    horizontal-align: center;
+    vertical-align: center;
+    margin-right: 5px;
+    margin-left: 20px;
+}
+
+.HeroMainStatsMainContainer {
+    flow-children: right;
+    margin-bottom: 20px;
+}
+
+.HeroMainStatsMainContainer.last {
+    flow-children: right;
+    margin-bottom: 10px;
+}
+
+.HeroMainStatsMainLabelsContainer {
+    flow-children: down;
+}
+
+.HeroMainStatsMainLabelsContainer Label {
+    color: white;
 }
 
 .HeroStatsCategoryName {
@@ -632,7 +660,7 @@
     height: fit-children;
     flow-children: down;
     border-right: 1px solid gray;
-    //border-bottom: 2px solid gray;
+    border-bottom: 1px solid gray;
     padding-right: 5px;
 }
 
@@ -640,8 +668,8 @@
     width: fit-children;
     height: 100%;
     flow-children: down;
-    //border-bottom: 2px solid gray;
-    margin-left: 5px;
+    border-bottom: 1px solid gray;
+    padding-left: 5px;
 }
 
 .HeroStatsLabelsContainer {

@@ -133,19 +133,33 @@
                     </Panel>
                 </Panel>
             </Panel>
-            <!--<Panel class="HeroMainStatsContainer">
-                <Panel class="Strength">
-                    <Panel class="HeroMainStatsMainContainer">
-                        <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon Attribute"/>
+            <Panel class="HeroMainStatsContainer">
+                <Panel class="Strength HeroMainStatsMainContainer">
+                    <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex"
+                           class="HeroMainStatsIcon"/>
+                    <Panel class="HeroMainStatsMainLabelsContainer">
+                        <Label text="26 (Gains 3.5 per lvl)"/>
+                        <Label text="= 26 Damage (Primary Attribute Bonus)"/>
+                        <Label text="= 10% Elemental Resistances"/>
                     </Panel>
                 </Panel>
-                <Panel class="Agility">
-                    <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon Attribute"/>
+                <Panel class="Agility HeroMainStatsMainContainer">
+                    <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex"
+                           class="HeroMainStatsIcon"/>
+                    <Panel class="HeroMainStatsMainLabelsContainer">
+                        <Label text="13 (Gains 3.2 per lvl)"/>
+                        <Label text="= 20% Evasion"/>
+                    </Panel>
                 </Panel>
-                <Panel class="Intellect">
-                    <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon Attribute"/>
+                <Panel class="Intellect HeroMainStatsMainContainer last">
+                    <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex"
+                           class="HeroMainStatsIcon"/>
+                    <Panel class="HeroMainStatsMainLabelsContainer">
+                        <Label text="18 (Gains 3.5 per lvl)"/>
+                        <Label text="= 40% Spell Damage"/>
+                    </Panel>
                 </Panel>
-            </Panel> -->
+            </Panel>
         </Panel>
         <Panel class="HeroPanelContainer Abilities" hittest="false">
             <Panel class="HeroPanelLeftContainer" hittest="false">
@@ -188,15 +202,18 @@
                         </Panel>
                         <Panel id="Strength" class="AttrIconContainer">
                             <Label id="StrengthLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/pip_str_png.vtex" class="StatIcon Attribute"/>
+                            <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex"
+                                   class="StatIcon Attribute"/>
                         </Panel>
                         <Panel id="Agility" class="AttrIconContainer">
                             <Label id="AgilityLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/pip_agi_png.vtex" class="StatIcon Attribute"/>
+                            <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex"
+                                   class="StatIcon Attribute"/>
                         </Panel>
                         <Panel id="Intelligence" class="AttrIconContainer">
                             <Label id="IntelligenceLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/pip_int_png.vtex" class="StatIcon Attribute"/>
+                            <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex"
+                                   class="StatIcon Attribute"/>
                         </Panel>
                     </Panel>
                     <Panel class="HeroLevelContainer" onactivate="OnExpBarClick()">
