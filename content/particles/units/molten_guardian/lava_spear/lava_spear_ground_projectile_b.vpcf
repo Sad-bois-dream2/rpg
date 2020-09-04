@@ -15,7 +15,7 @@
 			m_flOverbrightFactor = 5.0
 			m_flAddSelfAmount = 1.5
 			m_bSaturateColorPreAlphaBlend = false
-			m_hTexture = resource:"materials/particle/fluidexplosions/smoke_gr_burst_10.vtex"
+			m_hTexture = resource:"materials/particle/fluidexplosions/fluidexplosion.vtex"
 			m_flAnimationRate = 2.0
 			m_nHSVShiftControlPoint = 62
 		},
@@ -58,11 +58,6 @@
 			m_flBias = 0.65
 		},
 		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 163, 163, 163, 255 ]
-			m_bDisableOperator = true
-		},
-		{
 			_class = "C_OP_OscillateVector"
 			m_flStartTime_max = 0.4
 			m_flStartTime_min = 0.4
@@ -80,9 +75,8 @@
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 210, 255, 138, 255 ]
-			m_flFadeStartTime = 1.0
-			m_flFadeEndTime = 0.0
+			m_ColorFade = [ 201, 79, 0, 255 ]
+			m_flFadeStartTime = 0.5
 		},
 	]
 	m_Initializers = 
@@ -91,13 +85,6 @@
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.65
 			m_fLifetimeMax = 0.65
-		},
-		{
-			_class = "C_INIT_RandomColor"
-			m_nFieldOutput = "22"
-			m_ColorMax = [ 52, 11, 11, 255 ]
-			m_ColorMin = [ 29, 4, 4, 255 ]
-			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"
@@ -137,8 +124,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 23, 115, 42, 255 ]
-			m_ColorMax = [ 92, 217, 101, 255 ]
+			m_ColorMin = [ 210, 105, 30, 255 ]
+			m_ColorMax = [ 255, 211, 133, 255 ]
 		},
 	]
 	m_Emitters = 

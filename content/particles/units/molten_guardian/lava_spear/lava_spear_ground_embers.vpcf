@@ -67,9 +67,8 @@
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 210, 255, 138, 255 ]
-			m_flFadeStartTime = 1.0
-			m_flFadeEndTime = 0.0
+			m_ColorFade = [ 201, 79, 0, 255 ]
+			m_flFadeStartTime = 0.5
 		},
 	]
 	m_Initializers = 
@@ -126,8 +125,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 23, 115, 42, 255 ]
-			m_ColorMax = [ 92, 217, 101, 255 ]
+			m_ColorMin = [ 210, 105, 30, 255 ]
+			m_ColorMax = [ 255, 211, 133, 255 ]
 		},
 	]
 	m_Emitters = 

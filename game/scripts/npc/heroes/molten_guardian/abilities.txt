@@ -502,57 +502,62 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dot_damage"				"0 10 10 10"
+				"spear_width"				"300"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dot_duration"				"0 6 6 6"
+				"spear_speed"				"1800"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_per_stack"				"0 6 6 6"
+				"spear_distance"				"1200"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_dmg_per_stack"				"0 7 7 7"
+				"dot_damage"				"0 10 10 10"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_duration"				"0 15 15 15"
+				"dot_duration"				"0 6 6 6"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_cap"				"0 10 10 10"
+				"dot_tick"				"0 1 1 1"
 			}
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_resistance_debuff"				"0 0 0 -20"
+				"armor_per_stack"				"0 6 6 6"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_resistance_debuff_duration"				"0 0 0 5"
+				"fire_dmg_per_stack"				"0 7 7 7"
 			}
 			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spear_width"				"300"
+				"stacks_duration"				"0 15 15 15"
 			}
 			"13"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spear_speed"				"1800"
+				"stacks_cap"				"0 10 10 10"
 			}
 			"14"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spear_distance"				"1200"
+				"fire_resistance_debuff"				"0 0 0 -20"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_debuff_duration"				"0 0 0 5"
 			}
 		}
 		"precache"

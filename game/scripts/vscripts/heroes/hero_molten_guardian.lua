@@ -1024,6 +1024,116 @@ function molten_guardian_shields_up:OnSpellStart()
 end
 
 -- molten_guardian_lava_spear
+modifier_molten_guardian_lava_spear_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_spear_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_spear_debuff:GetFireProtectionBonus()
+    return self.ability.fireResistanceDebuff
+end
+
+function modifier_molten_guardian_lava_spear_debuff:OnPostTakeDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("molten_guardian_lava_spear")
+    if (ability and ability:GetLevel() > 0 and damageTable.ability == ability and ability.fireResistanceDebuffDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = ability
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_debuff"
+        modifierTable.duration = ability.fireResistanceDebuffDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_spear_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_lava_spear_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_spear_slow:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_spear_slow:GetMoveSpeedPercentBonus()
+    return self.ability.msSlow
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_spear_slow"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_lava_spear_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_spear_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_spear_buff:GetFireDamageBonus()
+    return self.ability.fireDmgPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_lava_spear_buff:GetArmorPercentBonus()
+    return self.ability.armorPerStack * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_spear_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_lava_spear_thinker = class({
     IsDebuff = function(self)
         return false
@@ -1039,7 +1149,10 @@ modifier_molten_guardian_lava_spear_thinker = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
 })
 
 function modifier_molten_guardian_lava_spear_thinker:OnCreated()
@@ -1047,16 +1160,44 @@ function modifier_molten_guardian_lava_spear_thinker:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
     self.thinker = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
     self.startLocation = self.thinker:GetAbsOrigin()
+    self.endLocation = self.startLocation + self.ability.direction * self.ability.spearDistance
     local modifier = self
     Timers:CreateTimer(0.3, function()
         modifier.particle = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf", PATTACH_ABSORIGIN, modifier.thinker)
         ParticleManager:SetParticleControl(modifier.particle, 0, modifier.startLocation)
-        ParticleManager:SetParticleControl(modifier.particle, 1, modifier.startLocation + modifier.ability.direction * modifier.ability.spearDistance)
+        ParticleManager:SetParticleControl(modifier.particle, 1, modifier.endLocation)
         ParticleManager:SetParticleControl(modifier.particle, 2, Vector(modifier.ability.dotDuration, 0, 0))
         ParticleManager:SetParticleControl(modifier.particle, 4, modifier.startLocation)
     end)
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_molten_guardian_lava_spear_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInLine(self.casterTeam,
+            self.startLocation,
+            self.endLocation,
+            nil,
+            self.ability.spearWidth,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = self.caster:GetMaxHealth() * self.ability.dotDamage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
 end
 
 function modifier_molten_guardian_lava_spear_thinker:OnDestroy()
@@ -1072,14 +1213,51 @@ LinkedModifiers["modifier_molten_guardian_lava_spear_thinker"] = LUA_MODIFIER_MO
 
 molten_guardian_lava_spear = class({})
 
+function molten_guardian_lava_spear:OnProjectileHit(target, location)
+    if (not IsServer()) then
+        return
+    end
+    if(target) then
+        if (not TableContains(self.damagedEnemies, target)) then
+            local damageTable = {}
+            damageTable.caster = self.caster
+            damageTable.target = target
+            damageTable.ability = self
+            damageTable.damage = self.damage * self.caster:GetMaxHealth()
+            damageTable.firedmg = true
+            GameMode:DamageUnit(damageTable)
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = target
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_slow"
+            modifierTable.duration = self.msSlowDuration
+            GameMode:ApplyDebuff(modifierTable)
+            table.insert(self.damagedEnemies, target)
+        end
+    else
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_buff"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = #self.damagedEnemies
+        modifierTable.max_stacks = self.stacksCap
+        GameMode:ApplyStackingDebuff(modifierTable)
+    end
+    return false
+end
+
 function molten_guardian_lava_spear:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local casterLocation = caster:GetAbsOrigin()
-    local casterTeam = caster:GetTeamNumber()
+    self.caster = self:GetCaster()
+    local casterLocation = self.caster:GetAbsOrigin()
+    local casterTeam = self.caster:GetTeamNumber()
     self.direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    self.damagedEnemies = {}
     local projectile =
     {
         Ability = self,
@@ -1088,7 +1266,7 @@ function molten_guardian_lava_spear:OnSpellStart()
         fDistance = self.spearDistance,
         fStartRadius = self.spearWidth,
         fEndRadius = self.spearWidth,
-        Source = caster,
+        Source = self.caster,
         bHasFrontalCone = false,
         bReplaceExisting = false,
         iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -1102,25 +1280,28 @@ function molten_guardian_lava_spear:OnSpellStart()
         iVisionTeamNumber = casterTeam
     }
     ProjectileManager:CreateLinearProjectile(projectile)
-    CreateModifierThinker(
-            caster,
-            self,
-            "modifier_molten_guardian_lava_spear_thinker",
-            {
-                duration = self.dotDuration,
-            },
-            casterLocation,
-            casterTeam,
-            false
-    )
-    EmitSoundOn("Hero_Mars.Spear.Cast", caster)
+    if(self.dotDamage > 0) then
+        CreateModifierThinker(
+                self.caster,
+                self,
+                "modifier_molten_guardian_lava_spear_thinker",
+                {
+                    duration = self.dotDuration,
+                },
+                casterLocation,
+                casterTeam,
+                false
+        )
+    end
+    EmitSoundOn("Hero_Mars.Spear.Cast", self.caster)
 end
 
 function molten_guardian_lava_spear:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.msSlow = self:GetSpecialValueFor("ms_slow") / 100
     self.msSlowDuration = self:GetSpecialValueFor("ms_slow_duration")
-    self.dotDamage = self:GetSpecialValueFor("dot_damage")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
     self.dotDuration = self:GetSpecialValueFor("dot_duration")
     self.armorPerStack = self:GetSpecialValueFor("armor_per_stack") / 100
     self.fireDmgPerStack = self:GetSpecialValueFor("fire_dmg_per_stack") / 100
@@ -1142,5 +1323,6 @@ if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_toggle, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up_channel, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_spear_debuff, 'OnPostTakeDamage'))
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end

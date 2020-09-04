@@ -100,11 +100,11 @@
 	m_Children = 
 	[
 		{
-			m_flDelay = 3.0
+			m_flDelay = 1.0
 			m_ChildRef = resource:"particles/units/heroes/hero_jakiro/jakiro_macropyre_lava_scorch.vpcf"
 		},
 		{
-			m_flDelay = 3.0
+			m_flDelay = 1.0
 			m_ChildRef = resource:"particles/units/heroes/hero_jakiro/jakiro_macropyre_lava_scorch_b.vpcf"
 		},
 		{
@@ -114,10 +114,10 @@
 			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_projectile.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame.vpcf"
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame_glow.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame_glow.vpcf"
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame.vpcf"
 		},
 	]
 	m_PreEmissionOperators = 
@@ -155,14 +155,14 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
+					m_vecOffset = [ 800.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
+					m_vecOffset = [ 5.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -182,6 +182,13 @@
 				},
 				{
 					m_iControlPoint = 61
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 62
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
