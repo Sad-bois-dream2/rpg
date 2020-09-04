@@ -993,6 +993,42 @@ function modifier_molten_guardian_molten_fortress_buff:OnCreated()
     self.ability = self:GetAbility()
 end
 
+function modifier_molten_guardian_molten_fortress_buff:GetHealthPercentBonus()
+    return self.ability.maxhpPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetArmorPercentBonus()
+    return self.ability.armorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetFireProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetFrostProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetEarthProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetVoidProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetHolyProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetNatureProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
+function modifier_molten_guardian_molten_fortress_buff:GetInfernoProtectionBonus()
+    return self.ability.eleArmorPerStack * self:GetStackCount()
+end
+
 LinkedModifiers["modifier_molten_guardian_molten_fortress_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_molten_guardian_molten_fortress_second_thinker = class({
@@ -1134,7 +1170,7 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
         modifierTable.target = self.ability.caster
         modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_buff"
         modifierTable.duration = self.ability.duration
-        self.rank2Modifier = GameMode:ApplyBuff(modifierTable)
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
@@ -1151,8 +1187,9 @@ function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
     for _, enemy in pairs(enemies) do
         enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
     end
-    if(self.rank2Modifier) then
-        self.rank2Modifier:SetStackCount(#enemies)
+    local rank2Modifier = self.ability.caster:FindModifierByName("modifier_molten_guardian_molten_fortress_buff")
+    if(rank2Modifier) then
+        rank2Modifier:SetStackCount(#enemies)
     end
     if (not self.secondThinker) then
         self:Destroy()
@@ -1167,8 +1204,9 @@ function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
     EmitSoundOn("Hero_Mars.ArenaOfBlood.End", self.ability.caster)
     ParticleManager:DestroyParticle(self.particle, false)
     ParticleManager:ReleaseParticleIndex(self.particle)
-    if(self.rank2Modifier) then
-        self.rank2Modifier:Destroy()
+    local rank2Modifier = self.ability.caster:FindModifierByName("modifier_molten_guardian_molten_fortress_buff")
+    if(rank2Modifier) then
+        rank2Modifier:Destroy()
     end
     UTIL_Remove(self.thinker)
 end
@@ -1205,16 +1243,15 @@ end
 function molten_guardian_molten_fortress:OnUpgrade()
     self.radius = self:GetSpecialValueFor("radius")
     self.duration = self:GetSpecialValueFor("duration")
-    self.dmgBonus = self:GetSpecialValueFor("dmg_bonus")
-    self.spelldmgBonus = self:GetSpecialValueFor("spelldmg_bonus")
+    self.dmgBonus = self:GetSpecialValueFor("dmg_bonus") / 100
+    self.spelldmgBonus = self:GetSpecialValueFor("spelldmg_bonus") / 100
     self.asBonus = self:GetSpecialValueFor("as_bonus")
     self.sphBonus = self:GetSpecialValueFor("sph_bonus")
-    self.maxhpPerStack = self:GetSpecialValueFor("maxhp_per_stack")
-    self.armorPerStack = self:GetSpecialValueFor("armor_per_stack")
-    self.eleArmorPerStack = self:GetSpecialValueFor("ele_armor_per_stack")
-    self.damageRedirect = self:GetSpecialValueFor("damage_redirect")
-    self.deathProc = self:GetSpecialValueFor("deathproc")
-    self.deathProcHeal = self:GetSpecialValueFor("deathproc_heal")
+    self.maxhpPerStack = self:GetSpecialValueFor("maxhp_per_stack") / 100
+    self.armorPerStack = self:GetSpecialValueFor("armor_per_stack") / 100
+    self.eleArmorPerStack = self:GetSpecialValueFor("ele_armor_per_stack") / 100
+    self.damageRedirect = self:GetSpecialValueFor("damage_redirect") / 100
+    self.deathProcHeal = self:GetSpecialValueFor("deathproc_heal") / 100
 end
 
 --molten_guardian_shields_up
