@@ -726,7 +726,7 @@ function molten_guardian_volcanic_blow:OnUpgrade()
 end
 
 --molten_guardian_molten_fortress
-modifier_molten_guardian_molten_fortress_helper = class({
+modifier_molten_guardian_molten_fortress_thinker = class({
     IsDebuff = function(self)
         return false
     end,
@@ -744,199 +744,61 @@ modifier_molten_guardian_molten_fortress_helper = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
     end
 })
 
-function modifier_molten_guardian_molten_fortress_helper:OnAbilityFullyCast(keys)
-    if (not IsServer()) then
+function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
+    if(not IsServer()) then
         return
     end
-    local cursor_position = keys.ability:GetCursorPosition()
-    if keys.unit == self:GetParent() and keys.ability:GetName() == "mars_arena_of_blood" and cursor_position then
-        local duration = keys.ability:GetSpecialValueFor("formation_time") + keys.ability:GetSpecialValueFor("duration")
-        local handle = CreateModifierThinker(
-                keys.unit,
-                keys.ability,
-                "modifier_molten_guardian_molten_fortress_thinker",
-                {
-                    duration = duration,
-                    ability_entindex = keys.ability:entindex()
-                },
-                cursor_position,
-                keys.unit:GetTeamNumber(),
-                false
-        )
-    end
+    self.ability = self:GetAbility()
+    self.thinker = self:GetParent()
+    local castPosition = self.thinker:GetAbsOrigin()
+    self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    ParticleManager:SetParticleControl(self.particle, 1, Vector(self.ability.radius, 0, 0))
+    EmitSoundOn("Hero_Mars.ArenaOfBlood.Start", self.thinker)
+    ParticleManager:SetParticleControl(self.particle, 2, castPosition)
+    ParticleManager:SetParticleControl(self.particle, 3, castPosition)
 end
 
-LinkedModifiers["modifier_molten_guardian_molten_fortress_helper"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_molten_guardian_molten_fortress_thinker = class({
-    IsHidden = function(self)
-        return true
-    end,
-    IsAuraActiveOnDeath = function(self)
-        return false
-    end,
-    GetAuraRadius = function(self)
-        return self.radius or 0
-    end,
-    GetAuraSearchFlags = function(self)
-        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
-    end,
-    GetAuraSearchTeam = function(self)
-        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
-    end,
-    IsAura = function(self)
-        return true
-    end,
-    GetAuraSearchType = function(self)
-        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
-    end,
-    GetModifierAura = function(self)
-        return "modifier_molten_guardian_molten_fortress_thinker_buff"
-    end
-})
-
-function modifier_molten_guardian_molten_fortress_thinker:OnCreated(keys)
-    if not IsServer() then
-        return
-    end
-    if (keys.ability_entindex == nil) then
-        return
-    end
-    self.ability = EntIndexToHScript(keys.ability_entindex)
-    if self.ability then
-        self.radius = self.ability:GetSpecialValueFor("radius")
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                self:GetParent():GetAbsOrigin(),
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        local caster = self.ability:GetCaster()
-        local duration = self:GetDuration()
-        for _, enemy in pairs(enemies) do
-            local modifierTable = {}
-            modifierTable.ability = self.ability
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_aggro"
-            modifierTable.duration = duration
-            GameMode:ApplyDebuff(modifierTable)
-        end
-    else
-        self:Destroy()
-    end
-end
 function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
-    if IsServer() then
-        UTIL_Remove(self:GetParent())
+    if(not IsServer()) then
+        return
     end
+    UTIL_Remove(self.thinker)
+    ParticleManager:DestroyParticle(self.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.particle)
 end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_molten_fortress_thinker_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return "mars_arena_of_blood" -- should be like that
-    end,
-    GetEffectName = function(self)
-        return "particles/units/molten_guardian/molten_fortress/lava_buff.vpcf"
+molten_guardian_molten_fortress = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
     end,
 })
 
-function modifier_molten_guardian_molten_fortress_thinker_buff:OnCreated(keys)
-    if not IsServer() then
+function molten_guardian_molten_fortress:OnSpellStart()
+    if(not IsServer()) then
         return
     end
-    self.ability = self:GetAbility()
-    self.dmg_bonus = self.ability:GetSpecialValueFor("dmg_bonus") / 100
-    self.as_bonus = self.ability:GetSpecialValueFor("as_bonus")
-    self.sph_bonus = self.ability:GetSpecialValueFor("sph_bonus") / 100
+    local caster = self:GetCaster()
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_molten_guardian_molten_fortress_thinker",
+            {
+                duration = self.duration,
+            },
+            self:GetCursorPosition(),
+            caster:GetTeamNumber(),
+            false
+    )
 end
 
-function modifier_molten_guardian_molten_fortress_thinker_buff:GetAttackDamagePercentBonus()
-    return self.dmg_bonus
-end
-
-function modifier_molten_guardian_molten_fortress_thinker_buff:GetAttackSpeedBonus()
-    return self.as_bonus
-end
-
-function modifier_molten_guardian_molten_fortress_thinker_buff:GetSpellHasteBonus()
-    return self.sph_bonus
-end
-
-LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_molten_guardian_molten_fortress_aggro = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end
-})
-
-function modifier_molten_guardian_molten_fortress_aggro:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.caster = self:GetCaster()
-end
-
-function modifier_molten_guardian_molten_fortress_aggro:GetIgnoreAggroTarget()
-    return self.caster
-end
-
-LinkedModifiers["modifier_molten_guardian_molten_fortress_aggro"] = LUA_MODIFIER_MOTION_NONE
-
-if (IsServer()) then
-    ListenToGameEvent('npc_spawned', function(event)
-        if (event ~= nil) then
-            local entity = EntIndexToHScript(event.entindex)
-            if entity:IsRealHero() and entity:HasAbility("mars_arena_of_blood") then
-                local modifierTable = {}
-                modifierTable.ability = nil
-                modifierTable.target = entity
-                modifierTable.caster = entity
-                modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_helper"
-                modifierTable.duration = -1
-                GameMode:ApplyBuff(modifierTable)
-            end
-        end
-    end, nil)
+function molten_guardian_molten_fortress:OnUpgrade()
+    self.radius = self:GetSpecialValueFor("radius")
+    self.duration = self:GetSpecialValueFor("duration")
 end
 
 --molten_guardian_shields_up

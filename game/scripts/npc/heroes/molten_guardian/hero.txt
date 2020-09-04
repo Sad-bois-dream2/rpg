@@ -8,7 +8,7 @@
         "Ability3"	"molten_guardian_volcanic_blow"
         "Ability4"	"molten_guardian_lava_spear"
         "Ability5"	"molten_guardian_lava_skin"
-        "Ability6"	"mars_arena_of_blood"
+        "Ability6"	"molten_guardian_molten_fortress"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""

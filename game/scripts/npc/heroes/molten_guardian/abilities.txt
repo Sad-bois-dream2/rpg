@@ -303,19 +303,21 @@
 	//=================================================================================================================
 	// Molten Guardian: Molten Fortress
 	//=================================================================================================================
-    "mars_arena_of_blood"
+    "molten_guardian_molten_fortress"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_molten_fortress"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
- 		"AbilitySound"					"Hero_Mars.ArenaOfBlood.Start"
- 		"AbilityTextureName"			"molten_guardian_molten_fortress"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -337,79 +339,39 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"duration"				"10"
+				"var_type"			"FIELD_INTEGER"
+				"dmg_bonus"			"10 15 20 25"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"radius"			"600"
+				"spelldmg_bonus"			"10 15 20 25"
 			}
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"width"				"100"
+				"as_bonus"			"50 75 100 125"
 			}
 			"04"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"spear_damage"		"0"
+				"sph_bonus"			"50 75 100 125"
 			}
 			"05"
 			{
-				"var_type"			"FIELD_FLOAT"
-				"formation_time"	"0.6"
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"600"
 			}
 			"06"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"spear_distance_from_wall"	"160"
-			}
-			"07"
-			{
-				"var_type"			"FIELD_FLOAT"
-				"spear_attack_interval"	"99999"
-			}
-			"08"
-			{
-				"var_type"			"FIELD_INTEGER"
-				"warrior_count"		"14"
-			}
-			"09"
-			{
-				"var_type"			"FIELD_FLOAT"
-				"first_warrior_angle"	"0.0"
-			}
-			"10"
-			{
-				"var_type"			"FIELD_FLOAT"
-				"warrior_fade_min_dist"	"350.0"
-			}
-			"11"
-			{
-				"var_type"			"FIELD_FLOAT"
-				"warrior_fade_max_dist"	"450.0"
-			}
-			"12"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"dmg_bonus"				"10 15 20 25"
-			}
-			"13"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"as_bonus"				"50 100 150 200"
-			}
-			"14"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"sph_bonus"				"5 10 15 20"
+				"duration"			"10"
 			}
 		}
 		"precache"
 		{
+		    "particle"  "particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf"
             "particle"  "particles/units/molten_guardian/molten_fortress/lava_buff.vpcf"
-            "particle"  "particles/units/molten_guardian/molten_fortress/lava_thing.vpcf"
 		}
 	}
 	//=================================================================================================================
