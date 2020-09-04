@@ -273,6 +273,110 @@ function molten_guardian_scorching_clash:OnSpellStart(unit, special_cast)
 end
 
 -- molten_guardian_lava_skin modifiers
+modifier_molten_guardian_lava_skin_melt_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_skin_melt_stacks:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_skin_melt_stacks:GetHealthPercentBonus()
+    return self.ability.meltStacksMaxhp * self:GetStackCount()
+end
+
+function modifier_molten_guardian_lava_skin_melt_stacks:GetArmorPercentBonus()
+    return self.ability.meltStacksArmorReduction * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_skin_melt_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_lava_skin = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+})
+
+function modifier_molten_guardian_lava_skin:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_skin:GetHealthRegenerationPercentBonus()
+    return self.ability.hpRegBonus
+end
+
+function modifier_molten_guardian_lava_skin:GetFireProtectionBonus()
+    return self.ability.fireResBonus
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_skin"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_lava_skin_armor_stacks = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_skin_armor_stacks:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_lava_skin_armor_stacks:GetArmorPercentBonus()
+    return self.ability.armorStacksReduction * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_skin_armor_stacks"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_molten_guardian_lava_skin_toggle = class({
     IsDebuff = function(self)
         return false
@@ -298,134 +402,141 @@ modifier_molten_guardian_lava_skin_toggle = class({
 })
 
 function modifier_molten_guardian_lava_skin_toggle:OnCreated(kv)
-    if IsServer() then
-        local ability = self:GetAbility()
-        local ability_level = ability:GetLevel() - 1
-        local tick = ability:GetLevelSpecialValueFor("tick", ability_level)
-        self.phys_dmg_reduce = ability:GetLevelSpecialValueFor("phys_dmg_reduce", ability_level)
-        self.str_to_damage = ability:GetLevelSpecialValueFor("str_to_damage", ability_level) / 100
-        self.damage_radius = ability:GetLevelSpecialValueFor("damage_radius", ability_level)
-        self.ms_slow_duration = ability:GetLevelSpecialValueFor("ms_slow_duration", ability_level)
-        self.ability = ability
-        self.caster = self:GetCaster()
-        self:StartIntervalThink(tick)
-        self.caster:EmitSound("Hero_EmberSpirit.FlameGuard.Cast")
+    if not IsServer() then
+        return
     end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self:StartIntervalThink(self.ability.tick)
 end
 
 function modifier_molten_guardian_lava_skin_toggle:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_lava_skin_toggle")
     if (modifier ~= nil and damageTable.physdmg) then
-        damageTable.damage = damageTable.damage * modifier.phys_dmg_reduce
+        damageTable.damage = damageTable.damage * modifier.ability.physDmgReduce
         return damageTable
     end
 end
 
 function modifier_molten_guardian_lava_skin_toggle:OnIntervalThink()
-    if IsServer() then
-        local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    if not IsServer() then
+        return
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    self.caster:EmitSound("Hero_EmberSpirit.FlameGuard.Loop")
+    local damage = self.caster:GetMaxHealth() * self.ability.damage
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.damageRadius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        if (self.ability.armorStacksDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self.ability
+            modifierTable.caster = self.caster
+            modifierTable.target = enemy
+            modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_armor_stacks"
+            modifierTable.duration = self.ability.armorStacksDuration
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = self.ability.armorStacksCap
+            GameMode:ApplyStackingDebuff(modifierTable)
+        end
+        local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
-        self.caster:EmitSound("Hero_EmberSpirit.FlameGuard.Loop")
-        local damage = Units:GetHeroStrength(self.caster) * self.str_to_damage
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                self.caster:GetAbsOrigin(),
-                nil,
-                self.damage_radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = enemy
-            damageTable.ability = self.ability
-            damageTable.damage = damage
-            damageTable.firedmg = true
-            GameMode:DamageUnit(damageTable)
-            local modifierTable = {}
-            modifierTable.ability = self.ability
-            modifierTable.target = enemy
-            modifierTable.caster = self.caster
-            modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_slow"
-            modifierTable.duration = self.ms_slow_duration
-            GameMode:ApplyDebuff(modifierTable)
-            local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
-            Timers:CreateTimer(1.0, function()
-                ParticleManager:DestroyParticle(pidx, false)
-                ParticleManager:ReleaseParticleIndex(pidx)
-            end)
-        end
+    end
+    if (self.ability:GetAutoCastState()) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_melt_stacks"
+        modifierTable.duration = self.ability.meltStacksDuration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.ability.meltStacksCap
+        PrintTable(modifierTable)
+        GameMode:ApplyStackingBuff(modifierTable)
     end
 end
 
 LinkedModifiers["modifier_molten_guardian_lava_skin_toggle"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_molten_guardian_lava_skin_slow = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return molten_guardian_lava_skin:GetAbilityTextureName()
-    end
-})
-
-function modifier_molten_guardian_lava_skin_slow:GetMoveSpeedBonus()
-    return self.ms_slow
-end
-
-function modifier_molten_guardian_lava_skin_slow:OnCreated(kv)
-    if IsServer() then
-        local ability = self:GetAbility()
-        local ability_level = ability:GetLevel() - 1
-        self.ms_slow = ability:GetLevelSpecialValueFor("ms_slow", ability_level)
-    end
-end
-
-LinkedModifiers["modifier_molten_guardian_lava_skin_slow"] = LUA_MODIFIER_MOTION_NONE
-
 -- molten_guardian_lava_skin
 molten_guardian_lava_skin = class({
-    GetAbilityTextureName = function(self)
-        return "molten_guardian_lava_skin"
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("damage_radius")
     end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("melt_stacks_cap") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_TOGGLE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_TOGGLE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_molten_guardian_lava_skin"
+    end
 })
 
+function molten_guardian_lava_skin:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.physDmgReduce = self:GetSpecialValueFor("phys_dmg_reduce") / 100
+    self.damageRadius = self:GetSpecialValueFor("damage_radius")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.armorStacksReduction = self:GetSpecialValueFor("armor_stacks_reduction") / 100
+    self.armorStacksCap = self:GetSpecialValueFor("armor_stacks_cap")
+    self.armorStacksDuration = self:GetSpecialValueFor("armor_stacks_duration")
+    self.fireResBonus = self:GetSpecialValueFor("fire_res_bonus") / 100
+    self.hpRegBonus = self:GetSpecialValueFor("hpreg_bonus") / 100
+    self.meltStacksArmorReduction = self:GetSpecialValueFor("melt_stacks_armor_reduction")
+    self.meltStacksMaxhp = self:GetSpecialValueFor("melt_stacks_maxhp") / 100
+    self.meltStacksCap = self:GetSpecialValueFor("melt_stacks_cap")
+    self.meltStacksDuration = self:GetSpecialValueFor("melt_stacks_duration")
+end
+
 function molten_guardian_lava_skin:OnToggle(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        caster.molten_guardian_lava_skin = caster.molten_guardian_lava_skin or {}
-        if (self:GetToggleState()) then
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = caster
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_toggle"
-            modifierTable.duration = -1
-            caster.molten_guardian_lava_skin.modifier = GameMode:ApplyBuff(modifierTable)
-            self:EndCooldown()
-            self:StartCooldown(self:GetCooldown(1))
-        else
-            if (caster.molten_guardian_lava_skin.modifier ~= nil) then
-                caster.molten_guardian_lava_skin.modifier:Destroy()
-                caster:StopSound("Hero_EmberSpirit.FlameGuard.Loop")
-            end
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    caster.molten_guardian_lava_skin = caster.molten_guardian_lava_skin or {}
+    if (self:GetToggleState()) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_toggle"
+        modifierTable.duration = -1
+        caster.molten_guardian_lava_skin.modifier = GameMode:ApplyBuff(modifierTable)
+        self:EndCooldown()
+        self:StartCooldown(self:GetCooldown(self:GetLevel()))
+    else
+        if (caster.molten_guardian_lava_skin.modifier ~= nil) then
+            caster.molten_guardian_lava_skin.modifier:Destroy()
+            caster:StopSound("Hero_EmberSpirit.FlameGuard.Loop")
+        end
+        local rank4Modifier = caster:FindModifierByName("modifier_molten_guardian_lava_skin_melt_stacks")
+        if (rank4Modifier) then
+            rank4Modifier:Destroy()
         end
     end
 end
@@ -511,7 +622,7 @@ end
 function modifier_molten_guardian_volcanic_blow_block:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_volcanic_blow_block")
     if (modifier and damageTable.physdmg and modifier.ability and RollPercentage(modifier.ability.blockChance * modifier.ability.blockMultiplier)) then
-        if(modifier.ability.bonusMaxHpPerBlock > 0) then
+        if (modifier.ability.bonusMaxHpPerBlock > 0) then
             local modifierTable = {}
             modifierTable.ability = modifier.ability
             modifierTable.caster = damageTable.victim
@@ -558,7 +669,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
     GameMode:ApplyBuff(modifierTable)
     self:ApplySpellEffectToTarget(caster, target)
     local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/volcanic_blow/volcanic_blow_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-    if(self.searchWidthPastTarget > 0) then
+    if (self.searchWidthPastTarget > 0) then
         local targetPosition = target:GetAbsOrigin()
         local enemies = FindUnitsInLine(DOTA_TEAM_GOODGUYS,
                 targetPosition,
@@ -1217,34 +1328,31 @@ function molten_guardian_lava_spear:OnProjectileHit(target, location)
     if (not IsServer()) then
         return
     end
-    if(target) then
-        if (not TableContains(self.damagedEnemies, target)) then
-            local damageTable = {}
-            damageTable.caster = self.caster
-            damageTable.target = target
-            damageTable.ability = self
-            damageTable.damage = self.damage * self.caster:GetMaxHealth()
-            damageTable.firedmg = true
-            GameMode:DamageUnit(damageTable)
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = target
-            modifierTable.caster = self.caster
-            modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_slow"
-            modifierTable.duration = self.msSlowDuration
-            GameMode:ApplyDebuff(modifierTable)
-            table.insert(self.damagedEnemies, target)
-        end
-    else
+    if (target and not TableContains(self.damagedEnemies, target)) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * self.caster:GetMaxHealth()
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_slow"
+        modifierTable.duration = self.msSlowDuration
+        GameMode:ApplyDebuff(modifierTable)
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.caster = self.caster
         modifierTable.target = self.caster
         modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_buff"
         modifierTable.duration = self.stacksDuration
-        modifierTable.stacks = #self.damagedEnemies
+        modifierTable.stacks = 1
         modifierTable.max_stacks = self.stacksCap
-        GameMode:ApplyStackingDebuff(modifierTable)
+        GameMode:ApplyStackingBuff(modifierTable)
+        table.insert(self.damagedEnemies, target)
     end
     return false
 end
@@ -1258,8 +1366,7 @@ function molten_guardian_lava_spear:OnSpellStart()
     local casterTeam = self.caster:GetTeamNumber()
     self.direction = (self:GetCursorPosition() - casterLocation):Normalized()
     self.damagedEnemies = {}
-    local projectile =
-    {
+    local projectile = {
         Ability = self,
         EffectName = "particles/units/heroes/hero_mars/mars_spear.vpcf",
         vSpawnOrigin = casterLocation,
@@ -1280,7 +1387,7 @@ function molten_guardian_lava_spear:OnSpellStart()
         iVisionTeamNumber = casterTeam
     }
     ProjectileManager:CreateLinearProjectile(projectile)
-    if(self.dotDamage > 0) then
+    if (self.dotDamage > 0) then
         CreateModifierThinker(
                 self.caster,
                 self,

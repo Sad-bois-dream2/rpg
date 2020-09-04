@@ -229,18 +229,18 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"ms_slow"				"-15 -20 -25 -30"
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"1 2 3 4"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
+				"var_type"				"FIELD_FLOAT"
 				"phys_dmg_reduce"				"12 15 18 20"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"str_to_damage"				"20 25 30 35"
+				"damage_radius"				"350"
 			}
 			"04"
 			{
@@ -250,12 +250,47 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_radius"				"350"
+				"armor_stacks_reduction"				"0 1 1 1"
 			}
 			"06"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"ms_slow_duration"				"3"
+				"var_type"				"FIELD_FLOAT"
+				"armor_stacks_cap"				"0 10 10 10"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_stacks_duration"				"0 5 5 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_res_bonus"				"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hpreg_bonus"				"0 0 50 50"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_armor_reduction"				"0 0 0 5"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_maxhp"				"0 0 0 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_cap"				"0 0 0 10"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_duration"				"0 0 0 5"
 			}
 		}
 		"precache"
