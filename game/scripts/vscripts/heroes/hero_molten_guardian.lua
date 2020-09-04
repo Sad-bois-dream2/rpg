@@ -944,16 +944,16 @@ end
 
 function modifier_molten_guardian_molten_fortress_second_thinker_buff:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_molten_fortress_second_thinker_buff")
-    if(modifier and modifier.ability and modifier.ability.caster and damageTable.damage > 0) then
+    if (modifier and modifier.ability and modifier.ability.caster and damageTable.damage > 0) then
         local damageReduce = damageTable.damage * modifier.ability.damageRedirect
         local casterHp = modifier.ability.caster:GetHealth() - damageReduce
-        if(casterHp >= 1) then
+        if (casterHp >= 1) then
             modifier.ability.caster:SetHealth(casterHp)
             damageTable.damage = damageTable.damage - damageReduce
         end
-        if(modifier.ability.deathProcHeal > 0) then
+        if (modifier.ability.deathProcHeal > 0) then
             local victimHp = damageTable.victim:GetHealth() - damageTable.damage
-            if(victimHp < 1) then
+            if (victimHp < 1) then
                 damageTable.damage = 0
                 local healTable = {}
                 healTable.caster = modifier.ability.caster
@@ -1073,6 +1073,9 @@ modifier_molten_guardian_molten_fortress_second_thinker = class({
     end,
     GetAuraDuration = function(self)
         return 0
+    end,
+    GetAuraEntityReject = function(self, npc)
+        return npc == self.ability.caster
     end
 })
 function modifier_molten_guardian_molten_fortress_second_thinker:OnCreated()
@@ -1163,7 +1166,7 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
     else
         self.secondThinker = true
     end
-    if(self.ability.maxhpPerStack > 0) then
+    if (self.ability.maxhpPerStack > 0) then
         local modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.caster = self.ability.caster
@@ -1188,7 +1191,7 @@ function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
         enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
     end
     local rank2Modifier = self.ability.caster:FindModifierByName("modifier_molten_guardian_molten_fortress_buff")
-    if(rank2Modifier) then
+    if (rank2Modifier) then
         rank2Modifier:SetStackCount(#enemies)
     end
     if (not self.secondThinker) then
@@ -1205,7 +1208,7 @@ function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
     ParticleManager:DestroyParticle(self.particle, false)
     ParticleManager:ReleaseParticleIndex(self.particle)
     local rank2Modifier = self.ability.caster:FindModifierByName("modifier_molten_guardian_molten_fortress_buff")
-    if(rank2Modifier) then
+    if (rank2Modifier) then
         rank2Modifier:Destroy()
     end
     UTIL_Remove(self.thinker)
