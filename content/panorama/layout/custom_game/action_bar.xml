@@ -12,6 +12,44 @@
             <Panel class="HeroStatsContainer">
                 <Panel class="OffensiveStats">
                     <Label class="HeroStatsCategoryName" text="ATTACK"/>
+                    <Panel class="HeroStatsLabelsContainer">
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_SpellDamage"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_SpellHaste"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_AttackRange"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_AttackSpeed"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_BaseAttackTime"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_DebuffAmplification"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_DebuffResistance"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_CriticalDamage"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_CriticalChance"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                    </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
                             <Image src="file://{images}/custom_game/hud/fire_element.png"/>
@@ -45,6 +83,24 @@
                 </Panel>
                 <Panel class="DefensiveStats">
                     <Label class="HeroStatsCategoryName" text="DEFENSE"/>
+                    <Panel class="HeroStatsLabelsContainer">
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_DamageReduction"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_AggroCaused"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_BuffAmplification"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_CooldownReduction"/>
+                            <Label id="CustomValue" class="Value" text="0%"/>
+                        </Panel>
+                    </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
                             <Image src="file://{images}/custom_game/hud/fire_element.png"/>

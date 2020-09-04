@@ -606,13 +606,13 @@
 .HeroStatsElementsContainer {
     flow-children: right;
     margin-bottom: 5px;
+    vertical-align: bottom;
 }
 
 .HeroStatsContainer {
     width: fit-children;
     height: fit-children;
     flow-children: right;
-
 }
 
 .HeroMainStatsContainer {
@@ -633,11 +633,41 @@
     flow-children: down;
     border-right: 1px solid gray;
     //border-bottom: 2px solid gray;
+    padding-right: 5px;
 }
 
 .DefensiveStats {
     width: fit-children;
-    height: fit-children;
+    height: 100%;
     flow-children: down;
     //border-bottom: 2px solid gray;
+    margin-left: 5px;
+}
+
+.HeroStatsLabelsContainer {
+    width: 100%;
+    height: fit-children;
+    flow-children: down;
+    margin-bottom: 5px;
+}
+
+.HeroStatsLabel {
+    width: 100%;
+    height: fit-children;
+    flow-children: right;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.HeroStatsLabel .Title {
+    horizontal-align: left;
+    margin-left: 5px;
+    color: white;
+    text-overflow: shrink;
+}
+
+.HeroStatsLabel .Value {
+    horizontal-align: right;
+    margin-right: 5px;
+    color: white;
 }
