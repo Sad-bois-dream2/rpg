@@ -951,11 +951,49 @@ function modifier_molten_guardian_molten_fortress_second_thinker_buff:OnTakeDama
             modifier.ability.caster:SetHealth(casterHp)
             damageTable.damage = damageTable.damage - damageReduce
         end
+        if(modifier.ability.deathProcHeal > 0) then
+            local victimHp = damageTable.victim:GetHealth() - damageTable.damage
+            if(victimHp < 1) then
+                damageTable.damage = 0
+                local healTable = {}
+                healTable.caster = modifier.ability.caster
+                healTable.target = damageTable.victim
+                healTable.heal = modifier.ability.deathProcHeal * modifier.ability.caster:GetMaxHealth()
+                GameMode:HealUnit(healTable)
+                modifier:Destroy()
+            end
+        end
         return damageTable
     end
 end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_second_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+function modifier_molten_guardian_molten_fortress_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_molten_guardian_molten_fortress_second_thinker = class({
     IsDebuff = function(self)
@@ -1006,22 +1044,6 @@ function modifier_molten_guardian_molten_fortress_second_thinker:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self:StartIntervalThink(0.1)
-end
-
-function modifier_molten_guardian_molten_fortress_second_thinker:OnIntervalThink()
-    local enemies = FindUnitsInRadius(self.ability.casterTeam,
-            self.ability.castPosition,
-            nil,
-            self.ability.radius + 200,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, enemy in pairs(enemies) do
-        enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
-    end
 end
 
 function modifier_molten_guardian_molten_fortress_second_thinker:OnDestroy()
@@ -1105,6 +1127,15 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
     else
         self.secondThinker = true
     end
+    if(self.ability.maxhpPerStack > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = self.ability.caster
+        modifierTable.target = self.ability.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_molten_fortress_buff"
+        modifierTable.duration = self.ability.duration
+        self.rank2Modifier = GameMode:ApplyBuff(modifierTable)
+    end
 end
 
 function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
@@ -1120,6 +1151,9 @@ function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
     for _, enemy in pairs(enemies) do
         enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
     end
+    if(self.rank2Modifier) then
+        self.rank2Modifier:SetStackCount(#enemies)
+    end
     if (not self.secondThinker) then
         self:Destroy()
     end
@@ -1131,9 +1165,12 @@ function modifier_molten_guardian_molten_fortress_thinker:OnDestroy()
     end
     StopSoundOn("Hero_Mars.ArenaOfBlood", self.thinker)
     EmitSoundOn("Hero_Mars.ArenaOfBlood.End", self.ability.caster)
-    UTIL_Remove(self.thinker)
     ParticleManager:DestroyParticle(self.particle, false)
     ParticleManager:ReleaseParticleIndex(self.particle)
+    if(self.rank2Modifier) then
+        self.rank2Modifier:Destroy()
+    end
+    UTIL_Remove(self.thinker)
 end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker"] = LUA_MODIFIER_MOTION_NONE

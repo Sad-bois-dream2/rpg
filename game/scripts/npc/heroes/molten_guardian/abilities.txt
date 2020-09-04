@@ -390,11 +390,6 @@
 			"11"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"deathproc"			"0 0 0 1"
-			}
-			"12"
-			{
-				"var_type"			"FIELD_FLOAT"
 				"deathproc_heal"			"0 0 0 80"
 			}
 		}
