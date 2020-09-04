@@ -127,7 +127,7 @@
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -229,18 +229,18 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"ms_slow"				"-15 -20 -25 -30"
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"1 2 3 4"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
+				"var_type"				"FIELD_FLOAT"
 				"phys_dmg_reduce"				"12 15 18 20"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"str_to_damage"				"20 25 30 35"
+				"damage_radius"				"350"
 			}
 			"04"
 			{
@@ -250,12 +250,47 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_radius"				"350"
+				"armor_stacks_reduction"				"0 1 1 1"
 			}
 			"06"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"ms_slow_duration"				"3"
+				"var_type"				"FIELD_FLOAT"
+				"armor_stacks_cap"				"0 10 10 10"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_stacks_duration"				"0 5 5 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_res_bonus"				"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hpreg_bonus"				"0 0 50 50"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_armor_reduction"				"0 0 0 5"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_maxhp"				"0 0 0 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_cap"				"0 0 0 10"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"melt_stacks_duration"				"0 0 0 5"
 			}
 		}
 		"precache"
@@ -268,19 +303,21 @@
 	//=================================================================================================================
 	// Molten Guardian: Molten Fortress
 	//=================================================================================================================
-    "mars_arena_of_blood"
+    "molten_guardian_molten_fortress"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_molten_guardian"
+		"AbilityTextureName"			"molten_guardian_molten_fortress"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
- 		"AbilitySound"					"Hero_Mars.ArenaOfBlood.Start"
- 		"AbilityTextureName"			"molten_guardian_molten_fortress"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -294,7 +331,7 @@
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"10 20 30 40"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -302,79 +339,64 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"duration"				"10"
+				"var_type"			"FIELD_FLOAT"
+				"dmg_bonus"			"10 15 20 25"
 			}
 			"02"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"radius"			"600"
+				"var_type"			"FIELD_FLOAT"
+				"spelldmg_bonus"			"10 15 20 25"
 			}
 			"03"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"width"				"100"
+				"var_type"			"FIELD_FLOAT"
+				"as_bonus"			"50 75 100 125"
 			}
 			"04"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"spear_damage"		"0"
+				"var_type"			"FIELD_FLOAT"
+				"sph_bonus"			"50 75 100 125"
 			}
 			"05"
 			{
-				"var_type"			"FIELD_FLOAT"
-				"formation_time"	"0.6"
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"600"
 			}
 			"06"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"spear_distance_from_wall"	"160"
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"5"
 			}
 			"07"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"spear_attack_interval"	"99999"
+				"maxhp_per_stack"			"0 10 10 10"
 			}
 			"08"
 			{
-				"var_type"			"FIELD_INTEGER"
-				"warrior_count"		"14"
+				"var_type"			"FIELD_FLOAT"
+				"armor_per_stack"			"0 5 5 5"
 			}
 			"09"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"first_warrior_angle"	"0.0"
+				"ele_armor_per_stack"			"0 5 5 5"
 			}
 			"10"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"warrior_fade_min_dist"	"350.0"
+				"damage_redirect"			"0 0 30 30"
 			}
 			"11"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"warrior_fade_max_dist"	"450.0"
-			}
-			"12"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"dmg_bonus"				"10 15 20 25"
-			}
-			"13"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"as_bonus"				"50 100 150 200"
-			}
-			"14"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"sph_bonus"				"5 10 15 20"
+				"deathproc_heal"			"0 0 0 80"
 			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/molten_guardian/molten_fortress/lava_buff.vpcf"
-            "particle"  "particles/units/molten_guardian/molten_fortress/lava_thing.vpcf"
+		    "particle"  "particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf"
+            "particle"  "particles/units/molten_guardian/molten_fortress/molten_fortress_buff.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -465,9 +487,9 @@
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_5"
+		"AbilityCastGestureSlot"		"DEFAULT"
 		"AbilityCastPoint"				"0.25"
-		"AbilityCastRange"				"900"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -487,42 +509,82 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_reduction"				"10 15 20 25"
+				"damage"				"5 6 7 8"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"channel_time"				"0.55 0.70 0.85 1"
+				"ms_slow"				"10 20 30 40"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"cdr_on_proc"				"0 5 5 5"
+				"ms_slow_duration"				"0.25 0.5 0.75 1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_immune"				"0 0 1 1"
+				"spear_width"				"300"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_armor_aggro"				"0 0 0 5"
+				"spear_speed"				"1800"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+				"spear_distance"				"1200"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
+				"dot_damage"				"0 10 10 10"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"				"0 6 6 6"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_tick"				"0 1 1 1"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_per_stack"				"0 6 6 6"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_dmg_per_stack"				"0 7 7 7"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"				"0 15 15 15"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_cap"				"0 10 10 10"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_debuff"				"0 0 0 -20"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_debuff_duration"				"0 0 0 5"
 			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/molten_guardian/shields_up/shields_up_v2.vpcf"
+            "particle"  "particles/units/heroes/hero_mars/mars_spear.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}
