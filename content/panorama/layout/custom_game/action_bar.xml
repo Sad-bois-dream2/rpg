@@ -138,27 +138,27 @@
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
-                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
-                        <Label text="#DOTA_StatsTooltip_StrStatBonus"/>
+                        <Label id="StatsTooltipStr" text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label id="StatsTooltipStrPrimaryBonus" text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label id="StatsTooltipStrBonus" text="#DOTA_StatsTooltip_StrStatBonus"/>
                     </Panel>
                 </Panel>
                 <Panel id="StatsTooltipAgilityLabel" class="Agility HeroMainStatsMainContainer">
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
-                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
-                        <Label text="#DOTA_StatsTooltip_AgiStatBonus"/>
+                        <Label id="StatsTooltipAgi" text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label id="StatsTooltipAgiPrimaryBonus" text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label id="StatsTooltipAgiBonus" text="#DOTA_StatsTooltip_AgiStatBonus"/>
                     </Panel>
                 </Panel>
-                <Panel id="StatsTooltipIntellectLabel" class="Intellect HeroMainStatsMainContainer last primary">
+                <Panel id="StatsTooltipIntellectLabel" class="Intellect HeroMainStatsMainContainer last">
                     <Image src="s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex"
                            class="HeroMainStatsIcon"/>
                     <Panel class="HeroMainStatsMainLabelsContainer">
-                        <Label text="#DOTA_StatsTooltip_StatAmount"/>
-                        <Label text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
-                        <Label text="#DOTA_StatsTooltip_IntStatBonus"/>
+                        <Label id="StatsTooltipInt" text="#DOTA_StatsTooltip_StatAmount"/>
+                        <Label id="StatsTooltipIntPrimaryBonus" text="#DOTA_StatsTooltip_PrimaryStatBonus" class="HeroMainStatsPrimaryLabel"/>
+                        <Label id="StatsTooltipIntBonus" text="#DOTA_StatsTooltip_IntStatBonus"/>
                     </Panel>
                 </Panel>
             </Panel>

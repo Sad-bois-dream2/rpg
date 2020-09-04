@@ -364,10 +364,13 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local primaryAttribute = 0
         -- str, agi, int
         if (unit:IsRealHero()) then
+            statsTable.strGain = unit:GetStrengthGain()
+            statsTable.agiGain = unit:GetAgilityGain()
+            statsTable.intGain = unit:GetIntellectGain()
             local heroLevel = unit:GetLevel()
-            local heroBaseStr = unit:GetBaseStrength() + (heroLevel - 1) * unit:GetStrengthGain()
-            local heroBaseAgi = unit:GetBaseAgility() + (heroLevel - 1) * unit:GetAgilityGain()
-            local heroBaseInt = unit:GetBaseIntellect() + (heroLevel - 1) * unit:GetIntellectGain()
+            local heroBaseStr = unit:GetBaseStrength() + (heroLevel - 1) * statsTable.strGain
+            local heroBaseAgi = unit:GetBaseAgility() + (heroLevel - 1) * statsTable.agiGain
+            local heroBaseInt = unit:GetBaseIntellect() + (heroLevel - 1) * statsTable.intGain
             statsTable.str = heroBaseStr + unitBonusStr
             statsTable.agi = heroBaseAgi + unitBonusAgi
             statsTable.int = heroBaseInt + unitBonusInt
@@ -402,11 +405,16 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.int
             end
+            statsTable.primaryAttributeIndex = primaryAttributeIndex
             --old one primary attribute to base damage calculation is wrong
         else
             statsTable.str = 0
             statsTable.agi = 0
             statsTable.int = 0
+            statsTable.strGain = 0
+            statsTable.agiGain = 0
+            statsTable.intGain = 0
+            statsTable.primaryAttributeIndex = 0
         end
         -- attack damage
         local heroBaseDamage = 0

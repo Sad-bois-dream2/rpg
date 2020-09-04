@@ -361,7 +361,19 @@ function UpdateValues() {
             aggroCausedLabel.text = (Math.round(latestStats.aggroCaused * 10000) / 100) + "%";
             buffAmplificationLabel.text = (Math.round(latestStats.buffAmplification * 10000) / 100) + "%";
             cooldownReductionLabel.text = (Math.round((1-latestStats.cdr) * 10000) / 100) + "%";
-
+            // fuck it
+            $("#StatsTooltipStrengthLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
+            $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
+            $("#StatsTooltipIntellectLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 1);
+            $("#StatsTooltipStr").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.str).replace("%GAIN%", Math.round(latestStats.strGain * 100)/100);
+            $("#StatsTooltipAgi").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.agi).replace("%GAIN%", Math.round(latestStats.agiGain * 100)/100);
+            $("#StatsTooltipInt").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.int).replace("%GAIN%", Math.round(latestStats.intGain * 100)/100);
+            $("#StatsTooltipStrPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.str);
+            $("#StatsTooltipAgiPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.agi);
+            $("#StatsTooltipIntPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.int);
+            $("#StatsTooltipStrBonus").text = $.Localize("DOTA_StatsTooltip_StrStatBonus").replace("%VALUE%", 0);
+            $("#StatsTooltipAgiBonus").text = $.Localize("DOTA_StatsTooltip_AgiStatBonus").replace("%VALUE%", 0);
+            $("#StatsTooltipIntBonus").text = $.Localize("DOTA_StatsTooltip_IntStatBonus").replace("%VALUE%", 0);
         }
 		lastSelectedUnit = hero;
     }
