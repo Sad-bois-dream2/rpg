@@ -100,11 +100,9 @@
 	m_Children = 
 	[
 		{
-			m_flDelay = 1.0
 			m_ChildRef = resource:"particles/units/heroes/hero_jakiro/jakiro_macropyre_lava_scorch.vpcf"
 		},
 		{
-			m_flDelay = 1.0
 			m_ChildRef = resource:"particles/units/heroes/hero_jakiro/jakiro_macropyre_lava_scorch_b.vpcf"
 		},
 		{
@@ -115,6 +113,10 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame_glow.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame_glow_v2.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame.vpcf"

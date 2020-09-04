@@ -9,10 +9,8 @@
 			_class = "C_OP_RenderSprites"
 			m_flAnimationRate = 0.4
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
-			m_flAddSelfAmount = 1.0
 			m_bAdditive = true
-			m_flOverbrightFactor = 5.0
-			m_hTexture = resource:"materials/particle/smoke/steam/steam.vtex"
+			m_hTexture = resource:"materials/particle/lava_blasts/lava_blast.vtex"
 		},
 	]
 	m_Operators = 
@@ -53,10 +51,17 @@
 			_class = "C_OP_LerpEndCapVector"
 			m_flLerpTime = 0.5
 			m_nFieldOutput = "6"
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
 			m_ColorFade = [ 201, 79, 0, 255 ]
+			m_flFadeStartTime = 0.5
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_OP_ColorInterpolate"
+			m_ColorFade = [ 143, 74, 0, 255 ]
 			m_flFadeStartTime = 0.5
 		},
 	]
@@ -69,12 +74,12 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 59.0
-			m_flRadiusMin = 46.0
+			m_flRadiusMax = 40.0
+			m_flRadiusMin = 40.0
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 1
+			m_nSequenceMax = 3
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -115,6 +120,11 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 210, 105, 30, 255 ]
 			m_ColorMax = [ 255, 211, 133, 255 ]
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMax = [ 255, 233, 174, 255 ]
 		},
 	]
 	m_Emitters = 
@@ -138,6 +148,12 @@
 					m_entityName = "self"
 				},
 			]
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_spear/lava_spear_ground_flame_b.vpcf"
 		},
 	]
 }
