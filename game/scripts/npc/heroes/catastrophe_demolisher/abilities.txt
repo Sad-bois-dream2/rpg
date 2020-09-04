@@ -46,27 +46,37 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"threat"		"0 0 0 5"
+				"damage_aoe"		"0 300 300 300"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_aoe"		"0 300 300 300"
+				"aura_radius"		"0 0 500 500"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aura_radius"		"0 0 500 500"
+				"tick"		"1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"		"1"
+				"duration"		"5"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"		"5"
+				"primal_buff_per_armor_aggro"				"0 0 0 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
 			}
 		}
 		"precache"
@@ -475,7 +485,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_POINT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
         "AbilityCastAnimation"			"ACT_DOTA_ATTACK_EVENT"
         "AbilityCastPoint"				"0.5"
 

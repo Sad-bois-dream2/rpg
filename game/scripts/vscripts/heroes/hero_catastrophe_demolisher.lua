@@ -86,6 +86,20 @@ function modifier_catastrophe_demolisher_curse_of_doom_aura:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_catastrophe_demolisher_curse_of_doom_aura:GetAggroCausedBonus()
+    local totalResistances = 0
+    totalResistances = totalResistances + Units:GetFireProtection(self.caster)
+    totalResistances = totalResistances + Units:GetFrostProtection(self.caster)
+    totalResistances = totalResistances + Units:GetEarthProtection(self.caster)
+    totalResistances = totalResistances + Units:GetVoidProtection(self.caster)
+    totalResistances = totalResistances + Units:GetHolyProtection(self.caster)
+    totalResistances = totalResistances + Units:GetNatureProtection(self.caster)
+    totalResistances = totalResistances + Units:GetInfernoProtection(self.caster)
+    totalResistances = totalResistances - 7
+    return (totalResistances * (self.ability.primalBuffPerEleArmorAggro or 0)) + (Units:GetArmor(self.caster) * (self.ability.primalBuffPerArmorAggro or 0)) + (self.caster:GetMaxHealth() * (self.ability.primalBuffPerMaxHpAggro or 0))
 end
 
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura"] = LUA_MODIFIER_MOTION_NONE
@@ -121,15 +135,45 @@ end
 
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_curse_of_doom = class({
-    GetIntrinsicModifierName = function(self)
-        return "modifier_catastrophe_demolisher_curse_of_doom_aura"
+modifier_catastrophe_demolisher_curse_of_doom_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end
 })
 
-function catastrophe_demolisher_curse_of_doom:GetAOERadius()
-    return self:GetSpecialValueFor("damage_aoe")
+function modifier_catastrophe_demolisher_curse_of_doom_stacks:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
 end
+
+function modifier_catastrophe_demolisher_curse_of_doom_stacks:GetStrengthPercentBonus()
+    return self.ability.stacksStr * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_curse_of_doom = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_curse_of_doom_aura"
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("damage_aoe")
+    end
+})
 
 function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     if (not IsServer()) then
@@ -138,10 +182,12 @@ function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.aoe = self:GetSpecialValueFor("damage_aoe")
     self.auraRadius = self:GetSpecialValueFor("aura_radius")
-    self.threat = self:GetSpecialValueFor("threat") / 100
     self.infernoRes = self:GetSpecialValueFor("inferno_res") / 100
     self.tick = self:GetSpecialValueFor("tick")
     self.duration = self:GetSpecialValueFor("duration")
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
 end
 
 function catastrophe_demolisher_curse_of_doom:OnSpellStart()
@@ -160,16 +206,8 @@ function catastrophe_demolisher_curse_of_doom:OnSpellStart()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        if (self.threat > 0) then
-            local addedAggro = caster:GetMaxHealth() * self.threat
-            for _, enemy in pairs(enemies) do
-                self:ApplyDot(caster, enemy)
-                Aggro:Add(caster, enemy, addedAggro)
-            end
-        else
-            for _, enemy in pairs(enemies) do
-                self:ApplyDot(caster, enemy)
-            end
+        for _, enemy in pairs(enemies) do
+            self:ApplyDot(caster, enemy)
         end
         local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf", PATTACH_ABSORIGIN, target)
         Timers:CreateTimer(1, function()
@@ -982,11 +1020,10 @@ modifier_catastrophe_demolisher_crimson_fanaticism_taunt = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    IsTaunt = function(self)
+        return true
+    end
 })
-
-function modifier_catastrophe_demolisher_crimson_fanaticism_taunt:IsTaunt()
-    return true
-end
 
 LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_taunt"] = LUA_MODIFIER_MOTION_NONE
 
@@ -1230,7 +1267,14 @@ LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
 catastrophe_demolisher_claymore_of_destruction = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_catastrophe_demolisher_claymore_of_destruction"
-    end
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("stun_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
 })
 
 function catastrophe_demolisher_claymore_of_destruction:OnUpgrade()
@@ -1300,7 +1344,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         modifierTable.modifier_name = "modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
         modifierTable.duration = self.armorReductionDuration
         GameMode:ApplyDebuff(modifierTable)
-        if (self.stunDuration > 0) then
+        if (self.stunDuration > 0 and self:GetAutoCastState()) then
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.target = enemy
