@@ -1024,6 +1024,52 @@ function molten_guardian_shields_up:OnSpellStart()
 end
 
 -- molten_guardian_lava_spear
+modifier_molten_guardian_lava_spear_thinker = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_lava_spear_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.thinker = self:GetParent()
+    self.startLocation = self.thinker:GetAbsOrigin()
+    local modifier = self
+    Timers:CreateTimer(0.3, function()
+        modifier.particle = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf", PATTACH_ABSORIGIN, modifier.thinker)
+        ParticleManager:SetParticleControl(modifier.particle, 0, modifier.startLocation)
+        ParticleManager:SetParticleControl(modifier.particle, 1, modifier.startLocation + modifier.ability.direction * modifier.ability.spearDistance)
+        ParticleManager:SetParticleControl(modifier.particle, 2, Vector(modifier.ability.dotDuration, 0, 0))
+        ParticleManager:SetParticleControl(modifier.particle, 4, modifier.startLocation)
+    end)
+end
+
+function modifier_molten_guardian_lava_spear_thinker:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.particle, false)
+    ParticleManager:ReleaseParticleIndex(self.particle)
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_molten_guardian_lava_spear_thinker"] = LUA_MODIFIER_MOTION_NONE
+
 molten_guardian_lava_spear = class({})
 
 function molten_guardian_lava_spear:OnSpellStart()
@@ -1032,6 +1078,8 @@ function molten_guardian_lava_spear:OnSpellStart()
     end
     local caster = self:GetCaster()
     local casterLocation = caster:GetAbsOrigin()
+    local casterTeam = caster:GetTeamNumber()
+    self.direction = (self:GetCursorPosition() - casterLocation):Normalized()
     local projectile =
     {
         Ability = self,
@@ -1048,12 +1096,23 @@ function molten_guardian_lava_spear:OnSpellStart()
         iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
         fExpireTime = GameRules:GetGameTime() + 10.0,
         bDeleteOnHit = true,
-        vVelocity = (self:GetCursorPosition() - casterLocation):Normalized() * self.spearSpeed,
+        vVelocity = self.direction * self.spearSpeed,
         bProvidesVision = true,
         iVisionRadius = 400,
-        iVisionTeamNumber = caster:GetTeamNumber()
+        iVisionTeamNumber = casterTeam
     }
-    projectile = ProjectileManager:CreateLinearProjectile(projectile)
+    ProjectileManager:CreateLinearProjectile(projectile)
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_molten_guardian_lava_spear_thinker",
+            {
+                duration = self.dotDuration,
+            },
+            casterLocation,
+            casterTeam,
+            false
+    )
     EmitSoundOn("Hero_Mars.Spear.Cast", caster)
 end
 
