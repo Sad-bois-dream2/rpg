@@ -882,7 +882,7 @@ modifier_molten_guardian_molten_fortress_thinker_buff = class({
         return false
     end,
     IsHidden = function(self)
-        return true
+        return false
     end,
     IsPurgable = function(self)
         return false
@@ -897,6 +897,10 @@ modifier_molten_guardian_molten_fortress_thinker_buff = class({
         return "particles/units/molten_guardian/molten_fortress/molten_fortress_buff.vpcf"
     end
 })
+
+function modifier_molten_guardian_molten_fortress_thinker_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
 
 function modifier_molten_guardian_molten_fortress_thinker_buff:GetAttackDamagePercentBonus()
     return self.ability.dmgBonus
@@ -915,6 +919,119 @@ function modifier_molten_guardian_molten_fortress_thinker_buff:GetSpellHasteBonu
 end
 
 LinkedModifiers["modifier_molten_guardian_molten_fortress_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_second_thinker_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_molten_guardian_molten_fortress_second_thinker_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_molten_guardian_molten_fortress_second_thinker_buff:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_molten_fortress_second_thinker_buff")
+    if(modifier and modifier.ability and modifier.ability.caster and damageTable.damage > 0) then
+        local damageReduce = damageTable.damage * modifier.ability.damageRedirect
+        local casterHp = modifier.ability.caster:GetHealth() - damageReduce
+        if(casterHp >= 1) then
+            modifier.ability.caster:SetHealth(casterHp)
+            damageTable.damage = damageTable.damage - damageReduce
+        end
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_second_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_molten_guardian_molten_fortress_second_thinker = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_molten_guardian_molten_fortress_second_thinker_buff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end
+})
+function modifier_molten_guardian_molten_fortress_second_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self:StartIntervalThink(0.1)
+end
+
+function modifier_molten_guardian_molten_fortress_second_thinker:OnIntervalThink()
+    local enemies = FindUnitsInRadius(self.ability.casterTeam,
+            self.ability.castPosition,
+            nil,
+            self.ability.radius + 200,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
+    end
+end
+
+function modifier_molten_guardian_molten_fortress_second_thinker:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_molten_guardian_molten_fortress_second_thinker"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_molten_guardian_molten_fortress_thinker = class({
     IsDebuff = function(self)
@@ -973,6 +1090,21 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
     ParticleManager:SetParticleControl(self.particle, 3, self.ability.castPosition)
     self:StartIntervalThink(FrameTime())
     EmitSoundOn("Hero_Mars.ArenaOfBlood.Start", self.thinker)
+    if (self.ability.damageRedirect > 0) then
+        self.secondThinker = CreateModifierThinker(
+                self.ability.caster,
+                self.ability,
+                "modifier_molten_guardian_molten_fortress_second_thinker",
+                {
+                    duration = self.ability.duration,
+                },
+                self.ability.castPosition,
+                self.ability.casterTeam,
+                false
+        )
+    else
+        self.secondThinker = true
+    end
 end
 
 function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
@@ -987,6 +1119,9 @@ function modifier_molten_guardian_molten_fortress_thinker:OnIntervalThink()
             false)
     for _, enemy in pairs(enemies) do
         enemy:AddNewModifier(self.ability.caster, self.ability, "modifier_molten_guardian_molten_fortress_check_position", { duration = self:GetRemainingTime() })
+    end
+    if (not self.secondThinker) then
+        self:Destroy()
     end
 end
 
@@ -1037,6 +1172,12 @@ function molten_guardian_molten_fortress:OnUpgrade()
     self.spelldmgBonus = self:GetSpecialValueFor("spelldmg_bonus")
     self.asBonus = self:GetSpecialValueFor("as_bonus")
     self.sphBonus = self:GetSpecialValueFor("sph_bonus")
+    self.maxhpPerStack = self:GetSpecialValueFor("maxhp_per_stack")
+    self.armorPerStack = self:GetSpecialValueFor("armor_per_stack")
+    self.eleArmorPerStack = self:GetSpecialValueFor("ele_armor_per_stack")
+    self.damageRedirect = self:GetSpecialValueFor("damage_redirect")
+    self.deathProc = self:GetSpecialValueFor("deathproc")
+    self.deathProcHeal = self:GetSpecialValueFor("deathproc_heal")
 end
 
 --molten_guardian_shields_up
@@ -1531,5 +1672,6 @@ if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_volcanic_blow_block, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up_channel, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_spear_debuff, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_molten_fortress_second_thinker_buff, 'OnTakeDamage'))
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end
