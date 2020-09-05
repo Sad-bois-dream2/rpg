@@ -105,10 +105,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitHolyDamage = 1
         local unitNatureDamage = 1
         local unitInfernoDamage = 1
-        local unitBlock = 0
-        local unitBlockPercent = 1
-        local unitMagicBlock = 0
-        local unitMagicBlockPercent = 1
         local unitArmor = 0
         local unitArmorPercent = 1
         local unitArmorPercentMulti = 1
@@ -469,9 +465,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         end
         -- damage reduction
         statsTable.damageReduction = unitDamageReduction
-        -- both blocks
-        statsTable.block = unitBlock * unitBlockPercent
-        statsTable.magicBlock = unitMagicBlock * unitMagicBlockPercent
         -- armor
         statsTable.armor = unitArmor * unitArmorPercent * unitArmorPercentMulti
         -- cdr
