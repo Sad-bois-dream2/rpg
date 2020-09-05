@@ -12,6 +12,7 @@ var fireAmpLabel, frostAmpLabel, earthAmpLabel, natureAmpLabel, voidAmpLabel, in
 var spellDamageLabel, spellHasteLabel, attackRangeLabel, attackSpeedLabel, baseAttackTimeLabel, DebuffAmplificationLabel, DebuffResistanceLabel;
 var criticalDamageLabel, criticalChanceLabel;
 var damageReductionLabel, aggroCausedLabel, buffAmplificationLabel, cooldownReductionLabel;
+var healingReceivedLabel, healingCausedLabel;
 
 var LOCAL_PLAYER_TEAM, LOCAL_PLAYER_HERO = -1, lastSelectedUnit = -1;
 
@@ -361,6 +362,8 @@ function UpdateValues() {
             aggroCausedLabel.text = (Math.round(latestStats.aggroCaused * 10000) / 100) + "%";
             buffAmplificationLabel.text = (Math.round(latestStats.buffAmplification * 10000) / 100) + "%";
             cooldownReductionLabel.text = (Math.round((1-latestStats.cdr) * 10000) / 100) + "%";
+            healingReceivedLabel.text = (Math.round(latestStats.healingReceivedPercent * 10000) / 100) + "% + " + latestStats.healingReceived;
+            healingCausedLabel.text = (Math.round(latestStats.healingCausedPercent * 10000) / 100) + "% + " + latestStats.healingCaused;
             // fuck it
             $("#StatsTooltipStrengthLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
             $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
@@ -455,6 +458,8 @@ function Init() {
     aggroCausedLabel = $("#StatsTooltipAggroCaused");
     buffAmplificationLabel = $("#StatsTooltipBuffAmplification");
     cooldownReductionLabel = $("#StatsTooltipCooldownReduction");
+    healingReceivedLabel = $("#StatsTooltipHealingReceived");
+    healingCausedLabel = $("#StatsTooltipHealingCaused");
 }
 
 function ShowStatsTooltip() {

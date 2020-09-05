@@ -707,4 +707,6 @@
     horizontal-align: right;
     margin-right: 5px;
     color: white;
+    text-overflow: shrink;
+    height: 100%;
 }

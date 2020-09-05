@@ -364,6 +364,10 @@ function OnHeroStatsUpdateRequest(event) {
 		var criticalDamage = parsedData.statsTable.critDamage;
 		var criticalChance = parsedData.statsTable.critChance;
 		var aggroCaused = parsedData.statsTable.aggroCaused;
+		var healingCaused = parsedData.statsTable.healingCaused;
+		var healingCausedPercent = parsedData.statsTable.healingCausedPercent;
+		var healingReceived = parsedData.statsTable.healingReceived;
+		var healingReceivedPercent = parsedData.statsTable.healingReceivedPercent;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -417,6 +421,8 @@ function OnHeroStatsUpdateRequest(event) {
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
 		$("#AggroCausedLabel").text = (Math.round(aggroCaused * 10000) / 100) + "%";
+		$("#HealingReceivedLabel").text = (Math.round(healingReceivedPercent * 10000) / 100) + "% + " + healingReceived;
+		$("#HealingCausedLabel").text = (Math.round(healingCausedPercent * 10000) / 100) + "% + " + healingCaused;
     }
 }
 

@@ -100,6 +100,14 @@
                             <Label class="Title" text="#DOTA_Tooltip_CooldownReduction"/>
                             <Label id="StatsTooltipCooldownReduction" class="Value" text="0%"/>
                         </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_HealingReceived"/>
+                            <Label id="StatsTooltipHealingReceived" class="Value" text="0% + 0"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Label class="Title" text="#DOTA_Tooltip_HealingCaused"/>
+                            <Label id="StatsTooltipHealingCaused" class="Value" text="0% + 0"/>
+                        </Panel>
                     </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
