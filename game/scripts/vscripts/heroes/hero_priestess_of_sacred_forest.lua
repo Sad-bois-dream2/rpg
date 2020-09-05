@@ -1,37 +1,118 @@
 local LinkedModifiers = {}
---priestess_of_sacred_forest_herbaceous_essence modifiers
 -- priestess_of_sacred_forest_herbaceous_essence
-priestess_of_sacred_forest_herbaceous_essence = class({
-    GetAbilityTextureName = function(self)
-        return "priestess_of_sacred_forest_herbaceous_essence"
+modifier_priestess_of_sacred_forest_herbaceous_essence_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end
 })
 
-function priestess_of_sacred_forest_herbaceous_essence:IsRequireCastbar()
-    return true
+function modifier_priestess_of_sacred_forest_herbaceous_essence_buff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
 end
 
-function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local target = self:GetCursorTarget()
-        local healTable = {}
-        healTable.caster = caster
-        healTable.target = target
-        healTable.ability = self
-        healTable.heal = Units:GetHeroIntellect(caster) * (self:GetSpecialValueFor("healing") / 100)
-        GameMode:HealUnit(healTable)
-        target:Purge(false, true, false, true, true)
-        local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/heal.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
-        EmitSoundOn("Hero_Oracle.FatesEdict", target)
-        Timers:CreateTimer(0.8, function()
-            target:StopSound("Hero_Oracle.FatesEdict")
-        end)
-        Timers:CreateTimer(3.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_herbaceous_essence_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end
+})
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_cd"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_herbaceous_essence = class({
+    GetAbilityTextureName = function(self)
+        return "priestess_of_sacred_forest_herbaceous_essence"
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("dispel") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
+function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local healTable = {}
+    healTable.caster = caster
+    healTable.target = target
+    healTable.ability = self
+    healTable.heal = Units:GetHeroIntellect(caster) * self.healing
+    if (target:GetHealth() <= target:GetMaxHealth() * self.healingMultiplierMaxHp) then
+        healTable.heal = healTable.heal * self.healingMultiplier
+    end
+    GameMode:HealUnit(healTable)
+    if (self:GetAutoCastState() and self.dispel > 0 and not caster:HasModifier("modifier_priestess_of_sacred_forest_herbaceous_essence_cd")) then
+        target:Purge(false, true, false, true, true)
+        caster:AddNewModifier(caster, self, "modifier_priestess_of_sacred_forest_herbaceous_essence_cd", { duration = self.dispelCd })
+    end
+    if (self.bonusHealingRecieved > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_buff"
+        modifierTable.duration = self.bonusHealingRecievedDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/heal.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Oracle.FatesEdict", target)
+    Timers:CreateTimer(0.8, function()
+        target:StopSound("Hero_Oracle.FatesEdict")
+    end)
+end
+
+function priestess_of_sacred_forest_herbaceous_essence:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.bonusHealingRecieved = self:GetSpecialValueFor("bonus_healing_recieved") / 100
+    self.bonusHealingRecievedDuration = self:GetSpecialValueFor("bonus_healing_recieved_duration")
+    self.healingMultiplier = self:GetSpecialValueFor("healing_multiplier")
+    self.healingMultiplierMaxHp = self:GetSpecialValueFor("healing_multiplier_maxhp") / 100
+    self.dispel = self:GetSpecialValueFor("dispel")
+    self.dispelCd = self:GetSpecialValueFor("dispel_cd")
 end
 -- priestess_of_sacred_forest_thorny_protection modifiers
 modifier_priestess_of_sacred_forest_thorny_protection_slow = class({

@@ -177,9 +177,13 @@
         // Priestess of Sacred Forest (ench)
 
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence"		"Herbaceous Essence"
-		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence_Description"		"Heals an ally (based on your INT) and removes all debuffs from them.<br><br>Cast time: <font color='white'><b>2</b></font> seconds"
+		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence_Description"		"Heals an ally.\nCast time: <font color='white'><b>2</b></font> seconds.\nRank 2: Also increase healing received of target by <font color='white'><b>20%</b></font> for <font color='white'><b>5</b></font> seconds.\nRank 3: Heal from this ability doubled, if you heal target below <font color='white'><b>50%</b></font> of max health.\nRank 4: If autocast turned on also dispel all debuffs from target, inner cooldown <font color='white'><b>15</b></font> seconds."
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence_Lore" "The miraculous nectar is collected from the rarest luminous mistletoe on the Eternal Tree of the forest."
-		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence_healing"		"%INT TO HEALING: "
+		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_herbaceous_essence_healing"		"%INTELLECT TO HEALING: "
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_herbaceous_essence_buff"		"Herbaceous Essence"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_herbaceous_essence_buff_Description"		"Healing recieved increased."
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_herbaceous_essence_cd"		"Herbaceous Essence"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_herbaceous_essence_cd_Description"		"Dispel on cooldown."
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_thorny_protection"		"Thorny Protection"
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_thorny_protection_Description"		"Forms a barrier of thorns around the target area which protects allies within it from all damage coming from outside it until it's destroyed. Enemies that attack an ally inside the wall are paralyzed by phytotoxin that slows their Attack speed and Cast speed."
 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_thorny_protection_block"		"WALL HEALTH:"
