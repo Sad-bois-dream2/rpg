@@ -366,8 +366,8 @@ function UpdateValues() {
             healingCausedLabel.text = (Math.round(latestStats.healingCausedPercent * 10000) / 100) + "% + " + latestStats.healingCaused;
             // fuck it
             $("#StatsTooltipStrengthLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
-            $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
-            $("#StatsTooltipIntellectLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 1);
+            $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 1);
+            $("#StatsTooltipIntellectLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 2);
             $("#StatsTooltipStr").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.str).replace("%GAIN%", Math.round(latestStats.strGain * 100)/100);
             $("#StatsTooltipAgi").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.agi).replace("%GAIN%", Math.round(latestStats.agiGain * 100)/100);
             $("#StatsTooltipInt").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.int).replace("%GAIN%", Math.round(latestStats.intGain * 100)/100);
