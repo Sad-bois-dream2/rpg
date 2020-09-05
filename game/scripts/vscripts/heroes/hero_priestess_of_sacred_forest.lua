@@ -63,10 +63,30 @@ priestess_of_sacred_forest_herbaceous_essence = class({
     end
 })
 
+function priestess_of_sacred_forest_herbaceous_essence:OnAbilityPhaseStart(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self.originalCastPoint = self:GetCastPoint()
+    local modifier = self:GetCursorTarget():FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_hot")
+    if (modifier and modifier.ability and modifier.ability.sphBonus) then
+        self:SetOverrideCastPoint(self.originalCastPoint * (1 - modifier.ability.sphBonus))
+    end
+    return true
+end
+
+function priestess_of_sacred_forest_herbaceous_essence:OnAbilityPhaseInterrupted(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self:SetOverrideCastPoint(self.originalCastPoint)
+end
+
 function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, special_cast)
     if (not IsServer()) then
         return
     end
+    self:SetOverrideCastPoint(self.originalCastPoint)
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
     local healTable = {}
@@ -418,7 +438,7 @@ function priestess_of_sacred_forest_thorny_protection:OnSpellStart()
     )
 end
 
--- priestess_of_sacred_forest_twilight_breeze modifiers
+-- priestess_of_sacred_forest_twilight_breeze
 modifier_priestess_of_sacred_forest_twilight_breeze_airy = class({
     IsDebuff = function(self)
         return false
@@ -434,29 +454,20 @@ modifier_priestess_of_sacred_forest_twilight_breeze_airy = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return priestess_of_sacred_forest_twilight_breeze:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/priestess_of_sacred_forest/twilight_breeze/buff.vpcf"
-    end,
+    end
 })
 
 ---@param damageTable DAMAGE_TABLE
 function modifier_priestess_of_sacred_forest_twilight_breeze_airy:OnTakeDamage(damageTable)
-    if (damageTable.damage > 0) then
-        ---@type CDOTA_Buff
-        local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_airy")
-        if (modifier ~= nil and damageTable.physdmg) then
-            local stacks = modifier:GetStackCount()
-            if (stacks > 0) then
-                modifier:SetStackCount(stacks - 1)
-                damageTable.damage = 0
-                return damageTable
-            else
-                modifier:Destroy()
-            end
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_airy")
+    if (damageTable.damage > 0 and modifier and damageTable.physdmg) then
+        local stacks = modifier:GetStackCount()
+        if (stacks > 0) then
+            modifier:SetStackCount(stacks - 1)
+            damageTable.damage = 0
+            return damageTable
+        else
+            modifier:Destroy()
         end
     end
 end
@@ -479,19 +490,18 @@ modifier_priestess_of_sacred_forest_twilight_breeze_hot = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return priestess_of_sacred_forest_twilight_breeze:GetAbilityTextureName()
-    end
+    GetEffectName = function(self)
+        return "particles/units/priestess_of_sacred_forest/twilight_breeze/buff.vpcf"
+    end,
 })
 
 function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnCreated()
-    local ability = self:GetAbility()
-    self.caster = self:GetCaster()
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    self.heal = ability:GetSpecialValueFor("healing")
-    self.ability = ability
-    local tick = ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    if (IsServer()) then
+        self:StartIntervalThink(self.ability.tick)
+    end
 end
 
 function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnIntervalThink()
@@ -502,41 +512,76 @@ function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnIntervalThink
     healTable.caster = self.caster
     healTable.target = self.target
     healTable.ability = self.ability
-    healTable.heal = self.heal
+    healTable.heal = self.ability.healing * Units:GetHeroIntellect(self.caster)
     GameMode:HealUnit(healTable)
 end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_hot"] = LUA_MODIFIER_MOTION_NONE
--- priestess_of_sacred_forest_twilight_breeze
+
 priestess_of_sacred_forest_twilight_breeze = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_twilight_breeze"
     end,
 })
 
-function priestess_of_sacred_forest_twilight_breeze:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local duration = self:GetSpecialValueFor("duration")
-        local stacks = self:GetSpecialValueFor("stacks")
-        local caster = self:GetCaster()
-        local target = self:GetCursorTarget()
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = target
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_hot"
-        modifierTable.duration = duration
-        GameMode:ApplyBuff(modifierTable)
+function priestess_of_sacred_forest_twilight_breeze:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.stacks = self:GetSpecialValueFor("stacks")
+    self.sphBonus = self:GetSpecialValueFor("sph_bonus") / 100
+    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
+end
+
+function priestess_of_sacred_forest_twilight_breeze:OnSpellStart(secondCast)
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_hot"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    if (self.stacks > 0) then
         modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
         modifierTable.caster = caster
         modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_airy"
         modifierTable.duration = -1
-        modifierTable.stacks = stacks
-        modifierTable.max_stacks = 99999
+        modifierTable.stacks = self.stacks
+        modifierTable.max_stacks = self.stacks
         GameMode:ApplyStackingBuff(modifierTable)
-        EmitSoundOn("Ability.Windrun", target)
+    end
+    EmitSoundOn("Ability.Windrun", target)
+    if (secondCast or not (self.spreadRadius > 0)) then
+        return
+    end
+    local allies = FindUnitsInRadius(caster:GetTeamNumber(),
+            target:GetAbsOrigin(),
+            nil,
+            self.spreadRadius,
+            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+            DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, ally in pairs(allies) do
+        if (not ally:HasModifier("modifier_priestess_of_sacred_forest_twilight_breeze_hot")) then
+            local cd = self:GetCooldownTimeRemaining()
+            self:EndCooldown()
+            caster:SetCursorCastTarget(ally)
+            self:OnSpellStart(true)
+            self:StartCooldown(cd)
+            return
+        end
     end
 end
 -- priestess_of_sacred_forest_tranquility modifiers

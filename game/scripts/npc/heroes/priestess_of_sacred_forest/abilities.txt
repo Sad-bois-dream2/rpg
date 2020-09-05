@@ -126,7 +126,7 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"350"
+				"radius"				"500"
 			}
 			"04"
 			{
@@ -200,22 +200,32 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"healing"				"300 400 500 600"
+				"healing"				"60 70 80 90"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3"
+				"duration"				"4"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks"				"1 2 3 4"
+				"tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"stacks"				"0 3 3 3"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sph_bonus"				"0 0 50 50"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spread_radius"				"0 0 0 300"
 			}
 		}
 		"precache"
