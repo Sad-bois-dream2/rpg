@@ -710,37 +710,37 @@ priestess_of_sacred_forest_tranquility = class({
     end,
     GetChannelTime = function(self)
         return self:GetSpecialValueFor("channel_time")
+    end,
+    IsRequireCastbar = function(self)
+        return true
     end
 })
 
-function priestess_of_sacred_forest_tranquility:IsRequireCastbar()
-    return true
-end
-
 function priestess_of_sacred_forest_tranquility:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_thinker"
-        modifierTable.duration = -1
-        caster.priestess_of_sacred_forest_tranquility_modifier = GameMode:ApplyBuff(modifierTable)
-        caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
-        Timers:CreateTimer(0.9, function()
-            if (caster:HasModifier("modifier_priestess_of_sacred_forest_tranquility_thinker")) then
-                caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
-                local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-                Timers:CreateTimer(2.0, function()
-                    ParticleManager:DestroyParticle(pidx, false)
-                    ParticleManager:ReleaseParticleIndex(pidx)
-                end)
-                return 1
-            end
-        end)
-        caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
+    if not IsServer() then
+        return
     end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_thinker"
+    modifierTable.duration = -1
+    caster.priestess_of_sacred_forest_tranquility_modifier = GameMode:ApplyBuff(modifierTable)
+    caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    Timers:CreateTimer(0.9, function()
+        if (caster:HasModifier("modifier_priestess_of_sacred_forest_tranquility_thinker")) then
+            caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+            local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+            Timers:CreateTimer(2.0, function()
+                ParticleManager:DestroyParticle(pidx, false)
+                ParticleManager:ReleaseParticleIndex(pidx)
+            end)
+            return 1
+        end
+    end)
+    caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
 end
 
 function priestess_of_sacred_forest_tranquility:OnChannelFinish()
