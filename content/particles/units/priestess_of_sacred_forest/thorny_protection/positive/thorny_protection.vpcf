@@ -34,6 +34,7 @@
 			m_flStartScale = 3.0
 			m_flEndScale = 0.0
 			m_flBias = 0.4
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_FadeInSimple"
@@ -45,11 +46,13 @@
 		{
 			_class = "C_OP_EndCapTimedDecay"
 			m_flDecayTime = 0.125
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_LerpEndCapScalar"
 			m_flOutput = 0.0
 			m_flLerpTime = 0.125
+			m_bDisableOperator = true
 		},
 	]
 	m_Initializers = 
@@ -254,11 +257,13 @@
 			_class = "C_OP_TwistAroundAxis"
 			m_fForceAmount = -500.0
 			m_nOpEndCapState = 0
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_RandomForce"
 			m_MinForce = [ -1300.0, -1300.0, -1300.0 ]
 			m_MaxForce = [ 1300.0, 1300.0, 1300.0 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_AttractToControlPoint"
@@ -269,6 +274,7 @@
 			}
 			m_fFalloffPower = 0.0
 			m_nOpEndCapState = 1
+			m_bDisableOperator = true
 		},
 	]
 	m_Children = 
@@ -277,19 +283,19 @@
 			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_glow.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_ring.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_ring.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_projection.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_projection.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_ground_cover.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_ground_cover.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_grass.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_grass.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_center.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_center.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_spore.vpcf"

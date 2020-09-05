@@ -141,7 +141,7 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slow_duration"				"0 2 2 2"
+				"slow_duration"				"0 3 3 3"
 			}
 			"07"
 			{

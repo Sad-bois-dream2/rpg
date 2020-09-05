@@ -116,6 +116,81 @@ function priestess_of_sacred_forest_herbaceous_essence:OnUpgrade()
 end
 
 -- priestess_of_sacred_forest_thorny_protection modifiers
+modifier_priestess_of_sacred_forest_thorny_protection_slow_aura = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_priestess_of_sacred_forest_thorny_protection_slow_aura_buff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end
+})
+
+function modifier_priestess_of_sacred_forest_thorny_protection_slow_aura:OnCreated(keys)
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_slow_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_thorny_protection_slow_aura_buff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetMoveSpeedPercentBonus = function(self)
+        return self.ability.msSlow or 0
+    end
+})
+
+function modifier_priestess_of_sacred_forest_thorny_protection_slow_aura_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_slow_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_priestess_of_sacred_forest_thorny_protection_slow = class({
     IsDebuff = function(self)
         return true
@@ -187,10 +262,19 @@ function modifier_priestess_of_sacred_forest_thorny_protection_thinker:OnCreated
     end
     self.ability = self:GetAbility()
     self.wall = self:GetParent()
-    self.wallHp = self.ability.block * Units:GetHeroIntellect(self.ability:GetCaster())
+    self.wall.thornyHp = self.ability.block * Units:GetHeroIntellect(self.ability:GetCaster())
     self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection.vpcf", PATTACH_ABSORIGIN, self.wall)
     ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.ability.radius, 0, 0))
     EmitSoundOn("Hero_Treant.NaturesGrasp.Spawn", self.wall)
+    if (self.ability.msSlow > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.caster = self.wall
+        modifierTable.target = self.wall
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_thorny_protection_slow_aura"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+    end
     self:StartIntervalThink(0.1)
 end
 
@@ -198,15 +282,27 @@ function modifier_priestess_of_sacred_forest_thorny_protection_thinker:OnInterva
     if not IsServer() then
         return
     end
-
+    local hp = tostring(math.floor(self.wall.thornyHp))
+    local count = #hp
+    ParticleManager:SetParticleControl(self.pidx, 3, Vector(tonumber(hp:sub(1, 1)), tonumber(hp:sub(2, 2)), tonumber(hp:sub(3, 3))))
+    ParticleManager:SetParticleControl(self.pidx, 4, Vector(tonumber(hp:sub(4, 4)), tonumber(hp:sub(5, 5)), tonumber(hp:sub(6, 6))))
+    ParticleManager:SetParticleControl(self.pidx, 5, Vector(count > 0 and 1 or 0, count > 1 and 1 or 0, count > 2 and 1 or 0))
+    ParticleManager:SetParticleControl(self.pidx, 6, Vector(count > 3 and 1 or 0, count > 4 and 1 or 0, count > 5 and 1 or 0))
 end
 
 function modifier_priestess_of_sacred_forest_thorny_protection_thinker:OnDestroy()
     if not IsServer() then
         return
     end
-    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:DestroyParticle(self.pidx, true)
     ParticleManager:ReleaseParticleIndex(self.pidx)
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_endcap.vpcf", PATTACH_ABSORIGIN, self.ability:GetCaster())
+    ParticleManager:SetParticleControl(pidx, 0, self.wall:GetAbsOrigin())
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
     EmitSoundOn("Hero_Treant.NaturesGrasp.Destroy", self.wall)
     UTIL_Remove(self.wall)
 end
@@ -245,6 +341,10 @@ function modifier_priestess_of_sacred_forest_thorny_protection_buff:OnCreated(ke
     self.caster = self.ability:GetCaster()
 end
 
+function modifier_priestess_of_sacred_forest_thorny_protection_buff:GetDamageReductionBonus()
+    return self.ability.damageReduction
+end
+
 function modifier_priestess_of_sacred_forest_thorny_protection_buff:OnAttackStart(keys)
     if not IsServer() then
         return
@@ -265,11 +365,11 @@ function modifier_priestess_of_sacred_forest_thorny_protection_buff:OnTakeDamage
     if (damageTable.damage > 0 and modifier) then
         local wall = modifier:GetAuraOwner()
         if (wall and not wall:IsNull()) then
-            if (damageTable.damage >= wall.wallHp) then
-                damageTable.damage = damageTable.damage - wall.wallHp
+            if (damageTable.damage >= wall.thornyHp) then
+                damageTable.damage = damageTable.damage - wall.thornyHp
                 wall:RemoveModifierByName("modifier_priestess_of_sacred_forest_thorny_protection_thinker")
             else
-                wall.wallHp = wall.wallHp - damageTable.damage
+                wall.thornyHp = wall.thornyHp - damageTable.damage
                 damageTable.damage = 0
             end
             return damageTable

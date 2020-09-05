@@ -41,6 +41,20 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+				{
+					m_iControlPoint = 5
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 6
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
 			]
 		},
 	]
@@ -65,9 +79,6 @@
 		},
 		{
 			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_f.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_icon.vpcf"
 		},
 	]
 }

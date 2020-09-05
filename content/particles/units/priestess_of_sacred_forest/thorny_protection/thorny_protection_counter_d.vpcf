@@ -47,13 +47,12 @@
 		},
 		{
 			_class = "C_OP_RemapCPtoScalar"
-			m_nCPInput = 4
+			m_nCPInput = 6
 			m_nFieldOutput = "16"
-			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_SetToCP"
-			m_vecOffset = [ 46.0, 0.0, 500.0 ]
+			m_vecOffset = [ 46.0, 0.0, 350.0 ]
 		},
 		{
 			_class = "C_OP_PositionLock"
