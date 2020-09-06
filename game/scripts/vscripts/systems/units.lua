@@ -336,7 +336,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitHealingCaused = unitHealingCaused + (tonumber(unitModifiers[i].GetHealingCausedBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetHealingCausedPercentBonus) then
-                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedBonus(unitModifiers[i])) or 0)
+                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetHealingCausedPercentBonusMulti) then
                 unitHealingCausedPercentMulti = unitHealingCausedPercentMulti * (tonumber(unitModifiers[i].GetHealingCausedPercentBonusMulti(unitModifiers[i])) or 1)
