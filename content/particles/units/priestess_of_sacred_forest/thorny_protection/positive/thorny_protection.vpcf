@@ -298,7 +298,7 @@
 			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_center.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/witch_doctor/wd_ti10_immortal_weapon/wd_ti10_immortal_voodoo_spore.vpcf"
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection_spore.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter.vpcf"

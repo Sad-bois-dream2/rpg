@@ -429,12 +429,19 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 0, 167, 161, 255 ]
 			m_ColorMax = [ 0, 218, 214, 255 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 161, 167, 0, 255 ]
 			m_ColorMax = [ 207, 218, 0, 255 ]
 			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 173, 255, 47, 255 ]
+			m_ColorMax = [ 0, 100, 0, 255 ]
+			m_nTintBlendMode = "PARTICLEBLEND_LIGHTEN"
 		},
 	]
 	m_Emitters = 
