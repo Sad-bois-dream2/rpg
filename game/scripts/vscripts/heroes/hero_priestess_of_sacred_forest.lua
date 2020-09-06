@@ -748,7 +748,7 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
         return
     end
     local caster = self:GetCaster()
-    if (caster.priestess_of_sacred_forest_tranquility_modifier ~= nil) then
+    if (caster.priestess_of_sacred_forest_tranquility_modifier) then
         caster.priestess_of_sacred_forest_tranquility_modifier:Destroy()
     end
 end

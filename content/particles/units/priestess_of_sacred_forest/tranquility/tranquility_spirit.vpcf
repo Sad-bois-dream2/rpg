@@ -9,7 +9,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_bAdditive = true
-			m_hTexture = resource:"materials/particle/particle_flares/particle_flare_001.vtex"
+			m_hTexture = resource:"materials/particle/yellowflare.vtex"
 			m_vecColorScale = 
 			{
 				m_nType = "PVEC_TYPE_LITERAL_COLOR"
@@ -638,14 +638,20 @@
 		{
 			_class = "C_INIT_PositionOffset"
 			m_bLocalCoords = true
-			m_OffsetMin = [ 0.0, 300.0, 0.0 ]
-			m_OffsetMax = [ 0.0, 300.0, 0.0 ]
-			m_bDisableOperator = true
+			m_OffsetMin = [ 0.0, 0.0, 100.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 100.0 ]
 		},
 		{
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 0, 100, 0, 255 ]
 			m_ColorMax = [ 34, 139, 34, 255 ]
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 173, 255, 47, 255 ]
+			m_ColorMax = [ 173, 255, 47, 255 ]
+			m_nTintBlendMode = "PARTICLEBLEND_LIGHTEN"
 		},
 	]
 	m_Emitters = 

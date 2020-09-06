@@ -293,6 +293,26 @@
 				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
 			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing_recieved_proc"				"0 50 50 50"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing_recieved_proc_duration"				"0 30 30 30"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"use_highest_maxhealth"				"0 0 1 1"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spirit"				"0 0 0 1"
+			}
 		}
 		"precache"
 		{
