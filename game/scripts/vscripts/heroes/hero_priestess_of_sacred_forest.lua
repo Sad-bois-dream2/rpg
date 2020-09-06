@@ -642,24 +642,41 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         ParticleManager:DestroyParticle(pidx, false)
         ParticleManager:ReleaseParticleIndex(pidx)
     end)
-    --[[
     local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self.position,
+            self.thinker:GetAbsOrigin(),
             nil,
-            self.radius,
+            self.ability.radius,
             DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_HERO,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    for _, ally in pairs(allies) do
-        local healTable = {}
-        healTable.caster = self.caster
-        healTable.ability = self.ability
-        healTable.target = ally
-        healTable.heal = ally:GetMaxHealth() * self.heal
-        GameMode:HealUnit(healTable)
-    end --]]
+    if (self.ability.useHighestMaxHealth > 0) then
+        local highestMaxHp = 0
+        for _, ally in pairs(allies) do
+            local allyMaxHp = ally:GetMaxHealth()
+            if(allyMaxHp > highestMaxHp) then
+                highestMaxHp = allyMaxHp
+            end
+        end
+        for _, ally in pairs(allies) do
+            local healTable = {}
+            healTable.caster = self.ability.caster
+            healTable.ability = self.ability
+            healTable.target = ally
+            healTable.heal = highestMaxHp * self.ability.healing
+            GameMode:HealUnit(healTable)
+        end
+    else
+        for _, ally in pairs(allies) do
+            local healTable = {}
+            healTable.caster = self.ability.caster
+            healTable.ability = self.ability
+            healTable.target = ally
+            healTable.heal = ally:GetMaxHealth() * self.ability.healing
+            GameMode:HealUnit(healTable)
+        end
+    end
 end
 
 function modifier_priestess_of_sacred_forest_tranquility_thinker:OnDestroy()
