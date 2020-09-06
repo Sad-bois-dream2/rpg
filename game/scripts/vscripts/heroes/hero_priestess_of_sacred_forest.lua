@@ -632,11 +632,14 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
     if not IsServer() then
         return
     end
-    if (self.ability.caster:GetHealth() < 1 or (not (self.ability.spirit > 0) and not self.ability:IsChanneling())) then
+    local thereAreSpirit = (self.ability.spirit > 0)
+    if (self.ability.caster:GetHealth() < 1 or (not thereAreSpirit and not self.ability:IsChanneling())) then
         self:Destroy()
         return nil
     end
-    self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    if(not thereAreSpirit) then
+        self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    end
     local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
     Timers:CreateTimer(1.0, function()
         ParticleManager:DestroyParticle(pidx, false)
@@ -687,6 +690,9 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnDestroy()
     ParticleManager:ReleaseParticleIndex(self.pidx)
     self.ability.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_3)
     self.ability.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
+    if(self.ability.spirit > 0) then
+        self.ability:OnChannelFinish()
+    end
     UTIL_Remove(self.thinker)
 end
 
@@ -758,11 +764,22 @@ priestess_of_sacred_forest_tranquility = class({
         return "priestess_of_sacred_forest_tranquility"
     end,
     GetChannelTime = function(self)
-        return self:GetSpecialValueFor("channel_time")
+        if(self:IsRequireCastbar()) then
+            return self:GetSpecialValueFor("channel_time")
+        else
+            return 0
+        end
     end,
     IsRequireCastbar = function(self)
-        return true
-    end
+        return not (self:GetSpecialValueFor("spirit") > 0)
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("spirit") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET
+        else
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_CHANNELLED
+        end
+    end,
 })
 
 function priestess_of_sacred_forest_tranquility:OnUpgrade()
