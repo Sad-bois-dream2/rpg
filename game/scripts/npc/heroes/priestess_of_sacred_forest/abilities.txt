@@ -296,12 +296,12 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_recieved_proc"				"0 50 50 50"
+				"healing_caused_proc"				"0 50 50 50"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_recieved_proc_duration"				"0 30 30 30"
+				"healing_caused_proc_duration"				"0 30 30 30"
 			}
 			"08"
 			{

@@ -210,8 +210,10 @@
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_tranquility_dmg_reduction"		"%DAMAGE REDUCTION:"
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_tranquility_radius"		"RADIUS:"
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_tranquility_channel_time"		"CHANNEL TIME:"
+ 		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_thinker_buff"		"Tranquility"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_thinker_buff_Description"		"Healing over time, damage reduction increased."
  		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_buff"		"Tranquility"
-        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_buff_Description"		"Taking reduced damage and healing over time."
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_buff_Description"		"Healing caused increased."
 
         // Light Cardinal (silencer)
 

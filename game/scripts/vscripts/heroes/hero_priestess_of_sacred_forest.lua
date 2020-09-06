@@ -584,7 +584,8 @@ function priestess_of_sacred_forest_twilight_breeze:OnSpellStart(secondCast)
         end
     end
 end
--- priestess_of_sacred_forest_tranquility modifiers
+
+-- priestess_of_sacred_forest_tranquility
 modifier_priestess_of_sacred_forest_tranquility_thinker = class({
     IsHidden = function(self)
         return true
@@ -593,7 +594,7 @@ modifier_priestess_of_sacred_forest_tranquility_thinker = class({
         return false
     end,
     GetAuraRadius = function(self)
-        return self.radius or 800
+        return self.ability.radius
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
@@ -608,13 +609,10 @@ modifier_priestess_of_sacred_forest_tranquility_thinker = class({
         return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
     end,
     GetModifierAura = function(self)
-        return "modifier_priestess_of_sacred_forest_tranquility_buff"
+        return "modifier_priestess_of_sacred_forest_tranquility_thinker_buff"
     end,
     GetAuraDuration = function(self)
         return 0
-    end,
-    GetEffectName = function(self)
-        return "particles/units/priestess_of_sacred_forest/tranquility/rain.vpcf"
     end
 })
 
@@ -623,22 +621,28 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnCreated(keys)
         return
     end
     self.ability = self:GetAbility()
-    if self.ability then
-        self.radius = self.ability:GetSpecialValueFor("radius")
-        self.caster = self:GetParent()
-        self.position = self.caster:GetAbsOrigin()
-        self.heal = self.ability:GetSpecialValueFor("healing") / 100
-        local tick = self.ability:GetSpecialValueFor("tick")
-        self:StartIntervalThink(tick)
-    else
-        self:Destroy()
-    end
+    self.thinker = self:GetParent()
+    self.ability.caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    ParticleManager:SetParticleControl(self.pidx, 7, Vector(self.ability.radius, 0, 0))
+    self:StartIntervalThink(self.ability.tick)
 end
 
 function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink()
     if not IsServer() then
         return
     end
+    if (self.ability.caster:GetHealth() < 1 or (not (self.ability.spirit > 0) and not self.ability:IsChanneling())) then
+        self:Destroy()
+        return nil
+    end
+    self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    --[[
     local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             self.position,
             nil,
@@ -655,18 +659,51 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         healTable.target = ally
         healTable.heal = ally:GetMaxHealth() * self.heal
         GameMode:HealUnit(healTable)
-    end
+    end --]]
 end
 
 function modifier_priestess_of_sacred_forest_tranquility_thinker:OnDestroy()
-    if IsServer() then
-        local caster = self:GetParent()
-        caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_3)
-        caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
+    if not IsServer() then
+        return
     end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    self.ability.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_3)
+    self.ability.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
+    UTIL_Remove(self.thinker)
 end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_tranquility_thinker_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetDamageReductionBonus = function(self)
+        return self.ability.dmgReduction
+    end
+})
+
+function modifier_priestess_of_sacred_forest_tranquility_thinker_buff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_priestess_of_sacred_forest_tranquility_buff = class({
     IsDebuff = function(self)
@@ -683,9 +720,6 @@ modifier_priestess_of_sacred_forest_tranquility_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return priestess_of_sacred_forest_tranquility:GetAbilityTextureName()
     end
 })
 
@@ -694,16 +728,14 @@ function modifier_priestess_of_sacred_forest_tranquility_buff:OnCreated(keys)
         return
     end
     self.ability = self:GetAbility()
-    self.dmg_reduction = self.ability:GetSpecialValueFor("dmg_reduction") / 100
 end
 
-function modifier_priestess_of_sacred_forest_tranquility_buff:GetDamageReductionBonus()
-    return self.dmg_reduction or 0
+function modifier_priestess_of_sacred_forest_tranquility_buff:GetHealingCausedPercentBonus()
+    return self.ability.healingCausedProc
 end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_buff"] = LUA_MODIFIER_MOTION_NONE
 
--- priestess_of_sacred_forest_tranquility
 priestess_of_sacred_forest_tranquility = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_tranquility"
@@ -716,40 +748,55 @@ priestess_of_sacred_forest_tranquility = class({
     end
 })
 
-function priestess_of_sacred_forest_tranquility:OnSpellStart(unit, special_cast)
+function priestess_of_sacred_forest_tranquility:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.channelTime = self:GetSpecialValueFor("channel_time")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.healingCausedProc = self:GetSpecialValueFor("healing_caused_proc") / 100
+    self.healingCausedProcDuration = self:GetSpecialValueFor("healing_caused_proc_duration")
+    self.useHighestMaxHealth = self:GetSpecialValueFor("use_highest_maxhealth")
+    self.spirit = self:GetSpecialValueFor("spirit")
+end
+
+function priestess_of_sacred_forest_tranquility:OnSpellStart()
     if not IsServer() then
         return
     end
-    local caster = self:GetCaster()
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = caster
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_thinker"
-    modifierTable.duration = -1
-    caster.priestess_of_sacred_forest_tranquility_modifier = GameMode:ApplyBuff(modifierTable)
-    caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
-    Timers:CreateTimer(0.9, function()
-        if (caster:HasModifier("modifier_priestess_of_sacred_forest_tranquility_thinker")) then
-            caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
-            local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-            Timers:CreateTimer(2.0, function()
-                ParticleManager:DestroyParticle(pidx, false)
-                ParticleManager:ReleaseParticleIndex(pidx)
-            end)
-            return 1
-        end
-    end)
-    caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
+    self.caster = self:GetCaster()
+    self.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    local thinker = CreateModifierThinker(
+            self.caster,
+            self,
+            "modifier_priestess_of_sacred_forest_tranquility_thinker",
+            {
+                duration = self.channelTime,
+            },
+            self.caster:GetAbsOrigin(),
+            self.caster:GetTeamNumber(),
+            false
+    )
+    if (self.spirit > 0) then
+        thinker:FollowEntity(self.caster, false)
+    end
 end
 
 function priestess_of_sacred_forest_tranquility:OnChannelFinish()
     if not IsServer() then
         return
     end
-    local caster = self:GetCaster()
-    if (caster.priestess_of_sacred_forest_tranquility_modifier) then
-        caster.priestess_of_sacred_forest_tranquility_modifier:Destroy()
+    if ((self.healingCausedProc > 0 and GameRules:GetGameTime() >= self:GetChannelStartTime() + self.channelTime) or self.spirit > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_buff"
+        modifierTable.duration = self.healingCausedProcDuration
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
