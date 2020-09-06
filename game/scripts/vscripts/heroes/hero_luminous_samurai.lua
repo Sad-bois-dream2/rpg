@@ -744,7 +744,157 @@ function luminous_samurai_blade_dance:OnSpellStart()
     caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
 end
 
--- luminous_samurai_light_iai_giri modifiers
+--------------------------------------------------------------------------------
+-- Light Iai-Giri Modifiers
+
+modifier_luminous_samurai_seed = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetTexture = function(self)
+        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_juggernaut/luminous_samurai_seed.png"
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end      
+})
+
+LinkedModifiers["modifier_luminous_samurai_seed"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_seed:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+    if (self.ability:GetLevel() < 1) then self:Destroy() end
+    self.abilityName = self:GetAbility():GetAbilityName()
+    if (self.abilityName == "luminous_samurai_light_iai_giri") then self.procName = "modifier_luminous_samurai_light_iai_giri"
+    else self.procName = "modifier_luminous_samurai_breath_of_heaven" 
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_seed:OnStackCountChanged()
+
+    if not IsServer() then return end
+    local stacks = self:GetStackCount()
+    if (stacks > 0) then
+
+        if(stacks ~= self.lastStacks) then
+
+            if (self.pidx) then
+
+                ParticleManager:DestroyParticle(self.pidx, false)
+                ParticleManager:ReleaseParticleIndex(self.pidx)
+
+            end
+            self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_" .. tostring(stacks) .. ".vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+            self.lastStacks = stacks
+
+        end
+
+    else
+
+        ParticleManager:DestroyParticle(self.pidx, false)
+        ParticleManager:ReleaseParticleIndex(self.pidx)
+        self.pidx = nil
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_seed:OnDestroy()
+
+    if not IsServer() then return end
+    if (self.pidx) then 
+
+        ParticleManager:DestroyParticle(self.pidx, false)
+        ParticleManager:ReleaseParticleIndex(self.pidx)
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_seed:OnCriticalStrike(damageTable)
+
+    if not IsServer() then return end
+    local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_seed")
+    if (modifier and modifier.abilityName == "luminous_samurai_light_iai_giri" and modifier.ability:GetLevel() > 0 and not damageTable.attacker.modifier_luminous_samurai_seed_cd) then
+
+        local stacks = modifier:GetStackCount() + 1
+        modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
+        damageTable.attacker.modifier_luminous_samurai_seed_cd = true
+        Timers:CreateTimer(modifier.ability.stackCooldown, function()
+            damageTable.attacker.modifier_luminous_samurai_seed_cd = nil
+        end)
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_seed:OnAttackLanded(params)
+
+    if not IsServer() then return end
+    if (self.caster and params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then
+
+        local modifier = GameMode:ApplyStackingBuff({ caster = self.caster, target = self.caster, ability = self.ability, modifier_name = self.procName, stacks = 1, max_stacks = 3, duration = -1 })
+        if (modifier:GetStackCount() >= self.ability.procAttacks) then
+            modifier:Destroy()
+            if (self.abilityName == "luminous_samurai_breath_of_heaven") then 
+
+                local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS, self.caster:GetAbsOrigin(), nil, self.ability.radius, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+                local lowestHealthAlly 
+                local lowestPercentHP = 101
+                for i = 1, #allies do
+                    
+                    local percentHP = allies[i]:GetHealth() / allies[i]:GetMaxHealth() * 100
+                    if (percentHP < lowestPercentHP) then 
+
+                        lowestPercentHP = percentHP
+                        lowestHealthAlly = allies[i]
+
+                    end
+
+                end
+
+                GameMode:HealUnit({ caster = self.caster, target = lowestHealthAlly, ability = self.ability, heal = Units:GetAttackDamage(self.caster) * self.ability.procHeal / 100 })
+
+            end
+
+        end
+
+    end
+
+end
+
+
+--------------------------------------------------------------------------------
+
 modifier_luminous_samurai_light_iai_giri = class({
     IsDebuff = function(self)
         return false
@@ -763,119 +913,126 @@ modifier_luminous_samurai_light_iai_giri = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE }  
     end
 })
 
-function modifier_luminous_samurai_light_iai_giri:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.caster = self:GetParent()
-    self.ability = self.caster:FindAbilityByName("luminous_samurai_light_iai_giri")
-end
-
-function modifier_luminous_samurai_light_iai_giri:OnStackCountChanged()
-    if (not IsServer()) then
-        return
-    end
-    local stacks = self:GetStackCount()
-    if (stacks > 0) then
-        if(stacks ~= self.lastStacks) then
-            if (self.pidx) then
-                ParticleManager:DestroyParticle(self.pidx, false)
-                ParticleManager:ReleaseParticleIndex(self.pidx)
-            end
-            self.pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_" .. tostring(stacks) .. ".vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
-            self.lastStacks = stacks
-        end
-    else
-        ParticleManager:DestroyParticle(self.pidx, false)
-        ParticleManager:ReleaseParticleIndex(self.pidx)
-        self.pidx = nil
-    end
-end
-
-function modifier_luminous_samurai_light_iai_giri:OnDestroy()
-    if (not IsServer()) then
-        return
-    end
-    ParticleManager:DestroyParticle(self.pidx, false)
-    ParticleManager:ReleaseParticleIndex(self.pidx)
-end
-
-function modifier_luminous_samurai_light_iai_giri:OnCriticalStrike(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
-    if (modifier and modifier.ability:GetLevel() > 0 and not damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd) then
-        local stacks = modifier:GetStackCount() + 1
-        modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
-        damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd = true
-        Timers:CreateTimer(modifier.ability.stackCooldown, function()
-            damageTable.attacker.modifier_luminous_samurai_light_iai_giri_cd = nil
-        end)
-    end
-end
-
 LinkedModifiers["modifier_luminous_samurai_light_iai_giri"] = LUA_MODIFIER_MOTION_NONE
 
--- luminous_samurai_light_iai_giri
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_light_iai_giri:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_light_iai_giri:OnTakeDamage(damageTable)
+
+    if not IsServer() then return end
+    local jugg = damageTable.attacker
+    local ability = jugg:FindAbilityByName("luminous_samurai_light_iai_giri")
+    if (not ability) then return end
+    local modifier = jugg:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
+    if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks - 1) and damageTable.damage > 0) then
+
+        damageTable.crit = ability.procDamage / 100
+        return damageTable
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+
+function modifier_luminous_samurai_light_iai_giri:GetModifierPreAttack_CriticalStrike(params)
+
+    if not IsServer() then return end
+    local jugg = params.attacker
+    if (self.ability and jugg == self.caster and (self:GetStackCount() >= self.ability.procAttacks - 1)) then
+
+        jugg:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, 1 / jugg:GetSecondsPerAttack())
+        local crit_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_juggernaut/jugg_crit_blur.vpcf", PATTACH_ABSORIGIN_FOLLOW, jugg)
+        ParticleManager:SetParticleControl(crit_pfx, 0, jugg:GetAbsOrigin())
+        ParticleManager:ReleaseParticleIndex(crit_pfx)
+        jugg:EmitSound("Hero_Juggernaut.BladeDance")
+        return 0
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+-- Light Iai-Giri
+
 luminous_samurai_light_iai_giri = class({
     GetAbilityTextureName = function(self)
         return "luminous_samurai_light_iai_giri"
     end,
     GetIntrinsicModifierName = function(self)
-        return "modifier_luminous_samurai_light_iai_giri"
+        return "modifier_luminous_samurai_seed"
     end
 })
 
+--------------------------------------------------------------------------------
+
 function luminous_samurai_light_iai_giri:OnSpellStart()
-    if (not IsServer()) then
-        return
-    end
-    local caster = self:GetCaster()
-    local stacks = self.modifier:GetStackCount()
-    if (stacks >= self.procStacks) then
-        self.modifier:SetStackCount(stacks - self.procStacks)
-        local casterPosition = caster:GetAbsOrigin()
-        EmitSoundOn("Hero_Juggernaut.OmniSlash", caster)
-        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-        ParticleManager:SetParticleControlEnt(pidx, 1, caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
-        local enemies = FindUnitsInRadius(caster:GetTeam(),
+
+    if not IsServer() then return end
+    local stacks = self.seedModifier:GetStackCount()
+    if (stacks >= self.stackCost) then
+
+        self.seedModifier:SetStackCount(stacks - self.stackCost)
+        local casterPosition = self.caster:GetAbsOrigin()
+        EmitSoundOn("Hero_Juggernaut.OmniSlash", self.caster)
+        local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+        ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
+        local enemies = FindUnitsInRadius(self.caster:GetTeam(),
                 casterPosition,
                 nil,
-                self:GetSpecialValueFor("proc_radius"),
+                self.radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
                 DOTA_UNIT_TARGET_ALL,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = self:GetSpecialValueFor("proc_damage") * Units:GetAttackDamage(caster) * 0.01
+
         for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = caster
-            damageTable.target = enemy
-            damageTable.ability = self
-            damageTable.damage = damage
-            damageTable.holydmg = true
-            GameMode:DamageUnit(damageTable)
+            GameMode:DamageUnit({ caster = self.caster, target = enemy, ability = self, damage = self.activeDamage * Units:GetAttackDamage(self.caster) / 100, holydmg = true })
         end
         Timers:CreateTimer(1.0, function()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
+
     end
+
 end
 
+--------------------------------------------------------------------------------
+
 function luminous_samurai_light_iai_giri:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
-    if (not self.modifier) then
-        self.modifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
-    end
-    self.procStacks = self:GetSpecialValueFor("proc_stacks")
+
+    if not IsServer() then return end
+    self.caster = self:GetCaster()
+    self.seedModifier = self.seedModifier or self.caster:FindModifierByName(self:GetIntrinsicModifierName())
+    self.procDamage = self:GetSpecialValueFor("proc_damage")
+    self.procAttacks = self:GetSpecialValueFor("proc_attacks")
+    self.activeDamage = self:GetSpecialValueFor("active_damage")
+    self.stackCost = self:GetSpecialValueFor("stack_cost")
     self.maxStacks = self:GetSpecialValueFor("max_stacks")
     self.stackCooldown = self:GetSpecialValueFor("stack_cd")
+    self.radius = self:GetSpecialValueFor("active_radius")
+
 end
+
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -883,8 +1040,9 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
-    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
+    --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnTakeDamage'))
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_seed, 'OnCriticalStrike'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
 
