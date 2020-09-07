@@ -780,6 +780,9 @@ priestess_of_sacred_forest_tranquility = class({
             return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_CHANNELLED
         end
     end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
 })
 
 function priestess_of_sacred_forest_tranquility:OnUpgrade()
@@ -832,6 +835,54 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
         modifierTable.duration = self.healingCausedProcDuration
         GameMode:ApplyBuff(modifierTable)
     end
+end
+-- priestess_of_sacred_forest_sleep_dust
+priestess_of_sacred_forest_sleep_dust = class({})
+
+function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.channelTime = self:GetSpecialValueFor("channel_time")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.healingCausedProc = self:GetSpecialValueFor("healing_caused_proc") / 100
+    self.healingCausedProcDuration = self:GetSpecialValueFor("healing_caused_proc_duration")
+    self.useHighestMaxHealth = self:GetSpecialValueFor("use_highest_maxhealth")
+    self.spirit = self:GetSpecialValueFor("spirit")
+end
+
+function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterLocation = caster:GetAbsOrigin()
+    local casterTeam = caster:GetTeamNumber()
+    self.direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    local projectile = {
+        Ability = self,
+        EffectName = "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust.vpcf",
+        vSpawnOrigin = casterLocation,
+        fDistance = 1500,
+        fStartRadius = 200,
+        fEndRadius = 200,
+        Source = caster,
+        bHasFrontalCone = false,
+        bReplaceExisting = false,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+        iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
+        fExpireTime = GameRules:GetGameTime() + 10.0,
+        bDeleteOnHit = true,
+        vVelocity = self.direction * 1000,
+        bProvidesVision = true,
+        iVisionRadius = 400,
+        iVisionTeamNumber = casterTeam
+    }
+    ProjectileManager:CreateLinearProjectile(projectile)
 end
 
 -- Internal stuff

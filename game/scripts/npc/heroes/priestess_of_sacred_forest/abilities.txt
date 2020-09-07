@@ -320,4 +320,75 @@
 			"particle" "particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf"
 		}
 	}
+	//=================================================================================================================
+	// Priestess of Sacred Forest: Sleep Dust
+	//=================================================================================================================
+	"priestess_of_sacred_forest_sleep_dust"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_priestess_of_sacred_forest"
+		"AbilityTextureName"			"priestess_of_sacred_forest_twilight_breeze"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0.25"
+        "AbilityCastRange"  "900"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"15"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"healing"				"60 70 80 90"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"4"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick"				"1"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks"				"0 3 3 3"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sph_bonus"				"0 0 50 50"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spread_radius"				"0 0 0 300"
+			}
+		}
+		"precache"
+		{
+			"particle" "particles/units/priestess_of_sacred_forest/twilight_breeze/buff.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
+		}
+	}
 }
