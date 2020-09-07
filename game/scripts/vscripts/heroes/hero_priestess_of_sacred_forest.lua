@@ -496,7 +496,7 @@ modifier_priestess_of_sacred_forest_twilight_breeze_hot = class({
 })
 
 function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -839,7 +839,7 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
     end
 end
 -- priestess_of_sacred_forest_sleep_dust
-priestess_of_sacred_forest_sleep_dust_hot = class({
+modifier_priestess_of_sacred_forest_sleep_dust_hot = class({
     IsDebuff = function(self)
         return false
     end,
@@ -857,7 +857,7 @@ priestess_of_sacred_forest_sleep_dust_hot = class({
     end
 })
 
-function priestess_of_sacred_forest_sleep_dust_hot:OnCreated()
+function modifier_priestess_of_sacred_forest_sleep_dust_hot:OnCreated()
     if not IsServer() then
         return
     end
@@ -869,7 +869,7 @@ function priestess_of_sacred_forest_sleep_dust_hot:OnCreated()
     self:StartIntervalThink(self.ability.hotTick)
 end
 
-function priestess_of_sacred_forest_sleep_dust_hot:OnIntervalThink()
+function modifier_priestess_of_sacred_forest_sleep_dust_hot:OnIntervalThink()
     if not IsServer() then
         return
     end
@@ -877,11 +877,11 @@ function priestess_of_sacred_forest_sleep_dust_hot:OnIntervalThink()
     healTable.caster = self.caster
     healTable.target = self.target
     healTable.ability = self.ability
-    healTable.heal = Units:GetHeroIntellect(self.caster) * self.hotHealing
+    healTable.heal = Units:GetHeroIntellect(self.caster) * self.ability.hotHealing
     GameMode:HealUnit(healTable)
 end
 
-function priestess_of_sacred_forest_sleep_dust_hot:OnDestroy()
+function modifier_priestess_of_sacred_forest_sleep_dust_hot:OnDestroy()
     if not IsServer() then
         return
     end
@@ -889,9 +889,9 @@ function priestess_of_sacred_forest_sleep_dust_hot:OnDestroy()
     ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
-LinkedModifiers["priestess_of_sacred_forest_sleep_dust_hot"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_hot"] = LUA_MODIFIER_MOTION_NONE
 
-priestess_of_sacred_forest_sleep_dust_sleep = class({
+modifier_priestess_of_sacred_forest_sleep_dust_sleep = class({
     IsDebuff = function(self)
         return false
     end,
@@ -913,31 +913,42 @@ priestess_of_sacred_forest_sleep_dust_sleep = class({
     GetEffectName = function(self)
         return "particles/generic_gameplay/generic_sleep.vpcf"
     end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end,
     ShouldUseOverheadOffset = function(self)
         return true
     end,
     CheckState = function(self)
         return {
-            [MODIFIER_STATE_NIGHTMARED] = true
+            [MODIFIER_STATE_STUNNED] = true
         }
     end
 })
 
-function priestess_of_sacred_forest_sleep_dust_sleep:OnCreated()
-    if not IsServer() then
-        return
+function modifier_priestess_of_sacred_forest_sleep_dust_sleep:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_sleep")
+    if (modifier and damageTable.damage > 0) then
+        local stacks = modifier:GetStackCount() - 1
+        if (stacks > 0) then
+            damageTable.damage = 0
+            modifier:SetStackCount(stacks)
+            return damageTable
+        else
+            modifier:Destroy()
+        end
     end
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_sleep:OnCreated()
     self.ability = self:GetAbility()
 end
 
-LinkedModifiers["priestess_of_sacred_forest_sleep_dust_sleep"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_sleep"] = LUA_MODIFIER_MOTION_NONE
 
 priestess_of_sacred_forest_sleep_dust = class({})
 
 function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
-    if (not IsServer()) then
-        return
-    end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
     self.hotDuration = self:GetSpecialValueFor("hot_duration")
@@ -945,18 +956,21 @@ function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
     self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
     self.sleepHealingReceived = self:GetSpecialValueFor("sleep_healing_received") / 100
     self.sleepDamageBlock = self:GetSpecialValueFor("sleep_damage_block")
+    self.range = self:GetSpecialValueFor("range")
+    self.speed = self:GetSpecialValueFor("speed")
+    self.width = self:GetSpecialValueFor("width")
 end
 
 function priestess_of_sacred_forest_sleep_dust:OnProjectileHit(target, location)
     if (not IsServer()) then
         return
     end
-    if (target and not TableContains(self.affectedAllies, target)) then
+    if (target and target ~= self.caster and not TableContains(self.affectedAllies, target)) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.caster = self.caster
         modifierTable.target = target
-        modifierTable.modifier_name = "priestess_of_sacred_forest_sleep_dust_sleep"
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_sleep"
         modifierTable.duration = self.sleepDuration
         modifierTable.stacks = self.sleepDamageBlock
         modifierTable.max_stacks = self.sleepDamageBlock
@@ -972,7 +986,7 @@ function priestess_of_sacred_forest_sleep_dust:OnProjectileHit(target, location)
             modifierTable.ability = self
             modifierTable.caster = self.caster
             modifierTable.target = target
-            modifierTable.modifier_name = "priestess_of_sacred_forest_sleep_dust_hot"
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_hot"
             modifierTable.duration = self.hotDuration
             GameMode:ApplyBuff(modifierTable)
         end
@@ -994,18 +1008,18 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
         Ability = self,
         EffectName = "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust.vpcf",
         vSpawnOrigin = casterLocation,
-        fDistance = 1500,
-        fStartRadius = 200,
-        fEndRadius = 200,
+        fDistance = self.range,
+        fStartRadius = self.width,
+        fEndRadius = self.width,
         Source = self.caster,
         bHasFrontalCone = false,
         bReplaceExisting = false,
-        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_FRIENDLY,
         iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
         iUnitTargetType = DOTA_UNIT_TARGET_HERO,
         fExpireTime = GameRules:GetGameTime() + 10.0,
         bDeleteOnHit = true,
-        vVelocity = direction * 1000,
+        vVelocity = direction * self.speed,
         bProvidesVision = true,
         iVisionRadius = 400,
         iVisionTeamNumber = casterTeam
@@ -1022,5 +1036,6 @@ end
 if (IsServer() and not GameMode.PRIESTESS_OF_SACRED_FOREST_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_thorny_protection_buff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_airy, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_sleep, 'OnTakeDamage'))
     GameMode.PRIESTESS_OF_SACRED_FOREST_INIT = true
 end
