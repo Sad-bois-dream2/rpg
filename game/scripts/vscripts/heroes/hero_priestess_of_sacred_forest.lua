@@ -496,12 +496,14 @@ modifier_priestess_of_sacred_forest_twilight_breeze_hot = class({
 })
 
 function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnCreated()
+    if(not IsServer()) then
+        return
+    end
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    if (IsServer()) then
-        self:StartIntervalThink(self.ability.tick)
-    end
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.tick)
 end
 
 function modifier_priestess_of_sacred_forest_twilight_breeze_hot:OnIntervalThink()
@@ -637,7 +639,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         self:Destroy()
         return nil
     end
-    if(not thereAreSpirit) then
+    if (not thereAreSpirit) then
         self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
     end
     local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
@@ -658,7 +660,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         local highestMaxHp = 0
         for _, ally in pairs(allies) do
             local allyMaxHp = ally:GetMaxHealth()
-            if(allyMaxHp > highestMaxHp) then
+            if (allyMaxHp > highestMaxHp) then
                 highestMaxHp = allyMaxHp
             end
         end
@@ -690,7 +692,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnDestroy()
     ParticleManager:ReleaseParticleIndex(self.pidx)
     self.ability.caster:RemoveGesture(ACT_DOTA_CAST_ABILITY_3)
     self.ability.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
-    if(self.ability.spirit > 0) then
+    if (self.ability.spirit > 0) then
         self.ability:OnChannelFinish()
     end
     UTIL_Remove(self.thinker)
@@ -764,7 +766,7 @@ priestess_of_sacred_forest_tranquility = class({
         return "priestess_of_sacred_forest_tranquility"
     end,
     GetChannelTime = function(self)
-        if(self:IsRequireCastbar()) then
+        if (self:IsRequireCastbar()) then
             return self:GetSpecialValueFor("channel_time")
         else
             return 0
@@ -837,6 +839,99 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
     end
 end
 -- priestess_of_sacred_forest_sleep_dust
+priestess_of_sacred_forest_sleep_dust_hot = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function priestess_of_sacred_forest_sleep_dust_hot:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.ability.hotTick, 0, 0))
+    self:StartIntervalThink(self.ability.hotTick)
+end
+
+function priestess_of_sacred_forest_sleep_dust_hot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local healTable = {}
+    healTable.caster = self.caster
+    healTable.target = self.target
+    healTable.ability = self.ability
+    healTable.heal = Units:GetHeroIntellect(self.caster) * self.hotHealing
+    GameMode:HealUnit(healTable)
+end
+
+function priestess_of_sacred_forest_sleep_dust_hot:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["priestess_of_sacred_forest_sleep_dust_hot"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_sleep_dust_sleep = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetHealingReceivedPercentBonus = function(self)
+        return self.ability.sleepHealingReceived
+    end,
+    GetEffectName = function(self)
+        return "particles/generic_gameplay/generic_sleep.vpcf"
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_NIGHTMARED] = true
+        }
+    end
+})
+
+function priestess_of_sacred_forest_sleep_dust_sleep:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["priestess_of_sacred_forest_sleep_dust_sleep"] = LUA_MODIFIER_MOTION_NONE
+
 priestess_of_sacred_forest_sleep_dust = class({})
 
 function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
@@ -844,45 +939,44 @@ function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
         return
     end
     self.healing = self:GetSpecialValueFor("healing") / 100
-    self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
-    self.radius = self:GetSpecialValueFor("radius")
-    self.channelTime = self:GetSpecialValueFor("channel_time")
-    self.tick = self:GetSpecialValueFor("tick")
-    self.healingCausedProc = self:GetSpecialValueFor("healing_caused_proc") / 100
-    self.healingCausedProcDuration = self:GetSpecialValueFor("healing_caused_proc_duration")
-    self.useHighestMaxHealth = self:GetSpecialValueFor("use_highest_maxhealth")
-    self.spirit = self:GetSpecialValueFor("spirit")
+    self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
+    self.hotDuration = self:GetSpecialValueFor("hot_duration")
+    self.hotTick = self:GetSpecialValueFor("hot_tick")
+    self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
+    self.sleepHealingReceived = self:GetSpecialValueFor("sleep_healing_received") / 100
+    self.sleepDamageBlock = self:GetSpecialValueFor("sleep_damage_block")
 end
 
 function priestess_of_sacred_forest_sleep_dust:OnProjectileHit(target, location)
     if (not IsServer()) then
         return
     end
-    if (target and not TableContains(self.damagedEnemies, target)) then
-        local damageTable = {}
-        damageTable.caster = self.caster
-        damageTable.target = target
-        damageTable.ability = self
-        damageTable.damage = self.damage * self.caster:GetMaxHealth()
-        damageTable.firedmg = true
-        GameMode:DamageUnit(damageTable)
+    if (target and not TableContains(self.affectedAllies, target)) then
         local modifierTable = {}
         modifierTable.ability = self
+        modifierTable.caster = self.caster
         modifierTable.target = target
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_slow"
-        modifierTable.duration = self.msSlowDuration
-        GameMode:ApplyDebuff(modifierTable)
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.caster = self.caster
-        modifierTable.target = self.caster
-        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_buff"
-        modifierTable.duration = self.stacksDuration
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = self.stacksCap
+        modifierTable.modifier_name = "priestess_of_sacred_forest_sleep_dust_sleep"
+        modifierTable.duration = self.sleepDuration
+        modifierTable.stacks = self.sleepDamageBlock
+        modifierTable.max_stacks = self.sleepDamageBlock
         GameMode:ApplyStackingBuff(modifierTable)
-        table.insert(self.damagedEnemies, target)
+        local healTable = {}
+        healTable.caster = caster
+        healTable.target = target
+        healTable.ability = self
+        healTable.heal = Units:GetHeroIntellect(self.caster) * self.healing
+        GameMode:HealUnit(healTable)
+        if (self.hotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "priestess_of_sacred_forest_sleep_dust_hot"
+            modifierTable.duration = self.hotDuration
+            GameMode:ApplyBuff(modifierTable)
+        end
+        table.insert(self.affectedAllies, target)
     end
     return false
 end
@@ -891,10 +985,11 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
     if not IsServer() then
         return
     end
-    local caster = self:GetCaster()
-    local casterLocation = caster:GetAbsOrigin()
-    local casterTeam = caster:GetTeamNumber()
-    self.direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    self.caster = self:GetCaster()
+    local casterLocation = self.caster:GetAbsOrigin()
+    local casterTeam = self.caster:GetTeamNumber()
+    local direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    self.affectedAllies = {}
     local projectile = {
         Ability = self,
         EffectName = "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust.vpcf",
@@ -902,20 +997,21 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
         fDistance = 1500,
         fStartRadius = 200,
         fEndRadius = 200,
-        Source = caster,
+        Source = self.caster,
         bHasFrontalCone = false,
         bReplaceExisting = false,
         iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
         iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
-        iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
+        iUnitTargetType = DOTA_UNIT_TARGET_HERO,
         fExpireTime = GameRules:GetGameTime() + 10.0,
         bDeleteOnHit = true,
-        vVelocity = self.direction * 1000,
+        vVelocity = direction * 1000,
         bProvidesVision = true,
         iVisionRadius = 400,
         iVisionTeamNumber = casterTeam
     }
     ProjectileManager:CreateLinearProjectile(projectile)
+    EmitSoundOn("Hero_Enchantress.EnchantCast", self.caster)
 end
 
 -- Internal stuff

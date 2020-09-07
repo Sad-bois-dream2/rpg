@@ -219,6 +219,7 @@
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Note0"		"Sleeping state applied before healing."
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_healing"		"%INTELLECT TO HEALING: "
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_sleep_duration"		"SLEEP DURATION: "
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_range"		"RANGE: "
         // Light Cardinal (silencer)
 
 		"DOTA_Tooltip_Ability_light_cardinal_piety"		"Piety"

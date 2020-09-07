@@ -395,10 +395,22 @@
 				"var_type"				"FIELD_FLOAT"
 				"sleep_damage_block"				"1 1 1 2"
 			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"range"				"1500"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"speed"				"1000"
+			}
 		}
 		"precache"
 		{
 			"particle" "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust.vpcf"
+			"particle" "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust_buff.vpcf"
+			"particle" "particles/generic_gameplay/generic_sleep.vpcf"
 		}
 	}
 }
