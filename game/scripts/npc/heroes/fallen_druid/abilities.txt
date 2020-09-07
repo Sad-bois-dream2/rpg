@@ -19,7 +19,7 @@
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
         "AbilityCastRange"  "900"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
         "AbilityCastRange"  "900"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
         "AbilityCastRange"  "900"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -267,7 +267,7 @@
 	    "LevelsBetweenUpgrades"  		"0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
         "AbilityCastRange"              "900"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -369,7 +369,7 @@
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
         "AbilityCastRange"              "900"
 
 		// Time
@@ -461,7 +461,7 @@
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
         "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
         "AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastPoint"				"0.5"
+        "AbilityCastPoint"				"0.25"
         "AbilityCastRange"              "900"
 
 		// Time
