@@ -1028,6 +1028,32 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
     EmitSoundOn("Hero_Enchantress.EnchantCast", self.caster)
 end
 
+-- priestess_of_sacred_forest_sun_and_moon
+priestess_of_sacred_forest_sun_and_moon = class({})
+
+function priestess_of_sacred_forest_sun_and_moon:OnUpgrade()
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
+    self.hotDuration = self:GetSpecialValueFor("hot_duration")
+    self.hotTick = self:GetSpecialValueFor("hot_tick")
+    self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
+    self.sleepHealingReceived = self:GetSpecialValueFor("sleep_healing_received") / 100
+    self.sleepDamageBlock = self:GetSpecialValueFor("sleep_damage_block")
+    self.range = self:GetSpecialValueFor("range")
+    self.speed = self:GetSpecialValueFor("speed")
+    self.width = self:GetSpecialValueFor("width")
+end
+
+function priestess_of_sacred_forest_sun_and_moon:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterLocation = self.caster:GetAbsOrigin()
+    local casterTeam = self.caster:GetTeamNumber()
+    local direction = (self:GetCursorPosition() - casterLocation):Normalized()
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_priestess_of_sacred_forest", MotionController)

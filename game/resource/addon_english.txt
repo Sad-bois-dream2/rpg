@@ -224,6 +224,8 @@
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_sleep_Description"		"Sleeping."
  		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_hot"		"Sleeping Wind"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_hot_Description"		"Healing over time."
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sun_and_moon"		"Sun And Moon"
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sun_and_moon_Description"		"Priestess begin worship either <font color='white'><b>Sun</b></font> or <font color='white'><b>Moon</b></font>, both worship targets provide different abilities for Priestess.\nIf you worship <font color='white'><b>Sun</b></font> you will gain supportive abilities.<br>If you worship <font color='white'><b>Moon</b></font> you will gain offensive abilities.\nThe cooldown of this ability cannot be reduced.\nRank 2: If you are worship <font color='white'><b>Moon</b></font> you will gain spell damage equal to healing caused. If you are worship <font color='white'><b>Sun</b></font> you will gain bonus <font color='white'><b>1%</b></font> max health regeneration and <font color='white'><b>0.5%</b></font> max mana regeneration.\nRank 3: If you are worship <font color='white'><b>Moon</b></font> your max mana will be increased by <font color='white'><b>30%</b></font>. If you are worship <font color='white'><b>Sun</b></font> your max health will be increased by <font color='white'><b>30%</b></font>.\nRank 4: This ability gain <font color='white'><b>3</b></font> charges."
 
         // Light Cardinal (silencer)
 
