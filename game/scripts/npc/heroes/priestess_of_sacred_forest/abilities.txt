@@ -333,7 +333,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_priestess_of_sacred_forest"
-		"AbilityTextureName"			"priestess_of_sacred_forest_twilight_breeze"
+		"AbilityTextureName"			"priestess_of_sacred_forest_sleep_dust"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
