@@ -854,6 +854,39 @@ function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
     self.spirit = self:GetSpecialValueFor("spirit")
 end
 
+function priestess_of_sacred_forest_sleep_dust:OnProjectileHit(target, location)
+    if (not IsServer()) then
+        return
+    end
+    if (target and not TableContains(self.damagedEnemies, target)) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * self.caster:GetMaxHealth()
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_slow"
+        modifierTable.duration = self.msSlowDuration
+        GameMode:ApplyDebuff(modifierTable)
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self.caster
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_molten_guardian_lava_spear_buff"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.stacksCap
+        GameMode:ApplyStackingBuff(modifierTable)
+        table.insert(self.damagedEnemies, target)
+    end
+    return false
+end
+
 function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
     if not IsServer() then
         return

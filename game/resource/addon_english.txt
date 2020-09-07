@@ -214,7 +214,11 @@
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_thinker_buff_Description"		"Healing over time, damage reduction increased."
  		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_buff"		"Tranquility"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_buff_Description"		"Healing caused increased."
-
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust"		"Sleep Dust"
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Description"		"Priestess sends to target point sacred spirits that will heal all allies and put them into sleep on the way. Allies during sleeping state will block any damage instance once and wake up after.\nRank 2: Increase all healing received by <font color='white'><b>50%</b></font> of allies that in sleeping state from this ability.\nRank 3: Also apply HoT that will heal all affected allies by <font color='white'><b>20%</b></font> of your intellect ever second for <font color='white'><b>5</b></font> seconds.\nRank 4: Sleeping state will now block <font color='white'><b>2</b></font> damage instances instead."
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Note0"		"Sleeping state applied before healing."
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_healing"		"%INTELLECT TO HEALING: "
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_sleep_duration"		"SLEEP DURATION: "
         // Light Cardinal (silencer)
 
 		"DOTA_Tooltip_Ability_light_cardinal_piety"		"Piety"
