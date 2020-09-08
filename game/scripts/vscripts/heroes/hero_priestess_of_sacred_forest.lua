@@ -1030,6 +1030,91 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
 end
 
 -- priestess_of_sacred_forest_spirits
+modifier_priestess_of_sacred_forest_spirits_cd = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_spirits_cd"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_spirits_cd_delay = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_spirits_cd_delay:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_spirits_cd_delay:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    local abilityCd = self.ability:GetCooldown(self.ability:GetLevel())
+    self.ability.caster:AddNewModifier(self.ability.caster, self.ability, "modifier_priestess_of_sacred_forest_spirits_cd", { duration = abilityCd })
+    self.ability:EndCooldown()
+    self.ability:StartCooldown(abilityCd)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_spirits_cd_delay"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_spirits_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_spirits_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_spirits_buff:GetHealingCausedPercentBonus()
+    return self.ability.bonusHealingCaused
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_spirits_buff"] = LUA_MODIFIER_MOTION_NONE
+
 SPIRITS_STATE_DAY = 0
 SPIRITS_STATE_NIGHT = 1
 
@@ -1055,6 +1140,9 @@ modifier_priestess_of_sacred_forest_spirits = class({
 })
 
 function modifier_priestess_of_sacred_forest_spirits:OnCreated()
+    if not IsServer() then
+        return
+    end
     self.ability = self:GetAbility()
     self.state = SPIRITS_STATE_DAY
     self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
@@ -1120,6 +1208,21 @@ function priestess_of_sacred_forest_spirits:OnSpellStart()
         return
     end
     self.modifier:SwitchSpirits()
+    if (self.bonusHealingCausedDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_spirits_buff"
+        modifierTable.duration = self.bonusHealingCausedDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+    if (self.cooldownDelay > 0 and not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd")) then
+        self:EndCooldown()
+        if (not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd_delay")) then
+            self.caster:AddNewModifier(self.caster, self, "modifier_priestess_of_sacred_forest_spirits_cd_delay", { duration = self.cooldownDelay })
+        end
+    end
 end
 
 -- Internal stuff
