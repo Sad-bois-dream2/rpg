@@ -421,7 +421,7 @@
 }
 
 #HeroStats {
-	width: fill-parent-flow(1.0);
+	width: fit-children;
 	height: fill-parent-flow(1.0);
 	vertical-align: bottom;
 	horizontal-align: right;
@@ -431,6 +431,7 @@
 	border-right: 1px solid #ffffff04;
 	padding-top: 5px;
 	margin-left: 60px;
+	max-width: 100%;
 }
 
 .HeroLevelContainer {
@@ -500,8 +501,7 @@
 
 .StatIcon.Attribute
 {
-	width: 20px;
-	height: 20px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #00000000 ),  color-stop( .75, #00000000 ), to( #00000055 ) );
 }
 
 .StatLabel
@@ -589,7 +589,7 @@
 }
 
 #HeroStatsTooltip {
-    width: fit-children;
+    width: 600px;
     height: fit-children;
     padding: 5px;
     horizontal-align: center;
@@ -598,27 +598,65 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border-radius: 5px;
+	border-radius: 15px;
 	margin-bottom: 180px;
     z-index: 20;
+    margin-left: -150px;
 }
 
 .HeroStatsElementsContainer {
     flow-children: right;
     margin-bottom: 5px;
+    vertical-align: bottom;
+    horizontal-align: center;
 }
 
 .HeroStatsContainer {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
     height: fit-children;
     flow-children: right;
-
 }
 
 .HeroMainStatsContainer {
     width: fit-children;
     height: fit-children;
     flow-children: down;
+    margin-top: 10px;
+}
+
+.HeroMainStatsIcon {
+    width: 40px;
+    height: 40px;
+    horizontal-align: center;
+    vertical-align: center;
+    margin-right: 5px;
+    margin-left: 20px;
+}
+
+.HeroMainStatsMainContainer {
+    flow-children: right;
+    margin-bottom: 20px;
+}
+
+.HeroMainStatsMainContainer.last {
+    flow-children: right;
+    margin-bottom: 10px;
+}
+
+.HeroMainStatsMainContainer .HeroMainStatsMainLabelsContainer Label.HeroMainStatsPrimaryLabel {
+    visibility: collapse;
+}
+
+.HeroMainStatsMainContainer.primary .HeroMainStatsMainLabelsContainer Label.HeroMainStatsPrimaryLabel {
+    visibility: visible;
+}
+
+.HeroMainStatsMainLabelsContainer {
+    flow-children: down;
+}
+
+.HeroMainStatsMainLabelsContainer Label {
+    color: white;
 }
 
 .HeroStatsCategoryName {
@@ -628,16 +666,49 @@
 }
 
 .OffensiveStats {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
     height: fit-children;
     flow-children: down;
     border-right: 1px solid gray;
-    //border-bottom: 2px solid gray;
+    border-bottom: 1px solid gray;
+    padding-right: 5px;
 }
 
 .DefensiveStats {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
+    height: 100%;
+    flow-children: down;
+    border-bottom: 1px solid gray;
+    padding-left: 5px;
+}
+
+.HeroStatsLabelsContainer {
+    width: 100%;
     height: fit-children;
     flow-children: down;
-    //border-bottom: 2px solid gray;
+    margin-bottom: 5px;
+}
+
+.HeroStatsLabel {
+    width: 100%;
+    height: fit-children;
+    flow-children: right;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.HeroStatsLabel .Title {
+    horizontal-align: left;
+    margin-left: 5px;
+    color: white;
+    text-overflow: shrink;
+}
+
+.HeroStatsLabel .Value {
+    horizontal-align: right;
+    margin-right: 5px;
+    color: white;
+    text-overflow: shrink;
+    height: 100%;
+    margin-left: 10px;
 }

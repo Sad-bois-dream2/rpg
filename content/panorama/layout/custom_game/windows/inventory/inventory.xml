@@ -228,6 +228,16 @@
 							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_BuffAmplification" />
 							<Label id="BuffAmplificationLabel" class="WindowText InventoryAttributeValue" text="100%" />
 						</Panel>
+						<Panel id="HealingReceived" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_HealingReceived', '#DOTA_Tooltip_HealingReceived_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HealingReceived" />
+							<Label id="HealingReceivedLabel" class="WindowText InventoryAttributeValue" text="100%" />
+						</Panel>
+						<Panel id="HealingCaused" class="InventoryAttributeWithValue"  onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_HealingCaused', '#DOTA_Tooltip_HealingCaused_Description')" onmouseout="DOTAHideTitleTextTooltip()">
+							<Panel id="StrengthIcon" class="StatIcon" hittest="false" />
+							<Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_HealingCaused" />
+							<Label id="HealingCausedLabel" class="WindowText InventoryAttributeValue" text="100%" />
+						</Panel>
 						<Panel id="DefensiveElements" class="BoxedAttributes" onmouseover="DOTAShowTitleTextTooltip('#DOTA_Tooltip_ElementsProtection', '#DOTA_Tooltip_ElementsProtection_Description')" onmouseout="DOTAHideTitleTextTooltip()"/>
 						</Panel>
 					</Panel>

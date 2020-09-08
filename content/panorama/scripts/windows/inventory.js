@@ -364,6 +364,10 @@ function OnHeroStatsUpdateRequest(event) {
 		var criticalDamage = parsedData.statsTable.critDamage;
 		var criticalChance = parsedData.statsTable.critChance;
 		var aggroCaused = parsedData.statsTable.aggroCaused;
+		var healingCaused = parsedData.statsTable.healingCaused;
+		var healingCausedPercent = parsedData.statsTable.healingCausedPercent;
+		var healingReceived = parsedData.statsTable.healingReceived;
+		var healingReceivedPercent = parsedData.statsTable.healingReceivedPercent;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -390,8 +394,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AgilityLabel").text = agi;
 		$("#IntelligenceLabel").text = int;
 		$("#SpellDamageLabel").text = Math.round((spellDamage-1) * 100) + "%";
-		spellHaste = (spellHaste) * 100;
-		$("#SpellhasteLabel").text = Math.round(spellHaste);
+		$("#SpellhasteLabel").text = Math.round((spellHaste-1)*100);
 		var physProtection = 0;
 		if(armor >= 0){
 		    physProtection = ((armor * 0.06) / (1 + armor * 0.06));
@@ -407,17 +410,17 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
-		debuffAmplification = debuffAmplification;
-		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
-		debuffResistance = 1 - debuffResistance;
-		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
-		buffAmplification = buffAmplification;
+		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification - 1) * 10000) / 100) + "%";
+		$("#DebuffResistanceLabel").text = (Math.round((1 -debuffResistance) * 10000) / 100) + "%";
+		buffAmplification = buffAmplification - 1;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
-		$("#AggroCausedLabel").text = (Math.round(aggroCaused * 10000) / 100) + "%";
+		$("#AggroCausedLabel").text = (Math.round((aggroCaused - 1) * 10000) / 100) + "%";
+		$("#HealingReceivedLabel").text = (Math.round((healingReceivedPercent - 1) * 10000) / 100) + "% + " + healingReceived;
+		$("#HealingCausedLabel").text = (Math.round((healingCausedPercent - 1) * 10000) / 100) + "% + " + healingCaused;
     }
 }
 

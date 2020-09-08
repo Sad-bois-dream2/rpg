@@ -1754,5 +1754,6 @@ if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up_channel, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_spear_debuff, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_molten_fortress_second_thinker_buff, 'OnTakeDamage'))
+    GameMode:RegisterMinimumAbilityCooldown('molten_guardian_molten_fortress', 45)
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end

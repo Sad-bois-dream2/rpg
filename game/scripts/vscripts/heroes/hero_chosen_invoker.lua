@@ -571,3 +571,8 @@ end
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_chosen_invoker", MotionController)
 end
+
+if (IsServer() and not GameMode.CHOSEN_INVOKER_INIT) then
+    GameMode:RegisterMinimumAbilityCooldown('chosen_invoker_light_shock', 15)
+    GameMode.CHOSEN_INVOKER_INIT = true
+end

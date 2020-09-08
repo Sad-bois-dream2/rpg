@@ -1,0 +1,84 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 8
+	m_BoundingBoxMin = [ -30.0, -30.0, -30.0 ]
+	m_BoundingBoxMax = [ 30.0, 30.0, 30.0 ]
+	m_flCullRadius = -1.0
+	m_flConstantRadius = 1.0
+	m_flMaxDrawDistance = 4000.0
+	m_flNoDrawTimeToGoToSleep = 2.0
+	m_bShouldSort = false
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_previewState = 
+			{
+				m_hitboxSetName = "default"
+				m_materialGroupName = "0"
+			}
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 10.0, 11.0, 12.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 13.0, 14.0, 15.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 5
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 6
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 1.0, 1.0, 1.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+	m_nFirstMultipleOverride_BackwardCompat = 4
+	m_nBehaviorVersion = 10
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_a.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_c.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_d.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_e.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_counter_f.vpcf"
+		},
+	]
+}

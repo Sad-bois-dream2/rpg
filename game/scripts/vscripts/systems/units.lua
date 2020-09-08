@@ -105,10 +105,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitHolyDamage = 1
         local unitNatureDamage = 1
         local unitInfernoDamage = 1
-        local unitBlock = 0
-        local unitBlockPercent = 1
-        local unitMagicBlock = 0
-        local unitMagicBlockPercent = 1
         local unitArmor = 0
         local unitArmorPercent = 1
         local unitArmorPercentMulti = 1
@@ -339,6 +335,9 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetHealingCausedBonus) then
                 unitHealingCaused = unitHealingCaused + (tonumber(unitModifiers[i].GetHealingCausedBonus(unitModifiers[i])) or 0)
             end
+            if (unitModifiers[i].GetHealingCausedPercentBonus) then
+                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
+            end
             if (unitModifiers[i].GetHealingCausedPercentBonusMulti) then
                 unitHealingCausedPercentMulti = unitHealingCausedPercentMulti * (tonumber(unitModifiers[i].GetHealingCausedPercentBonusMulti(unitModifiers[i])) or 1)
             end
@@ -364,10 +363,13 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local primaryAttribute = 0
         -- str, agi, int
         if (unit:IsRealHero()) then
+            statsTable.strGain = unit:GetStrengthGain()
+            statsTable.agiGain = unit:GetAgilityGain()
+            statsTable.intGain = unit:GetIntellectGain()
             local heroLevel = unit:GetLevel()
-            local heroBaseStr = unit:GetBaseStrength() + (heroLevel - 1) * unit:GetStrengthGain()
-            local heroBaseAgi = unit:GetBaseAgility() + (heroLevel - 1) * unit:GetAgilityGain()
-            local heroBaseInt = unit:GetBaseIntellect() + (heroLevel - 1) * unit:GetIntellectGain()
+            local heroBaseStr = unit:GetBaseStrength() + (heroLevel - 1) * statsTable.strGain
+            local heroBaseAgi = unit:GetBaseAgility() + (heroLevel - 1) * statsTable.agiGain
+            local heroBaseInt = unit:GetBaseIntellect() + (heroLevel - 1) * statsTable.intGain
             statsTable.str = heroBaseStr + unitBonusStr
             statsTable.agi = heroBaseAgi + unitBonusAgi
             statsTable.int = heroBaseInt + unitBonusInt
@@ -402,11 +404,16 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.int
             end
+            statsTable.primaryAttributeIndex = primaryAttributeIndex
             --old one primary attribute to base damage calculation is wrong
         else
             statsTable.str = 0
             statsTable.agi = 0
             statsTable.int = 0
+            statsTable.strGain = 0
+            statsTable.agiGain = 0
+            statsTable.intGain = 0
+            statsTable.primaryAttributeIndex = 0
         end
         -- attack damage
         local heroBaseDamage = 0
@@ -461,9 +468,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         end
         -- damage reduction
         statsTable.damageReduction = unitDamageReduction
-        -- both blocks
-        statsTable.block = unitBlock * unitBlockPercent
-        statsTable.magicBlock = unitMagicBlock * unitMagicBlockPercent
         -- armor
         statsTable.armor = unitArmor * unitArmorPercent * unitArmorPercentMulti
         -- cdr
@@ -1237,7 +1241,7 @@ end
 ---@return number
 function Units:GetCooldownReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.cdr or 1
+        return math.max(unit.stats.cdr or 1, 0.5)
     end
     return 1
 end
