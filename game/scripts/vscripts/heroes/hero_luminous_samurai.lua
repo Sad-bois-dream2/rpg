@@ -941,5 +941,6 @@ end
 if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
+    GameMode:RegisterMinimumAbilityCooldown('luminous_samurai_judgment_of_light', 45)
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end

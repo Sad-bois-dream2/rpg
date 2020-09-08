@@ -1366,5 +1366,6 @@ if (IsServer() and not GameMode.CATASTROPHE_DEMOLISHER_INIT) then
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnCriticalDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_blood_oblation_toggle, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_catastrophe_demolisher_essence_devouer_lifesteal_aura_buff, 'OnPostTakeDamage'))
+    GameMode:RegisterMinimumAbilityCooldown('catastrophe_demolisher_claymore_of_destruction', 40)
     GameMode.CATASTROPHE_DEMOLISHER_INIT = true
 end
