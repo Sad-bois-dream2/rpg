@@ -406,21 +406,21 @@ function OnHeroStatsUpdateRequest(event) {
 		var attackDelay = (currentHero > -1 ? Entities.GetSecondsPerAttack(currentHero) : "0");
 		attackDelay = Math.round(attackDelay * 100) / 100;
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
-		damageReduction = damageReduction - 1;
+		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
-		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification-1) * 10000) / 100) + "%";
-		$("#DebuffResistanceLabel").text = (Math.round((debuffResistance-1) * 10000) / 100) + "%";
+		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification - 1) * 10000) / 100) + "%";
+		$("#DebuffResistanceLabel").text = (Math.round((1 -debuffResistance) * 10000) / 100) + "%";
 		buffAmplification = buffAmplification - 1;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
-		$("#AggroCausedLabel").text = (Math.round((aggroCaused-1) * 10000) / 100) + "%";
-		$("#HealingReceivedLabel").text = (Math.round((healingReceivedPercent-1) * 10000) / 100) + "% + " + healingReceived;
-		$("#HealingCausedLabel").text = (Math.round((healingCausedPercent-1) * 10000) / 100) + "% + " + healingCaused;
+		$("#AggroCausedLabel").text = (Math.round((aggroCaused - 1) * 10000) / 100) + "%";
+		$("#HealingReceivedLabel").text = (Math.round((healingReceivedPercent - 1) * 10000) / 100) + "% + " + healingReceived;
+		$("#HealingCausedLabel").text = (Math.round((healingCausedPercent - 1) * 10000) / 100) + "% + " + healingCaused;
     }
 }
 
