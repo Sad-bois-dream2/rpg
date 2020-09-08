@@ -334,16 +334,16 @@ if (IsServer()) then
                         isUnitHaveImmuneToHex = unitModifiers[i].GetImmunityToHex(unitModifiers[i]) or false
                     end
                 end
-                if(isStun == true and isUnitHaveImmuneToStun == true) then
+                if (isStun == true and isUnitHaveImmuneToStun == true) then
                     return nil
                 end
-                if(isRoot == true and isUnitHaveImmuneToRoot == true) then
+                if (isRoot == true and isUnitHaveImmuneToRoot == true) then
                     return nil
                 end
-                if(isHex == true and isUnitHaveImmuneToHex == true) then
+                if (isHex == true and isUnitHaveImmuneToHex == true) then
                     return nil
                 end
-                if(isSilence == true and isUnitHaveImmuneToSilence == true) then
+                if (isSilence == true and isUnitHaveImmuneToSilence == true) then
                     return nil
                 end
                 if (isTargetCasting == true and isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
@@ -411,17 +411,18 @@ if (IsServer()) then
             if (ability ~= nil) then
                 local abilityLevel = ability:GetLevel()
                 if (abilityLevel > 0) then
-                    local reducedCooldown = ability:GetCooldownTimeRemaining()
-                    if (args.isflat) then
+                    local abilityCooldown = ability:GetCooldownTimeRemaining()
+                    local reducedCooldown = abilityCooldown
+                    local minCooldown = ability:GetCooldown(abilityLevel)
+                    if (args.isflat == true) then
                         reducedCooldown = math.max(0, reducedCooldown - reduction)
                     else
                         reducedCooldown = reducedCooldown * reduction
-                        local minCooldown = ability:GetCooldown(abilityLevel) * 0.5
-                        if (reducedCooldown < minCooldown) then
-                            reducedCooldown = minCooldown
-                        end
                     end
-                    if (reducedCooldown == 0) then
+                    if (reducedCooldown < minCooldown) then
+                        reducedCooldown = minCooldown
+                    end
+                    if (reducedCooldown <= 0 or reducedCooldown > abilityCooldown) then
                         return
                     end
                     ability:EndCooldown()

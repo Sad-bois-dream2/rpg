@@ -1241,7 +1241,7 @@ end
 ---@return number
 function Units:GetCooldownReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.cdr or 1
+        return math.max(unit.stats.cdr or 1, 0.5)
     end
     return 1
 end
