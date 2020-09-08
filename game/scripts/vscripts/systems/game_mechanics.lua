@@ -173,6 +173,30 @@ if (IsServer()) then
         table.insert(GameMode.CritHealManaEventHandlersTable, handler)
     end
 
+    ---@param abilityName string
+    ---@param minCooldown number
+    function GameMode:RegisterMinimumAbilityCooldown(abilityName, minCooldown)
+        if (not abilityName or not minCooldown) then
+            DebugPrint("[GAME MECHANICS] Someone passed nil to of arguments of RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        if (type(abilityName) ~= "string") then
+            DebugPrint("[GAME MECHANICS] abilityName must be string in RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        if (type(minCooldown) ~= "number") then
+            DebugPrint("[GAME MECHANICS] abilityName must be number in RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        GameMode.MinimumAbilitiesCooldownTable[abilityName] = minCooldown
+    end
+
     --- handle every dmg instance in game. true = allow damage event, false = cancel damage event (damage itself, numbers still showed on client side)
     function GameMode:DamageFilter(args)
         if not IsServer() then
@@ -413,14 +437,13 @@ if (IsServer()) then
                 if (abilityLevel > 0) then
                     local abilityCooldown = ability:GetCooldownTimeRemaining()
                     local reducedCooldown = abilityCooldown
-                    local minCooldown = ability:GetCooldown(abilityLevel)
                     if (args.isflat == true) then
                         reducedCooldown = math.max(0, reducedCooldown - reduction)
                     else
                         reducedCooldown = reducedCooldown * reduction
                     end
-                    if (reducedCooldown < minCooldown) then
-                        reducedCooldown = minCooldown
+                    if(GameMode.MinimumAbilitiesCooldownTable[args.ability]) then
+                        reducedCooldown = math.max(GameMode.MinimumAbilitiesCooldownTable[args.ability], reducedCooldown)
                     end
                     if (reducedCooldown <= 0 or reducedCooldown > abilityCooldown) then
                         return
@@ -1095,6 +1118,7 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PreHealManaEventHandlersTable = {}
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.MinimumAbilitiesCooldownTable = {}
     GameMode.CrowdControlModifiersTable = {}
     GameMode.AuraModifiersTable = {}
     GameMode.IntrinsicModifiersTable = {}
