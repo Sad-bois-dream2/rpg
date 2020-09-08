@@ -1061,15 +1061,15 @@ function modifier_priestess_of_sacred_forest_spirits:OnCreated()
 end
 
 function modifier_priestess_of_sacred_forest_spirits:GetHealingCausedPercentBonus()
-    if(self.state == SPIRITS_STATE_DAY) then
-        return Units:GetNatureDamage(self.ability.caster)
+    if (self.state == SPIRITS_STATE_DAY) then
+        return Units:GetNatureDamage(self.ability.caster) - 1
     end
     return 0
 end
 
 function modifier_priestess_of_sacred_forest_spirits:GetNatureDamageBonus()
-    if(self.state == SPIRITS_STATE_NIGHT) then
-        return Units:GetHealingCausedPercent(self.ability.caster)
+    if (self.state == SPIRITS_STATE_NIGHT) then
+        return Units:GetHealingCausedPercent(self.ability.caster) - 1
     end
     return 0
 end
@@ -1100,7 +1100,13 @@ function priestess_of_sacred_forest_spirits:OnUpgrade()
     end
     if (not self.state) then
         self.caster = self:GetCaster()
-        self.modifier = self.caster:AddNewModifier(self.caster, self, "modifier_priestess_of_sacred_forest_spirits", { duration = -1 })
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_spirits"
+        modifierTable.duration = -1
+        self.modifier = GameMode:ApplyBuff(modifierTable)
     end
     self.natureDmgToHealing = self:GetSpecialValueFor("nature_dmg_per_healing_caused")
     self.healingToNatureDmg = self:GetSpecialValueFor("healing_caused_per_nature_dmg")
