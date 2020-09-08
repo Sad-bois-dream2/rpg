@@ -828,7 +828,7 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
     if not IsServer() then
         return
     end
-    if ((self.healingCausedProc > 0 and GameRules:GetGameTime() >= self:GetChannelStartTime() + self.channelTime) or self.spirit > 0) then
+    if ((self.healingCausedProc > 0 and self:GetChannelStartTime() + self.channelTime >= GameRules:GetGameTime()) or self.spirit > 0) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.caster = self.caster
@@ -838,6 +838,7 @@ function priestess_of_sacred_forest_tranquility:OnChannelFinish()
         GameMode:ApplyBuff(modifierTable)
     end
 end
+
 -- priestess_of_sacred_forest_sleep_dust
 modifier_priestess_of_sacred_forest_sleep_dust_hot = class({
     IsDebuff = function(self)
