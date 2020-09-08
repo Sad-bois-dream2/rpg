@@ -445,7 +445,7 @@ if (IsServer()) then
                     if(GameMode.MinimumAbilitiesCooldownTable[args.ability]) then
                         reducedCooldown = math.max(GameMode.MinimumAbilitiesCooldownTable[args.ability], reducedCooldown)
                     end
-                    if (reducedCooldown <= 0 or reducedCooldown > abilityCooldown) then
+                    if (reducedCooldown < 0 or reducedCooldown > abilityCooldown) then
                         return
                     end
                     ability:EndCooldown()
