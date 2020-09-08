@@ -419,9 +419,9 @@
 		}
 	}
 	//=================================================================================================================
-	// Priestess of Sacred Forest: Sun & Moon
+	// Priestess of Sacred Forest: Spirits
 	//=================================================================================================================
-	"priestess_of_sacred_forest_sun_and_moon"
+	"priestess_of_sacred_forest_spirits"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
@@ -449,13 +449,34 @@
 		{
 			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"healing"				"80 100 120 140"
+				"var_type"				"FIELD_FLOAT"
+				"nature_dmg_per_healing_caused"				"0 1 1 1"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing_caused_per_nature_dmg"				"0 1 1 1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cooldown_delay"				"0 0 5 5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_healing_caused"				"0 0 0 50"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_healing_caused_duration"				"0 0 0 5"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/priestess_of_sacred_forest/sleep_dust/sleep_dust.vpcf"
+			"particle" "particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf"
+			"particle" "particles/units/priestess_of_sacred_forest/spirits/spirits_negative.vpcf"
 		}
 	}
 }

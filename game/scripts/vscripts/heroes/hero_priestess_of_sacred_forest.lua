@@ -1028,30 +1028,91 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
     EmitSoundOn("Hero_Enchantress.EnchantCast", self.caster)
 end
 
--- priestess_of_sacred_forest_sun_and_moon
-priestess_of_sacred_forest_sun_and_moon = class({})
+-- priestess_of_sacred_forest_spirits
+SPIRITS_STATE_DAY = 0
+SPIRITS_STATE_NIGHT = 1
 
-function priestess_of_sacred_forest_sun_and_moon:OnUpgrade()
-    self.healing = self:GetSpecialValueFor("healing") / 100
-    self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
-    self.hotDuration = self:GetSpecialValueFor("hot_duration")
-    self.hotTick = self:GetSpecialValueFor("hot_tick")
-    self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
-    self.sleepHealingReceived = self:GetSpecialValueFor("sleep_healing_received") / 100
-    self.sleepDamageBlock = self:GetSpecialValueFor("sleep_damage_block")
-    self.range = self:GetSpecialValueFor("range")
-    self.speed = self:GetSpecialValueFor("speed")
-    self.width = self:GetSpecialValueFor("width")
+modifier_priestess_of_sacred_forest_spirits = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_priestess_of_sacred_forest_spirits:OnCreated()
+    self.ability = self:GetAbility()
+    self.state = SPIRITS_STATE_DAY
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
 end
 
-function priestess_of_sacred_forest_sun_and_moon:OnSpellStart()
+function modifier_priestess_of_sacred_forest_spirits:GetHealingCausedPercentBonus()
+    if(self.state == SPIRITS_STATE_DAY) then
+        return Units:GetNatureDamage(self.ability.caster)
+    end
+    return 0
+end
+
+function modifier_priestess_of_sacred_forest_spirits:GetNatureDamageBonus()
+    if(self.state == SPIRITS_STATE_NIGHT) then
+        return Units:GetHealingCausedPercent(self.ability.caster)
+    end
+    return 0
+end
+
+function modifier_priestess_of_sacred_forest_spirits:SwitchSpirits()
     if not IsServer() then
         return
     end
-    local caster = self:GetCaster()
-    local casterLocation = self.caster:GetAbsOrigin()
-    local casterTeam = self.caster:GetTeamNumber()
-    local direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    if (self.state == SPIRITS_STATE_DAY) then
+        self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_negative.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
+        self.state = SPIRITS_STATE_NIGHT
+    else
+        self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
+        self.state = SPIRITS_STATE_DAY
+    end
+    self:SetStackCount(self.state)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_spirits"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_spirits = class({})
+
+function priestess_of_sacred_forest_spirits:OnUpgrade()
+    if not IsServer() then
+        return
+    end
+    if (not self.state) then
+        self.caster = self:GetCaster()
+        self.modifier = self.caster:AddNewModifier(self.caster, self, "modifier_priestess_of_sacred_forest_spirits", { duration = -1 })
+    end
+    self.natureDmgToHealing = self:GetSpecialValueFor("nature_dmg_per_healing_caused")
+    self.healingToNatureDmg = self:GetSpecialValueFor("healing_caused_per_nature_dmg")
+    self.cooldownDelay = self:GetSpecialValueFor("cooldown_delay")
+    self.bonusHealingCaused = self:GetSpecialValueFor("bonus_healing_caused") / 100
+    self.bonusHealingCausedDuration = self:GetSpecialValueFor("bonus_healing_caused_duration")
+end
+
+function priestess_of_sacred_forest_spirits:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    self.modifier:SwitchSpirits()
 end
 
 -- Internal stuff
