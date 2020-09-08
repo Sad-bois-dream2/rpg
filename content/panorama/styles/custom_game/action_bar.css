@@ -589,7 +589,7 @@
 }
 
 #HeroStatsTooltip {
-    width: fit-children;
+    width: 600px;
     height: fit-children;
     padding: 5px;
     horizontal-align: center;
@@ -601,17 +601,18 @@
 	border-radius: 15px;
 	margin-bottom: 180px;
     z-index: 20;
-    margin-left: -130px;
+    margin-left: -150px;
 }
 
 .HeroStatsElementsContainer {
     flow-children: right;
     margin-bottom: 5px;
     vertical-align: bottom;
+    horizontal-align: center;
 }
 
 .HeroStatsContainer {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
     height: fit-children;
     flow-children: right;
 }
@@ -665,7 +666,7 @@
 }
 
 .OffensiveStats {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
     height: fit-children;
     flow-children: down;
     border-right: 1px solid gray;
@@ -674,7 +675,7 @@
 }
 
 .DefensiveStats {
-    width: fit-children;
+    width: fill-parent-flow(1.0);
     height: 100%;
     flow-children: down;
     border-bottom: 1px solid gray;
@@ -709,4 +710,5 @@
     color: white;
     text-overflow: shrink;
     height: 100%;
+    margin-left: 10px;
 }

@@ -354,16 +354,16 @@ function UpdateValues() {
             attackDelay = Math.round(attackDelay * 100) / 100;
             attackSpeedLabel.text = latestStats.attackSpeed + " (" + attackDelay + ")";
             baseAttackTimeLabel.text = Math.round(Entities.GetBaseAttackTime(hero) * 100) / 100;
-            DebuffAmplificationLabel.text = (Math.round(latestStats.debuffAmplification * 10000) / 100) + "%";
-            DebuffResistanceLabel.text = (Math.round((1-latestStats.debuffResistance) * 10000) / 100) + "%";
+            DebuffAmplificationLabel.text = (Math.round((latestStats.debuffAmplification-1) * 10000) / 100) + "%";
+            DebuffResistanceLabel.text = (Math.round((latestStats.debuffResistance-1) * 10000) / 100) + "%";
             criticalDamageLabel.text = (Math.round((latestStats.critDamage-1) * 10000) / 100) + "%";
             criticalChanceLabel.text = (Math.round((latestStats.critChance-1) * 10000) / 100) + "%";
-            damageReductionLabel.text = Math.round((1-latestStats.damageReduction) * 100) + "%";
-            aggroCausedLabel.text = (Math.round(latestStats.aggroCaused * 10000) / 100) + "%";
-            buffAmplificationLabel.text = (Math.round(latestStats.buffAmplification * 10000) / 100) + "%";
+            damageReductionLabel.text = Math.round((latestStats.damageReduction-1) * 100) + "%";
+            aggroCausedLabel.text = (Math.round((latestStats.aggroCaused-1) * 10000) / 100) + "%";
+            buffAmplificationLabel.text = (Math.round((latestStats.buffAmplification-1) * 10000) / 100) + "%";
             cooldownReductionLabel.text = (Math.round((1-latestStats.cdr) * 10000) / 100) + "%";
-            healingReceivedLabel.text = (Math.round(latestStats.healingReceivedPercent * 10000) / 100) + "% + " + latestStats.healingReceived;
-            healingCausedLabel.text = (Math.round(latestStats.healingCausedPercent * 10000) / 100) + "% + " + latestStats.healingCaused;
+            healingReceivedLabel.text = (Math.round((latestStats.healingReceivedPercent-1) * 10000) / 100) + "% + " + latestStats.healingReceived;
+            healingCausedLabel.text = (Math.round((latestStats.healingCausedPercent-1) * 10000) / 100) + "% + " + latestStats.healingCaused;
             // fuck it
             $("#StatsTooltipStrengthLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
             $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 1);

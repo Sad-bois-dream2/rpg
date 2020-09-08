@@ -406,23 +406,21 @@ function OnHeroStatsUpdateRequest(event) {
 		var attackDelay = (currentHero > -1 ? Entities.GetSecondsPerAttack(currentHero) : "0");
 		attackDelay = Math.round(attackDelay * 100) / 100;
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
-		damageReduction = 1 - damageReduction;
+		damageReduction = damageReduction - 1;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
-		debuffAmplification = debuffAmplification;
-		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
-		debuffResistance = 1 - debuffResistance;
-		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
-		buffAmplification = buffAmplification;
+		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification-1) * 10000) / 100) + "%";
+		$("#DebuffResistanceLabel").text = (Math.round((debuffResistance-1) * 10000) / 100) + "%";
+		buffAmplification = buffAmplification - 1;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
-		$("#AggroCausedLabel").text = (Math.round(aggroCaused * 10000) / 100) + "%";
-		$("#HealingReceivedLabel").text = (Math.round(healingReceivedPercent * 10000) / 100) + "% + " + healingReceived;
-		$("#HealingCausedLabel").text = (Math.round(healingCausedPercent * 10000) / 100) + "% + " + healingCaused;
+		$("#AggroCausedLabel").text = (Math.round((aggroCaused-1) * 10000) / 100) + "%";
+		$("#HealingReceivedLabel").text = (Math.round((healingReceivedPercent-1) * 10000) / 100) + "% + " + healingReceived;
+		$("#HealingCausedLabel").text = (Math.round((healingCausedPercent-1) * 10000) / 100) + "% + " + healingCaused;
     }
 }
 
