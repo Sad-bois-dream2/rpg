@@ -523,7 +523,7 @@ LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_hot"] = LUA
 priestess_of_sacred_forest_twilight_breeze = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_twilight_breeze"
-    end,
+    end
 })
 
 function priestess_of_sacred_forest_twilight_breeze:OnUpgrade()
@@ -1030,26 +1030,6 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
 end
 
 -- priestess_of_sacred_forest_spirits
-modifier_priestess_of_sacred_forest_spirits_cd = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end
-})
-
-LinkedModifiers["modifier_priestess_of_sacred_forest_spirits_cd"] = LUA_MODIFIER_MOTION_NONE
-
 modifier_priestess_of_sacred_forest_spirits_cd_delay = class({
     IsDebuff = function(self)
         return false
@@ -1080,7 +1060,6 @@ function modifier_priestess_of_sacred_forest_spirits_cd_delay:OnDestroy()
         return
     end
     local abilityCd = self.ability:GetCooldown(self.ability:GetLevel())
-    self.ability.caster:AddNewModifier(self.ability.caster, self.ability, "modifier_priestess_of_sacred_forest_spirits_cd", { duration = abilityCd })
     self.ability:EndCooldown()
     self.ability:StartCooldown(abilityCd)
 end
@@ -1171,11 +1150,28 @@ function modifier_priestess_of_sacred_forest_spirits:SwitchSpirits()
     if (self.state == SPIRITS_STATE_DAY) then
         self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_negative.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
         self.state = SPIRITS_STATE_NIGHT
+        local healingBonusModifier = self.ability.caster:FindModifierByName("modifier_priestess_of_sacred_forest_spirits_buff")
+        if(healingBonusModifier) then
+            healingBonusModifier:Destroy()
+        end
     else
         self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
         self.state = SPIRITS_STATE_DAY
     end
     self:SetStackCount(self.state)
+    self:SwapAbilities()
+end
+
+function modifier_priestess_of_sacred_forest_spirits:SwapAbilities()
+    if not IsServer() then
+        return
+    end
+    local IsNightSpirits = self.state == SPIRITS_STATE_NIGHT
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_herbaceous_essence_night", "priestess_of_sacred_forest_herbaceous_essence", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_thorny_protection_night", "priestess_of_sacred_forest_thorny_protection", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_twilight_breeze_night", "priestess_of_sacred_forest_twilight_breeze", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_tranquility_night", "priestess_of_sacred_forest_tranquility", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_sleep_dust_night", "priestess_of_sacred_forest_sleep_dust", not IsNightSpirits, IsNightSpirits)
 end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_spirits"] = LUA_MODIFIER_MOTION_NONE
@@ -1203,12 +1199,30 @@ function priestess_of_sacred_forest_spirits:OnUpgrade()
     self.bonusHealingCausedDuration = self:GetSpecialValueFor("bonus_healing_caused_duration")
 end
 
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local unitName = unit:GetUnitName()
+    if (unitName == "npc_dota_hero_enchantress" and not unit.enchStanceLayoutFixed) then
+        local modifier = {
+            ability = {
+                caster = unit
+            },
+            state = SPIRITS_STATE_DAY,
+        }
+        modifier_priestess_of_sacred_forest_spirits.SwapAbilities(modifier)
+        unit.enchStanceLayoutFixed = true
+    end
+end, nil)
+
 function priestess_of_sacred_forest_spirits:OnSpellStart()
     if not IsServer() then
         return
     end
     self.modifier:SwitchSpirits()
-    if (self.bonusHealingCausedDuration > 0) then
+    if (self.bonusHealingCausedDuration > 0 and self.modifier.state == SPIRITS_STATE_DAY) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = self.caster
@@ -1217,13 +1231,22 @@ function priestess_of_sacred_forest_spirits:OnSpellStart()
         modifierTable.duration = self.bonusHealingCausedDuration
         GameMode:ApplyBuff(modifierTable)
     end
-    if (self.cooldownDelay > 0 and not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd")) then
+    if (self.cooldownDelay > 0) then
         self:EndCooldown()
-        if (not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd_delay")) then
+        local delayModifier = self.caster:FindModifierByName("modifier_priestess_of_sacred_forest_spirits_cd_delay")
+        if (not delayModifier) then
             self.caster:AddNewModifier(self.caster, self, "modifier_priestess_of_sacred_forest_spirits_cd_delay", { duration = self.cooldownDelay })
+        else
+            delayModifier:Destroy()
         end
     end
 end
+
+priestess_of_sacred_forest_herbaceous_essence_night = class({})
+priestess_of_sacred_forest_thorny_protection_night = class({})
+priestess_of_sacred_forest_twilight_breeze_night = class({})
+priestess_of_sacred_forest_tranquility_night = class({})
+priestess_of_sacred_forest_sleep_dust_night = class({})
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do

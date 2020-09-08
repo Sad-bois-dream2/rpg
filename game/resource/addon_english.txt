@@ -225,13 +225,11 @@
  		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_hot"		"Sleeping Wind"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_hot_Description"		"Healing over time."
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_spirits"		"Spirits"
- 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_spirits_Description"		"Priestess calls either the day or night spirits. Her spells normally use the friendly and caring day spirits to heal and support allies. Switching to the mischievous night spirits makes her abilities have alternate damaging and crowd control effects.\nThe cooldown of this ability cannot be reduced.\nRank 2: If you are using day spirits you will gain healing caused equal to <font color='#238842'>Nature</font> damage. If you are using night spirits you will gain <font color='#238842'>Nature</font> damage equal to healing caused.\nRank 3: After using this ability its cooldown will be delayed for <font color='white'><b>5</b></font> seconds, inner cooldown equal to cooldown of this ability.\nRank 4: After calling any spirits you will gain effect that provide you <font color='white'><b>50%</b></font> healing caused for <font color='white'><b>5</b></font> seconds."
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_spirits_Description"		"Priestess calls either the day or night spirits. Her spells normally use the friendly and caring day spirits to heal and support allies. Switching to the mischievous night spirits makes her abilities have alternate damaging and crowd control effects.\nThe cooldown of this ability cannot be reduced.\nRank 2: If you are using day spirits you will gain healing caused equal to <font color='#238842'>Nature</font> damage. If you are using night spirits you will gain <font color='#238842'>Nature</font> damage equal to healing caused.\nRank 3: After using this ability you can cast it again to call previous spirits back in <font color='white'><b>5</b></font> seconds without putting ability into cooldown.\nRank 4: After using this ability day spirits will increase your healing caused by <font color='white'><b>50%</b></font> for <font color='white'><b>5</b></font> seconds."
  		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_buff"		"Spirits"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_buff_Description"		"Healing caused increased."
- 		"DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_cd"		"Spirits"
-        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_cd_Description"		"Cooldown delay effect on cooldown."
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_cd_delay"		"Spirits"
-        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_cd_delay_Description"		"Cooldown of this ability delayed."
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_spirits_cd_delay_Description"		"You can use this ability again to call previous spirits back."
         // Light Cardinal (silencer)
 
 		"DOTA_Tooltip_Ability_light_cardinal_piety"		"Piety"
