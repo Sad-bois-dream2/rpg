@@ -1166,7 +1166,7 @@ function modifier_priestess_of_sacred_forest_spirits:SwapAbilities()
     if not IsServer() then
         return
     end
-    local IsNightSpirits = self.state == SPIRITS_STATE_NIGHT
+    local IsNightSpirits = self.state ~= SPIRITS_STATE_NIGHT
     self.ability.caster:SwapAbilities("priestess_of_sacred_forest_herbaceous_essence_night", "priestess_of_sacred_forest_herbaceous_essence", not IsNightSpirits, IsNightSpirits)
     self.ability.caster:SwapAbilities("priestess_of_sacred_forest_thorny_protection_night", "priestess_of_sacred_forest_thorny_protection", not IsNightSpirits, IsNightSpirits)
     self.ability.caster:SwapAbilities("priestess_of_sacred_forest_twilight_breeze_night", "priestess_of_sacred_forest_twilight_breeze", not IsNightSpirits, IsNightSpirits)

@@ -39,18 +39,27 @@ function HeroSelection:BuildHeroEntry(heroName, kv)
             [6] = "",
         }
     }
-    if(not kv or not kv[heroName]) then
+    if (not kv or not kv[heroName]) then
         return heroEntry
     end
-    if(kv[heroName].Roles) then
+    if (kv[heroName].Roles) then
         heroEntry.Roles.Tank = kv[heroName].Roles.Tank or 0
         heroEntry.Roles.DPS = kv[heroName].Roles.DPS or 0
         heroEntry.Roles.Support = kv[heroName].Roles.Support or 0
         heroEntry.Roles.Utility = kv[heroName].Roles.Utility or 0
     end
     heroEntry.Attribute = kv[heroName].AttributePrimary or heroEntry.Attribute
-    for index = 1, 6 do
-        heroEntry.Abilities[index] = kv[heroName]["Ability"..index] or heroEntry.Abilities[index]
+    if (heroName == "npc_dota_hero_enchantress") then
+        heroEntry.Abilities[1] = kv[heroName]["Ability7"] or heroEntry.Abilities[1]
+        heroEntry.Abilities[2] = kv[heroName]["Ability8"] or heroEntry.Abilities[2]
+        heroEntry.Abilities[3] = kv[heroName]["Ability9"] or heroEntry.Abilities[3]
+        heroEntry.Abilities[4] = kv[heroName]["Ability10"] or heroEntry.Abilities[4]
+        heroEntry.Abilities[5] = kv[heroName]["Ability11"] or heroEntry.Abilities[5]
+        heroEntry.Abilities[6] = kv[heroName]["Ability6"] or heroEntry.Abilities[6]
+    else
+        for index = 1, 6 do
+            heroEntry.Abilities[index] = kv[heroName]["Ability" .. index] or heroEntry.Abilities[index]
+        end
     end
     return heroEntry
 end
@@ -67,15 +76,15 @@ end
 
 function HeroSelection:OnAllPlayersSelectedHero()
     for i = 0, PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS) - 1 do
-        if(not HeroSelection.playerHeroes["player"..i]) then
-            HeroSelection.playerHeroes["player"..i] = {}
-            HeroSelection.playerHeroes["player"..i].playerId = i
-            HeroSelection.playerHeroes["player"..i].hero = HeroSelection.data[math.random(1, #HeroSelection.data)].Name
-            HeroSelection.playerHeroes["player"..i].slotNumber = -1
+        if (not HeroSelection.playerHeroes["player" .. i]) then
+            HeroSelection.playerHeroes["player" .. i] = {}
+            HeroSelection.playerHeroes["player" .. i].playerId = i
+            HeroSelection.playerHeroes["player" .. i].hero = HeroSelection.data[math.random(1, #HeroSelection.data)].Name
+            HeroSelection.playerHeroes["player" .. i].slotNumber = -1
         end
         local player = PlayerResource:GetPlayer(i)
-        if(player) then
-            player:SetSelectedHero(HeroSelection.playerHeroes["player"..i].hero)
+        if (player) then
+            player:SetSelectedHero(HeroSelection.playerHeroes["player" .. i].hero)
         end
     end
     HeroSelection.pickTimeEnded = true
@@ -104,11 +113,11 @@ function HeroSelection:IsAllPlayersPickedHero()
     local totalPlayersCount = PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS)
     local totalPlayersPickedHero = 0
     for _, playerData in pairs(HeroSelection.playerHeroes) do
-        if(playerData.state == HeroSelection.STATE_PICKED) then
+        if (playerData.state == HeroSelection.STATE_PICKED) then
             totalPlayersPickedHero = totalPlayersPickedHero + 1
         end
     end
-    if(totalPlayersPickedHero >= totalPlayersCount) then
+    if (totalPlayersPickedHero >= totalPlayersCount) then
         return true
     end
     return false
