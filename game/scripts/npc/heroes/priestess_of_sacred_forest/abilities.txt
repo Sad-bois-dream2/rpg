@@ -523,37 +523,37 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_healing_recieved"				"0 20 20 20"
+				"nature_reduction"				"0 20 20 20"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_healing_recieved_duration"				"0 5 5 5"
+				"nature_reduction_duration"				"0 5 5 5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_multiplier"				"0 0 2 2"
+				"casts_for_proc"				"0 0 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_multiplier_maxhp"				"0 0 50 50"
+				"cdr_on_proc"				"0 0 5 5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dispel"				"0 0 0 1"
+				"status_res_reduction"				"0 0 0 30"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dispel_cd"				"0 0 0 15"
+				"status_res_reduction_duration"				"0 0 0 5"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/priestess_of_sacred_forest/herbaceous_essence/heal.vpcf"
+			"particle" "particles/units/priestess_of_sacred_forest/herbaceous_essence/night/night_essence.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts"
 		}
 	}

@@ -25,6 +25,10 @@ function modifier_priestess_of_sacred_forest_herbaceous_essence_buff:OnCreated(k
     self.ability = self:GetAbility()
 end
 
+function modifier_priestess_of_sacred_forest_herbaceous_essence_buff:GetHealingReceivedPercentBonus()
+    return self.ability.bonusHealingRecieved
+end
+
 LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_priestess_of_sacred_forest_herbaceous_essence_cd = class({
@@ -102,7 +106,7 @@ function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, specia
         target:Purge(false, true, false, true, true)
         caster:AddNewModifier(caster, self, "modifier_priestess_of_sacred_forest_herbaceous_essence_cd", { duration = self.dispelCd })
     end
-    if (self.bonusHealingRecieved > 0) then
+    if (self.bonusHealingRecievedDuration > 0) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
@@ -126,6 +130,10 @@ function priestess_of_sacred_forest_herbaceous_essence:OnUpgrade()
     if (not IsServer()) then
         return
     end
+    if(not self.nightAbility) then
+        self.nightAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence_night")
+    end
+    self.nightAbility:SetLevel(self:GetLevel())
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.bonusHealingRecieved = self:GetSpecialValueFor("bonus_healing_recieved") / 100
     self.bonusHealingRecievedDuration = self:GetSpecialValueFor("bonus_healing_recieved_duration")
@@ -1241,8 +1249,185 @@ function priestess_of_sacred_forest_spirits:OnSpellStart()
         end
     end
 end
+-- priestess_of_sacred_forest_herbaceous_essence_night
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
 
-priestess_of_sacred_forest_herbaceous_essence_night = class({})
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff:GetNatureProtectionBonus()
+    return -self.ability.natureReduction
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks:OnStackCountChanged()
+    if not IsServer() then
+        return
+    end
+    if(self:GetStackCount() >= self.ability.castsForProc) then
+        local cooldownTable = {
+            target = self.ability:GetCaster(),
+            ability = "priestess_of_sacred_forest_thorny_protection_night",
+            reduction = self.ability.cdrOnProc,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+        self:Destroy()
+    end
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:GetDebuffResistanceBonus()
+    return -self.ability.statusResReduction
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_herbaceous_essence_night = class({
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.natureReduction = self:GetSpecialValueFor("nature_reduction") / 100
+    self.natureReductionDuration = self:GetSpecialValueFor("nature_reduction_duration")
+    self.castsForProc = self:GetSpecialValueFor("casts_for_proc")
+    self.cdrOnProc = self:GetSpecialValueFor("cdr_on_proc")
+    self.statusResReduction = self:GetSpecialValueFor("status_res_reduction") / 100
+    self.statusResReductionDuration = self:GetSpecialValueFor("status_res_reduction_duration")
+end
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    --self:SetOverrideCastPoint(self.originalCastPoint)
+    local damageTable = {}
+    damageTable.caster = caster
+    damageTable.target = target
+    damageTable.ability = self
+    damageTable.damage = self.damage * Units:GetHeroIntellect(caster)
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+    if (self.natureReductionDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff"
+        modifierTable.duration = self.natureReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    if (self.statusResReductionDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status"
+        modifierTable.duration = self.statusResReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    if (self.castsForProc > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = caster
+        modifierTable.target = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks"
+        modifierTable.duration = -1
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.castsForProc
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/night/night_essence.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Oracle.FatesEdict", target)
+    Timers:CreateTimer(0.8, function()
+        target:StopSound("Hero_Oracle.FatesEdict")
+    end)
+end
+
 priestess_of_sacred_forest_thorny_protection_night = class({})
 priestess_of_sacred_forest_twilight_breeze_night = class({})
 priestess_of_sacred_forest_tranquility_night = class({})
