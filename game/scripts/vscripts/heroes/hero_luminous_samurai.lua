@@ -30,6 +30,7 @@ modifier_luminous_samurai_bankai_buff = class({
 function modifier_luminous_samurai_bankai_buff:OnCreated()
 
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
     self.attackDamage = self.ability:GetSpecialValueFor("attack_dmg_per_stack")
     self.critDamage = self.ability:GetSpecialValueFor("crit_dmg_per_stack") / 100
     self.attackSpeed = self.ability:GetSpecialValueFor("attack_speed_per_stack")
@@ -39,7 +40,7 @@ end
 function modifier_luminous_samurai_bankai_buff:GetAttackDamageBonus()
 
     local result = self.attackDamage * self:GetStackCount()
-    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
     return result 
 
 end
@@ -47,7 +48,7 @@ end
 function modifier_luminous_samurai_bankai_buff:GetAttackSpeedBonus()
 
     local result = self.attackSpeed * self:GetStackCount()
-    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
     return result
 
 end
@@ -55,7 +56,7 @@ end
 function modifier_luminous_samurai_bankai_buff:GetCriticalDamageBonus()
 
     local result = self.critDamage * self:GetStackCount()
-    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
     return result
 
 end
@@ -63,7 +64,7 @@ end
 function modifier_luminous_samurai_bankai_buff:OnTooltip()
 
     local result = self.attackDamage * self:GetStackCount()
-    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
     return result
 
 end
@@ -71,7 +72,7 @@ end
 function modifier_luminous_samurai_bankai_buff:OnTooltip2()
 
     local result = self.critDamage * self:GetStackCount() * 100
-    if (self.ability.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai_enhance")) then result = result * 2 end
     return result
 
 end
@@ -164,24 +165,34 @@ luminous_samurai_bankai = class({
     end
 })
 
+
+function luminous_samurai_bankai:OnUpgrade()
+
+    if not IsServer() then return end
+    self.caster = self:GetCaster()
+    self.duration = self:GetSpecialValueFor("duration")
+    self.enhanceDuration = self:GetSpecialValueFor("enhance_duration")
+
+end
+
 function luminous_samurai_bankai:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    if (not caster:HasModifier("luminous_samurai_bankai")) then
+    if (not caster:HasModifier("modifier_luminous_samurai_bankai")) then
 
         local modifierTable = {}
         modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
         modifierTable.modifier_name = "modifier_luminous_samurai_bankai"
-        modifierTable.duration = self:GetSpecialValueFor("duration")
+        modifierTable.duration = self.duration
         GameMode:ApplyBuff(modifierTable)
 
     else 
 
-        GameMode:ApplyBuff ({ caster = caster, target = caster, ability = self, name = "modifier_luminous_samurai_bankai_enhance", duration = self:GetSpecialValueFor("enhance_duration") })
+        GameMode:ApplyBuff ({ caster = self.caster, target = self.caster, ability = self, modifier_name = "modifier_luminous_samurai_bankai_enhance", duration = self.enhanceDuration })
 
     end
 
@@ -221,6 +232,15 @@ modifier_luminous_samurai_bankai_enhance = class({
 
 LinkedModifiers["modifier_luminous_samurai_bankai_enhance"] = LUA_MODIFIER_MOTION_NONE
 
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_bankai_enhance:OnCreated()
+    
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+
+end
 
 -- luminous_samurai_judgment_of_light modifiers
 modifier_luminous_samurai_judgment_of_light_buff = class({
@@ -255,6 +275,61 @@ function modifier_luminous_samurai_judgment_of_light_buff:GetAttackDamageBonus()
 end
 
 LinkedModifiers["modifier_luminous_samurai_judgment_of_light_buff"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_judgment_of_light_mark = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    -- GetTexture = function(self)
+    --     return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_shadow_waves_silence_cd.png"
+    -- end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK }
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_judgment_of_light_mark"] = LUA_MODIFIER_MOTION_NONE
+
+function modifier_luminous_samurai_judgment_of_light_mark:OnCreated(params)
+    if (not IsServer()) then
+        return
+    end
+    if (not params) then
+        self:Destroy()
+    end
+    self.parent = self:GetParent()
+    self.markHeal = params.markHeal
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    
+end
+
+function modifier_luminous_samurai_judgment_of_light_mark:OnAttack(params)
+
+    if not IsServer() then return end
+    if (params.target == self.parent and params.attacker and params.attacker:GetTeamNumber() ~= self.parent:GetTeamNumber()) then
+        GameMode:HealUnit({ caster = self.caster, target = params.attacker, ability = self.ability, heal = params.attacker:GetMaxHealth() * self.markHeal / 100 })
+    end
+
+end
+--------------------------------------------------------------------------------
 
 modifier_luminous_samurai_judgment_of_light_jump = class({
     IsDebuff = function(self)
@@ -300,6 +375,7 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnDeath(keys)
     if (not IsServer()) then
         return
     end
+    -- Rank 2
     if (keys.attacker == self.caster) then
         local modifierTable = {}
         modifierTable.ability = self.ability
@@ -313,6 +389,8 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnDeath(keys)
         modifierTable.stacks = 1
         modifierTable.max_stacks = 99999
         GameMode:ApplyStackingBuff(modifierTable)
+        -- GameMode:ReduceAbilityCooldown({ ability = self.ability:GetAbilityName(), reduction = self.cooldownReset, isflat = true, target = self.caster })
+        self.ability:EndCooldown()
     end
 end
 
@@ -337,6 +415,10 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnCreated(keys)
     self.attackDamageDuration = keys.attackDamageDuration
     self.jumpDelay = keys.jumpDelay
     self.jumpDamage = keys.jumpDamage
+    self.cooldownReset = keys.cooldownReset
+    self.markDuration = keys.markDuration
+    self.markHeal = keys.markHeal
+    self.executePercent = keys.executePercent
     self.caster:StartGesture(ACT_DOTA_OVERRIDE_ABILITY_4)
     self:StartIntervalThink(self.jumpDelay)
 end
@@ -376,6 +458,15 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnIntervalThink()
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
+        -- Rank 3
+        GameMode:ApplyDebuff({ caster = self.caster, target = self.target, ability = self.ability, modifier_name = "modifier_luminous_samurai_judgment_of_light_mark", duration = self.markDuration, modifier_params = {markHeal = self.markHeal} })
+        -- Rank 4
+        if (self.target:GetHealth() / self.target:GetMaxHealth() * 100 < self.executePercent) then 
+
+            self.target:ForceKill(false) 
+            self.ability:EndCooldown()
+            
+        end
     end
 end
 
@@ -488,7 +579,11 @@ function luminous_samurai_judgment_of_light:OnSpellStart()
         attackDamage = self:GetSpecialValueFor("aa_dmg"),
         jumpDelay = self:GetSpecialValueFor("jump_delay"),
         jumpDamage = self:GetSpecialValueFor("jump_damage") / 100,
-        attackDamageDuration = self:GetSpecialValueFor("aa_dmg_duration")
+        attackDamageDuration = self:GetSpecialValueFor("aa_dmg_duration"),
+        cooldownReset = self:GetSpecialValueFor("cd_reset"),
+        markDuration = self:GetSpecialValueFor("mark_duration"),
+        markHeal = self:GetSpecialValueFor("mark_max_hp_heal"),
+        executePercent = self:GetSpecialValueFor("execute_treshold")
     }
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)

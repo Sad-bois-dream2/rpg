@@ -41,7 +41,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"crit_dmg_per_stack"				"5 6 7 8"
+				"crit_dmg_per_stack"				"7 7 7 7"
 			}
 			"03"
 			{
@@ -91,7 +91,7 @@
 			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"enhance_duration"		"0 0 0 10"
+				"enhance_duration"		"0 0 0 7"
 			}
 		}
 		"precache"
@@ -221,7 +221,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_dmg"				"150 200 250 300"
+				"aa_dmg"				"0 200 200 200"
 			}
 			"06"
 			{
@@ -251,7 +251,17 @@
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"mark_max_hp_heal"		"0 0 3 3"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"execute_treshold"		"0 0 0 15"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cd_reset"				"0 60 60 60"
 			}
 		}
 		"precache"
@@ -448,7 +458,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_heal"				"60 80 100 120"
+				"proc_heal"				"40 60 80 100"
 			}
 			"02"
 			{
