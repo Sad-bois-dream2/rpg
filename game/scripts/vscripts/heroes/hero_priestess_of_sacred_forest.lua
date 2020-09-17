@@ -130,10 +130,12 @@ function priestess_of_sacred_forest_herbaceous_essence:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    if(not self.nightAbility) then
-        self.nightAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence_night")
+    if(not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence_night")
     end
-    self.nightAbility:SetLevel(self:GetLevel())
+    if(self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.bonusHealingRecieved = self:GetSpecialValueFor("bonus_healing_recieved") / 100
     self.bonusHealingRecievedDuration = self:GetSpecialValueFor("bonus_healing_recieved_duration")
@@ -418,6 +420,12 @@ priestess_of_sacred_forest_thorny_protection = class({
 })
 
 function priestess_of_sacred_forest_thorny_protection:OnUpgrade()
+    if(not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_thorny_protection_night")
+    end
+    if(self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
     self.block = self:GetSpecialValueFor("block") / 100
     self.duration = self:GetSpecialValueFor("duration")
     self.radius = self:GetSpecialValueFor("radius")
@@ -537,6 +545,12 @@ priestess_of_sacred_forest_twilight_breeze = class({
 function priestess_of_sacred_forest_twilight_breeze:OnUpgrade()
     if (not IsServer()) then
         return
+    end
+    if(not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_twilight_breeze_night")
+    end
+    if(self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
     end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.duration = self:GetSpecialValueFor("duration")
@@ -795,6 +809,12 @@ function priestess_of_sacred_forest_tranquility:OnUpgrade()
     if (not IsServer()) then
         return
     end
+    if(not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_tranquility_night")
+    end
+    if(self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
     self.radius = self:GetSpecialValueFor("radius")
@@ -954,6 +974,14 @@ LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_sleep"] = LUA_MO
 priestess_of_sacred_forest_sleep_dust = class({})
 
 function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
+    if(IsServer()) then
+        if(not self.stanceAbility) then
+            self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_sleep_dust_night")
+        end
+        if(self.stanceAbility) then
+            self.stanceAbility:SetLevel(self:GetLevel())
+        end
+    end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
     self.hotDuration = self:GetSpecialValueFor("hot_duration")
@@ -1361,6 +1389,12 @@ priestess_of_sacred_forest_herbaceous_essence_night = class({
 })
 
 function priestess_of_sacred_forest_herbaceous_essence_night:OnUpgrade()
+    if(not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence")
+    end
+    if(self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.natureReduction = self:GetSpecialValueFor("nature_reduction") / 100
     self.natureReductionDuration = self:GetSpecialValueFor("nature_reduction_duration")
