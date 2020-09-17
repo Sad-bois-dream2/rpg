@@ -635,6 +635,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnCreated(keys)
     self.ability.caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
     self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
     ParticleManager:SetParticleControl(self.pidx, 7, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(self.pidx, 8, Vector(self.ability.spirit + 3, 0, 0))
     self:StartIntervalThink(self.ability.tick)
 end
 
@@ -650,11 +651,6 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
     if (not thereAreSpirit) then
         self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
     end
-    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
     local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             self.thinker:GetAbsOrigin(),
             nil,

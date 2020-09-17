@@ -258,7 +258,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		//"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
+		"AbilityCastPoint"				"0"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -737,7 +737,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		//"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
+		"AbilityCastPoint"				"0"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -800,7 +800,6 @@
 		"precache"
 		{
 			"particle" "particles/units/priestess_of_sacred_forest/tranquility/rain.vpcf"
-			"particle" "particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf"
 		}
 	}
 	//=================================================================================================================
