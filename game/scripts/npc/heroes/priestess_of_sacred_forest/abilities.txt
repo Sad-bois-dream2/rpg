@@ -538,7 +538,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"cdr_on_proc"				"0 0 5 5"
+				"cdr_on_proc"				"0 0 3 3"
 			}
 			"06"
 			{
@@ -597,7 +597,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"block"				"100 120 140 160"
+				"damage"				"30 40 50 60"
 			}
 			"02"
 			{
@@ -612,33 +612,28 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"as_slow"				"0 -30 -30 -30"
+				"end_damage"				"0 0 100 100"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"sph_slow"				"0 -30 -30 -30"
+				"sph_reduction"				"0 20 20 20"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slow_duration"				"0 3 3 3"
+				"night_wind_bonus_dmg"				"0 0 0 30"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_slow"				"0 0 20 20"
-			}
-			"08"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"damage_reduction"				"0 0 0 30"
+				"tick"				"1 1 1 1"
 			}
 		}
 		"precache"
 		{
-		    "particle" "particles/units/priestess_of_sacred_forest/thorny_protection/positive/thorny_protection.vpcf"
-			"particle" "particles/units/priestess_of_sacred_forest/thorny_protection/slow_debuff.vpcf"
+		    "particle" "particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection.vpcf"
+		    "particle" "particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_endcap.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_treant.vsndevts"
 		}
 	}
