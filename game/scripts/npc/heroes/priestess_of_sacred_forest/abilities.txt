@@ -676,7 +676,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"healing"				"60 70 80 90"
+				"damage"				"20 30 40 50"
 			}
 			"02"
 			{
@@ -696,18 +696,33 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"sph_bonus"				"0 0 50 50"
+				"stacks_bonus_dmg"				"0 25 25 25"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spread_radius"				"0 0 0 300"
+				"stacks_duration"				"0 7 7 7"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_cast_time"				"0 0 25 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_duration"				"0 0 5 5"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"night_essence_aoe_bonus"				"0 0 0 200"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/priestess_of_sacred_forest/twilight_breeze/buff.vpcf"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_windrunner.vsndevts"
+			"particle" "particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
 		}
 	}
 	//=================================================================================================================

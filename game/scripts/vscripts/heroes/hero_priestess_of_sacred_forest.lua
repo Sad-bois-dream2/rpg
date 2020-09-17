@@ -475,7 +475,6 @@ modifier_priestess_of_sacred_forest_twilight_breeze_airy = class({
     end
 })
 
----@param damageTable DAMAGE_TABLE
 function modifier_priestess_of_sacred_forest_twilight_breeze_airy:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_airy")
     if (damageTable.damage > 0 and modifier and damageTable.physdmg) then
@@ -1281,7 +1280,7 @@ end
 -- priestess_of_sacred_forest_herbaceous_essence_night
 modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff = class({
     IsDebuff = function(self)
-        return false
+        return true
     end,
     IsHidden = function(self)
         return false
@@ -1409,20 +1408,62 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnUpgrade()
     self.statusResReductionDuration = self:GetSpecialValueFor("status_res_reduction_duration")
 end
 
+function priestess_of_sacred_forest_herbaceous_essence_night:OnAbilityPhaseStart(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self.originalCastPoint = self:GetCastPoint()
+    local modifier = self:GetCaster():FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc")
+    if (modifier and modifier.ability and modifier.ability.stacksProcCastTime) then
+        self:SetOverrideCastPoint(self.originalCastPoint * (1 - modifier.ability.stacksProcCastTime))
+    end
+    return true
+end
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnAbilityPhaseInterrupted(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self:SetOverrideCastPoint(self.originalCastPoint)
+end
+
 function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
     if not IsServer() then
         return
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
-    --self:SetOverrideCastPoint(self.originalCastPoint)
-    local damageTable = {}
-    damageTable.caster = caster
-    damageTable.target = target
-    damageTable.ability = self
-    damageTable.damage = self.damage * Units:GetHeroIntellect(caster)
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
+    self:SetOverrideCastPoint(self.originalCastPoint)
+    local nightWindAbility = caster:FindAbilityByName("priestess_of_sacred_forest_twilight_breeze_night")
+    if (nightWindAbility and nightWindAbility.nightEssenceAoeBonus) then
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                target:GetAbsOrigin(),
+                nil,
+                nightWindAbility.nightEssenceAoeBonus,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = self.damage * Units:GetHeroIntellect(caster)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    else
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * Units:GetHeroIntellect(caster)
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
     if (self.natureReductionDuration > 0) then
         local modifierTable = {}
         modifierTable.ability = self
@@ -1451,6 +1492,14 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
         modifierTable.stacks = 1
         modifierTable.max_stacks = self.castsForProc
         GameMode:ApplyStackingBuff(modifierTable)
+    end
+    local nightWindStacks = caster:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks")
+    if (nightWindStacks and nightWindStacks.ability and nightWindStacks.target == target) then
+        local stacks = math.max(nightWindStacks:GetStackCount() - 1, 0)
+        nightWindStacks:SetStackCount(stacks)
+        if (stacks < 1) then
+            nightWindStacks:Destroy()
+        end
     end
     local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/night/night_essence.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
     Timers:CreateTimer(3.0, function()
@@ -1647,7 +1696,190 @@ function priestess_of_sacred_forest_thorny_protection_night:OnUpgrade()
     self.tick = self:GetSpecialValueFor("tick")
 end
 
+-- priestess_of_sacred_forest_twilight_breeze_night
+modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.target = self.ability:GetCursorTarget()
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    if (self:GetStackCount() > 0) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.target = self.ability:GetCaster()
+    modifierTable.caster = modifierTable.target
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc"
+    modifierTable.duration = self.ability.stacksProcDuration
+    GameMode:ApplyBuff(modifierTable)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_twilight_breeze_night_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf", PATTACH_ABSORIGIN, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(1, 1, self.target:GetPaddedCollisionRadius() + 70))
+    EmitSoundOn("Hero_Spectre.Haunt", self.target)
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local damageTable = {}
+    damageTable.damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
+    damageTable.caster = self.caster
+    damageTable.ability = self.ability
+    damageTable.target = self.target
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_dot")
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_thorny_protection_night" and damageTable.ability.nightWindBonusDmg and damageTable.ability.nightWindBonusDmg > 0) then
+        damageTable.damage = damageTable.damage * (1 + damageTable.ability.nightWindBonusDmg)
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_dot"] = LUA_MODIFIER_MOTION_NONE
+
 priestess_of_sacred_forest_twilight_breeze_night = class({})
+
+function priestess_of_sacred_forest_twilight_breeze_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_dot"
+    modifierTable.duration = self.duration
+    GameMode:ApplyDebuff(modifierTable)
+    if (self.stacks > 0) then
+        modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = self.stacks
+        modifierTable.max_stacks = self.stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+end
+
+function priestess_of_sacred_forest_twilight_breeze_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_twilight_breeze")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.stacks = self:GetSpecialValueFor("stacks")
+    self.stacksBonusDmg = self:GetSpecialValueFor("stacks_bonus_dmg") / 100
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.stacksProcCastTime = self:GetSpecialValueFor("stacks_proc_cast_time") / 100
+    self.stacksProcDuration = self:GetSpecialValueFor("stacks_proc_duration")
+    self.nightEssenceAoeBonus = self:GetSpecialValueFor("night_essence_aoe_bonus")
+    self.tick = self:GetSpecialValueFor("tick")
+end
+
 priestess_of_sacred_forest_tranquility_night = class({})
 priestess_of_sacred_forest_sleep_dust_night = class({})
 
@@ -1659,6 +1891,7 @@ end
 if (IsServer() and not GameMode.PRIESTESS_OF_SACRED_FOREST_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_thorny_protection_buff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_airy, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_night_dot, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_sleep, 'OnTakeDamage'))
     GameMode:RegisterMinimumAbilityCooldown('priestess_of_sacred_forest_spirits', 40)
     GameMode.PRIESTESS_OF_SACRED_FOREST_INIT = true
