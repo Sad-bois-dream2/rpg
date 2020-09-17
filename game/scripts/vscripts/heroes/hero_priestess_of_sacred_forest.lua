@@ -1434,6 +1434,16 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
     self:SetOverrideCastPoint(self.originalCastPoint)
+    local nightWindStacksBonusDamage = 1
+    local nightWindStacks = caster:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks")
+    if (nightWindStacks and nightWindStacks.ability and nightWindStacks.target == target) then
+        local stacks = math.max(nightWindStacks:GetStackCount() - 1, 0)
+        nightWindStacks:SetStackCount(stacks)
+        if (stacks < 1) then
+            nightWindStacks:Destroy()
+        end
+        nightWindStacksBonusDamage = 1 + nightWindStacks.ability.stacksBonusDmg
+    end
     local nightWindAbility = caster:FindAbilityByName("priestess_of_sacred_forest_twilight_breeze_night")
     if (nightWindAbility and nightWindAbility.nightEssenceAoeBonus) then
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
@@ -1445,7 +1455,7 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = self.damage * Units:GetHeroIntellect(caster)
+        local damage = self.damage * Units:GetHeroIntellect(caster) * nightWindStacksBonusDamage
         for _, enemy in pairs(enemies) do
             local damageTable = {}
             damageTable.caster = caster
@@ -1460,7 +1470,7 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
         damageTable.caster = caster
         damageTable.target = target
         damageTable.ability = self
-        damageTable.damage = self.damage * Units:GetHeroIntellect(caster)
+        damageTable.damage = self.damage * Units:GetHeroIntellect(caster) * nightWindStacksBonusDamage
         damageTable.naturedmg = true
         GameMode:DamageUnit(damageTable)
     end
@@ -1492,14 +1502,6 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
         modifierTable.stacks = 1
         modifierTable.max_stacks = self.castsForProc
         GameMode:ApplyStackingBuff(modifierTable)
-    end
-    local nightWindStacks = caster:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks")
-    if (nightWindStacks and nightWindStacks.ability and nightWindStacks.target == target) then
-        local stacks = math.max(nightWindStacks:GetStackCount() - 1, 0)
-        nightWindStacks:SetStackCount(stacks)
-        if (stacks < 1) then
-            nightWindStacks:Destroy()
-        end
     end
     local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/night/night_essence.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
     Timers:CreateTimer(3.0, function()
