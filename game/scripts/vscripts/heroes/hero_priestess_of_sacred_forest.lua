@@ -1582,7 +1582,7 @@ function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnD
     end)
     EmitSoundOn("Hero_Treant.NaturesGrasp.Destroy", self.thinker)
     if (self.ability.endDamage > 0) then
-        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+        local enemies = FindUnitsInRadius(self.casterTeam,
                 self.position,
                 nil,
                 self.ability.radius,
@@ -1591,11 +1591,11 @@ function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnD
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        local damage = self.ability.endDamage * Units:GetHeroIntellect(self.ability.caster)
+        local damage = self.ability.endDamage * Units:GetHeroIntellect(self.caster)
         for _, enemy in pairs(enemies) do
             local damageTable = {}
             damageTable.damage = damage
-            damageTable.caster = self.ability.caster
+            damageTable.caster = self.caster
             damageTable.ability = self.ability
             damageTable.target = enemy
             damageTable.naturedmg = true
