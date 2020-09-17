@@ -448,6 +448,12 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 186, 85, 211, 255 ]
 			m_ColorMax = [ 75, 0, 130, 255 ]
+			m_bDisableOperator = true
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 186, 85, 211, 255 ]
+			m_ColorMax = [ 186, 85, 211, 255 ]
 		},
 	]
 	m_Emitters = 
