@@ -1464,6 +1464,19 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
 end
 
 priestess_of_sacred_forest_thorny_protection_night = class({})
+
+function priestess_of_sacred_forest_thorny_protection_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    --self:SetOverrideCastPoint(self.originalCastPoint)
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(500, 0, 0))
+    EmitSoundOn("Hero_Treant.NaturesGrasp.Spawn", caster)
+end
+
 priestess_of_sacred_forest_twilight_breeze_night = class({})
 priestess_of_sacred_forest_tranquility_night = class({})
 priestess_of_sacred_forest_sleep_dust_night = class({})
