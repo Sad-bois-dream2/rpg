@@ -664,7 +664,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         self:Destroy()
         return nil
     end
-    if (not thereAreSpirit) then
+    if (thereAreSpirit == false) then
         self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
     end
     local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
@@ -1885,7 +1885,206 @@ function priestess_of_sacred_forest_twilight_breeze_night:OnUpgrade()
     self.tick = self:GetSpecialValueFor("tick")
 end
 
-priestess_of_sacred_forest_tranquility_night = class({})
+-- priestess_of_sacred_forest_tranquility_night
+modifier_priestess_of_sacred_forest_tranquility_night_buff = class({
+    IsHidden = function(self)
+        return false
+    end,
+    IsDebuff = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_tranquility_night_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_buff:GetCriticalDamageBonus()
+    return self.ability.critDmgIncrease
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_night_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_tranquility_night_thinker = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self.caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/negative/tranquility.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    ParticleManager:SetParticleControl(self.pidx, 7, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(self.pidx, 8, Vector(self.ability.spirit + 3, 0, 0))
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local thereAreSpirit = (self.ability.spirit > 0)
+    if (self.caster:GetHealth() < 1 or (not thereAreSpirit and not self.ability:IsChanneling())) then
+        self:Destroy()
+        return nil
+    end
+    if (thereAreSpirit == false) then
+        self.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.position,
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
+    if (self.ability.dmgPerCreep > 0) then
+        damage = damage * (1 + (#enemies * self.ability.dmgPerCreep))
+    end
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    self.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
+    if (self.ability.spirit > 0) then
+        self.ability:OnChannelFinish()
+    end
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_night_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_tranquility_night = class({
+    GetChannelTime = function(self)
+        if (self:IsRequireCastbar()) then
+            return self:GetSpecialValueFor("duration")
+        else
+            return 0
+        end
+    end,
+    IsRequireCastbar = function(self)
+        return not (self:GetSpecialValueFor("spirit") > 0)
+    end,
+    GetAOERadius = function(self)
+        if (self:GetSpecialValueFor("spirit") > 0) then
+            return self:GetSpecialValueFor("radius")
+        else
+            return 0
+        end
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("spirit") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE
+        else
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_CHANNELLED
+        end
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
+
+function priestess_of_sacred_forest_tranquility_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local thinker = CreateModifierThinker(
+            caster,
+            self,
+            "modifier_priestess_of_sacred_forest_tranquility_night_thinker",
+            {
+                duration = self.duration
+            },
+            caster:GetAbsOrigin(),
+            caster:GetTeamNumber(),
+            false
+    )
+    if (self.spirit > 0) then
+        thinker:SetAbsOrigin(self:GetCursorPosition())
+    end
+end
+
+function priestess_of_sacred_forest_tranquility_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_tranquility")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.critDmgIncrease = self:GetSpecialValueFor("crit_dmg_increase") / 100
+    self.critDmgIncreaseDuration = self:GetSpecialValueFor("crit_dmg_increase_duration")
+    self.dmgPerCreep = self:GetSpecialValueFor("dmg_per_creep") / 100
+    self.spirit = self:GetSpecialValueFor("spirit")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.tick = self:GetSpecialValueFor("tick")
+end
+
+function priestess_of_sacred_forest_tranquility_night:OnChannelFinish()
+    if not IsServer() then
+        return
+    end
+    if ((self.critDmgIncreaseDuration > 0 and self:GetChannelStartTime() + self.duration >= GameRules:GetGameTime()) or self.spirit > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self:GetCaster()
+        modifierTable.target = modifierTable.caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_night_buff"
+        modifierTable.duration = self.critDmgIncreaseDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
 priestess_of_sacred_forest_sleep_dust_night = class({})
 
 -- Internal stuff

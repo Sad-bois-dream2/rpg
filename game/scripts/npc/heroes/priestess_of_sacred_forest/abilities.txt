@@ -765,47 +765,42 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing"				"20 25 30 35"
+				"damage"				"50 60 70 80"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dmg_reduction"				"20 25 30 35"
+				"radius"				"800"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"800"
+				"duration"				"5 6 7 8"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"channel_time"				"8"
+				"crit_dmg_increase"				"0 25 25 25"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"crit_dmg_increase_duration"				"0 7 7 7"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_caused_proc"				"0 50 50 50"
-			}
-			"07"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"healing_caused_proc_duration"				"0 30 30 30"
+				"dmg_per_creep"				"0 0 5 5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"use_highest_maxhealth"				"0 0 1 1"
+				"spirit"				"0 0 0 1"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spirit"				"0 0 0 1"
+				"tick"				"1 1 1 1"
 			}
 		}
 		"precache"
