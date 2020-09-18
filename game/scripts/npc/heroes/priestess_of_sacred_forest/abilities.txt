@@ -722,6 +722,7 @@
 		"precache"
 		{
 			"particle" "particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf"
+			"particle" "particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze_glow.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
 		}
 	}

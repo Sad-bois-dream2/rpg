@@ -1798,8 +1798,8 @@ function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnCreated
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf", PATTACH_ABSORIGIN, self.target)
-    ParticleManager:SetParticleControl(self.pidx, 2, Vector(1, 1, self.target:GetPaddedCollisionRadius() + 70))
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf", PATTACH_OVERHEAD_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(1, 1, self.target:GetPaddedCollisionRadius() + 20))
     EmitSoundOn("Hero_Spectre.Haunt", self.target)
     self:OnIntervalThink()
     self:StartIntervalThink(self.ability.tick)
@@ -1817,6 +1817,9 @@ function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnInterva
     if not IsServer() then
         return
     end
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze_glow.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:DestroyParticle(pidx, false)
+    ParticleManager:ReleaseParticleIndex(pidx)
     local damageTable = {}
     damageTable.damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
     damageTable.caster = self.caster

@@ -2,7 +2,7 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 32
+	m_nMaxParticles = 1
 	m_flConstantRadius = 20.0
 	m_ConstantColor = [ 178, 46, 121, 255 ]
 	m_Renderers = 
@@ -34,15 +34,25 @@
 		},
 		{
 			_class = "C_OP_MovementRotateParticleAroundAxis"
-			m_flRotRate = 
+		},
+		{
+			_class = "C_OP_SetPerChildControlPoint"
+			m_nFirstControlPoint = 1
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RingWave"
+			m_flInitialRadius = 
 			{
-				m_nType = "PF_TYPE_LITERAL"
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 90.0
-				m_nControlPoint = 0
+				m_flLiteralValue = 100.0
+				m_nControlPoint = 2
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
-				m_nVectorComponent = 0
+				m_nVectorComponent = 2
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
@@ -81,14 +91,6 @@
 			}
 		},
 		{
-			_class = "C_OP_SetPerChildControlPoint"
-			m_nFirstControlPoint = 1
-			m_nNumControlPoints = 20
-		},
-	]
-	m_Initializers = 
-	[
-		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMax = 0.2
 			m_fLifetimeMin = 0.2
@@ -97,26 +99,6 @@
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 40.0
 			m_flRadiusMax = 50.0
-		},
-		{
-			_class = "C_INIT_CreateInEpitrochoid"
-			m_bUseCount = true
-			m_flParticleDensity = 7.0
-			m_flOffset = 1.0
-			m_flRadius2 = -17.0
-			m_flRadius1 = 15.0
-			m_nScaleCP = 2
-		},
-		{
-			_class = "C_INIT_CreateInEpitrochoid"
-			m_bOffsetExistingPos = true
-			m_bUseCount = true
-			m_flParticleDensity = 0.2
-			m_flRadius2 = -40.0
-			m_flRadius1 = 20.0
-			m_nComponent1 = 2
-			m_nComponent2 = 2
-			m_flOffset = 100.0
 		},
 		{
 			_class = "C_INIT_RemapParticleCountToScalar"
@@ -156,7 +138,7 @@
 			[
 				{
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 109.133652 ]
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -170,7 +152,7 @@
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 1.0, 200.0 ]
+					m_vecOffset = [ 0.0, 0.0, 75.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -187,60 +169,6 @@
 	m_nFirstMultipleOverride_BackwardCompat = 3
 	m_Children = 
 	[
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
-		},
 		{
 			m_ChildRef = resource:"particles/units/priestess_of_sacred_forest/spirits/spirits_negative_b.vpcf"
 		},
