@@ -1996,7 +1996,6 @@ function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnDestroy
     self.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
     if (self.ability.spirit > 0) then
         self.ability:OnChannelFinish()
-        print("Channel finished")
     end
     UTIL_Remove(self.thinker)
 end
