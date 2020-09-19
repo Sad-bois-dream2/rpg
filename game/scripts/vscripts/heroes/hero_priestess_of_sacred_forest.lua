@@ -25,6 +25,10 @@ function modifier_priestess_of_sacred_forest_herbaceous_essence_buff:OnCreated(k
     self.ability = self:GetAbility()
 end
 
+function modifier_priestess_of_sacred_forest_herbaceous_essence_buff:GetHealingReceivedPercentBonus()
+    return self.ability.bonusHealingRecieved
+end
+
 LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_priestess_of_sacred_forest_herbaceous_essence_cd = class({
@@ -102,7 +106,7 @@ function priestess_of_sacred_forest_herbaceous_essence:OnSpellStart(unit, specia
         target:Purge(false, true, false, true, true)
         caster:AddNewModifier(caster, self, "modifier_priestess_of_sacred_forest_herbaceous_essence_cd", { duration = self.dispelCd })
     end
-    if (self.bonusHealingRecieved > 0) then
+    if (self.bonusHealingRecievedDuration > 0) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = target
@@ -125,6 +129,13 @@ end
 function priestess_of_sacred_forest_herbaceous_essence:OnUpgrade()
     if (not IsServer()) then
         return
+    end
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence_night")
+    end
+    local newLevel = self:GetLevel()
+    if (self.stanceAbility and self.stanceAbility:GetLevel() ~= newLevel) then
+        self.stanceAbility:SetLevel(newLevel)
     end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.bonusHealingRecieved = self:GetSpecialValueFor("bonus_healing_recieved") / 100
@@ -410,6 +421,13 @@ priestess_of_sacred_forest_thorny_protection = class({
 })
 
 function priestess_of_sacred_forest_thorny_protection:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_thorny_protection_night")
+    end
+    local newLevel = self:GetLevel()
+    if (self.stanceAbility and self.stanceAbility:GetLevel() ~= newLevel) then
+        self.stanceAbility:SetLevel(newLevel)
+    end
     self.block = self:GetSpecialValueFor("block") / 100
     self.duration = self:GetSpecialValueFor("duration")
     self.radius = self:GetSpecialValueFor("radius")
@@ -457,7 +475,6 @@ modifier_priestess_of_sacred_forest_twilight_breeze_airy = class({
     end
 })
 
----@param damageTable DAMAGE_TABLE
 function modifier_priestess_of_sacred_forest_twilight_breeze_airy:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_airy")
     if (damageTable.damage > 0 and modifier and damageTable.physdmg) then
@@ -523,12 +540,19 @@ LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_hot"] = LUA
 priestess_of_sacred_forest_twilight_breeze = class({
     GetAbilityTextureName = function(self)
         return "priestess_of_sacred_forest_twilight_breeze"
-    end,
+    end
 })
 
 function priestess_of_sacred_forest_twilight_breeze:OnUpgrade()
     if (not IsServer()) then
         return
+    end
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_twilight_breeze_night")
+    end
+    local newLevel = self:GetLevel()
+    if (self.stanceAbility and self.stanceAbility:GetLevel() ~= newLevel) then
+        self.stanceAbility:SetLevel(newLevel)
     end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.duration = self:GetSpecialValueFor("duration")
@@ -627,6 +651,7 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnCreated(keys)
     self.ability.caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
     self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
     ParticleManager:SetParticleControl(self.pidx, 7, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(self.pidx, 8, Vector(self.ability.spirit + 3, 0, 0))
     self:StartIntervalThink(self.ability.tick)
 end
 
@@ -639,14 +664,9 @@ function modifier_priestess_of_sacred_forest_tranquility_thinker:OnIntervalThink
         self:Destroy()
         return nil
     end
-    if (not thereAreSpirit) then
+    if (thereAreSpirit == false) then
         self.ability.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
     end
-    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/rain_sparks.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
     local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
             self.thinker:GetAbsOrigin(),
             nil,
@@ -790,6 +810,13 @@ priestess_of_sacred_forest_tranquility = class({
 function priestess_of_sacred_forest_tranquility:OnUpgrade()
     if (not IsServer()) then
         return
+    end
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_tranquility_night")
+    end
+    local newLevel = self:GetLevel()
+    if (self.stanceAbility and self.stanceAbility:GetLevel() ~= newLevel) then
+        self.stanceAbility:SetLevel(newLevel)
     end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
@@ -950,6 +977,15 @@ LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_sleep"] = LUA_MO
 priestess_of_sacred_forest_sleep_dust = class({})
 
 function priestess_of_sacred_forest_sleep_dust:OnUpgrade()
+    if (IsServer()) then
+        if (not self.stanceAbility) then
+            self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_sleep_dust_night")
+        end
+        local newLevel = self:GetLevel()
+        if (self.stanceAbility and self.stanceAbility:GetLevel() ~= newLevel) then
+            self.stanceAbility:SetLevel(newLevel)
+        end
+    end
     self.healing = self:GetSpecialValueFor("healing") / 100
     self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
     self.hotDuration = self:GetSpecialValueFor("hot_duration")
@@ -1030,26 +1066,6 @@ function priestess_of_sacred_forest_sleep_dust:OnSpellStart()
 end
 
 -- priestess_of_sacred_forest_spirits
-modifier_priestess_of_sacred_forest_spirits_cd = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end
-})
-
-LinkedModifiers["modifier_priestess_of_sacred_forest_spirits_cd"] = LUA_MODIFIER_MOTION_NONE
-
 modifier_priestess_of_sacred_forest_spirits_cd_delay = class({
     IsDebuff = function(self)
         return false
@@ -1080,7 +1096,6 @@ function modifier_priestess_of_sacred_forest_spirits_cd_delay:OnDestroy()
         return
     end
     local abilityCd = self.ability:GetCooldown(self.ability:GetLevel())
-    self.ability.caster:AddNewModifier(self.ability.caster, self.ability, "modifier_priestess_of_sacred_forest_spirits_cd", { duration = abilityCd })
     self.ability:EndCooldown()
     self.ability:StartCooldown(abilityCd)
 end
@@ -1171,11 +1186,28 @@ function modifier_priestess_of_sacred_forest_spirits:SwitchSpirits()
     if (self.state == SPIRITS_STATE_DAY) then
         self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_negative.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
         self.state = SPIRITS_STATE_NIGHT
+        local healingBonusModifier = self.ability.caster:FindModifierByName("modifier_priestess_of_sacred_forest_spirits_buff")
+        if (healingBonusModifier) then
+            healingBonusModifier:Destroy()
+        end
     else
         self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/spirits/spirits_positive.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.ability.caster)
         self.state = SPIRITS_STATE_DAY
     end
     self:SetStackCount(self.state)
+    self:SwapAbilities()
+end
+
+function modifier_priestess_of_sacred_forest_spirits:SwapAbilities()
+    if not IsServer() then
+        return
+    end
+    local IsNightSpirits = self.state ~= SPIRITS_STATE_NIGHT
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_herbaceous_essence_night", "priestess_of_sacred_forest_herbaceous_essence", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_thorny_protection_night", "priestess_of_sacred_forest_thorny_protection", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_twilight_breeze_night", "priestess_of_sacred_forest_twilight_breeze", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_tranquility_night", "priestess_of_sacred_forest_tranquility", not IsNightSpirits, IsNightSpirits)
+    self.ability.caster:SwapAbilities("priestess_of_sacred_forest_sleep_dust_night", "priestess_of_sacred_forest_sleep_dust", not IsNightSpirits, IsNightSpirits)
 end
 
 LinkedModifiers["modifier_priestess_of_sacred_forest_spirits"] = LUA_MODIFIER_MOTION_NONE
@@ -1203,12 +1235,30 @@ function priestess_of_sacred_forest_spirits:OnUpgrade()
     self.bonusHealingCausedDuration = self:GetSpecialValueFor("bonus_healing_caused_duration")
 end
 
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local unitName = unit:GetUnitName()
+    if (unitName == "npc_dota_hero_enchantress" and not unit.enchStanceLayoutFixed) then
+        local modifier = {
+            ability = {
+                caster = unit
+            },
+            state = SPIRITS_STATE_DAY,
+        }
+        modifier_priestess_of_sacred_forest_spirits.SwapAbilities(modifier)
+        unit.enchStanceLayoutFixed = true
+    end
+end, nil)
+
 function priestess_of_sacred_forest_spirits:OnSpellStart()
     if not IsServer() then
         return
     end
     self.modifier:SwitchSpirits()
-    if (self.bonusHealingCausedDuration > 0) then
+    if (self.bonusHealingCausedDuration > 0 and self.modifier.state == SPIRITS_STATE_DAY) then
         local modifierTable = {}
         modifierTable.ability = self
         modifierTable.target = self.caster
@@ -1217,12 +1267,1107 @@ function priestess_of_sacred_forest_spirits:OnSpellStart()
         modifierTable.duration = self.bonusHealingCausedDuration
         GameMode:ApplyBuff(modifierTable)
     end
-    if (self.cooldownDelay > 0 and not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd")) then
+    if (self.cooldownDelay > 0) then
         self:EndCooldown()
-        if (not self.caster:HasModifier("modifier_priestess_of_sacred_forest_spirits_cd_delay")) then
+        local delayModifier = self.caster:FindModifierByName("modifier_priestess_of_sacred_forest_spirits_cd_delay")
+        if (not delayModifier) then
             self.caster:AddNewModifier(self.caster, self, "modifier_priestess_of_sacred_forest_spirits_cd_delay", { duration = self.cooldownDelay })
+        else
+            delayModifier:Destroy()
         end
     end
+end
+-- priestess_of_sacred_forest_herbaceous_essence_night
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff:GetNatureProtectionBonus()
+    return -self.ability.natureReduction
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks:OnStackCountChanged()
+    if not IsServer() then
+        return
+    end
+    if (self:GetStackCount() >= self.ability.castsForProc) then
+        local cooldownTable = {
+            target = self.ability:GetCaster(),
+            ability = "priestess_of_sacred_forest_sleep_dust_night",
+            reduction = self.ability.cdrOnProc,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+        self:Destroy()
+    end
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:GetDebuffResistanceBonus()
+    return -self.ability.statusResReduction
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_herbaceous_essence_night = class({
+    IsRequireCastbar = function(self)
+        return true
+    end
+})
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_herbaceous_essence")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.natureReduction = self:GetSpecialValueFor("nature_reduction") / 100
+    self.natureReductionDuration = self:GetSpecialValueFor("nature_reduction_duration")
+    self.castsForProc = self:GetSpecialValueFor("casts_for_proc")
+    self.cdrOnProc = self:GetSpecialValueFor("cdr_on_proc")
+    self.statusResReduction = self:GetSpecialValueFor("status_res_reduction") / 100
+    self.statusResReductionDuration = self:GetSpecialValueFor("status_res_reduction_duration")
+end
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnAbilityPhaseStart(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self.originalCastPoint = self:GetCastPoint()
+    local modifier = self:GetCaster():FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc")
+    if (modifier and modifier.ability and modifier.ability.stacksProcCastTime) then
+        self:SetOverrideCastPoint(self.originalCastPoint * (1 - modifier.ability.stacksProcCastTime))
+    end
+    return true
+end
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnAbilityPhaseInterrupted(unit, special_cast)
+    if (not IsServer()) then
+        return
+    end
+    self:SetOverrideCastPoint(self.originalCastPoint)
+end
+
+function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    self:SetOverrideCastPoint(self.originalCastPoint)
+    local nightWindStacksBonusDamage = 1
+    local nightWindStacks = caster:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks")
+    if (nightWindStacks and nightWindStacks.ability and nightWindStacks.target == target) then
+        local stacks = math.max(nightWindStacks:GetStackCount() - 1, 0)
+        nightWindStacks:SetStackCount(stacks)
+        if (stacks < 1) then
+            nightWindStacks:Destroy()
+        end
+        nightWindStacksBonusDamage = 1 + nightWindStacks.ability.stacksBonusDmg
+    end
+    local nightWindAbility = caster:FindAbilityByName("priestess_of_sacred_forest_twilight_breeze_night")
+    if (nightWindAbility and nightWindAbility.nightEssenceAoeBonus) then
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                target:GetAbsOrigin(),
+                nil,
+                nightWindAbility.nightEssenceAoeBonus,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = self.damage * Units:GetHeroIntellect(caster) * nightWindStacksBonusDamage
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    else
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * Units:GetHeroIntellect(caster) * nightWindStacksBonusDamage
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+    if (self.natureReductionDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff"
+        modifierTable.duration = self.natureReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    if (self.statusResReductionDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = target
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status"
+        modifierTable.duration = self.statusResReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    if (self.castsForProc > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = caster
+        modifierTable.target = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_herbaceous_essence_night_stacks"
+        modifierTable.duration = -1
+        modifierTable.stacks = 1
+        modifierTable.max_stacks = self.castsForProc
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/herbaceous_essence/night/night_essence.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Oracle.FatesEdict", target)
+    Timers:CreateTimer(0.8, function()
+        target:StopSound("Hero_Oracle.FatesEdict")
+    end)
+end
+--priestess_of_sacred_forest_thorny_protection_night
+modifier_priestess_of_sacred_forest_thorny_protection_night_thinker_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker_debuff:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker_debuff:GetSpellHastePercentBonus()
+    return -self.ability.sphReduction
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_night_thinker_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_thorny_protection_night_thinker = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        if (self.ability.sphReduction > 0) then
+            return self.ability.radius
+        end
+        return 0
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_priestess_of_sacred_forest_thorny_protection_night_thinker_debuff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end
+})
+
+function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnCreated(keys)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection.vpcf", PATTACH_ABSORIGIN, self.thinker)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.ability.radius, 0, 0))
+    EmitSoundOn("Hero_Treant.NaturesGrasp.Spawn", self.thinker)
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.position,
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.ability = self.ability
+        damageTable.target = enemy
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, true)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/thorny_protection/thorny_protection_endcap.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(pidx, 0, self.position)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Treant.NaturesGrasp.Destroy", self.thinker)
+    if (self.ability.endDamage > 0) then
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.position,
+                nil,
+                self.ability.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damage = self.ability.endDamage * Units:GetHeroIntellect(self.caster)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.damage = damage
+            damageTable.caster = self.caster
+            damageTable.ability = self.ability
+            damageTable.target = enemy
+            damageTable.naturedmg = true
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_thorny_protection_night_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_thorny_protection_night = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
+
+function priestess_of_sacred_forest_thorny_protection_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_priestess_of_sacred_forest_thorny_protection_night_thinker",
+            {
+                duration = self.duration
+            },
+            self:GetCursorPosition(),
+            caster:GetTeamNumber(),
+            false
+    )
+end
+
+function priestess_of_sacred_forest_thorny_protection_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_thorny_protection")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.endDamage = self:GetSpecialValueFor("end_damage") / 100
+    self.sphReduction = self:GetSpecialValueFor("sph_reduction") / 100
+    self.nightWindBonusDmg = self:GetSpecialValueFor("night_wind_bonus_dmg") / 100
+    self.tick = self:GetSpecialValueFor("tick")
+end
+
+-- priestess_of_sacred_forest_twilight_breeze_night
+modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.target = self.ability:GetCursorTarget()
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    if (self:GetStackCount() > 0) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.target = self.ability:GetCaster()
+    modifierTable.caster = modifierTable.target
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks_proc"
+    modifierTable.duration = self.ability.stacksProcDuration
+    GameMode:ApplyBuff(modifierTable)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_twilight_breeze_night_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze.vpcf", PATTACH_OVERHEAD_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(1, 1, self.target:GetPaddedCollisionRadius() + 20))
+    EmitSoundOn("Hero_Spectre.Haunt", self.target)
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/twilight_breeze/negative/twilight_breeze_glow.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:DestroyParticle(pidx, false)
+    ParticleManager:ReleaseParticleIndex(pidx)
+    local damageTable = {}
+    damageTable.damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
+    damageTable.caster = self.caster
+    damageTable.ability = self.ability
+    damageTable.target = self.target
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_twilight_breeze_night_dot")
+    if (damageTable.damage > 0 and modifier and damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_thorny_protection_night" and damageTable.ability.nightWindBonusDmg and damageTable.ability.nightWindBonusDmg > 0) then
+        damageTable.damage = damageTable.damage * (1 + damageTable.ability.nightWindBonusDmg)
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_twilight_breeze_night_dot"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_twilight_breeze_night = class({})
+
+function priestess_of_sacred_forest_twilight_breeze_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = target
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_dot"
+    modifierTable.duration = self.duration
+    GameMode:ApplyDebuff(modifierTable)
+    if (self.stacks > 0) then
+        modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_twilight_breeze_night_stacks"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = self.stacks
+        modifierTable.max_stacks = self.stacks
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+end
+
+function priestess_of_sacred_forest_twilight_breeze_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_twilight_breeze")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.stacks = self:GetSpecialValueFor("stacks")
+    self.stacksBonusDmg = self:GetSpecialValueFor("stacks_bonus_dmg") / 100
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.stacksProcCastTime = self:GetSpecialValueFor("stacks_proc_cast_time") / 100
+    self.stacksProcDuration = self:GetSpecialValueFor("stacks_proc_duration")
+    self.nightEssenceAoeBonus = self:GetSpecialValueFor("night_essence_aoe_bonus")
+    self.tick = self:GetSpecialValueFor("tick")
+end
+
+-- priestess_of_sacred_forest_tranquility_night
+modifier_priestess_of_sacred_forest_tranquility_night_buff = class({
+    IsHidden = function(self)
+        return false
+    end,
+    IsDebuff = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_tranquility_night_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_buff:GetCriticalDamageBonus()
+    return self.ability.critDmgIncrease
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_night_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_tranquility_night_thinker = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self.caster:EmitSound("Hero_Enchantress.NaturesAttendantsCast")
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/tranquility/negative/tranquility.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    ParticleManager:SetParticleControl(self.pidx, 7, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(self.pidx, 8, Vector(self.ability.spirit + 3, 0, 0))
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local thereAreSpirit = (self.ability.spirit > 0)
+    if (self.caster:GetHealth() < 1 or (not thereAreSpirit and not self.ability:IsChanneling())) then
+        self:Destroy()
+        return nil
+    end
+    if (thereAreSpirit == false) then
+        self.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.position,
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = self.ability.damage * Units:GetHeroIntellect(self.caster)
+    if (self.ability.dmgPerCreep > 0) then
+        damage = damage * (1 + (#enemies * self.ability.dmgPerCreep))
+    end
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.damage = damage
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    self.caster:StopSound("Hero_Enchantress.NaturesAttendantsCast")
+    if (self.ability.spirit > 0) then
+        self.ability:OnChannelFinish()
+    end
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_tranquility_night_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_tranquility_night = class({
+    GetChannelTime = function(self)
+        if (self:IsRequireCastbar()) then
+            return self:GetSpecialValueFor("duration")
+        else
+            return 0
+        end
+    end,
+    IsRequireCastbar = function(self)
+        return not (self:GetSpecialValueFor("spirit") > 0)
+    end,
+    GetAOERadius = function(self)
+        if (self:GetSpecialValueFor("spirit") > 0) then
+            return self:GetSpecialValueFor("radius")
+        else
+            return 0
+        end
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("spirit") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE
+        else
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_CHANNELLED
+        end
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
+
+function priestess_of_sacred_forest_tranquility_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local position = caster:GetAbsOrigin()
+    if (self.spirit > 0) then
+        position = self:GetCursorPosition()
+    end
+    CreateModifierThinker(
+            caster,
+            self,
+            "modifier_priestess_of_sacred_forest_tranquility_night_thinker",
+            {
+                duration = self.duration
+            },
+            position,
+            caster:GetTeamNumber(),
+            false
+    )
+end
+
+function priestess_of_sacred_forest_tranquility_night:OnUpgrade()
+    if (not self.stanceAbility) then
+        self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_tranquility")
+    end
+    if (self.stanceAbility) then
+        self.stanceAbility:SetLevel(self:GetLevel())
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.critDmgIncrease = self:GetSpecialValueFor("crit_dmg_increase") / 100
+    self.critDmgIncreaseDuration = self:GetSpecialValueFor("crit_dmg_increase_duration")
+    self.dmgPerCreep = self:GetSpecialValueFor("dmg_per_creep") / 100
+    self.spirit = self:GetSpecialValueFor("spirit")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.tick = self:GetSpecialValueFor("tick")
+end
+
+function priestess_of_sacred_forest_tranquility_night:OnChannelFinish()
+    if not IsServer() then
+        return
+    end
+    if ((self.critDmgIncreaseDuration > 0 and self:GetChannelStartTime() + self.duration >= GameRules:GetGameTime()) or self.spirit > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self:GetCaster()
+        modifierTable.target = modifierTable.caster
+        modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_tranquility_night_buff"
+        modifierTable.duration = self.critDmgIncreaseDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+-- priestess_of_sacred_forest_sleep_dust_night
+modifier_priestess_of_sacred_forest_sleep_dust_night_sleep = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/generic_gameplay/generic_sleep.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true
+        }
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_sleep")
+    if (modifier and damageTable.damage > 0) then
+        if (damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_sleep_dust_night") then
+            return
+        end
+        modifier:Destroy()
+    end
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnDestroy()
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.caster = self.ability:GetCaster()
+    modifierTable.target = self:GetParent()
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_slow"
+    modifierTable.duration = self.ability.sleepSlowDuration
+    GameMode:ApplyDebuff(modifierTable)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_slow:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_slow:GetMoveSpeedPercentBonus()
+    return -(self.ability.sleepSlow or 0)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_slow"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_crit = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_crit:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_crit")
+    if (modifier and modifier.ability and modifier.ability.nextInstanceCrit and damageTable.damage > 0 and modifier.ability.caster == damageTable.attacker and damageTable.ability and damageTable.ability:GetAbilityName() ~= "priestess_of_sacred_forest_sleep_dust_night") then
+        damageTable.crit = modifier.ability.nextInstanceCrit
+        modifier:Destroy()
+        return damageTable
+    end
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_crit:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_crit"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/sleep_dust/negative/sleep_dust_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.ability.dotTick, 0, 0))
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.ability.dotDamage * Units:GetHeroIntellect(self.caster)
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_dot"] = LUA_MODIFIER_MOTION_NONE
+
+priestess_of_sacred_forest_sleep_dust_night = class({})
+
+function priestess_of_sacred_forest_sleep_dust_night:OnUpgrade()
+    if (IsServer()) then
+        if (not self.stanceAbility) then
+            self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_sleep_dust")
+        end
+        if (self.stanceAbility) then
+            self.stanceAbility:SetLevel(self:GetLevel())
+        end
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
+    self.sleepSlow = self:GetSpecialValueFor("sleep_slow") / 100
+    self.sleepSlowDuration = self:GetSpecialValueFor("sleep_slow_duration")
+    self.nextInstanceCrit = self:GetSpecialValueFor("next_instance_crit") / 100
+    self.range = self:GetSpecialValueFor("range")
+    self.speed = self:GetSpecialValueFor("speed")
+    self.width = self:GetSpecialValueFor("width")
+end
+
+function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, location)
+    if (not IsServer()) then
+        return
+    end
+    if (target and target ~= self.caster and not TableContains(self.damagedEnemies, target)) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * Units:GetHeroIntellect(self.caster)
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        if (self:GetAutoCastState()) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"
+            modifierTable.duration = self.sleepDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if (self.dotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_dot"
+            modifierTable.duration = self.dotDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if (self.nextInstanceCrit > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_crit"
+            modifierTable.duration = -1
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        table.insert(self.damagedEnemies, target)
+    end
+    return false
+end
+
+function priestess_of_sacred_forest_sleep_dust_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    self.caster = self:GetCaster()
+    local casterLocation = self.caster:GetAbsOrigin()
+    local casterTeam = self.caster:GetTeamNumber()
+    local direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    self.damagedEnemies = {}
+    local projectile = {
+        Ability = self,
+        EffectName = "particles/units/priestess_of_sacred_forest/sleep_dust/negative/sleep_dust.vpcf",
+        vSpawnOrigin = casterLocation,
+        fDistance = self.range,
+        fStartRadius = self.width,
+        fEndRadius = self.width,
+        Source = self.caster,
+        bHasFrontalCone = false,
+        bReplaceExisting = false,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+        iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
+        fExpireTime = GameRules:GetGameTime() + 10.0,
+        bDeleteOnHit = true,
+        vVelocity = direction * self.speed,
+        bProvidesVision = true,
+        iVisionRadius = 400,
+        iVisionTeamNumber = casterTeam
+    }
+    ProjectileManager:CreateLinearProjectile(projectile)
+    EmitSoundOn("Hero_Enchantress.EnchantCast", self.caster)
 end
 
 -- Internal stuff
@@ -1233,7 +2378,10 @@ end
 if (IsServer() and not GameMode.PRIESTESS_OF_SACRED_FOREST_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_thorny_protection_buff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_airy, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_night_dot, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_sleep, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_night_sleep, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_night_crit, 'OnTakeDamage'))
     GameMode:RegisterMinimumAbilityCooldown('priestess_of_sacred_forest_spirits', 40)
     GameMode.PRIESTESS_OF_SACRED_FOREST_INIT = true
 end
