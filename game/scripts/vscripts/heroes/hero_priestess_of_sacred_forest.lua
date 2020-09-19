@@ -2122,7 +2122,7 @@ modifier_priestess_of_sacred_forest_sleep_dust_night_sleep = class({
 function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_sleep")
     if (modifier and damageTable.damage > 0) then
-        if(damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_sleep_dust_night") then
+        if (damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_sleep_dust_night") then
             return
         end
         modifier:Destroy()
@@ -2133,7 +2133,48 @@ function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnCreated()
     self.ability = self:GetAbility()
 end
 
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnDestroy()
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.caster = self.ability:GetCaster()
+    modifierTable.target = self:GetParent()
+    modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_slow"
+    modifierTable.duration = self.ability.sleepSlowDuration
+    GameMode:ApplyDebuff(modifierTable)
+end
+
 LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_slow = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_slow:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_slow:GetMoveSpeedPercentBonus()
+    return -(self.ability.sleepSlow or 0)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_slow"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_priestess_of_sacred_forest_sleep_dust_night_crit = class({
     IsDebuff = function(self)
@@ -2273,7 +2314,7 @@ function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, loc
             modifierTable.duration = self.sleepDuration
             GameMode:ApplyDebuff(modifierTable)
         end
-        if(self.dotDuration > 0) then
+        if (self.dotDuration > 0) then
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.caster = self.caster
@@ -2282,7 +2323,7 @@ function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, loc
             modifierTable.duration = self.dotDuration
             GameMode:ApplyDebuff(modifierTable)
         end
-        if(self.nextInstanceCrit > 0) then
+        if (self.nextInstanceCrit > 0) then
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.caster = self.caster

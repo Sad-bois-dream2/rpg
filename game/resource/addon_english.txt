@@ -276,6 +276,8 @@
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_dot_Description"		"Suffer from <font color='#238842'>Nature</font> damage."
     	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_crit"		"Enchanting Wind"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_crit_Description"		"Next spell damage instance not from this ability by Priestess of the Sacred Forest will be critical strike."
+    	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_slow"		"Enchanting Wind"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_slow_Description"		"Movespeed reduced."
         // Light Cardinal (silencer)
 
 		"DOTA_Tooltip_Ability_light_cardinal_piety"		"Piety"
