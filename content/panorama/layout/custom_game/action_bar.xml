@@ -188,8 +188,8 @@
             <Panel class="HeroPanelContainer">
                 <Panel class="HeroPanelLeftContainer">
                     <Panel class="HeroPortraitContainer">
-                        <DOTAPortrait id="HeroPortrait" class="HeroPortrait" onactivate="OnPortraitClick()"/>
-                        <Panel class="HeroDeathTimer" onactivate="OnPortraitClick()">
+                        <DOTAPortrait id="HeroPortrait" class="HeroPortrait"/>
+                        <Panel class="HeroDeathTimer" onactivate="OnPortraitClick()" onmouseover="OnPortraitMouseHover()" onmouseout="OnPortraitMouseOut()">
                             <Label id="HeroDeathTimer" text="20"/>
                         </Panel>
                     </Panel>
