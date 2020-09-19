@@ -40,6 +40,9 @@
 			m_bDisableOperator = true
 		},
 		{
+			_class = "C_OP_PositionLock"
+		},
+		{
 			_class = "C_OP_MovementRotateParticleAroundAxis"
 			m_flRotRate = 
 			{
@@ -87,9 +90,6 @@
 				}
 			}
 			m_bLocalSpace = true
-		},
-		{
-			_class = "C_OP_PositionLock"
 		},
 		{
 			_class = "C_OP_EndCapTimedDecay"
