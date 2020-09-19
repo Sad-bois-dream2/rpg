@@ -10,10 +10,14 @@
 }
 
 DOTAChat#HudChat.Active .CustomChatLineContainer {
+    transition-property: opacity!immediate;
+    transition-duration: 0.1s;
     opacity: 1;
 }
 
 DOTAChat#HudChat .CustomChatLineContainer {
+    transition-property: opacity!immediate;
+    transition-duration: 0.3s;
     opacity: 0;
 }
 
