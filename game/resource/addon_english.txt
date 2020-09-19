@@ -1165,7 +1165,6 @@
         "DOTA_Difficulty_BossDead"		" has been defeated! Drop chances increased by "
         "DOTA_Tooltip_modifier_creep_elite"		"Elite"
         "DOTA_Tooltip_modifier_creep_elite_Description"		"This is an Elite enemy. Elite enemies are more powerful than regular ones and have random abilities, but may give better rewards."
-        "DOTA_Chat_Allies"		"[Allies] %NAME%: %TEXT%"
         "DOTA_Chat_Ally_is_alive"		"Ally %HERO% is still alive."
         "DOTA_Chat_Ally_is_dead"		"Ally %HERO% is dead and will respawn in %TIME% second(s)."
         "DOTA_Chat_Self_is_alive"		"I'm still alive."

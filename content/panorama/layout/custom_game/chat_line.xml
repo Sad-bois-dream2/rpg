@@ -8,6 +8,8 @@
     <Panel class="CustomChatLineContainer" selectionpos="auto" hittest="false" hittestchildren="false">
         <Panel class="CustomHeroBadge" selectionpos="auto" />
         <Image id="HeroIcon" class="CustomHeroIcon" selectionpos="auto" src="file://{images}/heroes/npc_dota_hero_crystal_maiden_alt1.png" defaultsrc="" scaling="stretch-to-fit-preserve-aspect" />
-        <Label id="ChatLabel" class="CustomChatLineLabel" html="true" text=""/>
+        <Label id="TeamName" html="true" text=""/>
+        <DOTAUserName id="PlayerName" steamid="local" />
+        <Label id="ChatLabel" html="true" text=""/>
     </Panel>
 </root>

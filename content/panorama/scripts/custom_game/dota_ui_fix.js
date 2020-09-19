@@ -11,7 +11,7 @@ function OnChatMessageRequest(event) {
     var heroIcon = chatLine.FindChildTraverse('HeroIcon');
     var chatLineLabel = chatLine.FindChildTraverse('ChatLabel');
     chatLine.SetHasClass("NotReallyExpired", true);
-    var playerColor = GetHEXPlayerColor(0);
+    var playerColor = GetHEXPlayerColor(event.player_id);
     if(event.args != "[]") {
         event.args = JSON.parse(event.args);
         event.args = JSON.parse(event.args);
@@ -27,8 +27,11 @@ function OnChatMessageRequest(event) {
         }
         event.text = event.text.replace(event.args[i].name, event.args[i].value);
     }
-    var chatLineText = $.Localize("#DOTA_Chat_Allies").replace("%NAME%", "<font color='" + playerColor + "'>" + Players.GetPlayerName(event.player_id) + "</font>").replace("%TEXT%", event.text);
-    chatLineLabel.text = chatLineText;
+    var chatLineTeamName = chatLine.FindChildTraverse('TeamName');
+    var chatLinePlayerName = chatLine.FindChildTraverse('PlayerName');
+    chatLinePlayerName.style.color = playerColor;
+    chatLineTeamName.text = "[" + $.Localize("DOTA_ToolTip_Targeting_Allies") + "]";
+    chatLineLabel.text = ": " + event.text;
     heroIcon.SetImage("file://{images}/heroes/" + event.hero + ".png");
 }
 

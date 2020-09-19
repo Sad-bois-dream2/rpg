@@ -40,8 +40,25 @@ function OnPortraitClick() {
 		];
 		GameEvents.SendCustomGameEventToServer("rpg_say_chat_message", { "player_id" : player, "msg" : message, "args": JSON.stringify(args)});
 	}
+	GameUI.SetCameraTargetPosition(Entities.GetAbsOrigin(hero), -1.0);
 }
 
+var attackRangeParticle;
+
+function OnPortraitMouseHover() {
+    if(latestStats) {
+        var hero = Players.GetLocalPlayerPortraitUnit();
+        attackRangeParticle = Particles.CreateParticle( "particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, hero);
+        Particles.SetParticleControl(attackRangeParticle, 1, [Entities.GetAttackRange(hero),1,1] );
+    }
+}
+
+function OnPortraitMouseOut() {
+    if(attackRangeParticle != null) {
+        Particles.DestroyParticleEffect( attackRangeParticle, true );
+        Particles.ReleaseParticleIndex( attackRangeParticle );
+    }
+}
 
 function OnHPBarClick() {
 	var IsAltDown = GameUI.IsAltDown();
