@@ -217,6 +217,7 @@
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust"		"Sleeping Wind"
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Description"		"Priestess sends to target point day spirits along with wind that will heal all allies and put them into sleep on the way. Allies during sleeping state will block any damage instance once and wake up after.\nRank 2: Increase all healing received by <font color='white'><b>50%</b></font> of allies that in sleeping state from this ability.\nRank 3: Also apply HoT that will heal all affected allies by <font color='white'><b>20%</b></font> of your intellect every second for <font color='white'><b>5</b></font> seconds.\nRank 4: Sleeping state will now block <font color='white'><b>2</b></font> damage instances instead of <font color='white'><b>1</b></font>."
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Note0"		"Sleeping state applied before healing."
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_Note1"		"Sleep status effect count as stun status effect."
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_healing"		"%INTELLECT TO HEALING: "
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_sleep_duration"		"SLEEP DURATION: "
         "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_range"		"RANGE: "
@@ -264,8 +265,17 @@
     	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_night_buff"		"Hurricane"
         "DOTA_Tooltip_modifier_priestess_of_sacred_forest_tranquility_night_buff_Description"		"Critical damage increased."
  		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night"		"Enchanting Wind"
- 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_Description"		"Priestess sends to target point night spirits along with wind that will deal <font color='#238842'>Nature</font> damage to all enemies and put them into sleep on the way. Enemies during sleeping state will wake after any damage instance.\nRank 2: Damage instance that wake up enemies from sleeping state will be 200% critical strike.\nRank 3: After enemy wake up also apply effect that will deal <font color='#238842'>Nature</font> damage every second equal <font color='white'><b>20%</b></font> of your intellect for <font color='white'><b>5</b></font> seconds.\nRank 4: Enemies that wake up from sleeping state will be slowed by 20% for 5 seconds."
-
+ 		"DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_Description"		"Priestess sends to target point night spirits along with wind that will deal <font color='#238842'>Nature</font> damage to all enemies and put them into sleep on the way (if autocast turned on). Enemies during sleeping state will wake after any damage instance not from that ability.\nRank 2: Next spell damage instance not from that ability for damaged enemies from you will be <font color='white'><b>200%</b></font> critical strike.\nRank 3: All affected enemies also will gain effect that will deal <font color='#238842'>Nature</font> damage to them every second equal <font color='white'><b>20%</b></font> of your intellect for <font color='white'><b>5</b></font> seconds.\nRank 4: Enemies that wake up from sleeping state will be slowed by <font color='white'><b>20%</b></font> for <font color='white'><b>5</b></font> seconds."
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_Note0"		"Sleep status effect count as stun status effect."
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_damage"		"%INTELLECT TO DAMAGE: "
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_sleep_duration"		"SLEEP DURATION: "
+        "DOTA_Tooltip_Ability_priestess_of_sacred_forest_sleep_dust_night_range"		"RANGE: "
+    	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"		"Enchanting Wind"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_sleep_Description"		"Sleeping."
+    	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_dot"		"Enchanting Wind"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_dot_Description"		"Suffer from <font color='#238842'>Nature</font> damage."
+    	"DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_crit"		"Enchanting Wind"
+        "DOTA_Tooltip_modifier_priestess_of_sacred_forest_sleep_dust_night_crit_Description"		"Next spell damage instance not from this ability by Priestess of the Sacred Forest will be critical strike."
         // Light Cardinal (silencer)
 
 		"DOTA_Tooltip_Ability_light_cardinal_piety"		"Piety"

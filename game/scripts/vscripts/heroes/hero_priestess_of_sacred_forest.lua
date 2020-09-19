@@ -2086,7 +2086,248 @@ function priestess_of_sacred_forest_tranquility_night:OnChannelFinish()
     end
 end
 
+-- priestess_of_sacred_forest_sleep_dust_night
+modifier_priestess_of_sacred_forest_sleep_dust_night_sleep = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/generic_gameplay/generic_sleep.vpcf"
+    end,
+    GetEffectAttachType = function(self)
+        return PATTACH_OVERHEAD_FOLLOW
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true
+        }
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_sleep")
+    if (modifier and damageTable.damage > 0) then
+        if(damageTable.ability and damageTable.ability:GetAbilityName() == "priestess_of_sacred_forest_sleep_dust_night") then
+            return
+        end
+        modifier:Destroy()
+    end
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_sleep:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_crit = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
+    end,
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_crit:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_crit")
+    if (modifier and modifier.ability and modifier.ability.nextInstanceCrit and damageTable.damage > 0 and modifier.ability.caster == damageTable.attacker and damageTable.ability and damageTable.ability:GetAbilityName() ~= "priestess_of_sacred_forest_sleep_dust_night") then
+        damageTable.crit = modifier.ability.nextInstanceCrit
+        modifier:Destroy()
+        return damageTable
+    end
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_crit:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_crit"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_priestess_of_sacred_forest_sleep_dust_night_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/priestess_of_sacred_forest/sleep_dust/negative/sleep_dust_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.ability.dotTick, 0, 0))
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.damage = self.ability.dotDamage * Units:GetHeroIntellect(self.caster)
+    damageTable.naturedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["modifier_priestess_of_sacred_forest_sleep_dust_night_dot"] = LUA_MODIFIER_MOTION_NONE
+
 priestess_of_sacred_forest_sleep_dust_night = class({})
+
+function priestess_of_sacred_forest_sleep_dust_night:OnUpgrade()
+    if (IsServer()) then
+        if (not self.stanceAbility) then
+            self.stanceAbility = self:GetCaster():FindAbilityByName("priestess_of_sacred_forest_sleep_dust")
+        end
+        if (self.stanceAbility) then
+            self.stanceAbility:SetLevel(self:GetLevel())
+        end
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.sleepDuration = self:GetSpecialValueFor("sleep_duration")
+    self.sleepSlow = self:GetSpecialValueFor("sleep_slow") / 100
+    self.sleepSlowDuration = self:GetSpecialValueFor("sleep_slow_duration")
+    self.nextInstanceCrit = self:GetSpecialValueFor("next_instance_crit") / 100
+    self.range = self:GetSpecialValueFor("range")
+    self.speed = self:GetSpecialValueFor("speed")
+    self.width = self:GetSpecialValueFor("width")
+end
+
+function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, location)
+    if (not IsServer()) then
+        return
+    end
+    if (target and target ~= self.caster and not TableContains(self.damagedEnemies, target)) then
+        local damageTable = {}
+        damageTable.caster = self.caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = self.damage * Units:GetHeroIntellect(self.caster)
+        damageTable.naturedmg = true
+        GameMode:DamageUnit(damageTable)
+        if (self:GetAutoCastState()) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_sleep"
+            modifierTable.duration = self.sleepDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if(self.dotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_dot"
+            modifierTable.duration = self.dotDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if(self.nextInstanceCrit > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = self.caster
+            modifierTable.target = target
+            modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_crit"
+            modifierTable.duration = -1
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        table.insert(self.damagedEnemies, target)
+    end
+    return false
+end
+
+function priestess_of_sacred_forest_sleep_dust_night:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    self.caster = self:GetCaster()
+    local casterLocation = self.caster:GetAbsOrigin()
+    local casterTeam = self.caster:GetTeamNumber()
+    local direction = (self:GetCursorPosition() - casterLocation):Normalized()
+    self.damagedEnemies = {}
+    local projectile = {
+        Ability = self,
+        EffectName = "particles/units/priestess_of_sacred_forest/sleep_dust/negative/sleep_dust.vpcf",
+        vSpawnOrigin = casterLocation,
+        fDistance = self.range,
+        fStartRadius = self.width,
+        fEndRadius = self.width,
+        Source = self.caster,
+        bHasFrontalCone = false,
+        bReplaceExisting = false,
+        iUnitTargetTeam = DOTA_UNIT_TARGET_TEAM_ENEMY,
+        iUnitTargetFlags = DOTA_UNIT_TARGET_FLAG_NONE,
+        iUnitTargetType = DOTA_UNIT_TARGET_BASIC,
+        fExpireTime = GameRules:GetGameTime() + 10.0,
+        bDeleteOnHit = true,
+        vVelocity = direction * self.speed,
+        bProvidesVision = true,
+        iVisionRadius = 400,
+        iVisionTeamNumber = casterTeam
+    }
+    ProjectileManager:CreateLinearProjectile(projectile)
+    EmitSoundOn("Hero_Enchantress.EnchantCast", self.caster)
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -2098,6 +2339,8 @@ if (IsServer() and not GameMode.PRIESTESS_OF_SACRED_FOREST_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_airy, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_twilight_breeze_night_dot, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_sleep, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_night_sleep, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_priestess_of_sacred_forest_sleep_dust_night_crit, 'OnTakeDamage'))
     GameMode:RegisterMinimumAbilityCooldown('priestess_of_sacred_forest_spirits', 40)
     GameMode.PRIESTESS_OF_SACRED_FOREST_INIT = true
 end
