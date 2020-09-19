@@ -2038,20 +2038,21 @@ function priestess_of_sacred_forest_tranquility_night:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local thinker = CreateModifierThinker(
+    local position = caster:GetAbsOrigin()
+    if (self.spirit > 0) then
+        position = self:GetCursorPosition()
+    end
+    CreateModifierThinker(
             caster,
             self,
             "modifier_priestess_of_sacred_forest_tranquility_night_thinker",
             {
                 duration = self.duration
             },
-            caster:GetAbsOrigin(),
+            position,
             caster:GetTeamNumber(),
             false
     )
-    if (self.spirit > 0) then
-        thinker:SetAbsOrigin(self:GetCursorPosition())
-    end
 end
 
 function priestess_of_sacred_forest_tranquility_night:OnUpgrade()
