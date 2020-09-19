@@ -31,18 +31,29 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"200 250 300 350"
+				"damage"				"200 200 350 350"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"backstab_damage"		"300 400 500 600"
+				"backstab_damage"		"300 300 600 600"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
+				"duration"				"3 3 6 6"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sil_duration"			"0 1.5 1.5 3"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_against_sil"		"0 0 0 30"
+			}
+			
 		}
 		"precache"
 		{
@@ -84,17 +95,32 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"magic_res"				"15 20 25 30"
+				"magic_res"				"15 15 25 25"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_res"			"15 20 25 30"
+				"status_res"			"15 15 25 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"0 0 500 500"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"res_per_ms"			"0 0 0 0.06"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aggro_reduce"			"0 1 1 1"
 			}
 		}
 		"precache"
@@ -122,7 +148,7 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30 25 20 20"
+		"AbilityCooldown"				"30 25 25 25"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -135,12 +161,12 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"chance"				"20 25 30 35"
+				"chance"				"20 30 30 30"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"chance_active"				"40 50 60 70"
+				"chance_active"			"40 60 60 60"
 			}
 			"03"
 			{
@@ -150,17 +176,27 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"5 10 10 15"
+				"max_stacks"			"8 15 15 15"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_duration"				"5"
+				"stack_duration"		"5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"3 4 5 6"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"strike_chance"			"0 0 25 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_per_speed"		"0 0 0 200"
 			}
 		}
 	}
@@ -198,18 +234,49 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"instance"				"2 3 4 5"
+				"instance"				"3 5 5 5"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"shadows"				"4 6 8 10"
+				"shadows"				"6 10 10 10"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"30 35 40 45"
+				"damage"				"30 30 45 45"
 			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_inc_per_strike"	"0 10 10 10"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"speed_bonus"			"0 0 30 30"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_void_dmg"		"0 0 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"extra_shadow_chance"	"0 0 0 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"			"0 0 0 5"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_dmg"				"0 0 0 20"
+			}
+			
 		}
 		"precache"
 		{
@@ -250,12 +317,109 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_crit_damage"			"20 30 40 50"
+				"bonus_crit_damage"		"30 50 50 50"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_damage"				"8 10 12 15"
+				"bonus_damage"			"10 15 15 15"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"15"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_amp"				"0 0 30 30"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"phys_amp"				"0 0 0 30"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"buff_duration"			"6 6 6 6"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Abyssal Stalker: Curse of Abyss 
+	//=================================================================================================================
+	"abyssal_stalker_curse_of_abyss"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
+		"AbilityTextureName"			"warlock_shadow_word"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_perc"				"10 10 20 20"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_break"			"3 3 6 6"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"slow"					"10 10 20 20"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multi_chance"			"0 100 100 100"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"8 8 8 8"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aa_proc_chance"		"0 0 100 100"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"amp_per_stack"			"0 0 0 10"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sil_amp"				"0 0 0 15"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_amp"				"0 0 0 20"
 			}
 		}
 	}
