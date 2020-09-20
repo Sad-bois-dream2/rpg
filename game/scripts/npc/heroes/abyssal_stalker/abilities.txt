@@ -249,12 +249,12 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"void_dmg_per_stack"	"0 10 10 10"
+				"void_dmg_per_stack"	"0 5 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_speed_per_stack"			"0 0 30 30"
+				"aa_speed_per_stack"			"0 0 20 20"
 			}
 			"06"
 			{
