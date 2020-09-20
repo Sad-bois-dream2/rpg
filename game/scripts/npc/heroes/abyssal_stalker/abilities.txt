@@ -234,49 +234,48 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"instance"				"3 5 5 5"
+				"damage"				"30 30 45 45"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"shadows"				"6 10 10 10"
+				"instance"				"3 5 5 5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"30 30 45 45"
+				"shadows"				"6 10 10 10"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_inc_per_strike"	"0 10 10 10"
+				"void_dmg_per_stack"	"0 10 10 10"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"speed_bonus"			"0 0 30 30"
+				"aa_speed_per_stack"			"0 0 30 30"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_void_dmg"		"0 0 5 5"
+				"stacks_per_strike"		"0 1 1 1"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"extra_shadow_chance"	"0 0 0 25"
+				"max_stacks"		"0 5 5 5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"			"0 0 0 5"
+				"stacks_duration"	"0 6 6 6"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dot_dmg"				"0 0 0 20"
+				"proc_chance_per_stack"	"0 0 0 2"
 			}
-			
 		}
 		"precache"
 		{
