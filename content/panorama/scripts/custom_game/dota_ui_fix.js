@@ -30,6 +30,7 @@ function OnChatMessageRequest(event) {
     var chatLineTeamName = chatLine.FindChildTraverse('TeamName');
     var chatLinePlayerName = chatLine.FindChildTraverse('PlayerName');
     chatLinePlayerName.style.color = playerColor;
+    chatLinePlayerName.steamid = event.steamID;
     chatLineTeamName.text = "[" + $.Localize("DOTA_ToolTip_Targeting_Allies") + "]";
     chatLineLabel.text = ": " + event.text;
     heroIcon.SetImage("file://{images}/heroes/" + event.hero + ".png");
