@@ -268,7 +268,8 @@ function modifier_abyssal_stalker_shadow_rush_shadows:OnAttackLanded(kv)
     local attacker = kv.attacker
     local target = kv.target
     if (attacker and target and not target:IsNull() and attacker == self.caster) then
-        self:SetStackCount(math.min(self:GetStackCount() + 1, self.ability.maxShadows))
+        local newStacks = math.min(self:GetStackCount() + 1, self.ability.maxShadows)
+        self:SetStackCount(newStacks)
     end
 end
 

@@ -637,7 +637,7 @@
         "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri_Description"		"Amount of seeds that you collected."
 
         // Abyssal Stalker (Phantom Assassin)
-                "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush"							"Shadow Rush"
+        "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush"							"Shadow Rush"
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_Description"				"Abyssal Stalker blinks to an enemy silently like shadow and strikes the target multiple times with <font color='#9200fa'>Void</font> damage by a portion of her attack damage using stolen shadow parts. Each successful auto attack steal <font color='white'><b>1</b></font> part of enemy shadow.\nRank 2: Each strike will give you stack of Executioner effect that increase <font color='#9200fa'>Void</font> damage by <font color='white'><b>5%</b></font> for <font color='white'><b>6</b></font> seconds, up to <font color='white'><b>5</b></font> stacks.\nRank 3: Executioner effect now also provide <font color='white'><b>20</b></font> attack speed per stack.\nRank 4: Executioner effect now may prevent stolen shadows consuming with chance equal <font color='white'><b>2%</b></font> per stack."
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_instance"					"MAX STRIKES: "
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush_shadows"					"MAX SHADOWS: "
