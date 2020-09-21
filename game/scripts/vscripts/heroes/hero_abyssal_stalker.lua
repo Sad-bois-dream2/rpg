@@ -612,6 +612,14 @@ modifier_abyssal_stalker_void_dust_debuff = class({
     end
 })
 
+function modifier_abyssal_stalker_void_dust_buff:GetStatusEffectName()
+    return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+end
+
+function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
+    return 5
+end
+
 function modifier_abyssal_stalker_void_dust_buff:OnCreated()
     if (not IsServer()) then
         return
@@ -665,6 +673,12 @@ function modifier_abyssal_stalker_void_dust_buff:OnDestroy()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 2, Vector(self.ability.aoeDamageRadius, 0, 0))
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
     local damage = self.ability.aoeDamage * Units:GetAttackDamage(caster)
     for key, unit in pairs(units) do
         local modifierTable = {}
@@ -750,39 +764,39 @@ function modifier_abyssal_stalker_void_dust:OnCreated()
 end
 
 function modifier_abyssal_stalker_void_dust:GetFireProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetFrostProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetEarthProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetVoidProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetHolyProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetNatureProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetInfernoProtectionBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetVoidDamageBonus()
-    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+    return Units:GetMoveSpeed(self.caster) * (self.ability.resPerMs or 0)
 end
 
 function modifier_abyssal_stalker_void_dust:GetDamageReductionBonus()
-    if(self.caster:HasModifier("modifier_abyssal_stalker_void_dust_buff")) then
+    if (self.caster:HasModifier("modifier_abyssal_stalker_void_dust_buff")) then
         return self.ability.damageReductionActive
     end
     return self.ability.damageReduction
@@ -796,6 +810,13 @@ abyssal_stalker_void_dust = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_abyssal_stalker_void_dust"
+    end,
+    GetCastRange = function(self)
+        local dmgRadius = self:GetSpecialValueFor("aoe_damage_radius")
+        if (dmgRadius > 0) then
+            return dmgRadius
+        end
+        return 0
     end
 })
 

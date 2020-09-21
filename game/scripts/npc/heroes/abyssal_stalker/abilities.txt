@@ -125,7 +125,7 @@
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aoe_miss_duration"				"0 100 100 100"
+				"aoe_miss_duration"				"0 3 3 3"
 			}
 			"08"
 			{
@@ -147,6 +147,7 @@
 		{
             "particle"  "particles/units/abyssal_stalker/void_dust/void_dust.vpcf"
             "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
 		}
 	}
