@@ -110,23 +110,42 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"0 0 500 500"
+				"aoe_damage_radius"				"0 400 400 400"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"res_per_ms"			"0 0 0 0.06"
+				"aoe_damage"				"0 100 100 1000"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aggro_reduce"			"0 1 1 1"
+				"aoe_miss_chance"				"0 100 100 100"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aoe_miss_duration"				"0 100 100 100"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"res_per_ms"			"0 0 0 0.06"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_reduction"			"0 20 20 20"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_reduction_active"			"0 40 40 40"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/abyssal_stalker/void_dust/void_dust.vpcf"
-            "particle"  "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
             "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
 		}

@@ -584,39 +584,16 @@ modifier_abyssal_stalker_void_dust_buff = class({
         return "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
     end
 })
-modifier_abyssal_stalker_void_dust_passive = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return true
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_void_dust:GetAbilityTextureName()
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKDEDAMAGE }
-    end
-})
 
 modifier_abyssal_stalker_void_dust_debuff = class({
     IsDebuff = function(self)
-        return true
+        return false
     end,
     IsHidden = function(self)
         return false
     end,
     IsPurgable = function(self)
-        return true
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -624,21 +601,16 @@ modifier_abyssal_stalker_void_dust_debuff = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_void_dust:GetAbilityTextureName()
+    GetEffectName = function(self)
+        return "particles/units/abyssal_stalker/void_dust/void_dust.vpcf"
     end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKDEDAMAGE }
+    GetStatusEffectName = function(self)
+        return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+    end,
+    StatusEffectPriority = function(self)
+        return 5
     end
 })
-
-function modifier_abyssal_stalker_void_dust_buff:GetStatusEffectName()
-    return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
-end
-
-function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
-    return 5
-end
 
 function modifier_abyssal_stalker_void_dust_buff:OnCreated()
     if (not IsServer()) then
@@ -683,101 +655,147 @@ function modifier_abyssal_stalker_void_dust_buff:OnDestroy()
     if not IsServer() then
         return
     end
-    local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self:GetCaster():GetAbsOrigin(),
+    local caster = self.ability:GetCaster()
+    local units = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
             nil,
-            self:GetAbility():GetSpecialValueFor("radius"),
+            self.ability.aoeDamageRadius,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    local damage = self.ability.aoeDamage * Units:GetAttackDamage(caster)
     for key, unit in pairs(units) do
         local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
+        modifierTable.caster = caster
         modifierTable.target = unit
-        modifierTable.ability = self:GetAbility()
+        modifierTable.ability = self.ability
         modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_debuff"
-        modifierTable.duration = self:GetAbility():GetSpecialValueFor("duration")
+        modifierTable.duration = self.ability.aoeMissDuration
         GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
-function modifier_abyssal_stalker_void_dust_buff:GetAggroCausedBonus()
-    return self:GetAbility():GetSpecialValueFor("aggro_reduce") * (-1)
-end
-
-function modifier_abyssal_stalker_void_dust_passive:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self:StartIntervalThink(0.03)
-end
-
-function modifier_abyssal_stalker_void_dust_passive:OnIntervalThink()
-    local ms = Units:GetMoveSpeed(self:GetCaster())
-    local bonus = ms * self:GetAbility():GetSpecialValueFor("res_per_ms")
-    self:SetStackCount(bonus)
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetFireProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetFrostProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetEarthProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetVoidProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetHolyProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetNatureProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetInfernoProtectionBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:GetVoidDamageBonus()
-    return self:GetStackCount() / 100
-end
-
-function modifier_abyssal_stalker_void_dust_passive:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_void_dust_passive")
-    if modifier then
-        local bonus = modifier:GetStackCount() / 100 + 1
-        damageTable.damage = damageTable.damage * bonus
-    end
-end
-
-function modifier_abyssal_stalker_void_dust_debuff:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_void_dust_debuff")
-    if modifier then
-        local bonus = 0.85
-        damageTable.damage = damageTable.damage * bonus
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = caster
+        damageTable.target = unit
+        damageTable.ability = self.ability
+        damageTable.voiddmg = true
+        GameMode:DamageUnit(damageTable)
     end
 end
 
 LinkedModifiers["modifier_abyssal_stalker_void_dust_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_void_dust_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return true
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_MISS_PERCENTAGE }
+    end
+})
+
+function modifier_abyssal_stalker_void_dust_debuff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_abyssal_stalker_void_dust_debuff:GetModifierMiss_Percentage()
+    return self.ability.aoeMissChance
+end
+
 LinkedModifiers["modifier_abyssal_stalker_void_dust_debuff"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["modifier_abyssal_stalker_void_dust_passive"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_void_dust = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_abyssal_stalker_void_dust:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_abyssal_stalker_void_dust:GetFireProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetFrostProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetEarthProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetVoidProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetHolyProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetNatureProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetInfernoProtectionBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetVoidDamageBonus()
+    return Units:GetMoveSpeed(self.caster) * self.ability.resPerMs
+end
+
+function modifier_abyssal_stalker_void_dust:GetDamageReductionBonus()
+    if(self.caster:HasModifier("modifier_abyssal_stalker_void_dust_buff")) then
+        return self.ability.damageReductionActive
+    end
+    return self.ability.damageReduction
+end
+
+LinkedModifiers["modifier_abyssal_stalker_void_dust"] = LUA_MODIFIER_MOTION_NONE
 
 abyssal_stalker_void_dust = class({
     GetAbilityTextureName = function(self)
         return "abyssal_stalker_void_dust"
     end,
     GetIntrinsicModifierName = function(self)
-        return "modifier_abyssal_stalker_void_dust_passive"
+        return "modifier_abyssal_stalker_void_dust"
     end
 })
 
@@ -785,6 +803,13 @@ function abyssal_stalker_void_dust:OnUpgrade()
     self.protection = self:GetSpecialValueFor("magic_res") / 100
     self.resist = self:GetSpecialValueFor("status_res") / 100
     self.duration = self:GetSpecialValueFor("duration")
+    self.aoeDamageRadius = self:GetSpecialValueFor("aoe_damage_radius")
+    self.aoeDamage = self:GetSpecialValueFor("aoe_damage") / 100
+    self.aoeMissChance = self:GetSpecialValueFor("aoe_miss_chance")
+    self.aoeMissDuration = self:GetSpecialValueFor("aoe_miss_duration")
+    self.resPerMs = self:GetSpecialValueFor("res_per_ms") / 100
+    self.damageReduction = self:GetSpecialValueFor("dmg_reduction") / 100
+    self.damageReductionActive = self:GetSpecialValueFor("dmg_reduction_active") / 100
 end
 
 function abyssal_stalker_void_dust:OnSpellStart()
@@ -796,11 +821,6 @@ function abyssal_stalker_void_dust:OnSpellStart()
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
     EmitSoundOn("Hero_PhantomAssassin.Blur.Break", modifierTable.caster)
-    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
-    Timers:CreateTimer(1, function()
-        ParticleManager:DestroyParticle(particle, false)
-        ParticleManager:ReleaseParticleIndex(particle)
-    end)
 end
 
 --GAZE OF ABYSS--
@@ -1995,8 +2015,6 @@ if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(abyssal_stalker_gaze_of_abyss_effect, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_buff, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_void_dust_passive, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_void_dust_debuff, 'OnTakeDamage'))
     GameMode.ABYSSAL_STALKER_INIT = true
 end
 
