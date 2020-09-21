@@ -546,10 +546,21 @@
         //"DOTA_Tooltip_Ability_luminous_samurai_light_iai_giri_stack_cd"		"INNER COOLDOWN: "
         "DOTA_Tooltip_Ability_luminous_samurai_light_iai_giri_active_radius"		"RADIUS: "
         "DOTA_Tooltip_Ability_luminous_samurai_light_iai_giri_proc_damage"		"%CRITICAL DAMAGE: "
+        "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri_stacks"					"Light Iai-Giri"
+        "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri_stack_Description"		"Critically strikes every 3 attacks."
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven"		"Breath of Heaven"
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_Description"		"PASSIVE: Every <font color='white'><b>3rd</b></font> attack heals the lowest health nearby ally for <font color='white'><b>40% / 60% / 80% / 100%</b></font> of your AGI. Collect a Light Seed of Creation every time you heal an ally (<font color='white'><b>1</b></font> second cooldown).<br><br>ACTIVE: Consumes <font color='white'><b>3</b></font> seeds to heal all nearby allies (based on your AD)."
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_active_heal"		"%AD TO HEAL: "
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_stack_cost"		"SEEDS REQUIRED: "
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_max_stacks"		"MAXIMUM SEEDS: "
+        //"DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_stack_cd"		"INNER COOLDOWN: "
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_active_radius"		"RADIUS: "
+        "DOTA_Tooltip_Ability_luminous_samurai_breath_of_heaven_proc_heal"		"%PASSIVE AD TO HEAL: "
+         "DOTA_Tooltip_modifier_luminous_samurai_breath_of_heaven"					"Breath of Heaven"
+        "DOTA_Tooltip_modifier_luminous_samurai_breath_of_heaven_Description"		"Heals the lowest HP ally every 3 attacks."
         "DOTA_Tooltip_modifier_luminous_samurai_seed"					"Seeds of Destruction and Creation"
         "DOTA_Tooltip_modifier_luminous_samurai_seed_Description"		"Amount of seeds that you collected."
-        "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri"					"Light Iai-Giri"
-        "DOTA_Tooltip_modifier_luminous_samurai_light_iai_giri_Description"		"Critically strikes every 3 attacks."
+        
 
         // Abyssal Stalker (Phantom Assassin)
         "DOTA_Tooltip_Ability_abyssal_stalker_shadow_rush"		"Shadow Rush"
