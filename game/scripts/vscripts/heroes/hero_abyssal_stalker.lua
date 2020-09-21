@@ -17,15 +17,14 @@ modifier_abyssal_stalker_dance_of_darkness = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
-    end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED,
-                 MODIFIER_EVENT_ON_TAKEDAMAGE }
+        return
+        {
+            MODIFIER_EVENT_ON_ATTACK_LANDED
+        }
     end
 })
 
@@ -61,26 +60,27 @@ function modifier_abyssal_stalker_dance_of_darkness:OnAttackLanded(kv)
             modifierTable.stacks = 1
             modifierTable.max_stacks = self.ability.maxStacks
             GameMode:ApplyStackingBuff(modifierTable)
+            if (self.ability.dotDuration > 0) then
+                local modifierTable = {}
+                modifierTable.caster = self.caster
+                modifierTable.target = target
+                modifierTable.ability = self.ability
+                modifierTable.modifier_name = "modifier_abyssal_stalker_dance_of_darkness_dot"
+                modifierTable.duration = self.ability.dotDuration
+                modifierTable.max_stacks = self.ability.dotMaxStacks
+                modifierTable.stacks = 1
+                GameMode:ApplyStackingDebuff(modifierTable)
+            end
         end
-        local chance = self.ability.strikeChance
-        local procDouble = RollPercentage(chance)
-        if (procDouble) then
-            self:GetCaster():PerformAttack(target, false, true, true, false, false, false, false)
+        local additonalAAProcChance = RollPercentage(self.ability.strikeChance)
+        if (additonalAAProcChance and not self.ability.strikeCD) then
+            self.caster:PerformAttack(target, false, true, true, false, false, false, false)
+            self.ability.strikeCD = true
+            local ability = self.ability
+            Timers:CreateTimer(self.ability.strikeCooldown, function()
+                ability.strikeCD = nil
+            end)
         end
-    end
-end
-
-function modifier_abyssal_stalker_dance_of_darkness:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_dance_of_darkness")
-    if (modifier and modifier:GetAbility():GetLevel() >= 4) then
-        local speed = Units:GetAttackSpeed(damageTable.attacker)
-        local scale = modifier:GetAbility():GetSpecialValueFor("damage_per_speed")
-        if damageTable.ability then
-            damageTable.damage = damageTable.damage + speed * scale / 100
-        else
-            damageTable.damage = damageTable.damage + speed * scale / 200
-        end
-        return damageTable
     end
 end
 
@@ -101,13 +101,54 @@ modifier_abyssal_stalker_dance_of_darkness_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
-    end,
+    end
 })
 
 LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_dance_of_darkness_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_abyssal_stalker_dance_of_darkness_dot:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_abyssal_stalker_dance_of_darkness_dot:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local damage = Units:GetAttackDamage(self.caster) * self.ability.dotDamage * self:GetStackCount()
+    local damageTable = {}
+    damageTable.damage = damage
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.voiddmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_dot"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_abyssal_stalker_dance_of_darkness_agi = class({
     IsDebuff = function(self)
@@ -125,9 +166,12 @@ modifier_abyssal_stalker_dance_of_darkness_agi = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_dance_of_darkness:GetAbilityTextureName()
-    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_TOOLTIP,
+            MODIFIER_PROPERTY_TOOLTIP2
+        }
+    end
 })
 
 function modifier_abyssal_stalker_dance_of_darkness_agi:OnCreated()
@@ -135,10 +179,15 @@ function modifier_abyssal_stalker_dance_of_darkness_agi:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
 end
 
-function modifier_abyssal_stalker_dance_of_darkness_agi:GetAgilityPercentBonus()
-    return self:GetStackCount() * self.ability.agiPerStack
+function modifier_abyssal_stalker_dance_of_darkness_agi:GetAttackSpeedPercentBonus()
+    return self:GetStackCount() * self.ability.attackSpeedPerStack
+end
+
+function modifier_abyssal_stalker_dance_of_darkness_agi:GetAttackDamageBonus()
+    return self:GetStackCount() * self.ability.aaSpeedToAADmgPerStack * Units:GetAttackSpeed(self.caster)
 end
 
 LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_agi"] = LUA_MODIFIER_MOTION_NONE
@@ -159,10 +208,16 @@ function abyssal_stalker_dance_of_darkness:OnUpgrade()
     self.duration = self:GetSpecialValueFor("duration")
     self.chance = self:GetSpecialValueFor("chance")
     self.chanceActive = self:GetSpecialValueFor("chance_active")
-    self.agiPerStack = self:GetSpecialValueFor("agi_per_stack") / 100
+    self.attackSpeedPerStack = self:GetSpecialValueFor("aa_speed_per_stack") / 100
     self.maxStacks = self:GetSpecialValueFor("max_stacks")
     self.stackDuration = self:GetSpecialValueFor("stack_duration")
-    self.strikeChance = self:GetSpecialValueFor("strike_chance")
+    self.strikeChance = self:GetSpecialValueFor("bonus_aa_chance")
+    self.strikeCooldown = self:GetSpecialValueFor("bonus_aa_chance_cooldown")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.dotMaxStacks = self:GetSpecialValueFor("dot_max_stacks")
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.aaSpeedToAADmgPerStack = self:GetSpecialValueFor("aa_speed_to_aa_dmg_per_stack") / 100
 end
 
 function abyssal_stalker_dance_of_darkness:OnSpellStart()
@@ -2031,7 +2086,6 @@ end]]
 if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnPostModifierApplied'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_crit, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_dance_of_darkness, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(abyssal_stalker_gaze_of_abyss_effect, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnTakeDamage'))

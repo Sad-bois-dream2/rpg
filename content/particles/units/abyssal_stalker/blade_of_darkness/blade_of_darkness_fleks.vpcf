@@ -513,7 +513,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/abyssal_stalker/blade_of_darkness/blade_of_darkness_b.vpcf"
+			m_ChildRef = resource:"particles/units/abyssal_stalker/blade_of_darkness/blade_of_darkness_fleks_b.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 10
@@ -528,17 +528,10 @@
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
 					m_entityName = "self"
 				},
 			]
-			m_previewState = 
-			{
-				m_previewModel = "models/heroes/phantom_assassin/phantom_assassin.vmdl"
-				m_nModSpecificData = 7247
-				m_sequenceName = "phantom_assassin_idle_alt1_anim"
-				m_hitboxSetName = "default"
-			}
 		},
 	]
 }
