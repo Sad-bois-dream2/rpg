@@ -652,7 +652,7 @@
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_status_res"					"%DEBUFF RESISTANCE: "
         "DOTA_Tooltip_Ability_abyssal_stalker_void_dust_duration"					"DURATION: "
 		"DOTA_Tooltip_modifier_abyssal_stalker_void_dust_buff"						"Void Dust"
-		"DOTA_Tooltip_modifier_abyssal_stalker_void_dust_buff"						"Element resistances and debuff resistance increased."
+		"DOTA_Tooltip_modifier_abyssal_stalker_void_dust_buff_Description"						"Element resistances and debuff resistance increased."
 		"DOTA_Tooltip_modifier_abyssal_stalker_void_dust_debuff"					"Void Dust"
 		"DOTA_Tooltip_modifier_abyssal_stalker_void_dust_debuff_Description"		"Blinded."
         "DOTA_Tooltip_Ability_abyssal_stalker_dance_of_darkness"					"Blade of Darkness"
