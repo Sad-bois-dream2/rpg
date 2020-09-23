@@ -17,10 +17,6 @@
 		{
 			m_ChildRef = resource:"particles/units/abyssal_stalker/void_dust/void_dust_sparkles.vpcf"
 		},
-		{
-			m_ChildRef = resource:"particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
-			m_flDelay = 0.3
-		},
 	]
 	m_controlPointConfigurations = 
 	[

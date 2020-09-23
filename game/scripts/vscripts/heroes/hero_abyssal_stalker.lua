@@ -496,7 +496,7 @@ function modifier_abyssal_stalker_blade_of_abyss:OnAbilityStart(keys)
         return
     end
     local ability = keys.ability
-    if (keys.unit == self.caster and ability == self.voidDustAbility) then
+    if (keys.unit == self.caster and ability == self.voidDustAbility and self.ability.voidDustProcCdrFlatDuration > 0) then
         local modifierTable = {}
         modifierTable.caster = self.caster
         modifierTable.ability = self.ability
@@ -537,7 +537,7 @@ end
 function modifier_abyssal_stalker_blade_of_abyss_crit:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
     if (modifier and damageTable.damage > 0 and modifier.critMulti and modifier.critMulti > 1) then
-        damageTable.crit = modifier.ability.crit
+        damageTable.crit = modifier.critMulti
         local victimPos = damageTable.victim:GetAbsOrigin()
         local coup_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
         ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPos, true)
@@ -712,38 +712,8 @@ modifier_abyssal_stalker_void_dust_buff = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_void_dust:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
         return "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
-    end
-})
-
-modifier_abyssal_stalker_void_dust_debuff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetEffectName = function(self)
-        return "particles/units/abyssal_stalker/void_dust/void_dust.vpcf"
-    end,
-    GetStatusEffectName = function(self)
-        return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
-    end,
-    StatusEffectPriority = function(self)
-        return 5
     end
 })
 
@@ -798,38 +768,40 @@ function modifier_abyssal_stalker_void_dust_buff:OnDestroy()
     if not IsServer() then
         return
     end
-    local caster = self.ability:GetCaster()
-    local units = FindUnitsInRadius(caster:GetTeamNumber(),
-            caster:GetAbsOrigin(),
-            nil,
-            self.ability.aoeDamageRadius,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(particle, 2, Vector(self.ability.aoeDamageRadius, 0, 0))
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(particle, false)
-        ParticleManager:ReleaseParticleIndex(particle)
-    end)
-    local damage = self.ability.aoeDamage * Units:GetAttackDamage(caster)
-    for key, unit in pairs(units) do
-        local modifierTable = {}
-        modifierTable.caster = caster
-        modifierTable.target = unit
-        modifierTable.ability = self.ability
-        modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_debuff"
-        modifierTable.duration = self.ability.aoeMissDuration
-        GameMode:ApplyDebuff(modifierTable)
-        local damageTable = {}
-        damageTable.damage = damage
-        damageTable.caster = caster
-        damageTable.target = unit
-        damageTable.ability = self.ability
-        damageTable.voiddmg = true
-        GameMode:DamageUnit(damageTable)
+    if (self.ability.aoeDamageRadius > 0) then
+        local caster = self.ability:GetCaster()
+        local units = FindUnitsInRadius(caster:GetTeamNumber(),
+                caster:GetAbsOrigin(),
+                nil,
+                self.ability.aoeDamageRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf", PATTACH_ABSORIGIN, caster)
+        ParticleManager:SetParticleControl(particle, 2, Vector(self.ability.aoeDamageRadius, 0, 0))
+        Timers:CreateTimer(1.0, function()
+            ParticleManager:DestroyParticle(particle, false)
+            ParticleManager:ReleaseParticleIndex(particle)
+        end)
+        local damage = self.ability.aoeDamage * Units:GetAttackDamage(caster)
+        for _, unit in pairs(units) do
+            local modifierTable = {}
+            modifierTable.caster = caster
+            modifierTable.target = unit
+            modifierTable.ability = self.ability
+            modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_debuff"
+            modifierTable.duration = self.ability.aoeMissDuration
+            GameMode:ApplyDebuff(modifierTable)
+            local damageTable = {}
+            damageTable.damage = damage
+            damageTable.caster = caster
+            damageTable.target = unit
+            damageTable.ability = self.ability
+            damageTable.voiddmg = true
+            GameMode:DamageUnit(damageTable)
+        end
     end
 end
 
@@ -976,6 +948,11 @@ function abyssal_stalker_void_dust:OnSpellStart()
     modifierTable.modifier_name = "modifier_abyssal_stalker_void_dust_buff"
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust.vpcf", PATTACH_ABSORIGIN_FOLLOW, modifierTable.caster)
+    Timers:CreateTimer(1.0, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
     EmitSoundOn("Hero_PhantomAssassin.Blur.Break", modifierTable.caster)
 end
 
