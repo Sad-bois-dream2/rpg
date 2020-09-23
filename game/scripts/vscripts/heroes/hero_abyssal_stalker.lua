@@ -412,13 +412,12 @@ function abyssal_stalker_shadow_rush:OnSpellStart()
 end
 
 --ABYSSAL STRIKE--
-
-modifier_abyssal_stalker_blade_of_abyss_crit = class({
+modifier_abyssal_stalker_blade_of_abyss_cdr = class({
     IsDebuff = function(self)
         return false
     end,
     IsHidden = function(self)
-        return true
+        return false
     end,
     IsPurgable = function(self)
         return false
@@ -429,34 +428,33 @@ modifier_abyssal_stalker_blade_of_abyss_crit = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_blade_of_abyss:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss_buff.vpcf"
+})
+
+function modifier_abyssal_stalker_blade_of_abyss_cdr:OnCreated(kv)
+    if (not IsServer()) then
+        return
     end
-})
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.abilityName = self.ability:GetAbilityName()
+    self:OnIntervalThink()
+    self:StartIntervalThink(1.0)
+end
 
-modifier_abyssal_stalker_blade_of_abyss_backstab_proc = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_blade_of_abyss:GetAbilityTextureName()
-    end,
-})
+function modifier_abyssal_stalker_blade_of_abyss_cdr:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local cooldownTable = {
+        target = self.ability,
+        ability = self.abilityName,
+        reduction = self.ability.voidDustProcCdrFlat,
+        isflat = true
+    }
+    GameMode:ReduceAbilityCooldown(cooldownTable)
+end
+
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_cdr"] = LUA_MODIFIER_MOTION_NON
 
 modifier_abyssal_stalker_blade_of_abyss = class({
     IsDebuff = function(self)
@@ -469,28 +467,102 @@ modifier_abyssal_stalker_blade_of_abyss = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_blade_of_abyss:GetAbilityTextureName()
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-    end
+        return {
+            MODIFIER_EVENT_ON_ABILITY_START
+        }
+    end,
 })
 
-modifier_abyssal_stalker_blade_of_abyss_silence = class({
+function modifier_abyssal_stalker_blade_of_abyss:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.voidDustAbility = self.caster:FindAbilityByName("abyssal_stalker_void_dust")
+end
+
+function modifier_abyssal_stalker_blade_of_abyss:OnAbilityStart(keys)
+    if (not IsServer()) then
+        return
+    end
+    local ability = keys.ability
+    if (keys.unit == self.caster and ability == self.voidDustAbility) then
+        local modifierTable = {}
+        modifierTable.caster = self.caster
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_cdr"
+        modifierTable.duration = self.ability.voidDustProcCdrFlatDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_blade_of_abyss_crit = class({
     IsDebuff = function(self)
-        return true
+        return false
     end,
     IsHidden = function(self)
         return false
     end,
     IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
         return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_abyssal_stalker_blade_of_abyss_crit:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.critMulti = kv.critMulti or 1
+end
+
+function modifier_abyssal_stalker_blade_of_abyss_crit:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
+    if (modifier and damageTable.damage > 0 and modifier.critMulti and modifier.critMulti > 1) then
+        damageTable.crit = modifier.ability.crit
+        local victimPos = damageTable.victim:GetAbsOrigin()
+        local coup_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPos, true)
+        ParticleManager:SetParticleControl(coup_pfx, 1, victimPos)
+        ParticleManager:SetParticleControlOrientation(coup_pfx, 1, damageTable.attacker:GetForwardVector() * -1, damageTable.attacker:GetRightVector(), damageTable.attacker:GetUpVector())
+        Timers:CreateTimer(1, function()
+            ParticleManager:DestroyParticle(coup_pfx, false)
+            ParticleManager:ReleaseParticleIndex(coup_pfx)
+        end)
+        EmitSoundOn("Hero_PhantomAssassin.CoupDeGrace", damageTable.victim)
+        return damageTable
+    end
+end
+
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_blade_of_abyss_sneaking = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -498,75 +570,85 @@ modifier_abyssal_stalker_blade_of_abyss_silence = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return abyssal_stalker_blade_of_abyss:GetAbilityTextureName()
+    GetEffectName = function(self)
+        return "particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss_buff.vpcf"
     end,
-    CheckStates = function(self)
-        return { [MODIFIER_STATE_SILENCED] = true }
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_INVISIBILITY_LEVEL
+        }
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_INVISIBLE] = true
+        }
+    end,
+    GetModifierInvisibilityLevel = function(self)
+        return 1
     end
 })
 
-function modifier_abyssal_stalker_blade_of_abyss_crit:OnCreated()
+function modifier_abyssal_stalker_blade_of_abyss_sneaking:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.caster = self:GetCaster()
     self.ability = self:GetAbility()
 end
 
-function modifier_abyssal_stalker_blade_of_abyss:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss")
-    if (modifier and damageTable.damage > 0 and damageTable.physdmg and modifier:GetAbility():GetLevel() >= 4) then
-        if damageTable.victim:IsSilenced() then
-            damageTable.damage = damageTable.damage * (1 + modifier:GetAbility():GetSpecialValueFor("dmg_against_sil") / 100)
-            return damageTable
-        end
-    end
-end
-
-function modifier_abyssal_stalker_blade_of_abyss_crit:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_crit")
-    if (modifier and damageTable.damage > 0 and damageTable.physdmg and not damageTable.ability) then
-        if damageTable.victim:GetForwardVector():Dot(damageTable.attacker:GetForwardVector()) >= 0 then
-            damageTable.crit = modifier.ability.critBack
+function modifier_abyssal_stalker_blade_of_abyss_sneaking:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_sneaking")
+    if (modifier and damageTable.damage > 0 and modifier.ability) then
+        local attackerForwardVector = damageTable.attacker:GetForwardVector()
+        local backstab = ((damageTable.victim:GetForwardVector():Dot(attackerForwardVector)) >= 0)
+        if (modifier.ability.silenceDuration > 0) then
             local modifierTable = {}
             modifierTable.caster = damageTable.attacker
-            modifierTable.ability = modifier:GetAbility()
+            modifierTable.ability = modifier.ability
+            modifierTable.target = damageTable.victim
+            modifierTable.modifier_name = "modifier_silence"
+            modifierTable.duration = modifier.ability.silenceDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if (modifier.ability.critDuration > 0) then
+            local critMulti = 1
+            if (backstab) then
+                critMulti = modifier.ability.critBack * modifier.ability.critMultiplier
+            else
+                critMulti = modifier.ability.crit * modifier.ability.critMultiplier
+            end
+            local modifierTable = {}
+            modifierTable.caster = damageTable.attacker
+            modifierTable.ability = modifier.ability
             modifierTable.target = damageTable.attacker
-            modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_backstab_proc"
-            modifierTable.duration = 10
+            modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_crit"
+            modifierTable.duration = modifier.ability.critDuration
+            modifierTable.modifier_params = {
+                critMulti = critMulti
+            }
             GameMode:ApplyBuff(modifierTable)
         else
-            damageTable.crit = modifier.ability.crit
-        end
-        local victimPos = damageTable.victim:GetAbsOrigin()
-        local coup_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
-        ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPos, true)
-        ParticleManager:SetParticleControl(coup_pfx, 1, victimPos)
-        ParticleManager:SetParticleControlOrientation(coup_pfx, 1, damageTable.attacker:GetForwardVector() * (-1), damageTable.attacker:GetRightVector(), damageTable.attacker:GetUpVector())
-        Timers:CreateTimer(1, function()
-            ParticleManager:DestroyParticle(coup_pfx, false)
-            ParticleManager:ReleaseParticleIndex(coup_pfx)
-        end)
-        EmitSoundOn("Hero_PhantomAssassin.CoupDeGrace", damageTable.victim)
-        if modifier:GetAbility():GetLevel() >= 2 then
-            local modifierTable = {}
-            modifierTable.caster = damageTable.attacker
-            modifierTable.ability = modifier:GetAbility()
-            modifierTable.target = damageTable.victim
-            modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_silence"
-            modifierTable.duration = modifier:GetAbility():GetSpecialValueFor("sil_duration")
-            GameMode:ApplyDebuff(modifierTable)
+            if (backstab) then
+                damageTable.crit = modifier.ability.critBack
+            else
+                damageTable.crit = modifier.ability.crit
+            end
+            local victimPos = damageTable.victim:GetAbsOrigin()
+            local coup_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+            ParticleManager:SetParticleControlEnt(coup_pfx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", victimPos, true)
+            ParticleManager:SetParticleControl(coup_pfx, 1, victimPos)
+            ParticleManager:SetParticleControlOrientation(coup_pfx, 1, attackerForwardVector * -1, damageTable.attacker:GetRightVector(), damageTable.attacker:GetUpVector())
+            Timers:CreateTimer(1, function()
+                ParticleManager:DestroyParticle(coup_pfx, false)
+                ParticleManager:ReleaseParticleIndex(coup_pfx)
+            end)
+            EmitSoundOn("Hero_PhantomAssassin.CoupDeGrace", damageTable.victim)
         end
         modifier:Destroy()
         return damageTable
     end
 end
 
-LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_crit"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_backstab_proc"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_silence"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_sneaking"] = LUA_MODIFIER_MOTION_NONE
 
 abyssal_stalker_blade_of_abyss = class({
     GetAbilityTextureName = function(self)
@@ -584,6 +666,11 @@ function abyssal_stalker_blade_of_abyss:OnUpgrade()
     self.duration = self:GetSpecialValueFor("duration")
     self.crit = self:GetSpecialValueFor("damage") / 100
     self.critBack = self:GetSpecialValueFor("backstab_damage") / 100
+    self.silenceDuration = self:GetSpecialValueFor("silence_duration")
+    self.critDuration = self:GetSpecialValueFor("crit_duration")
+    self.critMultiplier = self:GetSpecialValueFor("crit_multiplier")
+    self.voidDustProcCdrFlat = self:GetSpecialValueFor("void_dust_proc_cdr_flat")
+    self.voidDustProcCdrFlatDuration = self:GetSpecialValueFor("void_dust_proc_cdr_flat_duration")
 end
 
 function abyssal_stalker_blade_of_abyss:OnSpellStart()
@@ -592,14 +679,7 @@ function abyssal_stalker_blade_of_abyss:OnSpellStart()
     modifierTable.caster = caster
     modifierTable.target = caster
     modifierTable.ability = self
-    modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_crit"
-    modifierTable.duration = self.duration
-    GameMode:ApplyBuff(modifierTable)
-    local modifierTable = {}
-    modifierTable.caster = caster
-    modifierTable.target = caster
-    modifierTable.ability = self
-    modifierTable.modifier_name = "modifier_rune_invis"
+    modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_sneaking"
     modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
     local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/blade_of_abyss/blade_of_abyss.vpcf", PATTACH_ABSORIGIN, modifierTable.caster)
@@ -1172,7 +1252,7 @@ function modifier_abyssal_stalker_curse_of_abyss_passive:OnPostModifierApplied(m
     local modifier = target:FindModifierByName(modifierTable.modifier_name)
     local caster = modifierTable.caster
     if modifier then
-        if modifier:IsHidden() then
+        if modifier.IsHidden and modifier:IsHidden() then
             return
         end
         if modifier:IsDebuff() then
@@ -1264,832 +1344,15 @@ function abyssal_stalker_curse_of_abyss:OnSpellStart()
         GameMode:ApplyStackingDebuff(modifierTable)
     end
 end
---[[
-------------------------------------------
---ABILITIES END, TALENTS START
-------------------------------------------
-
---REND AND REDMIST--
-abyssal_stalker_rend_thinker = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_rend:GetAbilityTextureName()
-    end,
-})
-abyssal_stalker_rend_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_rend:GetAbilityTextureName()
-    end,
-})
-LinkedModifiers["abyssal_stalker_rend_thinker"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_rend_effect"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_rend_thinker:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-
-function abyssal_stalker_rend_thinker:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit ~= self:GetCaster() and event.attacker == self:GetCaster() and event.unit == self:GetParent() then
-        local maxStacks = 1
-        if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 34) > 0) then
-            maxStacks = 8
-        end
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = event.unit
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_rend_effect"
-        modifierTable.duration = 10
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = maxStacks
-        GameMode:ApplyStackingDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_rend_effect:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self:StartIntervalThink(0.5)
-end
-
-function abyssal_stalker_rend_effect:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
-    if self:GetStackCount() ~= 0 then
-        local damageTable = {}
-        damageTable.caster = self:GetCaster()
-        damageTable.target = self:GetParent()
-        damageTable.ability = self:GetAbility()
-        damageTable.damage = 10000
-        damageTable.voiddmg = true
-        GameMode:DamageUnit(damageTable)
-    end
-end
-
-abyssal_stalker_rend = class({})
-
-function abyssal_stalker_rend:OnSpellStart()
-    local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self:GetCaster():GetAbsOrigin(),
-            nil,
-            600,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for key, unit in pairs(units) do
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = unit
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_rend_thinker"
-        modifierTable.duration = 15
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
---TOXIFY AND TOXIC STRIKES--
-
-abyssal_stalker_toxify_thinker = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_toxify:GetAbilityTextureName()
-    end,
-})
-abyssal_stalker_toxify_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_toxify:GetAbilityTextureName()
-    end,
-})
-LinkedModifiers["abyssal_stalker_toxify_thinker"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_toxify_effect"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_toxify_thinker:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-
-function abyssal_stalker_toxify_thinker:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit ~= self:GetCaster() and event.attacker == self:GetCaster() and event.unit == self:GetParent() then
-        local maxStacks = 1
-        if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 35) > 0) then
-            maxStacks = 8
-        end
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = event.unit
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_toxify_effect"
-        modifierTable.duration = 10
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = maxStacks
-        GameMode:ApplyStackingDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_toxify_effect:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self:StartIntervalThink(0.5)
-end
-
-function abyssal_stalker_toxify_effect:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
-    if self:GetStackCount() ~= 0 then
-        local damageTable = {}
-        damageTable.caster = self:GetCaster()
-        damageTable.target = self:GetParent()
-        damageTable.ability = self:GetAbility()
-        damageTable.damage = 10000
-        damageTable.voiddmg = true
-        GameMode:DamageUnit(damageTable)
-    end
-end
-
-abyssal_stalker_toxify = class({})
-
-function abyssal_stalker_toxify:OnSpellStart()
-    local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self:GetCaster():GetAbsOrigin(),
-            nil,
-            600,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for key, unit in pairs(units) do
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = unit
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_toxify_thinker"
-        modifierTable.duration = 15
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
---OVERLOAD  AND IGNITION--
-
-abyssal_stalker_overload_aura = class({
-    IsAura = function(self)
-        return true
-    end,
-    GetAuraRadius = function(self)
-        return 800
-    end,
-    GetAuraSearchTeam = function(self)
-        return DOTA_UNIT_TARGET_TEAM_ENEMY
-    end,
-    GetAuraSearchType = function(self)
-        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
-    end,
-    GetModifierAura = function(self)
-        return "abyssal_stalker_overload_effect"
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsDebuff = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_overload:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_overload_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_overload:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_ignition = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkedModifiers["abyssal_stalker_overload_aura"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_overload_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_ignition"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_overload_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-function abyssal_stalker_overload_effect:GetFireProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetFrostProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetEarthProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetHolyProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetVoidProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetInfernoProtectionBonus()
-    return -0.3
-end
-function abyssal_stalker_overload_effect:GetNatureProtectionBonus()
-    return -0.3
-end
-
-function abyssal_stalker_overload_effect:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit == self:GetParent() and event.unit ~= self:GetCaster() and event.attacker == self:GetCaster() then
-        if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 36) > 0) then
-            local modifierTable = {}
-            modifierTable.caster = self:GetCaster()
-            modifierTable.target = event.unit
-            modifierTable.ability = self:GetAbility()
-            modifierTable.modifier_name = "abyssal_stalker_ignition"
-            modifierTable.duration = 6
-            GameMode:ApplyDebuff(modifierTable)
-        end
-    end
-end
-
-function abyssal_stalker_ignition:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self:StartIntervalThink(0.5)
-end
-
-function abyssal_stalker_ignition:OnIntervalThink()
-    local damageTable = {}
-    damageTable.caster = self:GetCaster()
-    damageTable.target = self:GetParent()
-    damageTable.ability = self:GetAbility()
-    damageTable.damage = 100000
-    damageTable.voiddmg = true
-    damageTable.firedamage = true
-    GameMode:DamageUnit(damageTable)
-end
-
-abyssal_stalker_overload = class({})
-
-function abyssal_stalker_overload:OnToggle()
-    local caster = self:GetCaster()
-    if self:GetToggleState() == true and not caster:HasModifier("abyssal_stalker_overload_aura") then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetCaster()
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_overload_aura"
-        modifierTable.duration = -1
-        GameMode:ApplyDebuff(modifierTable)
-    end
-    if self:GetToggleState() == false then
-        caster:RemoveModifierByName("abyssal_stalker_overload_aura")
-    end
-end
-
---FRIGID FORM AND FLASH FREEZE--
-
-abyssal_stalker_frigid_form_aura = class({
-    IsAura = function(self)
-        return true
-    end,
-    GetAuraRadius = function(self)
-        return 800
-    end,
-    GetAuraSearchTeam = function(self)
-        return DOTA_UNIT_TARGET_TEAM_ENEMY
-    end,
-    GetAuraSearchType = function(self)
-        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
-    end,
-    GetModifierAura = function(self)
-        return "abyssal_stalker_frigid_form_effect"
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsDebuff = function(self)
-        return false
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_frigid_form:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_frigid_form_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_frigid_form:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_flash_freeze = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkedModifiers["abyssal_stalker_frigid_form_aura"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_frigid_form_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_flash_freeze"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_frigid_form_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-function abyssal_stalker_frigid_form_effect:GetAttackSpeedBonus()
-    return -100
-end
-function abyssal_stalker_frigid_form_effect:GetMoveSpeedBonus()
-    return -100
-end
-
-function abyssal_stalker_frigid_form_effect:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit == self:GetParent() and event.unit ~= self:GetCaster() and event.attacker == self:GetCaster() then
-        if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 37) > 0) and (30 >= RandomFloat(1, 100)) then
-            local modifierTable = {}
-            modifierTable.caster = self:GetCaster()
-            modifierTable.target = event.unit
-            modifierTable.ability = self:GetAbility()
-            modifierTable.modifier_name = "abyssal_stalker_flash_freeze"
-            modifierTable.duration = 1.5
-            GameMode:ApplyDebuff(modifierTable)
-        end
-    end
-end
-
-function abyssal_stalker_flash_freeze:CheckStates()
-    return { [MODIFIER_STATE_FROZEN] = true, }
-end
-
-abyssal_stalker_frigid_form = class({})
-
-function abyssal_stalker_frigid_form:OnToggle()
-    local caster = self:GetCaster()
-    if self:GetToggleState() == true and not caster:HasModifier("abyssal_stalker_frigid_form_aura") then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetCaster()
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_frigid_form_aura"
-        modifierTable.duration = -1
-        GameMode:ApplyDebuff(modifierTable)
-    end
-    if self:GetToggleState() == false then
-        caster:RemoveModifierByName("abyssal_stalker_frigid_form_aura")
-    end
-end
-
---SILENT STRIKE AND CRIPPLE--
-abyssal_stalker_silent_strike_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_silent_strike:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_silent_strike_blind = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_silent_strike:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_cripple = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkedModifiers["abyssal_stalker_silent_strike_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_silent_strike_blind"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_cripple"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_silent_strike_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-function abyssal_stalker_silent_strike_effect:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit ~= self:GetCaster() and event.unit == self:GetParent() and event.attacker == self:GetCaster() then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetParent()
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_silent_strike_blind"
-        modifierTable.duration = 5
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_silent_strike_blind:DeclareFunctions()
-    return { MODIFIER_PROPERTY_MISS_PERCENTAGE }
-end
-function abyssal_stalker_silent_strike_blind:GetModifierMiss_Percentage()
-    return 100
-end
-
-function abyssal_stalker_silent_strike_blind:OnDestroy()
-    if not IsServer() then
-        return
-    end
-    if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 38) > 0) then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetParent()
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_cripple"
-        modifierTable.duration = 5
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_cripple:CheckStates()
-    return { [MODIFIER_STATE_DISARMED] = true, }
-end
-
-abyssal_stalker_silent_strike = class({})
-
-function abyssal_stalker_silent_strike:OnSpellStart()
-    local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self:GetCaster():GetAbsOrigin(),
-            nil,
-            600,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for key, unit in pairs(units) do
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = unit
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_silent_strike_effect"
-        modifierTable.duration = 10
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
---IMPALE AND IMMOBILIZE--
-abyssal_stalker_impale_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_impale:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_impale_maim = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return abyssal_stalker_impale:GetAbilityTextureName()
-    end,
-})
-
-abyssal_stalker_immobilize = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkedModifiers["abyssal_stalker_impale_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_impale_maim"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_immobilize"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_impale_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-function abyssal_stalker_impale_effect:OnTakeDamage(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit ~= self:GetCaster() and event.unit == self:GetParent() and event.attacker == self:GetCaster() then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetParent()
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_impale_maim"
-        modifierTable.duration = 5
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_impale_maim:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_ORDER }
-end
-function abyssal_stalker_impale_maim:OnOrder(event)
-    if not IsServer() then
-        return
-    end
-    if event.unit == self:GetParent() then
-        local damageTable = {}
-        damageTable.caster = self:GetCaster()
-        damageTable.target = self:GetParent()
-        damageTable.ability = self:GetAbility()
-        damageTable.damage = 100000
-        damageTable.voiddmg = true
-        GameMode:DamageUnit(damageTable)
-    end
-end
-
-function abyssal_stalker_impale_maim:OnDestroy()
-    if not IsServer() then
-        return
-    end
-    if (TalentTree:GetHeroTalentLevel(self:GetCaster(), 39) > 0) then
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = self:GetParent()
-        modifierTable.ability = self:GetAbility()
-        modifierTable.modifier_name = "abyssal_stalker_immobilize"
-        modifierTable.duration = 5
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end
-
-function abyssal_stalker_immobilize:CheckStates()
-    return { [MODIFIER_STATE_ROOTED] = true, }
-end
-
-function abyssal_stalker_immobilize:OnCreated()
-    if not IsServer() then
-        return
-    end
-    self:StartIntervalThink(0.5)
-end
-
-function abyssal_stalker_immobilize:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
-    local damageTable = {}
-    damageTable.caster = self:GetCaster()
-    damageTable.target = self:GetParent()
-    damageTable.ability = self:GetAbility()
-    damageTable.damage = 100000
-    damageTable.naturedmg = true
-    GameMode:DamageUnit(damageTable)
-end
-
-abyssal_stalker_impale = class({})
-
-function abyssal_stalker_impale:OnSpellStart()
-    local units = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self:GetCaster():GetAbsOrigin(),
-            nil,
-            600,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for key, unit in pairs(units) do
-        local modifierTable = {}
-        modifierTable.caster = self:GetCaster()
-        modifierTable.target = unit
-        modifierTable.ability = self
-        modifierTable.modifier_name = "abyssal_stalker_impale_effect"
-        modifierTable.duration = 10
-        GameMode:ApplyDebuff(modifierTable)
-    end
-end]]
 
 -- Internal stuff
 if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnPostModifierApplied'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_crit, 'OnTakeDamage'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(abyssal_stalker_gaze_of_abyss_effect, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_buff, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_sneaking, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_crit, 'OnTakeDamage'))
     GameMode.ABYSSAL_STALKER_INIT = true
 end
 

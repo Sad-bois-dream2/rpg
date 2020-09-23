@@ -31,29 +31,43 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"200 200 350 350"
+				"damage"				"200 250 300 350"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"backstab_damage"		"300 300 600 600"
+				"backstab_damage"		"300 375 450 525"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 3 6 6"
+				"duration"				"3 4 5 6"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"sil_duration"			"0 1.5 1.5 3"
+				"silence_duration"			"0 0.5 0.5 0.5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dmg_against_sil"		"0 0 0 30"
+				"crit_duration"			"0 0 2 2"
 			}
-			
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crit_multiplier"			"0 0 0.5 0.5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_dust_proc_cdr_flat"			"0 0 0 3"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_dust_proc_cdr_flat_duration"			"0 0 0 10"
+			}
 		}
 		"precache"
 		{
