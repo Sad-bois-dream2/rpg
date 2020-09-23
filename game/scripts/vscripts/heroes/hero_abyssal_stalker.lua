@@ -423,14 +423,14 @@ modifier_abyssal_stalker_blade_of_abyss_cdr = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return true
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
+    end
 })
 
-function modifier_abyssal_stalker_blade_of_abyss_cdr:OnCreated(kv)
+function modifier_abyssal_stalker_blade_of_abyss_cdr:OnCreated()
     if (not IsServer()) then
         return
     end
@@ -446,7 +446,7 @@ function modifier_abyssal_stalker_blade_of_abyss_cdr:OnIntervalThink()
         return
     end
     local cooldownTable = {
-        target = self.ability,
+        target = self.caster,
         ability = self.abilityName,
         reduction = self.ability.voidDustProcCdrFlat,
         isflat = true
@@ -454,7 +454,7 @@ function modifier_abyssal_stalker_blade_of_abyss_cdr:OnIntervalThink()
     GameMode:ReduceAbilityCooldown(cooldownTable)
 end
 
-LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_cdr"] = LUA_MODIFIER_MOTION_NON
+LinkedModifiers["modifier_abyssal_stalker_blade_of_abyss_cdr"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_abyssal_stalker_blade_of_abyss = class({
     IsDebuff = function(self)
@@ -477,7 +477,7 @@ modifier_abyssal_stalker_blade_of_abyss = class({
     end,
     DeclareFunctions = function(self)
         return {
-            MODIFIER_EVENT_ON_ABILITY_START
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST
         }
     end,
 })
@@ -491,19 +491,30 @@ function modifier_abyssal_stalker_blade_of_abyss:OnCreated(kv)
     self.voidDustAbility = self.caster:FindAbilityByName("abyssal_stalker_void_dust")
 end
 
-function modifier_abyssal_stalker_blade_of_abyss:OnAbilityStart(keys)
+function modifier_abyssal_stalker_blade_of_abyss:OnAbilityFullyCast(keys)
     if (not IsServer()) then
         return
     end
     local ability = keys.ability
-    if (keys.unit == self.caster and ability == self.voidDustAbility and self.ability.voidDustProcCdrFlatDuration > 0) then
-        local modifierTable = {}
-        modifierTable.caster = self.caster
-        modifierTable.ability = self.ability
-        modifierTable.target = self.caster
-        modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_cdr"
-        modifierTable.duration = self.ability.voidDustProcCdrFlatDuration
-        GameMode:ApplyBuff(modifierTable)
+    if (keys.unit == self.caster) then
+        if (ability == self.voidDustAbility and self.ability.voidDustProcCdrFlatDuration > 0) then
+            local modifierTable = {}
+            modifierTable.caster = self.caster
+            modifierTable.ability = self.ability
+            modifierTable.target = self.caster
+            modifierTable.modifier_name = "modifier_abyssal_stalker_blade_of_abyss_cdr"
+            modifierTable.duration = self.ability.voidDustProcCdrFlatDuration
+            GameMode:ApplyBuff(modifierTable)
+        end
+        if(ability ~= self.ability) then
+            local caster = self.caster
+            Timers:CreateTimer(0.3, function()
+                local modifier = caster:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_sneaking")
+                if (modifier) then
+                    modifier:Destroy()
+                end
+            end)
+        end
     end
 end
 
@@ -593,11 +604,12 @@ function modifier_abyssal_stalker_blade_of_abyss_sneaking:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+
 end
 
 function modifier_abyssal_stalker_blade_of_abyss_sneaking:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_sneaking")
-    if (modifier and damageTable.damage > 0 and modifier.ability) then
+    if (modifier and damageTable.damage > 0) then
         local attackerForwardVector = damageTable.attacker:GetForwardVector()
         local backstab = ((damageTable.victim:GetForwardVector():Dot(attackerForwardVector)) >= 0)
         if (modifier.ability.silenceDuration > 0) then
