@@ -685,13 +685,11 @@
 		"DOTA_Tooltip_Ability_abyssal_stalker_void_shadow_duration"				"DURATION:"
 		"DOTA_Tooltip_modifier_abyssal_stalker_void_shadow_aura_debuff"		"Void Shadow"
 		"DOTA_Tooltip_modifier_abyssal_stalker_void_shadow_aura_debuff_Description"		"Void resistance reduced."
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss"		"Cursed Dagger"
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_Description"			"Abyssal Stalker throw her dagger at target enemy that will curse him with void energy. This curse will cause silence (if autocast turned on) and deal <font color='#9200fa'>Void</font> damage.\nRank 2: Passievly add <font color='#9200fa'>Void</font> element to your auto attacks.\nRank 3: Every time you apply any negative effect to enemy you will gain stack of effect that increase your attack damage by <font color='white'><b>5%</b></font> and spell damage by <font color='white'><b>5%</b></font> for 10 seconds, up to <font color='white'><b>5</b></font> stacks. Inner cooldown <font color='white'><b>2</b></font> seconds.\nRank 4: Every time you cause critical strike cooldown of this ability will be reduced by <font color='white'><b>2</b></font> seconds."
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_miss_perc"				"%BLIND PER STACK:"
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_armor_break"			"ARMOR REDUCETION PER STACK:"
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_slow"					"%MOVE AND ATTACK SPEED SLOW:"
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_duration"				"DURATION:"
-		"DOTA_Tooltip_Ability_abyssal_stalker_curse_of_abyss_multi_chance"			"%ADDITION CAST CHANCE:"
+		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw"		"Dagger Throw"
+		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_Description"			"Abyssal Stalker throw her dagger at target enemy enchanted with void energy. This dagger will cause silence (if autocast turned on) and deal <font color='#9200fa'>Void</font> damage.\nRank 2: Passievly add <font color='#9200fa'>Void</font> element to your auto attacks.\nRank 3: Every time you apply any negative effect to enemy you will gain stack of effect that increase your attack damage by <font color='white'><b>5%</b></font> and spell damage by <font color='white'><b>5%</b></font> for <font color='white'><b>10</b></font> seconds, up to <font color='white'><b>5</b></font> stacks. Inner cooldown <font color='white'><b>2</b></font> seconds.\nRank 4: Every time you cause critical strike cooldown of this ability will be reduced by <font color='white'><b>2</b></font> seconds."
+		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_damage"				"%ATTACK DAMAGE TO DAMAGE:"
+		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_duration"				"DURATION:"
+		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_silence_duration"			"SILENCE DURATION:"
 
 		// Catastrophe Demolisher (wk)
         "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom"		"Curse of Doom"
