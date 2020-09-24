@@ -1042,6 +1042,9 @@ modifier_abyssal_stalker_void_shadow_aura_debuff = class({
 })
 
 function modifier_abyssal_stalker_void_shadow_aura_debuff:OnCreated()
+    if(not IsServer()) then
+        return
+    end
     self.ability = self:GetAbility()
 end
 
@@ -1081,12 +1084,6 @@ modifier_abyssal_stalker_void_shadow = class({
     end,
     GetMoveSpeedBonus = function(self)
         return Units:GetMoveSpeed(self.caster)
-    end,
-    GetBaseAttackTime = function(self)
-        if (self.ability.batMultiplier > 0) then
-            self.summon:SetBaseAttackTime(self.caster:GetBaseAttackTime() * self.ability.batMultiplier)
-        end
-        return self.summon:GetBaseAttackTime()
     end
 })
 
@@ -1099,7 +1096,7 @@ function modifier_abyssal_stalker_void_shadow:OnCreated()
     self.summon = self:GetParent()
     if(self.ability.voidResAuraRadius > 0) then
         local modifierTable = {}
-        modifierTable.ability = self
+        modifierTable.ability = self.ability
         modifierTable.target = self.summon
         modifierTable.caster = self.summon
         modifierTable.modifier_name = "modifier_abyssal_stalker_void_shadow_aura"
@@ -1129,12 +1126,12 @@ function abyssal_stalker_void_shadow:OnSpellStart()
         caster = caster,
         unit = "npc_dota_abyssal_stalker_void_dust_shadow",
         position = caster:GetAbsOrigin(),
-        damage = 0,
+        damage = Units:GetAttackDamage(caster) * self.attackDamageMultiplier,
         ability = self
     }
     local summon = Summons:SummonUnit(summonTable)
     Summons:SetSummonHaveVoidDamageType(summon, true)
-    Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster) * self.ability.attackSpeedMultiplier)
+    Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster) * self.attackSpeedMultiplier)
     Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
     local modifierTable = {}
     modifierTable.ability = self
@@ -1153,7 +1150,7 @@ function abyssal_stalker_void_shadow:OnUpgrade()
     end
     self.duration = self:GetSpecialValueFor("duration")
     self.attackSpeedMultiplier = self:GetSpecialValueFor("attack_speed_multiplier")
-    self.batMultiplier = self:GetSpecialValueFor("bat_multiplier")
+    self.attackDamageMultiplier = self:GetSpecialValueFor("attack_damage_multiplier")
     self.voidResAuraRadius = self:GetSpecialValueFor("void_res_aura_radius")
     self.voidResAuraReduction = self:GetSpecialValueFor("void_res_aura_reduction") / -100
     self.shadowRushCdrProc = self:GetSpecialValueFor("shadow_rush_cdr_proc")

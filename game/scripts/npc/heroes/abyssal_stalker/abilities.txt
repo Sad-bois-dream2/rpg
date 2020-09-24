@@ -359,7 +359,7 @@
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -381,22 +381,22 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"attack_speed_multiplier"		"1"
+				"attack_speed_multiplier"		"1 1 1 1"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bat_multiplier"		"0 1 1 1"
+				"attack_damage_multiplier"		"0 0 0.2 0.2"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"void_res_aura_radius"		"0 0 300 300"
+				"void_res_aura_radius"		"0 300 300 300"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"void_res_aura_reduction"		"0 0 20 20"
+				"void_res_aura_reduction"		"0 20 20 20"
 			}
 			"06"
 			{
