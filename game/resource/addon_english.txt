@@ -690,6 +690,8 @@
 		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_damage"				"%ATTACK DAMAGE TO DAMAGE:"
 		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_duration"				"DURATION:"
 		"DOTA_Tooltip_Ability_abyssal_stalker_dagger_throw_silence_duration"			"SILENCE DURATION:"
+		"DOTA_Tooltip_modifier_abyssal_stalker_dagger_throw_stacks"		"Dagger Throw"
+		"DOTA_Tooltip_modifier_abyssal_stalker_dagger_throw_stacks_Description"		"Attack damage increased by %dMODIFIER_PROPERTY_TOOLTIP%%% and spell damage increased by %dMODIFIER_PROPERTY_TOOLTIP2%%%."
 
 		// Catastrophe Demolisher (wk)
         "DOTA_Tooltip_Ability_catastrophe_demolisher_curse_of_doom"		"Curse of Doom"

@@ -473,7 +473,7 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"0 0 5 5"
+				"max_stacks"				"0 0 10 10"
 			}
 			"07"
 			{
@@ -490,6 +490,16 @@
 				"var_type"				"FIELD_FLOAT"
 				"cdr_flat_on_crit"				"0 0 0 2"
 			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dagger_speed"				"1000"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/dagger_throw/dagger_throw_projectile.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
 		}
 	}
 }

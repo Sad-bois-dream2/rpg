@@ -193,11 +193,11 @@ end
 LinkedModifiers["modifier_abyssal_stalker_dance_of_darkness_agi"] = LUA_MODIFIER_MOTION_NONE
 
 abyssal_stalker_dance_of_darkness = class({
-    GetAbilityTextureName = function(self)
-        return "abyssal_stalker_dance_of_darkness"
-    end,
     GetIntrinsicModifierName = function(self)
         return "modifier_abyssal_stalker_dance_of_darkness"
+    end,
+    GetAbilityTextureName = function(self)
+        return "abyssal_stalker_blade_of_darkness"
     end
 })
 
@@ -1169,7 +1169,11 @@ end
 
 LinkedModifiers["modifier_abyssal_stalker_void_shadow"] = LUA_MODIFIER_MOTION_NONE
 
-abyssal_stalker_void_shadow = class({})
+abyssal_stalker_void_shadow = class({
+    GetAbilityTextureName = function(self)
+        return "abyssal_stalker_void_shadow"
+    end
+})
 
 function abyssal_stalker_void_shadow:OnSpellStart()
     local caster = self:GetCaster()
@@ -1230,7 +1234,7 @@ function abyssal_stalker_void_shadow:OnUpgrade()
 end
 
 --CURSED DAGGER--
-modifier_abyssal_stalker_cursed_dagger_stacks = class({
+modifier_abyssal_stalker_dagger_throw_stacks = class({
     IsDebuff = function(self)
         return false
     end,
@@ -1245,24 +1249,149 @@ modifier_abyssal_stalker_cursed_dagger_stacks = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_TOOLTIP,
+            MODIFIER_PROPERTY_TOOLTIP2
+        }
     end
 })
 
-function modifier_abyssal_stalker_cursed_dagger_stacks:OnCreated()
+function modifier_abyssal_stalker_dagger_throw_stacks:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
 end
 
-LinkedModifiers["modifier_abyssal_stalker_cursed_dagger_stacks"] = LUA_MODIFIER_MOTION_NONE
+function modifier_abyssal_stalker_dagger_throw_stacks:GetAttackDamagePercentBonus()
+    return self.ability.aaDmgPerstack * self:GetStackCount()
+end
 
-abyssal_stalker_dagger_throw = class({})
+function modifier_abyssal_stalker_dagger_throw_stacks:GetSpellDamageBonus()
+    return self.ability.spellDmgPerStack * self:GetStackCount()
+end
+
+function modifier_abyssal_stalker_dagger_throw_stacks:OnTooltip()
+    return self:GetStackCount() * self:GetAbility():GetSpecialValueFor("aadmg_per_stack")
+end
+
+function modifier_abyssal_stalker_dagger_throw_stacks:OnTooltip2()
+    return self:GetStackCount() * self:GetAbility():GetSpecialValueFor("spelldmg_per_stack")
+end
+
+LinkedModifiers["modifier_abyssal_stalker_dagger_throw_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+abyssal_stalker_dagger_throw = class({
+    GetAbilityTextureName = function(self)
+        return "abyssal_stalker_cursed_dagger"
+    end
+})
+
+function abyssal_stalker_dagger_throw:OnProjectileHit(enemy, location)
+    if (not IsServer()) then
+        return
+    end
+    EmitSoundOn("Hero_PhantomAssassin.Dagger.Target", enemy)
+    local damageTable = {}
+    damageTable.caster = self.caster
+    damageTable.target = enemy
+    damageTable.ability = self
+    damageTable.damage = Units:GetAttackDamage(self.caster) * self.damage
+    damageTable.voiddmg = true
+    GameMode:DamageUnit(damageTable)
+    if (self:GetAutoCastState()) then
+        local modifierTable = {}
+        modifierTable.caster = self.caster
+        modifierTable.ability = self
+        modifierTable.target = enemy
+        modifierTable.modifier_name = "modifier_silence"
+        modifierTable.duration = self.silenceDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
 
 function abyssal_stalker_dagger_throw:OnSpellStart()
     if (not IsServer()) then
         return
     end
+    self.caster = self:GetCaster()
+    local projectile = {
+        Target = self:GetCursorTarget(),
+        Source = self.caster,
+        Ability = self,
+        EffectName = "particles/units/abyssal_stalker/dagger_throw/dagger_throw_projectile.vpcf",
+        vSourceLoc = self.caster:GetAbsOrigin(),
+        iMoveSpeed = self.daggerSpeed,
+        bDrawsOnMinimap = false,
+        bDodgeable = false,
+        bIsAttack = false,
+        bVisibleToEnemies = true,
+        bReplaceExisting = false,
+        flExpireTime = GameRules:GetGameTime() + 10,
+        bProvidesVision = true,
+        iVisionRadius = 400,
+        iVisionTeamNumber = self.caster:GetTeamNumber(),
+    }
+    ProjectileManager:CreateTrackingProjectile(projectile)
+    EmitSoundOn("Hero_PhantomAssassin.Dagger.Cast", self.caster)
+end
+
+function abyssal_stalker_dagger_throw:OnTakeDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("abyssal_stalker_dagger_throw")
+    if (not ability) then
+        return damageTable
+    end
+    if (ability.aaVoidElement and ability.aaVoidElement > 0 and not damageTable.ability and damageTable.physdmg) then
+        damageTable.voiddmg = true
+        return damageTable
+    end
+end
+
+function abyssal_stalker_dagger_throw:OnCriticalDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("abyssal_stalker_dagger_throw")
+    if (not ability) then
+        return damageTable
+    end
+    if (ability.cdrFlatOnCrit and ability.cdrFlatOnCrit > 0) then
+        local cooldownTable = {
+            target = damageTable.attacker,
+            ability = "abyssal_stalker_dagger_throw",
+            reduction = ability.cdrFlatOnCrit,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+    end
+end
+
+function abyssal_stalker_dagger_throw:OnPostModifierApplied(modifierTable)
+    local ability = modifierTable.caster:FindAbilityByName("abyssal_stalker_dagger_throw")
+    if (not ability or ability.stacksDuration == 0) then
+        return modifierTable
+    end
+    if (self.IsHidden and self:IsHidden()) then
+        return modifierTable
+    end
+    if (self.IsDebuff and self:IsDebuff() == false) then
+        return modifierTable
+    end
+    if (ability.currentStacksCd) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = ability
+    modifierTable.caster = modifierTable.caster
+    modifierTable.target = modifierTable.caster
+    modifierTable.modifier_name = "modifier_abyssal_stalker_dagger_throw_stacks"
+    modifierTable.duration = ability.stacksDuration
+    modifierTable.stacks = 1
+    modifierTable.max_stacks = ability.maxStacks
+    GameMode:ApplyStackingBuff(modifierTable)
+    ability.currentStacksCd = true
+    Timers:CreateTimer(ability.stacksCd, function()
+        ability.currentStacksCd = nil
+    end)
 end
 
 function abyssal_stalker_dagger_throw:OnUpgrade()
@@ -1278,13 +1407,16 @@ function abyssal_stalker_dagger_throw:OnUpgrade()
     self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
     self.stacksCd = self:GetSpecialValueFor("stacks_cd")
     self.cdrFlatOnCrit = self:GetSpecialValueFor("cdr_flat_on_crit")
+    self.daggerSpeed = self:GetSpecialValueFor("dagger_speed")
 end
 
 -- Internal stuff
 if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
-    --GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnPostModifierApplied'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_sneaking, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_crit, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(abyssal_stalker_dagger_throw, 'OnTakeDamage'), true)
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(abyssal_stalker_dagger_throw, 'OnCriticalDamage'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(abyssal_stalker_dagger_throw, 'OnPostModifierApplied'))
     GameMode.ABYSSAL_STALKER_INIT = true
 end
 
