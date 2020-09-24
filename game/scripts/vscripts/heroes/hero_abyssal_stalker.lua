@@ -1367,9 +1367,10 @@ end
 
 function abyssal_stalker_dagger_throw:OnPostModifierApplied(modifierTable)
     local ability = modifierTable.caster:FindAbilityByName("abyssal_stalker_dagger_throw")
-    if (not ability or ability.stacksDuration == 0) then
+    if (not ability) then
         return modifierTable
     end
+    print(self:GetName())
     if (self.IsHidden and self:IsHidden()) then
         return modifierTable
     end
@@ -1379,19 +1380,21 @@ function abyssal_stalker_dagger_throw:OnPostModifierApplied(modifierTable)
     if (ability.currentStacksCd) then
         return
     end
-    local modifierTable = {}
-    modifierTable.ability = ability
-    modifierTable.caster = modifierTable.caster
-    modifierTable.target = modifierTable.caster
-    modifierTable.modifier_name = "modifier_abyssal_stalker_dagger_throw_stacks"
-    modifierTable.duration = ability.stacksDuration
-    modifierTable.stacks = 1
-    modifierTable.max_stacks = ability.maxStacks
-    GameMode:ApplyStackingBuff(modifierTable)
-    ability.currentStacksCd = true
-    Timers:CreateTimer(ability.stacksCd, function()
-        ability.currentStacksCd = nil
-    end)
+    if (ability.stacksDuration) then
+        local modifier = {}
+        modifier.ability = ability
+        modifier.caster = modifierTable.caster
+        modifier.target = modifierTable.caster
+        modifier.modifier_name = "modifier_abyssal_stalker_dagger_throw_stacks"
+        modifier.duration = ability.stacksDuration
+        modifier.stacks = 1
+        modifier.max_stacks = ability.maxStacks
+        GameMode:ApplyStackingBuff(modifier)
+        ability.currentStacksCd = true
+        Timers:CreateTimer(ability.stacksCd, function()
+            ability.currentStacksCd = nil
+        end)
+    end
 end
 
 function abyssal_stalker_dagger_throw:OnUpgrade()
