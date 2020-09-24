@@ -355,6 +355,9 @@ function abyssal_stalker_shadow_rush:OnUpgrade()
     if (not self.shadowsModifier) then
         self.shadowsModifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
     end
+    if(not self.voidShadowAbility) then
+        self.voidShadowAbility = self:GetCaster():FindAbilityByName("abyssal_stalker_void_shadow")
+    end
 end
 
 function abyssal_stalker_shadow_rush:OnSpellStart()
@@ -379,6 +382,15 @@ function abyssal_stalker_shadow_rush:OnSpellStart()
     EmitSoundOn("Hero_PhantomAssassin.Strike.Start", caster)
     local totalShadows = self.shadowsModifier:GetStackCount()
     local strikes = math.min(self.instances, totalShadows)
+    if(self.voidShadowAbility and self.voidShadowAbility.shadowRushCdrProc and self.voidShadowAbility.shadowRushCdrProc > 0 and strikes == self.instances) then
+        local cooldownTable = {
+            target = caster,
+            ability = "abyssal_stalker_void_shadow",
+            reduction = self.voidShadowAbility.shadowRushCdrProc,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+    end
     if (strikes > 0) then
         local executionerModifier = caster:FindModifierByName("modifier_abyssal_stalker_shadow_rush_buff")
         if (not (executionerModifier and self.procChancePerStack > 0 and RollPercentage(self.procChancePerStack * executionerModifier:GetStackCount()))) then
@@ -1142,6 +1154,7 @@ function abyssal_stalker_void_shadow:OnSpellStart()
     GameMode:ApplyBuff(modifierTable)
     local wearables = GetWearables(caster)
     AddWearables(summon, wearables)
+    EmitSoundOn("Hero_PhantomAssassin.Blur", caster)
 end
 
 function abyssal_stalker_void_shadow:OnUpgrade()
