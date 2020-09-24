@@ -167,7 +167,7 @@
 		}
 	}
 	//=================================================================================================================
-	// Abyssal Stalker: Dance of darkness 
+	// Abyssal Stalker: Blade of Darkness
 	//=================================================================================================================
 	"abyssal_stalker_dance_of_darkness"
 	{
@@ -175,7 +175,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"abyssal_stalker_dance_of_darkness"
+		"AbilityTextureName"			"abyssal_stalker_blade_of_darkness"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -413,30 +413,33 @@
 		}
 	}
 	//=================================================================================================================
-	// Abyssal Stalker: Curse of Abyss 
+	// Abyssal Stalker: Cursed Dagger
 	//=================================================================================================================
-	"abyssal_stalker_curse_of_abyss"
+	"abyssal_stalker_cursed_dagger"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"warlock_shadow_word"
+		"AbilityTextureName"			"abyssal_stalker_cursed_dagger"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastRange"  "900"
+		"AbilityCastPoint"				"0.25"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"20"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -445,47 +448,47 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"miss_perc"				"10 10 20 20"
+				"damage"				"150 200 250 300"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_break"			"3 3 6 6"
+				"silence_duration"				"1"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slow"					"10 10 20 20"
+				"aa_void_element"				"0 1 1 1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"multi_chance"			"0 100 100 100"
+				"spelldmg_per_stack"				"0 0 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"8 8 8 8"
+				"aadmg_per_stack"				"0 0 5 5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_proc_chance"		"0 0 100 100"
+				"max_stacks"				"0 0 5 5"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"amp_per_stack"			"0 0 0 10"
+				"stacks_duration"				"0 0 10 10"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"sil_amp"				"0 0 0 15"
+				"stacks_cd"				"0 0 2 2"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_amp"				"0 0 0 20"
+				"cdr_flat_on_crit"				"0 0 0 2"
 			}
 		}
 	}
