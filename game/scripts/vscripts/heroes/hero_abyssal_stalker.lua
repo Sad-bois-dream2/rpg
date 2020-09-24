@@ -1370,7 +1370,6 @@ function abyssal_stalker_dagger_throw:OnPostModifierApplied(modifierTable)
     if (not ability) then
         return modifierTable
     end
-    print(self:GetName())
     if (self.IsHidden and self:IsHidden()) then
         return modifierTable
     end
