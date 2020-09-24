@@ -1145,7 +1145,7 @@ function modifier_molten_guardian_molten_fortress_thinker:OnCreated()
     end
     self.ability = self:GetAbility()
     self.thinker = self:GetParent()
-    self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
+    self.particle = ParticleManager:CreateParticle("particles/units/molten_guardian/molten_fortress/molten_fortress.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.thinker)
     ParticleManager:SetParticleControl(self.particle, 1, Vector(self.ability.radius, 0, 0))
     ParticleManager:SetParticleControl(self.particle, 2, self.ability.castPosition)
     ParticleManager:SetParticleControl(self.particle, 3, self.ability.castPosition)

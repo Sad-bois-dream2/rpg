@@ -395,7 +395,7 @@
 		}
 		"precache"
 		{
-		    "particle"  "particles/units/heroes/hero_mars/mars_arena_of_blood.vpcf"
+		    "particle"  "particles/units/molten_guardian/molten_fortress/molten_fortress.vpcf"
             "particle"  "particles/units/molten_guardian/molten_fortress/molten_fortress_buff.vpcf"
 		}
 	}
