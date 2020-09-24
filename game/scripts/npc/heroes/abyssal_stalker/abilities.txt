@@ -404,6 +404,13 @@
 				"shadow_rush_cdr_proc"		"0 0 0 1"
 			}
 		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/void_shadow/void_shadow.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_shadow/void_shadow_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+		}
 	}
 	//=================================================================================================================
 	// Abyssal Stalker: Curse of Abyss 

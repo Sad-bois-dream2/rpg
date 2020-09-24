@@ -355,7 +355,7 @@ function abyssal_stalker_shadow_rush:OnUpgrade()
     if (not self.shadowsModifier) then
         self.shadowsModifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
     end
-    if(not self.voidShadowAbility) then
+    if (not self.voidShadowAbility) then
         self.voidShadowAbility = self:GetCaster():FindAbilityByName("abyssal_stalker_void_shadow")
     end
 end
@@ -382,7 +382,7 @@ function abyssal_stalker_shadow_rush:OnSpellStart()
     EmitSoundOn("Hero_PhantomAssassin.Strike.Start", caster)
     local totalShadows = self.shadowsModifier:GetStackCount()
     local strikes = math.min(self.instances, totalShadows)
-    if(self.voidShadowAbility and self.voidShadowAbility.shadowRushCdrProc and self.voidShadowAbility.shadowRushCdrProc > 0 and strikes == self.instances) then
+    if (self.voidShadowAbility and self.voidShadowAbility.shadowRushCdrProc and self.voidShadowAbility.shadowRushCdrProc > 0 and strikes == self.instances) then
         local cooldownTable = {
             target = caster,
             ability = "abyssal_stalker_void_shadow",
@@ -1054,7 +1054,7 @@ modifier_abyssal_stalker_void_shadow_aura_debuff = class({
 })
 
 function modifier_abyssal_stalker_void_shadow_aura_debuff:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -1065,6 +1065,34 @@ function modifier_abyssal_stalker_void_shadow_aura_debuff:GetVoidProtectionBonus
 end
 
 LinkedModifiers["modifier_abyssal_stalker_void_shadow_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_void_shadow_status_effect = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_abyssal_stalker_void_shadow_status_effect:GetStatusEffectName()
+    return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+end
+
+function modifier_abyssal_stalker_void_shadow_status_effect:StatusEffectPriority()
+    return 5
+end
+
+LinkedModifiers["modifier_abyssal_stalker_void_shadow_status_effect"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_abyssal_stalker_void_shadow = class({
     IsDebuff = function(self)
@@ -1083,13 +1111,7 @@ modifier_abyssal_stalker_void_shadow = class({
         return false
     end,
     GetEffectName = function(self)
-        return "particles/units/fallen_druid/flashbang/flashbang_shadow.vpcf"
-    end,
-    GetStatusEffectName = function(self)
-        return "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
-    end,
-    StatusEffectPriority = function(self)
-        return 15
+        return "particles/units/abyssal_stalker/void_shadow/void_shadow_buff.vpcf"
     end,
     GetAttackRangeBonus = function(self)
         return Units:GetAttackRange(self.caster, true)
@@ -1099,6 +1121,14 @@ modifier_abyssal_stalker_void_shadow = class({
     end
 })
 
+function modifier_abyssal_stalker_void_dust_buff:GetStatusEffectName()
+    return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+end
+
+function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
+    return 5
+end
+
 function modifier_abyssal_stalker_void_shadow:OnCreated()
     if (not IsServer()) then
         return
@@ -1106,7 +1136,7 @@ function modifier_abyssal_stalker_void_shadow:OnCreated()
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
     self.summon = self:GetParent()
-    if(self.ability.voidResAuraRadius > 0) then
+    if (self.ability.voidResAuraRadius > 0) then
         local modifierTable = {}
         modifierTable.ability = self.ability
         modifierTable.target = self.summon
@@ -1123,6 +1153,15 @@ function modifier_abyssal_stalker_void_shadow:OnIntervalThink()
         return
     end
     local shadow = self.summon
+    local shadowPos = shadow:GetAbsOrigin()
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_shadow/void_shadow_steam.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(particle, 0, shadowPos)
+    ParticleManager:SetParticleControl(particle, 3, shadowPos)
+    Timers:CreateTimer(1, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
+    EmitSoundOn("Hero_PhantomAssassin.Blur.Break", shadow)
     DestroyWearables(shadow, function()
         shadow:Destroy()
     end)
@@ -1154,7 +1193,28 @@ function abyssal_stalker_void_shadow:OnSpellStart()
     GameMode:ApplyBuff(modifierTable)
     local wearables = GetWearables(caster)
     AddWearables(summon, wearables)
+    local ability = self
+    ForEachWearable(summon,
+            function(wearable)
+                local modifierTable = {}
+                modifierTable.ability = ability
+                modifierTable.target = wearable
+                modifierTable.caster = summon
+                modifierTable.modifier_name = "modifier_abyssal_stalker_void_shadow_status_effect"
+                modifierTable.duration = -1
+                GameMode:ApplyBuff(modifierTable)
+            end)
     EmitSoundOn("Hero_PhantomAssassin.Blur", caster)
+    local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_shadow/void_shadow.vpcf", PATTACH_ABSORIGIN, summon)
+    local casterPos = summon:GetAbsOrigin()
+    ParticleManager:SetParticleControl(particle, 1, casterPos)
+    ParticleManager:SetParticleControl(particle, 2, casterPos)
+    ParticleManager:SetParticleControl(particle, 3, casterPos)
+    ParticleManager:SetParticleControl(particle, 4, casterPos)
+    Timers:CreateTimer(1, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
 end
 
 function abyssal_stalker_void_shadow:OnUpgrade()
