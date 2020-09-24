@@ -169,7 +169,7 @@
 	//=================================================================================================================
 	// Abyssal Stalker: Blade of Darkness
 	//=================================================================================================================
-	"abyssal_stalker_dance_of_darkness"
+	"abyssal_stalker_blade_of_darkness"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
@@ -421,7 +421,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"abyssal_stalker_cursed_dagger"
+		"AbilityTextureName"			"abyssal_stalker_dagger_throw"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"

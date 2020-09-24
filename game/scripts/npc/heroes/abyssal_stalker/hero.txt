@@ -6,7 +6,7 @@
 		"override_hero" "npc_dota_hero_phantom_assassin"
 		"Ability1"		"abyssal_stalker_shadow_rush"
 		"Ability2"		"abyssal_stalker_void_dust"
-		"Ability3"		"abyssal_stalker_dance_of_darkness"
+		"Ability3"		"abyssal_stalker_blade_of_darkness"
 		"Ability4"		"abyssal_stalker_blade_of_abyss"
 		"Ability5"		"abyssal_stalker_void_shadow"
 		"Ability6"		"abyssal_stalker_dagger_throw"
