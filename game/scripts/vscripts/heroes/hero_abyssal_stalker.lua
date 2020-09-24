@@ -506,7 +506,7 @@ function modifier_abyssal_stalker_blade_of_abyss:OnAbilityFullyCast(keys)
             modifierTable.duration = self.ability.voidDustProcCdrFlatDuration
             GameMode:ApplyBuff(modifierTable)
         end
-        if(ability ~= self.ability) then
+        if (ability ~= self.ability) then
             local caster = self.caster
             Timers:CreateTimer(0.3, function()
                 local modifier = caster:FindModifierByName("modifier_abyssal_stalker_blade_of_abyss_sneaking")
@@ -968,99 +968,195 @@ function abyssal_stalker_void_dust:OnSpellStart()
     EmitSoundOn("Hero_PhantomAssassin.Blur.Break", modifierTable.caster)
 end
 
---GAZE OF ABYSS--
-abyssal_stalker_gaze_of_abyss_effect = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
+--VOID SHADOW--
+modifier_abyssal_stalker_void_shadow_aura = class({
+    IsPurgable = function(self)
         return false
     end,
-    IsPurgable = function(self)
+    IsHidden = function(self)
         return true
     end,
-    RemoveOnDeath = function(self)
-        return true
+    IsDebuff = function(self)
+        return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_TAKEDAMAGE }
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.voidResAuraRadius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_abyssal_stalker_void_shadow_aura_debuff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
 
-abyssal_stalker_gaze_of_abyss_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-})
-
-LinkedModifiers["abyssal_stalker_gaze_of_abyss_effect"] = LUA_MODIFIER_MOTION_NONE
-LinkedModifiers["abyssal_stalker_gaze_of_abyss_buff"] = LUA_MODIFIER_MOTION_NONE
-
-function abyssal_stalker_gaze_of_abyss_effect:DeclareFunctions()
-    return { MODIFIER_EVENT_ON_TAKEDAMAGE }
-end
-
-function abyssal_stalker_gaze_of_abyss_effect:OnTakeDamage(damageTable)
-    local victim = damageTable.victim
-    if not victim then
+function modifier_abyssal_stalker_void_shadow_aura:OnCreated()
+    if (not IsServer()) then
         return
     end
-    local mod = damageTable.victim:FindModifierByName("abyssal_stalker_gaze_of_abyss_effect")
-    if mod then
-        if damageTable.attacker:GetUnitName() == "npc_dota_hero_phantom_assassin" then
-            local modifierTable = {}
-            modifierTable.caster = damageTable.attacker
-            modifierTable.target = damageTable.attacker
-            modifierTable.ability = mod:GetAbility()
-            modifierTable.modifier_name = "abyssal_stalker_gaze_of_abyss_buff"
-            modifierTable.duration = mod:GetAbility():GetSpecialValueFor("buff_duration")
-            GameMode:ApplyBuff(modifierTable)
-        end
-        if damageTable.physdmg then
-            local amp = mod:GetAbility():GetSpecialValueFor("phys_amp") / 100 + 1
-            damageTable.damage = damageTable.damage * amp
-            return damageTable
-        end
+    self.ability = self:GetAbility()
+end
+
+LinkedModifiers["modifier_abyssal_stalker_void_shadow_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_void_shadow_aura_debuff = class({
+    IsPurgable = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsDebuff = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
     end
+})
+
+function modifier_abyssal_stalker_void_shadow_aura_debuff:OnCreated()
+    self.ability = self:GetAbility()
 end
 
-function abyssal_stalker_gaze_of_abyss_effect:GetVoidProtectionBonus()
-    local reduc = self:GetAbility():GetSpecialValueFor("void_amp") / 100 * (-1)
-    return reduc
+function modifier_abyssal_stalker_void_shadow_aura_debuff:GetVoidProtectionBonus()
+    return self.ability.voidResAuraReduction or 0
 end
 
-function abyssal_stalker_gaze_of_abyss_buff:GetCriticalDamageBonus()
-    return self:GetAbility():GetSpecialValueFor("bonus_crit_damage") / 100
-end
-function abyssal_stalker_gaze_of_abyss_buff:GetAttackDamagePercentBonus()
-    return self:GetAbility():GetSpecialValueFor("bonus_damage") / 100
+LinkedModifiers["modifier_abyssal_stalker_void_shadow_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_abyssal_stalker_void_shadow = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/fallen_druid/flashbang/flashbang_shadow.vpcf"
+    end,
+    GetStatusEffectName = function(self)
+        return "particles/status_fx/status_effect_void_spirit_astral_step_debuff.vpcf"
+    end,
+    StatusEffectPriority = function(self)
+        return 15
+    end,
+    GetAttackRangeBonus = function(self)
+        return Units:GetAttackRange(self.caster, true)
+    end,
+    GetMoveSpeedBonus = function(self)
+        return Units:GetMoveSpeed(self.caster)
+    end,
+    GetBaseAttackTime = function(self)
+        if (self.ability.batMultiplier > 0) then
+            self.summon:SetBaseAttackTime(self.caster:GetBaseAttackTime() * self.ability.batMultiplier)
+        end
+        return self.summon:GetBaseAttackTime()
+    end
+})
+
+function modifier_abyssal_stalker_void_shadow:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.summon = self:GetParent()
+    if(self.ability.voidResAuraRadius > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = self.summon
+        modifierTable.caster = self.summon
+        modifierTable.modifier_name = "modifier_abyssal_stalker_void_shadow_aura"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+    end
+    self:StartIntervalThink(self.ability.duration)
 end
 
-abyssal_stalker_gaze_of_abyss = class({})
-function abyssal_stalker_gaze_of_abyss:OnSpellStart()
-    local target = self:GetCursorTarget()
+function modifier_abyssal_stalker_void_shadow:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local shadow = self.summon
+    DestroyWearables(shadow, function()
+        shadow:Destroy()
+    end)
+end
+
+LinkedModifiers["modifier_abyssal_stalker_void_shadow"] = LUA_MODIFIER_MOTION_NONE
+
+abyssal_stalker_void_shadow = class({})
+
+function abyssal_stalker_void_shadow:OnSpellStart()
+    local caster = self:GetCaster()
+    local summonTable = {
+        caster = caster,
+        unit = "npc_dota_abyssal_stalker_void_dust_shadow",
+        position = caster:GetAbsOrigin(),
+        damage = 0,
+        ability = self
+    }
+    local summon = Summons:SummonUnit(summonTable)
+    Summons:SetSummonHaveVoidDamageType(summon, true)
+    Summons:SetSummonAttackSpeed(summon, Units:GetAttackSpeed(caster) * self.ability.attackSpeedMultiplier)
+    Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
     local modifierTable = {}
-    modifierTable.caster = self:GetCaster()
     modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.modifier_name = "abyssal_stalker_gaze_of_abyss_effect"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
-    GameMode:ApplyDebuff(modifierTable)
+    modifierTable.target = summon
+    modifierTable.caster = summon
+    modifierTable.modifier_name = "modifier_abyssal_stalker_void_shadow"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
+    local wearables = GetWearables(caster)
+    AddWearables(summon, wearables)
+end
+
+function abyssal_stalker_void_shadow:OnUpgrade()
+    if (not IsServer()) then
+        return
+    end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.attackSpeedMultiplier = self:GetSpecialValueFor("attack_speed_multiplier")
+    self.batMultiplier = self:GetSpecialValueFor("bat_multiplier")
+    self.voidResAuraRadius = self:GetSpecialValueFor("void_res_aura_radius")
+    self.voidResAuraReduction = self:GetSpecialValueFor("void_res_aura_reduction") / -100
+    self.shadowRushCdrProc = self:GetSpecialValueFor("shadow_rush_cdr_proc")
 end
 
 --CURSE OF ABYSS--
@@ -1337,7 +1433,6 @@ end
 -- Internal stuff
 if (IsServer() and not GameMode.ABYSSAL_STALKER_INIT) then
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnPostModifierApplied'))
-    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(abyssal_stalker_gaze_of_abyss_effect, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_passive, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_curse_of_abyss_buff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_abyssal_stalker_blade_of_abyss_sneaking, 'OnTakeDamage'))
