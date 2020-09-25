@@ -49,13 +49,10 @@ function HeroSelection:BuildHeroEntry(heroName, kv)
         heroEntry.Roles.Utility = kv[heroName].Roles.Utility or 0
     end
     heroEntry.Attribute = kv[heroName].AttributePrimary or heroEntry.Attribute
-    if (heroName == "npc_dota_hero_enchantress") then
-        heroEntry.Abilities[1] = kv[heroName]["Ability7"] or heroEntry.Abilities[1]
-        heroEntry.Abilities[2] = kv[heroName]["Ability8"] or heroEntry.Abilities[2]
-        heroEntry.Abilities[3] = kv[heroName]["Ability9"] or heroEntry.Abilities[3]
-        heroEntry.Abilities[4] = kv[heroName]["Ability10"] or heroEntry.Abilities[4]
-        heroEntry.Abilities[5] = kv[heroName]["Ability11"] or heroEntry.Abilities[5]
-        heroEntry.Abilities[6] = kv[heroName]["Ability6"] or heroEntry.Abilities[6]
+    if (kv[heroName]["HeroSelectionAbilities"]) then
+        for index = 1, 6 do
+            heroEntry.Abilities[index] = kv[heroName]["HeroSelectionAbilities"]["Ability" .. index] or heroEntry.Abilities[index]
+        end
     else
         for index = 1, 6 do
             heroEntry.Abilities[index] = kv[heroName]["Ability" .. index] or heroEntry.Abilities[index]

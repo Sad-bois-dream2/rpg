@@ -56,5 +56,14 @@
             "Support"   "5"
             "Utility"   "5"
         }
+        "HeroSelectionAbilities"
+        {
+            "Ability1"	"priestess_of_sacred_forest_herbaceous_essence"
+            "Ability2"	"priestess_of_sacred_forest_thorny_protection"
+            "Ability3"	"priestess_of_sacred_forest_twilight_breeze"
+            "Ability4"	"priestess_of_sacred_forest_tranquility"
+            "Ability5"	"priestess_of_sacred_forest_sleep_dust"
+            "Ability6"	"priestess_of_sacred_forest_spirits"
+        }
     }
 }
