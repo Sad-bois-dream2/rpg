@@ -23,8 +23,15 @@
 		"Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.400000"
+        "AttackAcquisitionRange"		"800"
+        "AttackRange"		"600"
+        "MovementSpeed"		"280"
+        "MovementTurnRate"		"0.500000"
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -46,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "drowranger_dro_spawn_07"
+             "2" "drowranger_dro_move_02"
+             "3" "drowranger_dro_spawn_04"
+             "4" "drowranger_dro_cast_01"
+         }
 	}
 }

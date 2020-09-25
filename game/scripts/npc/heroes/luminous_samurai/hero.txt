@@ -23,8 +23,15 @@
         "Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.560000"
+        "AttackAcquisitionRange"		"600"
+        "AttackRange"		"150"
+        "MovementSpeed"		"315"
+        "MovementTurnRate"		"0.500000"
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -46,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "juggernaut_jugg_battlebegins_01"
+             "2" "juggernaut_jug_move_15"
+             "3" "juggernaut_jug_move_03"
+             "4" "juggernaut_jug_cast_01"
+         }
     }
 }
