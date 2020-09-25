@@ -37,6 +37,15 @@ function Precache(context)
     for _, ability in pairs(Enemies.eliteAbilities) do
         PrecacheItemByNameSync(ability, context)
     end
+    -- Every hero sounds/responses
+    local heroesData = LoadKeyValues("scripts/npc/herolist.txt")
+    local heroesStatsData = LoadKeyValues("scripts/npc/npc_heroes.txt")
+    for hero, enabled in pairs(heroesData) do
+        if (enabled == 1) then
+            PrecacheResource("soundfile", heroesStatsData[hero]["GameSoundsFile"], context)
+            PrecacheResource("soundfile", heroesStatsData[hero]["VoiceFile"], context)
+        end
+    end
 end
 
 -- Create the game mode when we activate

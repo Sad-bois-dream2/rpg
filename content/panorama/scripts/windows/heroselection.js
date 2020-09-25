@@ -198,7 +198,7 @@ function OnPickHeroButtonPressed(slot) {
         return;
     }
     var slotId = slot.id.replace('HeroSlot', '');
-    Game.EmitSound("HeroPicker.Selected");
+    Game.EmitSound(heroesData[latestSelectedHero].PickSounds[Math.floor(Math.random() * heroesData[latestSelectedHero].PickSounds.length)]);
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_picked", {"hero" : latestSelectedHero, "slotNumber" : slotId});
 	HideUIAfterHeroPick();
 	ResetFilter();
@@ -266,6 +266,7 @@ function OnHeroesDataReceived(event) {
                 heroesData[heroes[i].Name]["Ability"+j] = "";
             }
         }
+        heroesData[heroes[i].Name].PickSounds = heroes[i].PickSounds;
     }
     latestSelectedHero = heroes[0].Name;
     heroSelected = true;

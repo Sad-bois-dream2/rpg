@@ -37,6 +37,9 @@ function HeroSelection:BuildHeroEntry(heroName, kv)
             [4] = "",
             [5] = "",
             [6] = "",
+        },
+        PickSounds = {
+            "HeroPicker.Selected"
         }
     }
     if (not kv or not kv[heroName]) then
@@ -56,6 +59,12 @@ function HeroSelection:BuildHeroEntry(heroName, kv)
     else
         for index = 1, 6 do
             heroEntry.Abilities[index] = kv[heroName]["Ability" .. index] or heroEntry.Abilities[index]
+        end
+    end
+    if(kv[heroName]["HeroSelectionPickSounds"]) then
+        heroEntry.PickSounds = {}
+        for _, response in pairs(kv[heroName]["HeroSelectionPickSounds"]) do
+            table.insert(heroEntry.PickSounds, response)
         end
     end
     return heroEntry
