@@ -53,5 +53,12 @@
             "Support"   "5"
             "Utility"   "2"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "silencer_silen_move_06"
+             "2" "silencer_silen_respawn_03"
+             "3" "silencer_silen_respawn_07"
+             "4" "silencer_silen_ability_curse_09"
+         }
     }
 }

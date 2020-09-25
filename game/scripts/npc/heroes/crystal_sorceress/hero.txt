@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"crystalmaiden_cm_spawn_07"
+            "2"	"crystalmaiden_cm_levelup_03"
+            "3" "crystalmaiden_cm_move_01"
+            "4" "crystalmaiden_cm_cast_02"
+        }
     }
 }

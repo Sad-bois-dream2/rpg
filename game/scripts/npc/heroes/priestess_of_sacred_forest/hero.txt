@@ -65,5 +65,12 @@
             "Ability5"	"priestess_of_sacred_forest_sleep_dust"
             "Ability6"	"priestess_of_sacred_forest_spirits"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"enchantress_ench_respawn_05"
+            "2"	"enchantress_ench_respawn_04"
+            "3" "enchantress_ench_lasthit_05"
+            "4" "enchantress_ench_ability_nature_03"
+        }
     }
 }

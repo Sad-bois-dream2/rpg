@@ -53,5 +53,12 @@
             "Support"   "1"
             "Utility"   "1"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"skeleton_king_wraith_move_01"
+            "2"	"skeleton_king_wraith_move_21"
+            "3" "skeleton_king_wraith_attack_02"
+            "4" "skeleton_king_wraith_respawn_08"
+        }
 	}
 }

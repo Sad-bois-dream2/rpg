@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"invoker_invo_move_09"
+            "2"	"invoker_invo_ability_invoke_15"
+            "3" "invoker_invo_purch_01"
+            "4" "invoker_invo_respawn_07"
+        }
     }
 }

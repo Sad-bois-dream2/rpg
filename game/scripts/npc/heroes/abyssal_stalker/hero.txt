@@ -55,5 +55,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"phantom_assassin_phass_move_09"
+            "2"	"phantom_assassin_phass_cast_04"
+            "3" "phantom_assassin_phass_respawn_04"
+            "4" "phantom_assassin_phass_respawn_06"
+        }
 	}
 }

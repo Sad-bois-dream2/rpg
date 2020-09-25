@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "1"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"abyssal_underlord_abys_levelup_06"
+            "2"	"abyssal_underlord_abys_spawn_06"
+            "3" "abyssal_underlord_abys_battlebegins_02"
+            "4" "abyssal_underlord_abys_battlebegins_01"
+        }
     }
 }

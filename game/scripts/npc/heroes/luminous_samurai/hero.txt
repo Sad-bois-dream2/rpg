@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "juggernaut_jugg_battlebegins_01"
+             "2" "juggernaut_jug_move_15"
+             "3" "juggernaut_jug_move_03"
+             "4" "juggernaut_jug_cast_01"
+         }
     }
 }

@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "drowranger_dro_spawn_07"
+             "2" "drowranger_dro_move_02"
+             "3" "drowranger_dro_spawn_04"
+             "4" "drowranger_dro_cast_01"
+         }
 	}
 }

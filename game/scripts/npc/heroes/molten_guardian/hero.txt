@@ -53,5 +53,12 @@
             "Support"   "0"
             "Utility"   "1"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "mars_mars_spawn_04"
+             "2" "mars_mars_spawn_06"
+             "3" "mars_mars_spawn_08"
+             "4" "mars_mars_hero_intro_03"
+         }
     }
 }

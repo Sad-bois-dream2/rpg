@@ -51,5 +51,12 @@
             "Support"   "0"
             "Utility"   "2"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"dark_willow_sylph_spawn_06"
+            "2"	"dark_willow_sylph_spawn_01"
+            "3" "dark_willow_sylph_levelup_04"
+            "4" "dark_willow_sylph_move_11"
+        }
   }
 }

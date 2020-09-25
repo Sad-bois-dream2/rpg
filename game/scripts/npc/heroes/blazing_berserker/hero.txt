@@ -54,5 +54,12 @@
             "Support"   "0"
             "Utility"   "0"
         }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"axe_axe_move_08"
+            "2"	"axe_axe_lasthit_01"
+            "3" "axe_axe_purch_03"
+            "4" "axe_axe_laugh_01"
+        }
     }
 }
