@@ -7,8 +7,8 @@
     <scripts>
         <include src="file://{resources}/scripts/custom_game/action_bar_ability.js"/>
     </scripts>
-    <Panel style="flow-children: down; padding: 0px; margin: 0px;">
-        <Panel id="AbilityLevelPanel" class="AbilityLevelUpPanel">
+    <Panel style="flow-children: down; padding: 0px; margin: 0px;" hittest="false" hittestchildren="true">
+        <Panel id="AbilityLevelPanel" class="AbilityLevelUpPanel" hittest="true" hittestchildren="true">
             <DOTAScenePanel class="LevelUpBurstFX" map="scenes/hud/levelupburst" renderdeferred="false"
                             rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
             <Button class="LevelUpTab" hittest="true" onactivate="OnLevelUpClicked()">
@@ -18,8 +18,8 @@
                 <Panel id="LearnModeButton" hittest="false"/>
             </Button>
         </Panel>
-        <Panel id="AbilityLevelPanelFiller" class="AbilityLevelUpPanelFiller" />
-        <Panel class="AbilityPanel" style="">
+        <Panel id="AbilityLevelPanelFiller" class="AbilityLevelUpPanelFiller" hittest="false"/>
+        <Panel class="AbilityPanel" style="" hittest="true" hittestchildren="true">
             <Panel id="ButtonAndLevel">
                 <Panel id="UpgradeBorder">
                     <Panel id="AbilityStatusBorder">
