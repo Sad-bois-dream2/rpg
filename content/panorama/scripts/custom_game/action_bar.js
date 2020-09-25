@@ -174,23 +174,21 @@ function OnAbilityLearnModeToggled(bEnabled) {
 
 function UpdateAbilityList() {
     var abilityListPanel = $("#ability_list");
-	var hero = Players.GetLocalPlayerPortraitUnit();
-	var heroTeam = Players.GetTeam(Entities.GetPlayerOwnerID(hero));
+	var queryUnit = Players.GetLocalPlayerPortraitUnit();
+	var unitTeam = Players.GetTeam(Entities.GetPlayerOwnerID(queryUnit));
 
-    if (!abilityListPanel || (heroTeam != LOCAL_PLAYER_TEAM))
+    if (!abilityListPanel || (unitTeam != LOCAL_PLAYER_TEAM))
         return;
-
-    var queryUnit = Players.GetLocalPlayerPortraitUnit();
 
     // see if we can level up
     var nRemainingPoints = Entities.GetAbilityPoints(queryUnit);
     var bPointsToSpend = (nRemainingPoints > 0);
     var bControlsUnit = Entities.IsControllableByPlayer(queryUnit, Game.GetLocalPlayerID());
-    $.GetContextPanel().SetHasClass("could_level_up", (bControlsUnit && bPointsToSpend));
+    var bHaveAbilityPointsToDisplay = (bControlsUnit && bPointsToSpend)
+    $.GetContextPanel().SetHasClass("could_level_up", bHaveAbilityPointsToDisplay);
     if (!bPointsToSpend) {
         Game.EndAbilityLearnMode();
     }
-
     // update all the panels
     var nUsedPanels = 0;
     var abilitiesCount = Entities.GetAbilityCount(queryUnit);

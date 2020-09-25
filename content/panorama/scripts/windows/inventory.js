@@ -94,10 +94,10 @@ function GetInventoryItemRarityName(rarity) {
 			return "#DOTA_Inventory_rarity_immortal";
 			break;
         case INVENTORY_ITEM_RARITY_UNIQUE_IMMORTAL:
-			return "#DOTA_Inventory_unique_immortal";
+			return "#DOTA_Inventory_rarity_unique_immortal";
 			break;
         case INVENTORY_ITEM_RARITY_CURSED_IMMORTAL:
-			return "#DOTA_Inventory_cursed_immortal";
+			return "#DOTA_Inventory_rarity_cursed_immortal";
 			break;
 		default:
 			return "Unknown";

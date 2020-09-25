@@ -171,14 +171,14 @@
                 </Panel>
             </Panel>
         </Panel>
-        <Panel class="HeroPanelContainer Abilities" hittest="false">
+        <Panel class="HeroPanelContainer Abilities" hittest="false" hittestchildren="true">
             <Panel class="HeroPanelLeftContainer" hittest="false">
                 <Panel class="HeroPortraitContainer" hittest="false">
                 </Panel>
             </Panel>
-            <Panel class="HeroPanelRightContainer Abilities" hittest="false">
-                <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot">
-                    <Panel id="ability_list"/>
+            <Panel class="HeroPanelRightContainer Abilities" hittest="false" hittestchildren="true">
+                <Panel id="HeroAbilitiesPanel" class="AbilityOverlayRoot" hittest="false" hittestchildren="true">
+                    <Panel id="ability_list" hittest="false" hittestchildren="true"/>
                 </Panel>
             </Panel>
         </Panel>

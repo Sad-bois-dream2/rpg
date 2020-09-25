@@ -442,7 +442,7 @@ if (IsServer()) then
                     else
                         reducedCooldown = reducedCooldown * reduction
                     end
-                    if(GameMode.MinimumAbilitiesCooldownTable[args.ability]) then
+                    if (GameMode.MinimumAbilitiesCooldownTable[args.ability]) then
                         reducedCooldown = math.max(GameMode.MinimumAbilitiesCooldownTable[args.ability], reducedCooldown)
                     end
                     if (reducedCooldown < 0 or reducedCooldown > abilityCooldown) then
@@ -876,6 +876,23 @@ if (IsServer()) then
                 if (IsServer()) then
                     Units:ForceStatsCalculation(context:GetParent())
                 end
+            end
+        end
+        local modifierName = modifier:GetName()
+        if (modifierName == "modifier_silence") then
+            modifier.IsHidden = function(self)
+                return false
+            end
+            modifier.IsDebuff = function(self)
+                return true
+            end
+        end
+        if (modifierName == "modifier_silence") then
+            modifier.IsHidden = function(self)
+                return false
+            end
+            modifier.IsDebuff = function(self)
+                return true
             end
         end
     end
