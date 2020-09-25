@@ -747,6 +747,9 @@ modifier_creep_elite = class({
     end,
     GetEffectAttachType = function(self)
         return PATTACH_OVERHEAD_FOLLOW
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
     end
 })
 

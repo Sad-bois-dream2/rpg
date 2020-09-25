@@ -93,7 +93,6 @@ function OnPlayerSaveSlotsData(event) {
             var heroLevelLabel = saveSlots[slotsData[i].slotNumber].FindChildTraverse('SaveSlotLevelLabel');
             heroLevelLabel.text = $.Localize("#DOTA_SaveLoad_HeroLevel").replace("%LVL%", slotsData[i].heroLevel);
         }
-
     } else {
         $.Schedule(0.1, function() {
             OnPlayerSaveSlotsData(event);
