@@ -26,7 +26,6 @@ function OnHeroSelected(hero, notPlaySound) {
 	latestSelectedHero = hero;
     $("#SelectedHeroName").text = $.Localize("#" + hero);
     $("#SelectedHeroIcon").heroname = hero;
-    $("#HeroStats").style.visibility = "visible";
     ResetFilter();
 	UpdateSaveSlots(hero);
     UpdateHeroStats(hero);
@@ -183,8 +182,6 @@ function UpdateFilter() {
 
 function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
-    $("#AvailableHeroesContainer").style.visibility = "visible";
-    $("#HeroSlotsContainer").style.visibility = "visible";
     if(heroSlotsDataRecieved) {
         OnHeroSelected(latestSelectedHero, true);
         return;
@@ -325,8 +322,11 @@ function OnHeroSlotsDataReceived(event) {
 }
 
 function CheckHeroSelectionScreenState() {
-    if(sceneLoaded && heroSlotsDataRecieved) {
+    if(heroSlotsDataRecieved) {
         OnHeroSelected(latestSelectedHero, true);
+        $("#AvailableHeroesContainer").style.visibility = "visible";
+        $("#HeroStats").style.visibility = "visible";
+        $("#HeroSlotsContainer").style.visibility = "visible";
         return;
     }
     $.Schedule(TIMEOUT_UPDATE_INTERVAL, CheckHeroSelectionScreenState);
