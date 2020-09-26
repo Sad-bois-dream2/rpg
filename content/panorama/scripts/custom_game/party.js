@@ -302,6 +302,14 @@ function Init() {
     AutoUpdateValues();
 }
 
+function DetectGameStart() {
+    if(Game.GameStateIs(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)){
+        Init();
+    } else {
+        $.Schedule(0.05, DetectGameStart);
+    }
+}
+
 (function() {
-    Init();
+    DetectGameStart();
 })();
