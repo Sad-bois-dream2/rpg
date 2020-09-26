@@ -184,10 +184,6 @@ function UpdateValues() {
             var maxMp = Entities.GetMaxMana(hero);
             var mpPercent = (currentMp / maxMp) * 100;
             var mpReg = Entities.GetManaThinkRegen(hero);
-            var currentExp = Entities.GetCurrentXP(hero);
-            var maxExp = Entities.GetNeededXPToLevel(hero);
-            var expPercent = (currentExp / maxExp) * 100;
-            var currentLevel = Entities.GetLevel(hero);
 			var IsDead = (currentHp < 1);
 			Heroes[i][HERO_PORTRAIT].SetHasClass("is_dead", IsDead);
 			Heroes[i][DEATH_TIMER].style.visibility = IsDead ? "visible" : "collapse";
@@ -212,20 +208,6 @@ function UpdateValues() {
 				Heroes[i][MP_BAR_VALUE].text = currentMp + " / " + maxMp;
 			}
             Heroes[i][MP_BAR_REG_VALUE].text = "+" + (Math.round(mpReg * 100) / 100);
-			if(maxExp == 0) {
-				expPercent = 100;
-			}
-            Heroes[i][EXP_BAR].style.width = Math.floor(expPercent) + "%";
-            if (IsAltDown) {
-                Heroes[i][EXP_BAR_VALUE].text = currentExp + " / " + maxExp;
-            } else {
-                Heroes[i][EXP_BAR_VALUE].text = Math.floor(expPercent) + "%";
-            }
-            if (IsAltDown && Heroes[i][HERO_PANEL].BHasClass("Small")) {
-				Heroes[i][LEVEL_BAR_VALUE].text = Math.floor(expPercent) + "%";
-			} else {
-				Heroes[i][LEVEL_BAR_VALUE].text = currentLevel;
-			}
 			Heroes[i][HERO_OWNER_NAME].text = Players.GetPlayerName(Heroes[i][PLAYER_ID]);
 			Heroes[i][HERO_OWNER_NAME].style.color = GetHEXPlayerColor(Heroes[i][PLAYER_ID]);
 			if(!Heroes[i][PLAYER_PORTRAIT_FIXED]) {
@@ -258,10 +240,10 @@ function ChangePanelSize() {
 	}		
 }
 
+
 function Init() {
-    var root = $.GetContextPanel();
+    var root = $("#PartyContainer")
 	var localPlayerId = Players.GetLocalPlayer();
-	var IsFirstTime = true;
     for (var i = 0; i < MAX_PLAYERS; i++) {
         var isValidPlayer = Players.IsValidPlayerID(i) && !Players.IsSpectator(i);
         if (isValidPlayer && localPlayerId != i) {
@@ -282,20 +264,13 @@ function Init() {
             var mpBar = heroPanel.FindChildTraverse("HeroMpBar");
             var mpBarCurrentValue = heroPanel.FindChildTraverse("HeroMpBarValue");
             var mpBarRegValue = heroPanel.FindChildTraverse("HeroMpBarRegValue");
-            var expBar = heroPanel.FindChildTraverse("HeroExpBar");
-            var expBarCurrentValue = heroPanel.FindChildTraverse("HeroExpBarValue");
+            var expBar = null;
+            var expBarCurrentValue = null;
             var heroPortrait = heroPanel.FindChildTraverse("HeroPortrait");
-            var levelBarPanel = heroPanel.FindChildTraverse("LevelBar");
-            var levelBarValue = heroPanel.FindChildTraverse("LevelBarValue");
+            var levelBarPanel = null;
+            var levelBarValue = null;
 			var playerPortraitFixed = false;
 			var deathTimer = heroPanel.FindChildTraverse("HeroDeathTimer");
-			if(IsFirstTime) {
-			    var changeSizeBtn = heroPanel.FindChildTraverse("ChangePanelSizeButton");
-			    if(changeSizeBtn != null) {
-			        changeSizeBtn.style.visibility = "visible";
-			    }
-			    IsFirstTime = false;
-			}
             Heroes.push([hpBar, hpBarCurrentValue, hpBarRegValue, mpBar, mpBarCurrentValue, mpBarRegValue, expBar, expBarCurrentValue, levelBarValue, heroEntityIndex, heroPortrait, hero, i, playerPortraitFixed, deathTimer, heroOwnerName]);
         }
     }

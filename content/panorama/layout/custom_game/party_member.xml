@@ -9,25 +9,25 @@
 			var id = parseInt(root.id.replace("Hero", ""));
 			return id;
 		}
-		
+
 		function OnHPBarClick() {
 			var root = $.GetContextPanel();
 			var id = GetCurrentHeroId();
 			root.Data().OnHPBarClick(id);
 		}
-		
+
 		function OnMPBarClick() {
 			var root = $.GetContextPanel();
 			var id = GetCurrentHeroId();
 			root.Data().OnMPBarClick(id);
 		}
-		
+
 		function OnExpBarClick() {
 			var root = $.GetContextPanel();
 			var id = GetCurrentHeroId();
 			root.Data().OnExpBarClick(id);
 		}
-		
+
 		function OnPortraitClick() {
 			var root = $.GetContextPanel();
 			var id = GetCurrentHeroId();
@@ -46,38 +46,30 @@
 		}
 	</script>
 	<Panel class="RootMemberPanel">
-			<Panel id="HeroPortraitPanel" class="HeroPortraitPanel">
-				<Label id="HeroOwnerName" class="HeroOwnerName" text="Player Name" />
-				<Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
-					<Panel id="HeroHpBar" class="HeroHpBar" style="width: 86%;">
-						<DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
-					</Panel>
-					<Label id="HeroHpBarValue" class="HeroHpMpBarValue" text="4896 / 5678" />
-					<Label id="HeroHpBarRegValue" class="HeroHpMpBarRegValue" text="+14" />
-				</Panel>
-				<Panel class="HeroMpBarPanel" onactivate="OnMPBarClick()">
-					<Panel id="HeroMpBar" class="HeroMpBar" style="width: 91%;">
-						<DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
-					</Panel>
-					<Label id="HeroMpBarValue" class="HeroHpMpBarValue" text="13454 / 14678" />
-					<Label id="HeroMpBarRegValue" class="HeroHpMpBarRegValue" text="+2049" />
-				</Panel>
-				<Panel class="HeroExpBarPanel" onactivate="OnExpBarClick()">
-					<Panel id="HeroExpBar" class="HeroExpBar" style="width: 78.4%;">
-						<DOTAScenePanel id="ExpBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
-					</Panel>
-					<Label id="HeroExpBarValue" class="HeroHpMpBarValue" text="78.4%" />
-				</Panel>
-				<DOTAScenePanel id="HeroPortrait" onactivate="OnPortraitClick()" class="OverviewHeroRender HeroPortrait" renderdeferred="false" unit="" drawbackground="0" allowrotation="false" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>
-				<Panel class="LevelBar" onactivate="OnLvlBarClick()">
-					<Label id="LevelBarValue" class="LevelBarValue" text= "43" /> 
-				</Panel>
-				<Panel class="HeroDeathTimer">
-					<Label id="HeroDeathTimer" text="20" />
-				</Panel>
-				<Panel id="ChangePanelSizeButton" class="ResizeButton ButtonBackground" onactivate="ChangePanelSize()">
-					<Image class="ResizeButtonImage" src="file://{resources}/images/custom_game/hud/resize_button.png" scaling="stretch-to-fit-preserve-aspect" />
-				</Panel>
+			<Panel id="HeroPortraitPanel">
+                <Panel class="HeroPortraitContainer">
+                    <DOTAScenePanel id="HeroPortrait" onactivate="OnPortraitClick()" class="OverviewHeroRender HeroPortrait" renderdeferred="false" unit="" drawbackground="0" allowrotation="false" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>
+                    <Panel class="HeroDeathTimer">
+                        <Label id="HeroDeathTimer" text="20" />
+                    </Panel>
+                </Panel>
+                <Panel class="HeroStatsContainer">
+                    <Label id="HeroOwnerName" class="HeroOwnerName" text="Player Name" />
+                    <Panel class="HeroHpBarPanel" onactivate="OnHPBarClick()">
+                        <Panel id="HeroHpBar" class="HeroHpBar" style="width: 86%;">
+                            <DOTAScenePanel id="HealthBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                        </Panel>
+                        <Label id="HeroHpBarValue" class="HeroHpMpBarValue" text="4896 / 5678" />
+                        <Label id="HeroHpBarRegValue" class="HeroHpMpBarRegValue" text="+14" />
+                    </Panel>
+                    <Panel class="HeroMpBarPanel" onactivate="OnMPBarClick()">
+                        <Panel id="HeroMpBar" class="HeroMpBar" style="width: 91%;">
+                            <DOTAScenePanel id="ManaBurner" map="scenes/hud/healthbarburner" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
+                        </Panel>
+                        <Label id="HeroMpBarValue" class="HeroHpMpBarValue" text="13454 / 14678" />
+                        <Label id="HeroMpBarRegValue" class="HeroHpMpBarRegValue" text="+2049" />
+                    </Panel>
+                </Panel>
 			</Panel>
 	</Panel>
 </root>
