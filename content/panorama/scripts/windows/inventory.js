@@ -562,7 +562,6 @@ function ModifyItemComparePanel(panelId, icon, name, rarity, type, description, 
 		    var IsPercent = (statName.charAt(0) == "%");
             if(IsPercent) {
                 statName = statName.slice(1, statName.length);
-                statValue *= 100;
                 statValue += "%";
             }
 		    statsLabelsForCompareWindowPanel1[i].text = statName + preSymbol + statValue;

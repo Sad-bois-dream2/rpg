@@ -271,7 +271,7 @@
 				<Label text="#DOTA_Inventory_current_item" class="OldLabel" />
 			</Panel>
 			<Panel class="ItemPanel">
-				<Panel class="Item">
+				<Panel class="Item First">
 					<Panel class="ItemTooltipHeader">
 						<Panel>
 							<DOTAItemImage id="ItemTooltipImage1" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
@@ -290,7 +290,7 @@
 						<Panel id="ItemTooltipStatsContainer1" class="ItemTooltipStatsContainer" />
 					</Panel>
 				</Panel>
-				<Panel class="Item">
+				<Panel class="Item Second">
 					<Panel class="ItemTooltipHeader">
 						<Panel>
 							<DOTAItemImage id="ItemTooltipImage2" class="ItemTooltipImage" showtooltip="false" hittest="false" scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
@@ -310,13 +310,17 @@
 					</Panel>
 				</Panel>
 			</Panel>
-			<Panel styte="flow-children: right; width: 100%; height: 150px;">
-				<Panel class="InventoryButton Normal" style="margin-left: 100px; margin-bottom: 30px;" onactivate="OnInventoryChangeEquippedItemClicked()">
-					<Label text ="#DOTA_Inventory_btn_replace" />
-				</Panel>
-				<Panel class="InventoryButton Normal" style="margin-left: 400px; margin-bottom: 30px;" onactivate="OnInventoryKeepBothClicked()">
-					<Label text ="#DOTA_Inventory_btn_keep_both" />
-				</Panel>
+			<Panel class="ConflictPanelButtonsContainer">
+                <Panel class="InventoryButtonContainer">
+                    <Panel class="InventoryButton Normal" onactivate="OnInventoryChangeEquippedItemClicked()">
+                        <Label text ="#DOTA_Inventory_btn_replace" />
+                    </Panel>
+                </Panel>
+                <Panel class="InventoryButtonContainer">
+                    <Panel class="InventoryButton Normal" onactivate="OnInventoryKeepBothClicked()">
+                        <Label text ="#DOTA_Inventory_btn_keep_both" />
+                    </Panel>
+                </Panel>
 			</Panel>
 		</Panel>
 		<!-- weird hack to make them auto recompile -->

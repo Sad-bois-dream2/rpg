@@ -310,6 +310,7 @@
     text-transform: uppercase;
     horizontal-align: center;
     visibility: collapse;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroSlot {

@@ -6,5 +6,7 @@
 	<scripts>
 		<include src="file://{resources}/scripts/custom_game/party.js" />
 	</scripts>
-	<Panel class="RootPanel" />
+	<Panel class="RootPanel">
+		<Panel id="PartyContainer"/>
+	</Panel>
 </root>

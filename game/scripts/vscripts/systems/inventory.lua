@@ -718,10 +718,10 @@ function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
 end
 
 function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
-    if (event == nil or event.player_id == nil) then
+    if (event == nil or event.PlayerID == nil) then
         return
     end
-    local player = PlayerResource:GetPlayer(event.player_id)
+    local player = PlayerResource:GetPlayer(event.PlayerID)
     if (player == nil) then
         return
     end
@@ -786,7 +786,7 @@ function Inventory:OnInventoryDropItemRequest(event, args)
     event.slot = tonumber(parsedData.slot)
     event.item = parsedData.item
     event.equipped = parsedData.equipped
-    event.player_id = tonumber(parsedData.player_id)
+    event.player_id = tonumber(event.PlayerID)
     if (event.slot == nil or event.item == nil or event.equipped == nil or not GameMode:IsValidBoolean(event.equipped) or event.player_id == nil) then
         return
     end
@@ -836,7 +836,7 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
     local parsedData = json.decode(event.data)
     event.fromslot = tonumber(parsedData.fromslot)
     event.inslot = tonumber(parsedData.inslot)
-    event.player_id = tonumber(parsedData.player_id)
+    event.player_id = tonumber(event.PlayerID)
     event.equipped = parsedData.equipped
     if (event.fromslot == nil or event.inslot == nil or event.player_id == nil) then
         return
@@ -867,13 +867,14 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
             Inventory:SetItemInSlot(hero, "", true, event.fromslot, statsInSlot)
         else
             -- swap equipped item with not empty bottom slot (conflict)
-            local event_data = {
+            local eventData = {
                 inslot = event.fromslot,
                 fromslot = event.inslot,
                 item = itemInSlot,
-                player_id = event.player_id
+                player_id = event.PlayerID,
+                PlayerID = event.PlayerID
             }
-            Inventory:OnInventoryItemReplaceDialogRequest(event_data, nil)
+            Inventory:OnInventoryItemReplaceDialogRequest(eventData, nil)
         end
     else
         -- swap in bottom slots
@@ -892,6 +893,7 @@ function Inventory:OnInventoryEquippedItemRightClick(event, args)
     end
     event.inslot = tonumber(event.inslot)
     event.fromslot = tonumber(event.fromslot)
+    event.player_id = event.PlayerID
     if (event.item == nil or event.fromslot == nil or event.player_id == nil or event.inslot == nil) then
         return
     end
@@ -923,10 +925,10 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
     end
     event.inslot = tonumber(event.inslot)
     event.fromslot = tonumber(event.fromslot)
-    if (event.item == nil or event.fromslot == nil or event.player_id == nil or event.inslot == nil) then
+    if (event.item == nil or event.fromslot == nil or event.PlayerID == nil or event.inslot == nil) then
         return
     end
-    local player = PlayerResource:GetPlayer(event.player_id)
+    local player = PlayerResource:GetPlayer(event.PlayerID)
     if (player == nil) then
         return
     end
@@ -954,13 +956,13 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
         Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
         Inventory:SetItemInSlot(hero, "", false, event.fromslot, statsInSlot)
     else
-        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_start_item_replace_dialog_from_server", { player_id = event.player_id, item = event.item, slot = event.fromslot })
+        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_start_item_replace_dialog_from_server", { player_id = event.PlayerID, item = event.item, slot = event.fromslot })
     end
 end
 
 function Inventory:OnInventoryWindowOpenRequest(event, args)
-    if (event ~= nil and event.player_id ~= nil) then
-        local player = PlayerResource:GetPlayer(event.player_id)
+    if (event ~= nil and event.PlayerID ~= nil) then
+        local player = PlayerResource:GetPlayer(event.PlayerID)
         if player ~= nil then
             CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_open_window_from_server", {})
         end
@@ -968,8 +970,8 @@ function Inventory:OnInventoryWindowOpenRequest(event, args)
 end
 
 function Inventory:OnInventoryWindowCloseRequest(event, args)
-    if (event ~= nil and event.player_id ~= nil) then
-        local player = PlayerResource:GetPlayer(event.player_id)
+    if (event ~= nil and event.PlayerID ~= nil) then
+        local player = PlayerResource:GetPlayer(event.PlayerID)
         if player ~= nil then
             CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_close_window_from_server", {})
         end
@@ -981,10 +983,10 @@ function Inventory:OnInventoryEquipItemRequest(event, args)
         return
     end
     event.slot = tonumber(event.slot)
-    if (event.player_id == nil or event.item == nil or event.slot == nil) then
+    if (event.PlayerID == nil or event.item == nil or event.slot == nil) then
         return
     end
-    local player = PlayerResource:GetPlayer(event.player_id)
+    local player = PlayerResource:GetPlayer(event.PlayerID)
     if player == nil then
         return
     end
