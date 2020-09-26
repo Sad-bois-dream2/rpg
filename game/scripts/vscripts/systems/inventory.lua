@@ -758,7 +758,8 @@ function Inventory:OnInventoryItemPickedFromGround(event)
             if (hero ~= nil) then
                 if (Inventory:IsHeroHaveInventory(hero)) then
                     local itemId = event.itemEntity:GetEntityIndex()
-                    if (event.itemEntity:GetPurchaser() == hero) then
+                    local itemOwner = event.itemEntity:GetPurchaser()
+                    if (itemOwner == hero) then
                         Inventory:AddItem(hero, event.item, event.itemEntity.inventoryStats)
                     else
                         local item = CreateItem(event.item, hero, hero)
@@ -766,7 +767,8 @@ function Inventory:OnInventoryItemPickedFromGround(event)
                         local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
                         local itemStats = Inventory:GetItemEntityStats(event.itemEntity)
                         Inventory:SetItemEntityStats(item, itemStats)
-                        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
+                        item:SetPurchaser(itemOwner)
+                        CustomNetTables:SetTableValue("inventory_world_items", tostring(item), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
                     end
                     CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
                     event.itemEntity:Destroy()
