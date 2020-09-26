@@ -46,7 +46,7 @@
 		}
 	</script>
 	<Panel class="RootMemberPanel">
-			<Panel id="HeroPortraitPanel">
+		<Panel id="HeroPortraitPanel">
                 <Panel class="HeroPortraitContainer">
                     <DOTAScenePanel id="HeroPortrait" onactivate="OnPortraitClick()" class="OverviewHeroRender HeroPortrait" renderdeferred="false" unit="" drawbackground="0" allowrotation="false" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>
                     <Panel class="HeroDeathTimer">

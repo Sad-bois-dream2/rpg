@@ -242,7 +242,7 @@ function ChangePanelSize() {
 
 
 function Init() {
-    var root = $("#PartyContainer")
+    var root = $("#PartyContainer");
 	var localPlayerId = Players.GetLocalPlayer();
     for (var i = 0; i < MAX_PLAYERS; i++) {
         var isValidPlayer = Players.IsValidPlayerID(i) && !Players.IsSpectator(i);
