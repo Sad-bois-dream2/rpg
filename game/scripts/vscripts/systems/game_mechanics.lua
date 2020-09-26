@@ -264,6 +264,16 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
+                    if(not modifier.IsHidden) then
+                        modifier.IsHidden = function(self)
+                            return false
+                        end
+                    end
+                    if(not modifier.IsDebuff) then
+                        modifier.IsDebuff = function(self)
+                            return false
+                        end
+                    end
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -379,6 +389,16 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
+                    if(not modifier.IsHidden) then
+                        modifier.IsHidden = function(self)
+                            return false
+                        end
+                    end
+                    if(not modifier.IsDebuff) then
+                        modifier.IsDebuff = function(self)
+                            return true
+                        end
+                    end
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -876,23 +896,6 @@ if (IsServer()) then
                 if (IsServer()) then
                     Units:ForceStatsCalculation(context:GetParent())
                 end
-            end
-        end
-        local modifierName = modifier:GetName()
-        if (modifierName == "modifier_silence") then
-            modifier.IsHidden = function(self)
-                return false
-            end
-            modifier.IsDebuff = function(self)
-                return true
-            end
-        end
-        if (modifierName == "modifier_silence") then
-            modifier.IsHidden = function(self)
-                return false
-            end
-            modifier.IsDebuff = function(self)
-                return true
             end
         end
     end
