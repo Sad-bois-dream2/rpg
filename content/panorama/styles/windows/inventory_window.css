@@ -272,6 +272,10 @@
 
 .InventoryButton.Normal {
 	height: 50px;
+	horizontal-align: center;
+	vertical-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .InventoryButton.is_pressed  Label {
@@ -345,7 +349,7 @@
 
 #ConflictDialogPanel 
 {
-	width: fit-children;
+	width: 900px;
 	height: fit-children;
 	border: 1px solid gray;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
@@ -363,18 +367,28 @@
 
 #ConflictDialogPanel .ItemPanel
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: fit-children;
 	flow-children: right;
 }
 
 #ConflictDialogPanel .ItemPanel .Item
 {
-	width: 250px;
+	width: fill-parent-flow(1.0);
 	height: fit-children;
 	flow-children: down;
 	margin: 5px;
 	margin-left: 35px;
+}
+
+#ConflictDialogPanel .ItemPanel .Item .First
+{
+    horizontal-align: left;
+}
+
+#ConflictDialogPanel .ItemPanel .Item .Second
+{
+    horizontal-align: right;
 }
 
 #ConflictDialogPanel .ItemPanel .Item .ItemTooltipDescription .ItemTooltipLabel
@@ -382,34 +396,21 @@
 	min-height: 140px;
 }
 
-#ConflictDialogPanel .NewLabel 
+#ConflictDialogPanel .NewLabel, #ConflictDialogPanel .OldLabel
 {
 	color: white;
-	vertical-align: center;
-	text-align: center;
 	height: 30px;
 	font-size: 18px;
-	margin-left: 40px;
-	margin-top: 20px;
-	padding-top: 5px;
 	font-family: platformfont;
 	font-weight: bold;
-	width: 240px;
+	margin-top: 10px;
+	width: fill-parent-flow(1.0);
+	text-align: center;
 }
 
 #ConflictDialogPanel .OldLabel 
 {
-	color: white;
-	vertical-align: center;
-	text-align: center;
-	height: 30px;
-	width: 240px;
-	padding-top: 5px;
-	font-size: 18px;
-	margin-left: 50px;
-	margin-top: 20px;
-	font-family: platformfont;
-	font-weight: bold;
+    horizontal-align: right;
 }
 
 .OldNewLabelsContainer 
@@ -422,4 +423,13 @@
     color: white;
 	font-family: platformfont;
 	font-size: 16px;
+}
+
+.ConflictPanelButtonsContainer {
+    width: fill-parent-flow(1.0);
+    flow-children: right;
+}
+
+.ConflictPanelButtonsContainer .InventoryButtonContainer {
+    width: fill-parent-flow(1.0);
 }
