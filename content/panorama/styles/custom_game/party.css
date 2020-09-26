@@ -46,6 +46,7 @@
 	font-family: platformfont;
 	font-size: 16px;
 	text-overflow: shrink;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroPortrait.is_dead {
