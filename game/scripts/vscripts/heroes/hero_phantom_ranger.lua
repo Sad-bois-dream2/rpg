@@ -786,7 +786,7 @@ function phantom_ranger_shadow_waves:OnSpellStart(sourceUnit, target)
     local targetVector = target - source
     local info = {
         Ability = self,
-        EffectName = "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf",
+        EffectName = "particles/units/phantom_ranger/shadow_wave/shadow_wave_projectile.vpcf",
         vSpawnOrigin = source,
         fDistance = 800,
         fStartRadius = 400,
