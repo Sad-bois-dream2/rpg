@@ -197,8 +197,7 @@
 			}
 			"precache"
 			{
-				"particle" "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf"
-				"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
+				"particle" "particles/units/phantom_ranger/shadow_wave/shadow_wave_projectile.vpcf"
 			}
 		}
 	}
