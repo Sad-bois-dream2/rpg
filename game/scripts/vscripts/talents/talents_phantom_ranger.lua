@@ -1031,13 +1031,25 @@ function CreatePhantomAtPoint(point, ability, phantomModifier, phantomSpeed, pha
     modifierTable.modifier_name = phantomModifier
     modifierTable.duration = -1
     modifierTable.modifier_params = { phantomSpeed = phantomSpeed }
-    GameMode:ApplyBuff(modifierTable)
+    local phantomModifier = GameMode:ApplyBuff(modifierTable)
     phantom:SetOwner(ability.caster)
+    local modifierTable = {}
+    modifierTable.ability = ability
+    modifierTable.target = phantom
+    modifierTable.caster = phantom
+    modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
     local wearables = GetWearables(ability.caster)
     AddWearables(phantom, wearables)
-    phantom:SetRenderColor(20, 0, 30)
     ForEachWearable(phantom, function(wearable)
-        wearable:SetRenderColor(20, 0, 30)
+        local modifierTable = {}
+        modifierTable.ability = ability
+        modifierTable.target = wearable
+        modifierTable.caster = phantom
+        modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
     end)
     local phantomIndex = phantom:entindex()
     -- if (ability:GetAbilityName() == "phantom_ranger_phantom_arrow" and ability.caster:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_46")) then 
@@ -1056,6 +1068,7 @@ function CreatePhantomAtPoint(point, ability, phantomModifier, phantomSpeed, pha
 
         Timers:CreateTimer(phantomDuration, function()
             DestroyPhantom(phantom)
+            phantomModifier:Destroy()
         end)
 
     -- end

@@ -1,0 +1,29 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_nBehaviorVersion = 10
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/phantom_ranger/soul_echo/soul_echo_sparkles_c.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/phantom_ranger/soul_echo/soul_echo_sparkles_b.vpcf"
+		},
+	]
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "ae_absorigin"
+			m_drivers = [  ]
+			m_previewState = 
+			{
+				m_previewModel = "models/items/enigma/eidolon/tentacular_conqueror_tentacular_conqueror_eidolons/tentacular_conqueror_tentacular_conqueror_eidolons.vmdl"
+				m_sequenceName = "idle"
+				m_nFireParticleOnSequenceFrame = 87
+				m_hitboxSetName = "default"
+				m_bAnimationNonLooping = true
+			}
+		},
+	]
+}

@@ -59,7 +59,7 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_proj.vpcf"
+			"particle" "particles/units/phantom_ranger/phantom_harmonic/phantom_harmonic_projectile.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -122,7 +122,8 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/phantom_ranger/test/void_disciple/void_disciple_effect.vpcf"
+			"particle" "particles/units/phantom_ranger/void_disciple/void_disciple.vpcf"
+			"particle" "particles/units/phantom_ranger/void_disciple/void_disciple_endcap.vpcf"
 		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
 		}
 	}
@@ -196,8 +197,7 @@
 			}
 			"precache"
 			{
-				"particle" "particles/units/phantom_ranger/phantom_ranger_shadow_wave_proj.vpcf"
-				"soundfile" "soundevents/game_sounds_heroes/game_sounds_shadow_demon.vsndevts"
+				"particle" "particles/units/phantom_ranger/shadow_wave/shadow_wave_projectile.vpcf"
 			}
 		}
 	}
@@ -254,10 +254,10 @@
 		}
 		"precache"
 		{
-			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
-			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-			"particle" "particles/status_fx/status_effect_maledict.vpcf"
-			"particle" "particles/status_fx/status_effect_terrorblade_reflection.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/status_fx/status_effect_phantom.vpcf"
 		}
 	}
 
@@ -395,8 +395,9 @@
 		"precache"
 		{
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_spectre.vsndevts"
-			//"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-			//"particle" "particles/status_fx/status_effect_maledict.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/status_fx/status_effect_phantom.vpcf"
 		}
 		
 	}
