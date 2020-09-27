@@ -684,16 +684,7 @@ modifier_phantom_ranger_shadow_waves_debuff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetEffectName = function(self)
-        return "particles/units/phantom_ranger/phantom_ranger_shadow_wave_debuff.vpcf"
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_ABSORIGIN_FOLLOW
-    end,
-    GetTexture = function(self)
-        return phantom_ranger_shadow_waves:GetAbilityTextureName()
-    end,
+    end
 })
 
 function modifier_phantom_ranger_shadow_waves_debuff:OnCreated()
