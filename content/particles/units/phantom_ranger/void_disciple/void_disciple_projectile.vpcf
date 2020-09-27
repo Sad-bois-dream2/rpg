@@ -121,5 +121,8 @@
 		{
 			m_ChildRef = resource:"particles/units/phantom_ranger/void_disciple/void_disciple_projectile_trail.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/phantom_ranger/void_disciple/void_disciple_projectile_trail_b.vpcf"
+		},
 	]
 }
