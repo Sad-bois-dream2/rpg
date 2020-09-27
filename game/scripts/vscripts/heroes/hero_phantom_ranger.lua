@@ -21,22 +21,7 @@ modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetEffectName = function(self)
-        return "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_ABSORIGIN_FOLLOW
-    end,
-    GetStatusEffectName = function(self)
-        return "particles/status_fx/status_effect_terrorblade_reflection.vpcf"
-    end,
-    StatusEffectPriority = function(self)
-        return 15
-    end,
     CheckState = function(self)
-        if not IsServer() then
-            return
-        end
         return
         {
             [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
@@ -54,22 +39,34 @@ modifier_phantom_ranger_phantom_of_vengeance_phantom = class({
     end
 })
 
-LinkedModifiers["modifier_phantom_ranger_phantom_of_vengeance_phantom"] = LUA_MODIFIER_MOTION_NONE
-
---------------------------------------------------------------------------------
-
-function modifier_phantom_ranger_phantom_of_vengeance_phantom:OnCreated(params)
-    if not IsServer() then
+function modifier_phantom_ranger_phantom_of_vengeance_phantom:OnCreated(kv)
+    if (not IsServer()) then
         return
     end
-    self.phantomSpeed = params.phantomSpeed
+    self.parent = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControl(self.pidx, 1, self.parent:GetAbsOrigin())
+    self.phantomSpeed = kv.phantomSpeed
 end
 
---------------------------------------------------------------------------------
+function modifier_phantom_ranger_phantom_of_vengeance_phantom:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    local pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf", PATTACH_ABSORIGIN, self:GetAbility():GetCaster())
+    ParticleManager:SetParticleControl(pidx, 0, self.parent:GetAbsOrigin())
+    ParticleManager:DestroyParticle(pidx, false)
+    ParticleManager:ReleaseParticleIndex(pidx)
+    EmitSoundOn("Hero_VoidSpirit.AetherRemnant.Destroy", self.parent)
+end
 
 function modifier_phantom_ranger_phantom_of_vengeance_phantom:GetModifierMoveSpeed_AbsoluteMin()
     return self.phantomSpeed
 end
+
+LinkedModifiers["modifier_phantom_ranger_phantom_of_vengeance_phantom"] = LUA_MODIFIER_MOTION_NONE
 
 --------------------------------------------------------------------------------
 -- Phantom of Vengeance
@@ -508,14 +505,12 @@ function modifier_phantom_ranger_soul_echo_phantom:OnCreated()
     self.parent = self:GetParent()
     self.pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
     ParticleManager:SetParticleControl(self.pidx, 1, self.parent:GetAbsOrigin())
-    print("Kekw2?")
 end
 
 function modifier_phantom_ranger_soul_echo_phantom:OnDestroy()
     if (not IsServer()) then
         return
     end
-    print("Kekw?")
     ParticleManager:DestroyParticle(self.pidx, false)
     ParticleManager:ReleaseParticleIndex(self.pidx)
     local pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf", PATTACH_ABSORIGIN, self:GetAbility():GetCaster())
