@@ -130,13 +130,13 @@
 			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_shadow_wave_ground_pnt.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/shadow_wave/shadow_wave_ground_pnt.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_shadow_wave_ground_smoke.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/shadow_wave/shadow_wave_ground_smoke.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_shadow_wave_flek.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/shadow_wave/shadow_wave_flek.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/drow/drow_ti6/drow_ti6_silence_arrow_cracks.vpcf"

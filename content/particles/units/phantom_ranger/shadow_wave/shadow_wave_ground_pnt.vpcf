@@ -8,10 +8,10 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_shadow_wave_ground_embers.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/shadow_wave/shadow_wave_ground_embers.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_shadow_wave_ground_dust.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/shadow_wave/shadow_wave_ground_dust.vpcf"
 		},
 	]
 	m_PreEmissionOperators = 
