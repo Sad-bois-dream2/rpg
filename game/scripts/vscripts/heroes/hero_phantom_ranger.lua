@@ -321,7 +321,14 @@ function modifier_phantom_ranger_hunters_focus_buff:OnCreated()
         self.talent37_percentDmgRegainedPerLevel = 0
 
     end
+    self.caster:SetRangedProjectileName("particles/units/phantom_ranger/hunter_focus/hunter_focus_projectile.vpcf")
+end
 
+function modifier_phantom_ranger_hunters_focus_buff:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    self.caster:SetRangedProjectileName("particles/units/heroes/hero_drow/drow_base_attack.vpcf")
 end
 
 --------------------------------------------------------------------------------
