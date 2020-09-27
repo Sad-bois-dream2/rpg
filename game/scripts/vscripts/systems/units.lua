@@ -696,9 +696,8 @@ function modifier_stats_system:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    if (self.unit:IsRealHero()) then
+    if (self.unit and self.unit.IsRealHero and self.unit:IsRealHero()) then
         local playerID = self.unit:GetPlayerID()
-        -- send data to clients
         local dataTable = {
             player_id = playerID,
             statsTable = self.unit.stats
