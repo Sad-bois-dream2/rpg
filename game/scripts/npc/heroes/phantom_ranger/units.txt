@@ -93,7 +93,7 @@
 		"AttackAnimationPoint"		"0.0"		// Normalized time in animation cycle to attack.
 		"AttackAcquisitionRange"	"800"		// Range within a target can be acquired.
 		"AttackRange"				"800"		// Range within a target can be attacked.
-		"ProjectileModel"			"particles/neutral_fx/satyr_trickster_projectile.vpcf" // Particle system model for projectile.
+		"ProjectileModel"			"particles/units/phantom_ranger/void_disciple/void_disciple_projectile.vpcf" // Particle system model for projectile.
 		"ProjectileSpeed"			"900"		// Speed of projectile.		     
 		// Bounds
 		//----------------------------------------------------------------
