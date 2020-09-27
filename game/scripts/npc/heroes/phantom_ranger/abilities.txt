@@ -122,7 +122,8 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/phantom_ranger/test/void_disciple/void_disciple_effect.vpcf"
+			"particle" "particles/units/phantom_ranger/void_disciple/void_disciple.vpcf"
+			"particle" "particles/units/phantom_ranger/void_disciple/void_disciple_endcap.vpcf"
 		    "soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
 		}
 	}
