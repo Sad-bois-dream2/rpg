@@ -445,10 +445,7 @@ modifier_phantom_ranger_soul_echo = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return phantom_ranger_soul_echo:GetAbilityTextureName()
-    end,
+    end
 })
 
 function modifier_phantom_ranger_soul_echo:OnTakeDamage(damageTable)
@@ -491,18 +488,6 @@ modifier_phantom_ranger_soul_echo_phantom = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetEffectName = function(self)
-        return "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-    end,
-    GetEffectAttachType = function(self)
-        return PATTACH_ABSORIGIN_FOLLOW
-    end,
-    GetStatusEffectName = function(self)
-        return "particles/status_fx/status_effect_maledict.vpcf"
-    end,
-    StatusEffectPriority = function(self)
-        return 15
-    end,
     CheckState = function(self)
         return
         {
@@ -516,6 +501,33 @@ modifier_phantom_ranger_soul_echo_phantom = class({
     end
 })
 
+function modifier_phantom_ranger_soul_echo_phantom:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.parent = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+    ParticleManager:SetParticleControl(self.pidx, 1, self.parent:GetAbsOrigin())
+    print("Kekw2?")
+end
+
+function modifier_phantom_ranger_soul_echo_phantom:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    print("Kekw?")
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    local pidx = ParticleManager:CreateParticle("particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf", PATTACH_ABSORIGIN, self:GetAbility():GetCaster())
+    ParticleManager:SetParticleControl(pidx, 0, self.parent:GetAbsOrigin())
+    ParticleManager:DestroyParticle(pidx, false)
+    ParticleManager:ReleaseParticleIndex(pidx)
+    EmitSoundOn("Hero_VoidSpirit.AetherRemnant.Destroy", self.parent)
+    DestroyWearables(self.parent, function()
+        self.parent:Destroy()
+    end)
+end
+
 function modifier_phantom_ranger_soul_echo_phantom:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_phantom_ranger_soul_echo_phantom")
     if (modifier) then
@@ -525,6 +537,34 @@ function modifier_phantom_ranger_soul_echo_phantom:OnTakeDamage(damageTable)
 end
 
 LinkedModifiers["modifier_phantom_ranger_soul_echo_phantom"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_phantom_ranger_soul_echo_phantom_status_effect = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_phantom_ranger_soul_echo_phantom_status_effect:GetStatusEffectName()
+    return "particles/units/phantom_ranger/soul_echo/status_fx/status_effect_phantom.vpcf"
+end
+
+function modifier_phantom_ranger_soul_echo_phantom_status_effect:StatusEffectPriority()
+    return 15
+end
+
+LinkedModifiers["modifier_phantom_ranger_soul_echo_phantom_status_effect"] = LUA_MODIFIER_MOTION_NONE
 
 --------------------------------------------------------------------------------
 -- phantom_ranger_soul_echo
@@ -536,7 +576,6 @@ phantom_ranger_soul_echo = class({
 })
 
 function phantom_ranger_soul_echo:OnUpgrade()
-
     if not IsServer() then
         return
     end
@@ -548,15 +587,6 @@ function phantom_ranger_soul_echo:OnUpgrade()
     if (self.level >= 4 and not self.caster:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_47")) then
         GameMode:ApplyBuff({ caster = self.caster, target = self.caster, ability = self, modifier_name = "modifier_npc_dota_hero_drow_ranger_talent_47", duration = -1 })
     end
-
-end
-
-function phantom_ranger_soul_echo:DestroyPhantom(phantom)
-    if (phantom ~= nil and phantom:IsAlive()) then
-        DestroyWearables(phantom, function()
-            phantom:Destroy()
-        end)
-    end
 end
 
 function phantom_ranger_soul_echo:CreatePhantom()
@@ -564,9 +594,9 @@ function phantom_ranger_soul_echo:CreatePhantom()
     local modifierTable = {}
     modifierTable.ability = self
     modifierTable.target = phantom
-    modifierTable.caster = phantom
+    modifierTable.caster = self.caster
     modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom"
-    modifierTable.duration = -1
+    modifierTable.duration = self.duration
     GameMode:ApplyBuff(modifierTable)
     local wearables = GetWearables(self.caster)
     AddWearables(phantom, wearables)
@@ -576,7 +606,7 @@ function phantom_ranger_soul_echo:CreatePhantom()
                 modifierTable.ability = self
                 modifierTable.target = wearable
                 modifierTable.caster = phantom
-                modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom"
+                modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
                 modifierTable.duration = -1
                 GameMode:ApplyBuff(modifierTable)
             end)
@@ -587,9 +617,6 @@ function phantom_ranger_soul_echo:CreatePhantom()
     phantom.damageTransfer = self.phantomDamageTransfer
     self.caster.phantom_ranger_soul_echo = self.caster.phantom_ranger_soul_echo or {}
     self.caster.phantom_ranger_soul_echo.phantom = phantom
-    Timers:CreateTimer(self.duration, function()
-        phantom_ranger_soul_echo:DestroyPhantom(phantom)
-    end)
 end
 
 function phantom_ranger_soul_echo:OnSpellStart(unit, special_cast)
@@ -1224,6 +1251,7 @@ function modifier_phantom_ranger_void_disciple_summon:OnDestroy()
     ParticleManager:SetParticleControl(pidx, 0, self.summon:GetAbsOrigin())
     ParticleManager:DestroyParticle(pidx, false)
     ParticleManager:ReleaseParticleIndex(pidx)
+    EmitSoundOn("Hero_VoidSpirit.AetherRemnant.Destroy", self.summon)
     self.summon:Destroy()
     self.caster.phantom_ranger_void_disciple.current_voids = self.caster.phantom_ranger_void_disciple.current_voids - 1
 end
@@ -1282,7 +1310,7 @@ function phantom_ranger_void_disciple:OnSpellStart(source)
     if (self.level >= 3) then
         Summons:SetSummonCanProcOwnerAutoAttack(summon, true)
     end
-    summon:AddNewModifier(caster, self, "modifier_phantom_ranger_void_disciple_summon", {duration = self.duration})
+    summon:AddNewModifier(caster, self, "modifier_phantom_ranger_void_disciple_summon", { duration = self.duration })
 end
 
 function phantom_ranger_void_disciple:OnUpgrade()

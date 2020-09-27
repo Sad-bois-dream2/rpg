@@ -254,10 +254,10 @@
 		}
 		"precache"
 		{
-			//"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
-			"particle" "particles/units/phantom_ranger/test/soul_echo/soul_echo_phantom.vpcf"
-			"particle" "particles/status_fx/status_effect_maledict.vpcf"
-			"particle" "particles/status_fx/status_effect_terrorblade_reflection.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_void_spirit.vsndevts"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/soul_echo_endcap.vpcf"
+			"particle" "particles/units/phantom_ranger/soul_echo/status_fx/status_effect_phantom.vpcf"
 		}
 	}
 
