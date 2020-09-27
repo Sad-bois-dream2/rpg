@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -91,26 +91,10 @@
 			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_dark_b.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_feathers.vpcf"
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_harmonic/phantom_harmonic_projectile_trail_b.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_smoke.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_dark.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_trail_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_embers.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_streaks.vpcf"
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_harmonic/phantom_harmonic_projectile_smoke.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_projectile.vpcf"
@@ -130,10 +114,11 @@
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_light.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_bEndCap = true
-			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_proj_end.vpcf"
+			m_ChildRef = resource:"particles/units/phantom_ranger/phantom_harmonic/phantom_harmonic_projectile_endcap.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/vengeful/vs_ti8_immortal_shoulder/vs_ti8_immortal_magic_missle_launch.vpcf"
@@ -153,32 +138,32 @@
 				{
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 800.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 800.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]
 		},
 	]
-	m_nBehaviorVersion = 4
+	m_nBehaviorVersion = 10
 }

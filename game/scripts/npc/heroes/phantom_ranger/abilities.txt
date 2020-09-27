@@ -59,7 +59,7 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/phantom_ranger/phantom_ranger_phantom_harmonic_proj.vpcf"
+			"particle" "particles/units/phantom_ranger/phantom_harmonic/phantom_harmonic_projectile.vpcf"
 		}
 	}
 	//=================================================================================================================
