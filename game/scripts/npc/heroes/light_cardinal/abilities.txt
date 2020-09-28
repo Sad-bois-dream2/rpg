@@ -37,7 +37,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"hot_healing"				"25 30 35 40"
+				"hot_healing"				"10 15 20 25"
 			}
 			"02"
 			{
@@ -131,7 +131,27 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"protection_duration"				"1 2 3 4"
+				"duration"				"2 3 4 5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"elearmor"				"0 50 50 50"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_health_to_hot"				"0 0 3 3"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"hot_tick"				"0 0 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"int_to_end_healing"				"0 0 0 150"
 			}
 		}
 		"precache"

@@ -214,7 +214,7 @@ function light_cardinal_piety:OnSpellStart()
         modifierTable.caster = caster
         modifierTable.modifier_name = "modifier_light_cardinal_piety_hot"
         modifierTable.duration = self.hotDuration
-        local modifier = GameMode:ApplyBuff(modifierTable)
+        GameMode:ApplyBuff(modifierTable)
         if (self.healing > 0) then
             local healTable = {}
             healTable.caster = caster
@@ -260,9 +260,6 @@ modifier_light_cardinal_purification = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return light_cardinal_purification:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
         return "particles/items_fx/black_king_bar_avatar.vpcf"
     end
@@ -275,13 +272,22 @@ function modifier_light_cardinal_purification:OnCreated(keys)
     self.ability = self:GetAbility()
     self.target = self:GetParent()
     self.caster = self:GetCaster()
-    self:StartIntervalThink(0.1)
+    self.tick = 0.1
+    self.currentTime = 0
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.tick)
 end
 
 function modifier_light_cardinal_purification:OnDestroy()
     if not IsServer() then
         return
     end
+    local healTable = {}
+    healTable.caster = self.caster
+    healTable.target = self.target
+    healTable.ability = self.ability
+    healTable.heal = self.ability.intToEndHealing * Units:GetHeroIntellect(self.caster)
+    GameMode:HealUnit(healTable)
     self.caster:StopSound("Hero_Omniknight.Repel")
 end
 
@@ -289,35 +295,47 @@ function modifier_light_cardinal_purification:OnIntervalThink()
     if not IsServer() then
         return
     end
+    if (self.ability.hotHealing > 0) then
+        self.currentTime = self.currentTime + self.tick
+        if (self.currentTime > self.ability.hotTick) then
+            local healTable = {}
+            healTable.caster = self.caster
+            healTable.target = self.target
+            healTable.ability = self.ability
+            healTable.heal = self.ability.hotHealing * Units:GetHeroIntellect(self.caster)
+            GameMode:HealUnit(healTable)
+            self.currentTime = 0
+        end
+    end
     self.target:Purge(false, true, false, true, true)
 end
 
 function modifier_light_cardinal_purification:GetFireProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetFrostProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetEarthProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetVoidProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetHolyProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetNatureProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 function modifier_light_cardinal_purification:GetInfernoProtectionBonus()
-    return 1.0
+    return self.ability.eleArmor
 end
 
 LinkedModifiers["modifier_light_cardinal_purification"] = LUA_MODIFIER_MOTION_NONE
@@ -329,18 +347,30 @@ light_cardinal_purification = class({
     end
 })
 
-function light_cardinal_purification:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = self:GetCursorTarget()
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_light_cardinal_purification"
-        modifierTable.duration = self:GetSpecialValueFor("protection_duration")
-        GameMode:ApplyBuff(modifierTable)
-        caster:EmitSound("Hero_Omniknight.Repel")
+function light_cardinal_purification:OnUpgrade()
+    if not IsServer() then
+        return
     end
+    self.duration = self:GetSpecialValueFor("duration")
+    self.eleArmor = self:GetSpecialValueFor("elearmor") / 100
+    self.maxHealthToHot = self:GetSpecialValueFor("max_health_to_hot") / 100
+    self.hotTick = self:GetSpecialValueFor("hot_tick")
+    self.intToEndHealing = self:GetSpecialValueFor("int_to_end_healing") / 100
+end
+
+function light_cardinal_purification:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self:GetCursorTarget()
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_light_cardinal_purification"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    caster:EmitSound("Hero_Omniknight.Repel")
 end
 
 -- light_cardinal_sublimation modifiers
