@@ -295,14 +295,14 @@ function modifier_light_cardinal_purification:OnIntervalThink()
     if not IsServer() then
         return
     end
-    if (self.ability.hotHealing > 0) then
+    if (self.ability.maxHealthToHot > 0) then
         self.currentTime = self.currentTime + self.tick
         if (self.currentTime > self.ability.hotTick) then
             local healTable = {}
             healTable.caster = self.caster
             healTable.target = self.target
             healTable.ability = self.ability
-            healTable.heal = self.ability.hotHealing * Units:GetHeroIntellect(self.caster)
+            healTable.heal = self.ability.maxHealthToHot * self.target:GetMaxHealth()
             GameMode:HealUnit(healTable)
             self.currentTime = 0
         end
