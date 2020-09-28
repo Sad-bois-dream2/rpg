@@ -37,7 +37,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing"				"25 30 35 40"
+				"hot_healing"				"25 30 35 40"
 			}
 			"02"
 			{
@@ -47,27 +47,42 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"900"
+				"hot_tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"miss_chance"				"10 12 15 18"
+				"radius"				"900"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"miss_duration"				"2"
+				"healing"				"0 100 100 100"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"buffs_duration_per_stack"				"0 0 10 10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"silence_duration"				"0 0 0 0.3"
+				"stacks_duration"				"0 0 20 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"				"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing_caused_per_buff"				"0 0 0 10"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_healing_caused_from_buffs"				"0 0 0 100"
 			}
 		}
 		"precache"

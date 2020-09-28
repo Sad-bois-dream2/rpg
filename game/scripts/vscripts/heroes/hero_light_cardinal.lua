@@ -1,6 +1,6 @@
 local LinkedModifiers = {}
 
--- light_cardinal_piety modifiers
+-- light_cardinal_piety
 modifier_light_cardinal_piety_hot = class({
     IsDebuff = function(self)
         return false
@@ -17,24 +17,20 @@ modifier_light_cardinal_piety_hot = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return light_cardinal_piety:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
         return "particles/units/light_cardinal/piety/light_sphere_buff.vpcf"
     end
 })
 
-function modifier_light_cardinal_piety_hot:OnCreated(keys)
+function modifier_light_cardinal_piety_hot:OnCreated()
     if not IsServer() then
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self:GetCaster()
+    self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    self.heal = self.ability:GetSpecialValueFor("healing") / 100
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.hotTick)
 end
 
 function modifier_light_cardinal_piety_hot:OnIntervalThink()
@@ -45,21 +41,21 @@ function modifier_light_cardinal_piety_hot:OnIntervalThink()
     healTable.caster = self.caster
     healTable.target = self.target
     healTable.ability = self.ability
-    healTable.heal = self.heal * Units:GetHeroIntellect(self.caster)
+    healTable.heal = self.ability.hotHealing * Units:GetHeroIntellect(self.caster)
     GameMode:HealUnit(healTable)
 end
 
 LinkedModifiers["modifier_light_cardinal_piety_hot"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_light_cardinal_piety_debuff = class({
+modifier_light_cardinal_piety_stacks = class({
     IsDebuff = function(self)
-        return true
+        return false
     end,
     IsHidden = function(self)
         return false
     end,
     IsPurgable = function(self)
-        return true
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -67,93 +63,184 @@ modifier_light_cardinal_piety_debuff = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return light_cardinal_piety:GetAbilityTextureName()
-    end,
     DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_MISS_PERCENTAGE }
+        return {
+            MODIFIER_PROPERTY_TOOLTIP
+        }
     end
 })
 
-function modifier_light_cardinal_piety_debuff:GetModifierMiss_Percentage()
-    return self.miss_chance or 0
-end
-
-function modifier_light_cardinal_piety_debuff:OnCreated(keys)
+function modifier_light_cardinal_piety_stacks:OnCreated()
     if not IsServer() then
         return
     end
     self.ability = self:GetAbility()
-    self.miss_chance = self.ability:GetSpecialValueFor("miss_chance") / 100
 end
 
-LinkedModifiers["modifier_light_cardinal_piety_debuff"] = LUA_MODIFIER_MOTION_NONE
+function modifier_light_cardinal_piety_stacks:GetBuffAmplificationBonus()
+    return self.ability.buffsDurationPerStack * self:GetStackCount()
+end
 
--- light_cardinal_piety
-light_cardinal_piety = class({
-    GetAbilityTextureName = function(self)
-        return "light_cardinal_piety"
+function modifier_light_cardinal_piety_stacks:OnTooltip()
+    return self:GetStackCount() * self:GetAbility():GetSpecialValueFor("buffs_duration_per_stack")
+end
+
+LinkedModifiers["modifier_light_cardinal_piety_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_light_cardinal_piety = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end
 })
 
-function light_cardinal_piety:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        self.radius = self:GetSpecialValueFor("radius")
-        self.hot_duration = self:GetSpecialValueFor("hot_duration")
-        self.blind_duration = self:GetSpecialValueFor("miss_duration")
-        self.silence_duration = self:GetSpecialValueFor("silence_duration")
-        caster:EmitSound("Hero_Omniknight.Purification")
-        local position = caster:GetAbsOrigin()
-        local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                position,
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        for _, ally in pairs(allies) do
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = ally
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_light_cardinal_piety_hot"
-            modifierTable.duration = self.hot_duration
-            GameMode:ApplyBuff(modifierTable)
-        end
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                position,
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        for _, enemy in pairs(enemies) do
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_light_cardinal_piety_debuff"
-            modifierTable.duration = self.blind_duration
-            GameMode:ApplyDebuff(modifierTable)
-            modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_silence"
-            modifierTable.duration = self.silence_duration
-            GameMode:ApplyDebuff(modifierTable)
-        end
-        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/piety/light_sphere.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
-        Timers:CreateTimer(3.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
+function modifier_light_cardinal_piety:OnCreated()
+    if not IsServer() then
+        return
     end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.totalModifiersCount = 0
+    self:StartIntervalThink(0.5)
+end
+
+function modifier_light_cardinal_piety:OnIntervalThink()
+    if not IsServer() then
+        return
+    end
+    local removeTable = {}
+    self.totalModifiersCount = 0
+    for allyIndex, ally in pairs(self.ability.buffsTable) do
+        local modifiersOnTargetCount = 0
+        local modifiersOnTarget = ally:FindAllModifiers()
+        for _, modifier in pairs(modifiersOnTarget) do
+            if (modifier.IsDebuff and modifier:IsDebuff() == false and modifier.IsHidden and modifier:IsHidden() == false and modifier:GetCaster() == self.caster) then
+                modifiersOnTargetCount = modifiersOnTargetCount + 1
+            end
+        end
+        if (modifiersOnTargetCount == 0) then
+            table.insert(removeTable, allyIndex)
+        end
+        self.totalModifiersCount = self.totalModifiersCount + modifiersOnTargetCount
+    end
+    for _, index in pairs(removeTable) do
+        self.ability.buffsTable[index] = nil
+    end
+    self:SetStackCount(1)
+end
+
+function modifier_light_cardinal_piety:GetHealingCausedPercentBonus()
+    return math.min(self.totalModifiersCount * (self.ability.healingCausedPerBuff or 0), (self.ability.maxHealingCausedFromBuffs or 0))
+end
+
+function modifier_light_cardinal_piety:OnPostModifierApplied(modifierTable)
+    local ability = modifierTable.caster:FindAbilityByName("light_cardinal_piety")
+    if (not ability) then
+        return modifierTable
+    end
+    if (self.IsHidden and self:IsHidden() == true) then
+        return modifierTable
+    end
+    if (self.IsDebuff and self:IsDebuff() == true) then
+        return modifierTable
+    end
+    if (ability.healingCausedPerBuff and ability.healingCausedPerBuff > 0 and ability.buffsTable) then
+        if (not TableContains(ability.buffsTable, modifierTable.target)) then
+            table.insert(ability.buffsTable, modifierTable.target)
+        end
+    end
+end
+
+LinkedModifiers["modifier_light_cardinal_piety"] = LUA_MODIFIER_MOTION_NONE
+
+light_cardinal_piety = class({
+    GetAbilityTextureName = function(self)
+        return "light_cardinal_piety"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_light_cardinal_piety"
+    end
+})
+
+function light_cardinal_piety:OnUpgrade()
+    if not IsServer() then
+        return
+    end
+    self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
+    self.hotDuration = self:GetSpecialValueFor("hot_duration")
+    self.hotTick = self:GetSpecialValueFor("hot_tick")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.buffsDurationPerStack = self:GetSpecialValueFor("buffs_duration_per_stack") / 100
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.healingCausedPerBuff = self:GetSpecialValueFor("healing_caused_per_buff") / 100
+    self.maxHealingCausedFromBuffs = self:GetSpecialValueFor("max_healing_caused_from_buffs") / 100
+    if (not self.buffsTable) then
+        self.buffsTable = {}
+    end
+end
+
+function light_cardinal_piety:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local allies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local instaHealing = self.healing * Units:GetHeroIntellect(caster)
+    for _, ally in pairs(allies) do
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = ally
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_light_cardinal_piety_hot"
+        modifierTable.duration = self.hotDuration
+        local modifier = GameMode:ApplyBuff(modifierTable)
+        if (self.healing > 0) then
+            local healTable = {}
+            healTable.caster = caster
+            healTable.target = ally
+            healTable.ability = self
+            healTable.heal = instaHealing
+            GameMode:HealUnit(healTable)
+        end
+    end
+    if (self.buffsDurationPerStack > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = caster
+        modifierTable.target = caster
+        modifierTable.modifier_name = "modifier_light_cardinal_piety_stacks"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = #allies
+        modifierTable.max_stacks = self.maxStacks
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+    local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/piety/light_sphere.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Omniknight.Purification", caster)
 end
 
 -- light_cardinal_purification modifiers
@@ -537,5 +624,6 @@ end
 
 if (IsServer() and not GameMode.LIGHT_CARDINAL_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_salvation_aura_buff, 'OnTakeDamage'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_light_cardinal_piety, 'OnPostModifierApplied'))
     GameMode.LIGHT_CARDINAL_INIT = true
 end
