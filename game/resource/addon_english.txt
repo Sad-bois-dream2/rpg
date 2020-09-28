@@ -291,7 +291,7 @@
         "DOTA_Tooltip_modifier_light_cardinal_piety_stacks_Description"		"Buffs duration increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
 		"DOTA_Tooltip_Ability_light_cardinal_purification"		"Purification"
 		"DOTA_Tooltip_Ability_light_cardinal_purification_Description"		"Light Cardinal purifies an ally with divine light that constantly dispels debuffs for duration.\nRank 2: Ally affected by this ability will have elemental resistances increased by <font color='white'><b>50%</b></font> for duration.\nRank 3: Ally affected by this ability will be healed by <font color='white'><b>3%</b></font> of his max health every second.\nRank 4: When this ability effect ends ally will be healed by <font color='white'><b>150%</b></font> of your intellect."
-		"DOTA_Tooltip_Ability_light_cardinal_purification_protection_duration"		"DURATION: "
+		"DOTA_Tooltip_Ability_light_cardinal_purification_duration"		"DURATION: "
  		"DOTA_Tooltip_modifier_light_cardinal_purification"		"Purification"
         "DOTA_Tooltip_modifier_light_cardinal_purification_Description"		"Debuffs constantly dispelled."
 		"DOTA_Tooltip_Ability_light_cardinal_sublimation"		"Sublimation"
