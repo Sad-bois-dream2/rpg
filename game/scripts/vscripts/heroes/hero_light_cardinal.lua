@@ -41,7 +41,7 @@ function modifier_light_cardinal_piety_hot:OnIntervalThink()
     healTable.caster = self.caster
     healTable.target = self.target
     healTable.ability = self.ability
-    healTable.heal = self.ability.hotHealing * Units:GetHeroIntellect(self.caster)
+    healTable.heal = self.ability.hotHealing * Units:GetHeroIntellect(self.caster) + self.ability.hotHealingMissingHp * (self.caster:GetMaxHealth() - self.caster:GetHealth())
     GameMode:HealUnit(healTable)
 end
 
@@ -178,6 +178,7 @@ function light_cardinal_piety:OnUpgrade()
         return
     end
     self.hotHealing = self:GetSpecialValueFor("hot_healing") / 100
+    self.hotHealingMissingHp = self:GetSpecialValueFor("hot_missing_health_healing") / 100
     self.hotDuration = self:GetSpecialValueFor("hot_duration")
     self.hotTick = self:GetSpecialValueFor("hot_tick")
     self.radius = self:GetSpecialValueFor("radius")
@@ -283,12 +284,14 @@ function modifier_light_cardinal_purification:OnDestroy()
     if not IsServer() then
         return
     end
-    local healTable = {}
-    healTable.caster = self.caster
-    healTable.target = self.target
-    healTable.ability = self.ability
-    healTable.heal = self.ability.intToEndHealing * Units:GetHeroIntellect(self.caster)
-    GameMode:HealUnit(healTable)
+    if (not self.endHealingTriggered) then
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.target
+        healTable.ability = self.ability
+        healTable.heal = self.ability.intToEndHealing * Units:GetHeroIntellect(self.caster) + self.ability.missingHpToEndHealing * (self.caster:GetMaxHealth() - self.caster:GetHealth())
+        GameMode:HealUnit(healTable)
+    end
     self.caster:StopSound("Hero_Omniknight.Repel")
 end
 
@@ -307,6 +310,15 @@ function modifier_light_cardinal_purification:OnIntervalThink()
             GameMode:HealUnit(healTable)
             self.currentTime = 0
         end
+    end
+    if (self.ability.allyMaxHpToEndHealingProc > 0 and (self.target:GetMaxHealth() / self.target:GetHealth()) <= self.ability.allyMaxHpToEndHealingProc) then
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.target
+        healTable.ability = self.ability
+        healTable.heal = self.ability.intToEndHealing * Units:GetHeroIntellect(self.caster) + self.ability.missingHpToEndHealing * (self.caster:GetMaxHealth() - self.caster:GetHealth())
+        GameMode:HealUnit(healTable)
+        self.endHealingTriggered = true
     end
     self.target:Purge(false, true, false, true, true)
 end
@@ -357,6 +369,8 @@ function light_cardinal_purification:OnUpgrade()
     self.maxHealthToHot = self:GetSpecialValueFor("max_health_to_hot") / 100
     self.hotTick = self:GetSpecialValueFor("hot_tick")
     self.intToEndHealing = self:GetSpecialValueFor("int_to_end_healing") / 100
+    self.missingHpToEndHealing = self:GetSpecialValueFor("missing_hp_to_end_healing") / 100
+    self.allyMaxHpToEndHealingProc = self:GetSpecialValueFor("ally_max_hp_to_end_healing_proc") / 100
 end
 
 function light_cardinal_purification:OnSpellStart()
@@ -432,19 +446,28 @@ light_cardinal_sublimation = class({
     end
 })
 
-function light_cardinal_sublimation:OnSpellStart(unit, special_cast)
-    if IsServer() then
-        local caster = self:GetCaster()
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = self:GetCursorTarget()
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_light_cardinal_sublimation"
-        modifierTable.duration = self:GetSpecialValueFor("duration")
-        GameMode:ApplyBuff(modifierTable)
-        caster:EmitSound("Hero_Omniknight.GuardianAngel.Cast")
+function light_cardinal_sublimation:OnUpgrade()
+    if not IsServer() then
+        return
     end
+    self.duration = self:GetSpecialValueFor("duration")
 end
+
+function light_cardinal_sublimation:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self:GetCursorTarget()
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_light_cardinal_sublimation"
+    modifierTable.duration = self:GetSpecialValueFor("duration")
+    GameMode:ApplyBuff(modifierTable)
+    caster:EmitSound("Hero_Omniknight.GuardianAngel.Cast")
+end
+
 -- light_cardinal_salvation modifiers
 modifier_light_cardinal_salvation_aura = class({
     IsHidden = function(self)
