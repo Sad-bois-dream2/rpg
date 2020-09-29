@@ -256,6 +256,7 @@
 		"precache"
 		{
 			"particle" "particles/units/light_cardinal/sublimation/sublimation_buff.vpcf"
+			"particle" "particles/units/light_cardinal/sublimation/sublimation_chain.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
 		}
 	}

@@ -417,7 +417,7 @@ function modifier_light_cardinal_sublimation:OnCreated()
     self.ability = self:GetAbility()
     self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    if(self.ability.intToHealing > 0) then
+    if (self.ability.intToHealing > 0) then
         local healTable = {}
         healTable.caster = self.caster
         healTable.target = self.target
@@ -433,6 +433,37 @@ end
 
 function modifier_light_cardinal_sublimation:GetPrimaryAttributeBonus()
     return self.ability.intToPrimaryBonus * Units:GetHeroIntellect(self.caster)
+end
+
+function modifier_light_cardinal_sublimation:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_light_cardinal_sublimation")
+    if (not (modifier and damageTable.damage > 0)) then
+        return damageTable
+    end
+    if (modifier.caster and modifier.ability and modifier.ability.damageTransfer and modifier.caster:IsAlive()) then
+        local block = damageTable.damage * modifier.ability.damageTransfer
+        local casterHealth = modifier.caster:GetHealth()
+        if (casterHealth > 1) then
+            local healthReduce = 0
+            if (block < casterHealth) then
+                healthReduce = block
+                damageTable.damage = damageTable.damage - block
+            else
+                return damageTable
+            end
+            local finalHealth = casterHealth - healthReduce
+            if (finalHealth < 1) then
+                finalHealth = 1
+            end
+            local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/sublimation/sublimation_chain.vpcf", PATTACH_ROOTBONE_FOLLOW, damageTable.victim)
+            ParticleManager:SetParticleControlEnt(pidx, 0, damageTable.victim, PATTACH_POINT_FOLLOW, "attach_hitloc", damageTable.victim:GetAbsOrigin(), true)
+            ParticleManager:SetParticleControlEnt(pidx, 1, modifier.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", modifier.caster:GetAbsOrigin(), true)
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+            modifier.caster:SetHealth(finalHealth)
+            return damageTable
+        end
+    end
 end
 
 LinkedModifiers["modifier_light_cardinal_sublimation"] = LUA_MODIFIER_MOTION_NONE
@@ -681,5 +712,6 @@ end
 if (IsServer() and not GameMode.LIGHT_CARDINAL_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_salvation_aura_buff, 'OnTakeDamage'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_light_cardinal_piety, 'OnPostModifierApplied'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_sublimation, 'OnTakeDamage'))
     GameMode.LIGHT_CARDINAL_INIT = true
 end
