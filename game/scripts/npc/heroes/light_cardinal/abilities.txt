@@ -364,6 +364,7 @@
 		{
 			"particle" "particles/units/light_cardinal/salvation/light.vpcf"
 			"particle" "particles/units/light_cardinal/salvation/salvation_aura.vpcf"
+			"particle" "particles/units/light_cardinal/salvation/salvation_aura_buff.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_items.vsndevts"
 		}

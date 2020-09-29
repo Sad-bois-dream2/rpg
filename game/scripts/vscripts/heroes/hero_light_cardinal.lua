@@ -578,9 +578,11 @@ function modifier_light_cardinal_salvation_aura_buff:OnTakeDamage(damageTable)
         healTable.ability = auraAbility
         healTable.heal = auraAbility.salvationAuraIntHealing * Units:GetHeroIntellect(healTable.caster) + auraAbility.salvationAuraMissingHpHealing * (healTable.caster:GetMaxHealth() - healTable.caster:GetHealth())
         GameMode:HealUnit(healTable)
-        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/aura_ray.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
+        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/salvation_aura_buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        Timers:CreateTimer(2, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
         damageTable.victim:EmitSound("Item.GuardianGreaves.Activate")
         damageTable.damage = 0
         return damageTable
