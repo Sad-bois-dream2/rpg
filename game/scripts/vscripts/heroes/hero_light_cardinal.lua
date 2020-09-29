@@ -538,6 +538,13 @@ modifier_light_cardinal_salvation_aura = class({
     end
 })
 
+function modifier_light_cardinal_salvation_aura:OnCreated()
+    if(not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
 LinkedModifiers["modifier_light_cardinal_salvation_aura"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_light_cardinal_salvation_aura_buff = class({
@@ -647,7 +654,7 @@ modifier_light_cardinal_salvation = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
