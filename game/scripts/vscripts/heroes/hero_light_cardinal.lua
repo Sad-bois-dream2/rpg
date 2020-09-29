@@ -182,6 +182,7 @@ function light_cardinal_piety:OnUpgrade()
     self.hotTick = self:GetSpecialValueFor("hot_tick")
     self.radius = self:GetSpecialValueFor("radius")
     self.healing = self:GetSpecialValueFor("healing") / 100
+    self.healingMissingHp = self:GetSpecialValueFor("healing_missing_hp") / 100
     self.buffsDurationPerStack = self:GetSpecialValueFor("buffs_duration_per_stack") / 100
     self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
     self.maxStacks = self:GetSpecialValueFor("max_stacks")
@@ -206,7 +207,7 @@ function light_cardinal_piety:OnSpellStart()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    local instaHealing = self.healing * Units:GetHeroIntellect(caster)
+    local instaHealing = self.healing * Units:GetHeroIntellect(caster) + self.healingMissingHp * (caster:GetMaxHealth() - caster:GetHealth())
     for _, ally in pairs(allies) do
         local modifierTable = {}
         modifierTable.ability = self
@@ -302,7 +303,7 @@ function modifier_light_cardinal_purification:OnIntervalThink()
             healTable.caster = self.caster
             healTable.target = self.target
             healTable.ability = self.ability
-            healTable.heal = self.ability.maxHealthToHot * self.target:GetMaxHealth()
+            healTable.heal = self.ability.maxHealthToHot * (self.caster:GetMaxHealth() - self.caster:GetHealth())
             GameMode:HealUnit(healTable)
             self.currentTime = 0
         end

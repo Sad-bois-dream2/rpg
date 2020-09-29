@@ -62,24 +62,29 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"buffs_duration_per_stack"				"0 0 10 10"
+				"healing_missing_hp"				"0 2 2 2"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_duration"				"0 0 20 20"
+				"buffs_duration_per_stack"				"0 0 5 5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"0 0 10 10"
+				"stacks_duration"				"0 0 20 20"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_caused_per_buff"				"0 0 0 10"
+				"max_stacks"				"0 0 10 10"
 			}
 			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"healing_caused_per_buff"				"0 0 0 10"
+			}
+			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"max_healing_caused_from_buffs"				"0 0 0 100"
@@ -178,6 +183,7 @@
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
         "AbilityCastRange"  "900"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
@@ -204,16 +210,22 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"regeneration"				"1 2 3 4"
+				"duration"				"5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"hp_regeneration"				"0 0 4 4"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mp_regeneration"				"0 0 4 4"
 			}
 		}
 		"precache"
 		{
+            "particle" "particles/units/light_cardinal/sublimation/sublimation.vpcf"
 			"particle" "particles/units/light_cardinal/sublimation/sublimation_buff.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
 		}
