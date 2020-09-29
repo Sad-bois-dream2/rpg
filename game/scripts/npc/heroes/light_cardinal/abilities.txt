@@ -242,6 +242,16 @@
 				"var_type"				"FIELD_FLOAT"
 				"missing_health_to_healing"				"0 3 3 3"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_transfer"				"0 0 30 30"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"int_to_primary_bonus"				"0 0 0 20"
+			}
 		}
 		"precache"
 		{

@@ -388,7 +388,7 @@ function light_cardinal_purification:OnSpellStart()
     caster:EmitSound("Hero_Omniknight.Repel")
 end
 
--- light_cardinal_sublimation modifiers
+-- light_cardinal_sublimation
 modifier_light_cardinal_sublimation = class({
     IsDebuff = function(self)
         return false
@@ -405,41 +405,38 @@ modifier_light_cardinal_sublimation = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return light_cardinal_sublimation:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
         return "particles/units/light_cardinal/sublimation/sublimation_buff.vpcf"
     end
 })
 
-function modifier_light_cardinal_sublimation:OnCreated(keys)
+function modifier_light_cardinal_sublimation:OnCreated()
     if not IsServer() then
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
     self.target = self:GetParent()
-    self.regeneration = self.ability:GetSpecialValueFor("regeneration") / 100
-    self.dmg_red = self.ability:GetSpecialValueFor("dmg_reduction") / 100
+    if(self.ability.intToHealing > 0) then
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.target
+        healTable.ability = self.ability
+        healTable.heal = self.ability.intToHealing * Units:GetHeroIntellect(self.caster) + self.ability.missingHealthToHealing * (self.caster:GetMaxHealth() - self.caster:GetHealth())
+        GameMode:HealUnit(healTable)
+    end
 end
 
 function modifier_light_cardinal_sublimation:GetDamageReductionBonus()
-    return self.dmg_red or 0
+    return self.ability.dmgReduction
 end
 
-function modifier_light_cardinal_sublimation:GetHealthRegenerationBonus()
-    local regeneration = self.regeneration * self.target:GetMaxHealth()
-    return regeneration or 0
-end
-
-function modifier_light_cardinal_sublimation:GetManaRegenerationBonus()
-    local regeneration = self.regeneration * self.target:GetMaxMana()
-    return regeneration or 0
+function modifier_light_cardinal_sublimation:GetPrimaryAttributeBonus()
+    return self.ability.intToPrimaryBonus * Units:GetHeroIntellect(self.caster)
 end
 
 LinkedModifiers["modifier_light_cardinal_sublimation"] = LUA_MODIFIER_MOTION_NONE
 
--- light_cardinal_sublimation
 light_cardinal_sublimation = class({
     GetAbilityTextureName = function(self)
         return "light_cardinal_sublimation"
@@ -450,7 +447,12 @@ function light_cardinal_sublimation:OnUpgrade()
     if not IsServer() then
         return
     end
+    self.dmgReduction = self:GetSpecialValueFor("dmg_reduction") / 100
     self.duration = self:GetSpecialValueFor("duration")
+    self.intToHealing = self:GetSpecialValueFor("int_to_healing") / 100
+    self.missingHealthToHealing = self:GetSpecialValueFor("missing_health_to_healing") / 100
+    self.damageTransfer = self:GetSpecialValueFor("damage_transfer") / 100
+    self.intToPrimaryBonus = self:GetSpecialValueFor("int_to_primary_bonus") / 100
 end
 
 function light_cardinal_sublimation:OnSpellStart()
