@@ -87,7 +87,7 @@
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing_caused_per_buff"				"0 0 0 10"
+				"healing_caused_per_buff"				"0 0 0 5"
 			}
 			"12"
 			{
@@ -284,7 +284,7 @@
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"90"
+		"AbilityCooldown"				"60"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -297,12 +297,12 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"900"
+				"healing"				"150 200 250 300"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"healing"				"200 300 400 500"
+				"healing_missing_health"				"10 15 20 25"
 			}
 			"03"
 			{
@@ -312,28 +312,58 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"respawn_hp"				"50"
+				"radius"				"900"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"respawn_cd"				"200"
+				"silence_duration"				"3"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"silence_duration"				"3"
+				"salvation_aura_int_healing"				"0 0 0 100"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aura_radius"				"1500"
+				"salvation_aura_missing_hp_healing"				"0 0 0 10"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"salvation_aura_cd"				"0 0 0 200"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"salvation_aura_radius"				"1500"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_min_cd_for_proc"				"0 0 1 1"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_on_proc"				"0 0 5 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_healing_received"				"0 50 50 50"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_healing_received_duration"				"0 10 10 10"
 			}
 		}
 		"precache"
 		{
 			"particle" "particles/units/light_cardinal/salvation/light.vpcf"
-			"particle" "particles/units/light_cardinal/salvation/aura_ray.vpcf"
+			"particle" "particles/units/light_cardinal/salvation/salvation_aura.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_items.vsndevts"
 		}

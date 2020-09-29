@@ -501,7 +501,7 @@ function light_cardinal_sublimation:OnSpellStart()
     caster:EmitSound("Hero_Omniknight.GuardianAngel.Cast")
 end
 
--- light_cardinal_salvation modifiers
+-- light_cardinal_salvation
 modifier_light_cardinal_salvation_aura = class({
     IsHidden = function(self)
         return true
@@ -510,7 +510,7 @@ modifier_light_cardinal_salvation_aura = class({
         return false
     end,
     GetAuraRadius = function(self)
-        return self.aura_radius or 1500
+        return self.ability.salvationAuraRadius
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
@@ -533,6 +533,9 @@ modifier_light_cardinal_salvation_aura = class({
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    GetEffectName = function(self)
+        return "particles/units/light_cardinal/salvation/salvation_aura.vpcf"
+    end
 })
 
 LinkedModifiers["modifier_light_cardinal_salvation_aura"] = LUA_MODIFIER_MOTION_NONE
@@ -552,45 +555,35 @@ modifier_light_cardinal_salvation_aura_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return light_cardinal_salvation:GetAbilityTextureName()
     end
 })
 
 function modifier_light_cardinal_salvation_aura_buff:OnTakeDamage(damageTable)
-    if (damageTable.damage > 0) then
-        local modifier = damageTable.victim:FindModifierByName("modifier_light_cardinal_salvation_aura_buff")
-        local on_cd = damageTable.victim:HasModifier("modifier_light_cardinal_salvation_aura_cd")
-        if (modifier ~= nil and not on_cd) then
-            local health_after_dmg = damageTable.victim:GetHealth() - damageTable.damage
-            if (health_after_dmg < 1) then
-                local auraAbility = modifier:GetAbility()
-                local modifierTable = {}
-                modifierTable.ability = auraAbility
-                modifierTable.target = damageTable.victim
-                modifierTable.caster = damageTable.victim
-                modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura_cd"
-                modifierTable.duration = auraAbility:GetSpecialValueFor("respawn_cd")
-                local cooldownModifier = GameMode:ApplyDebuff(modifierTable)
-                -- Just to be sure
-                cooldownModifier:SetDuration(modifierTable.duration, true)
-                local healTable = {}
-                healTable.caster = auraAbility:GetCaster()
-                healTable.target = damageTable.victim
-                healTable.ability = auraAbility
-                healTable.heal = (auraAbility:GetSpecialValueFor("respawn_hp") / 100) * damageTable.victim:GetMaxHealth()
-                GameMode:HealUnit(healTable)
-                local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/aura_ray.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
-                Timers:CreateTimer(1.5, function()
-                    ParticleManager:DestroyParticle(pidx, false)
-                    ParticleManager:ReleaseParticleIndex(pidx)
-                end)
-                damageTable.victim:EmitSound("Item.GuardianGreaves.Activate")
-                damageTable.damage = 0
-                return damageTable
-            end
-        end
+    local modifier = damageTable.victim:FindModifierByName("modifier_light_cardinal_salvation_aura_buff")
+    if (not (damageTable.damage > 0 and modifier)) then
+        return damageTable
+    end
+    local cooldown = damageTable.victim:HasModifier("modifier_light_cardinal_salvation_aura_cd")
+    if (cooldown) then
+        return damageTable
+    end
+    local healthAfterDamage = damageTable.victim:GetHealth() - damageTable.damage
+    if (healthAfterDamage < 1) then
+        local auraAbility = modifier:GetAbility()
+        damageTable.victim:AddNewModifier(damageTable.victim, auraAbility, "modifier_light_cardinal_salvation_aura_cd", { duration = auraAbility.salvationAuraCd })
+        damageTable.victim:Purge(false, true, false, true, true)
+        local healTable = {}
+        healTable.caster = auraAbility:GetCaster()
+        healTable.target = damageTable.victim
+        healTable.ability = auraAbility
+        healTable.heal = auraAbility.salvationAuraIntHealing * Units:GetHeroIntellect(healTable.caster) + auraAbility.salvationAuraMissingHpHealing * (healTable.caster:GetMaxHealth() - healTable.caster:GetHealth())
+        GameMode:HealUnit(healTable)
+        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/aura_ray.vpcf", PATTACH_ABSORIGIN_FOLLOW, damageTable.victim)
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+        damageTable.victim:EmitSound("Item.GuardianGreaves.Activate")
+        damageTable.damage = 0
+        return damageTable
     end
 end
 
@@ -607,100 +600,181 @@ modifier_light_cardinal_salvation_aura_cd = class({
         return false
     end,
     RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_light_cardinal_salvation_aura_cd"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_light_cardinal_salvation_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_light_cardinal_salvation_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_light_cardinal_salvation_buff:GetHealingReceivedPercentBonus()
+    return self.ability.bonusHealingReceived
+end
+
+LinkedModifiers["modifier_light_cardinal_salvation_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_light_cardinal_salvation = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
         return false
     end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return light_cardinal_salvation:GetAbilityTextureName()
-    end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_DEATH }
+        return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
     end
 })
 
-function modifier_light_cardinal_salvation_aura_cd:OnDeath(event)
-    local hero = self:GetParent()
-    if (hero ~= event.unit) then
+function modifier_light_cardinal_salvation:OnCreated()
+    if (not IsServer()) then
         return
     end
-    self:Destroy()
+    self.ability = self:GetAbility()
+    self.abilityName = self.ability:GetAbilityName()
+    self.caster = self.ability:GetCaster()
 end
 
-LinkedModifiers["modifier_light_cardinal_salvation_aura_cd"] = LUA_MODIFIER_MOTION_NONE
+function modifier_light_cardinal_salvation:OnAbilityFullyCast(kv)
+    if (not IsServer()) then
+        return
+    end
+    local abilityLevel = kv.ability:GetLevel()
+    local abilityCooldown = kv.ability:GetCooldown(abilityLevel)
+    if (abilityCooldown < self.ability.cdrMinCdForProc or kv.unit ~= self.caster) then
+        return
+    end
+    local cooldownTable = {}
+    cooldownTable.reduction = self.ability.cdrOnProc
+    cooldownTable.ability = self.abilityName
+    cooldownTable.isflat = true
+    cooldownTable.target = self.caster
+    GameMode:ReduceAbilityCooldown(cooldownTable)
+end
 
--- light_cardinal_salvation
+LinkedModifiers["modifier_light_cardinal_salvation"] = LUA_MODIFIER_MOTION_NONE
+
 light_cardinal_salvation = class({
     GetAbilityTextureName = function(self)
         return "light_cardinal_salvation"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_light_cardinal_salvation"
     end
 })
 
 function light_cardinal_salvation:OnUpgrade()
-    if IsServer() then
-        local level = self:GetLevel()
-        if (level > 3) then
-            local caster = self:GetCaster()
-            local modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = caster
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura"
-            modifierTable.duration = -1
-            local modifier = GameMode:ApplyBuff(modifierTable)
-            modifier.aura_radius = self:GetSpecialValueFor("aura_radius")
-        end
-    end
-end
-
-function light_cardinal_salvation:OnSpellStart(unit, special_cast)
     if not IsServer() then
         return
     end
-    self.caster = self:GetCaster()
+    self.healing = self:GetSpecialValueFor("healing") / 100
+    self.healingMissingHealth = self:GetSpecialValueFor("healing_missing_health") / 100
+    self.healthCost = self:GetSpecialValueFor("health_cost") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.silenceDuration = self:GetSpecialValueFor("silence_duration")
+    self.salvationAuraIntHealing = self:GetSpecialValueFor("salvation_aura_int_healing") / 100
+    self.salvationAuraMissingHpHealing = self:GetSpecialValueFor("salvation_aura_missing_hp_healing") / 100
+    self.salvationAuraCd = self:GetSpecialValueFor("salvation_aura_cd")
+    self.salvationAuraRadius = self:GetSpecialValueFor("salvation_aura_radius")
+    self.cdrMinCdForProc = self:GetSpecialValueFor("cdr_min_cd_for_proc")
+    self.cdrOnProc = self:GetSpecialValueFor("cdr_on_proc")
+    self.bonusHealingReceived = self:GetSpecialValueFor("bonus_healing_received") / 100
+    self.bonusHealingReceivedDuration = self:GetSpecialValueFor("bonus_healing_received_duration")
+    if (self.salvationAuraRadius > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = self:GetCaster()
+        modifierTable.target = modifierTable.caster
+        modifierTable.modifier_name = "modifier_light_cardinal_salvation_aura"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+    end
+end
+
+function light_cardinal_salvation:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
     local modifierTable = {}
     modifierTable.ability = self
-    modifierTable.target = self.caster
-    modifierTable.caster = self.caster
+    modifierTable.target = caster
+    modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_silence"
-    modifierTable.duration = self:GetSpecialValueFor("silence_duration")
+    modifierTable.duration = self.silenceDuration
     GameMode:ApplyDebuff(modifierTable)
-    local hp_cost = (self:GetSpecialValueFor("health_cost") / 100) * self.caster:GetMaxHealth()
-    local cur_health = self.caster:GetHealth() - hp_cost
-    if (cur_health < 1) then
-        cur_health = 1
-    end
-    self.caster:SetHealth(cur_health)
-    self.caster:EmitSound("Hero_Silencer.Curse.Cast")
-    local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/light.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
-    Timers:CreateTimer(3.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
-    local healing = (self:GetSpecialValueFor("healing") / 100) * Units:GetHeroIntellect(self.caster)
-    local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self.caster:GetAbsOrigin(),
+    local casterHealth = caster:GetHealth()
+    local casterMaxHealth = caster:GetMaxHealth()
+    caster:SetHealth(math.min(casterHealth - (self.healthCost * casterMaxHealth), 1))
+    caster:EmitSound("Hero_Silencer.Curse.Cast")
+    local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/light.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:DestroyParticle(pidx, false)
+    ParticleManager:ReleaseParticleIndex(pidx)
+    local healing = self.healing * Units:GetHeroIntellect(caster) + self.healingMissingHealth * (casterMaxHealth - casterHealth)
+    local allies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
             nil,
-            self:GetSpecialValueFor("radius"),
+            self.radius,
             DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
     for _, ally in pairs(allies) do
-        if (ally ~= self.caster) then
-            local healTable = {}
-            healTable.caster = self.caster
-            healTable.target = ally
-            healTable.ability = self
-            healTable.heal = healing
-            GameMode:HealUnit(healTable)
-            ally:Purge(false, true, false, true, true)
+        if (self.bonusHealingReceivedDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = ally
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_light_cardinal_salvation_buff"
+            modifierTable.duration = self.bonusHealingReceivedDuration
+            GameMode:ApplyBuff(modifierTable)
         end
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = ally
+        healTable.ability = self
+        healTable.heal = healing
+        GameMode:HealUnit(healTable)
+        ally:Purge(false, true, false, true, true)
     end
 end
 
