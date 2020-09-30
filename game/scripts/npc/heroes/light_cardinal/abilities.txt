@@ -405,7 +405,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"int_to_health"				"10 20 30 40"
+				"int_to_health"				"5 10 15 20"
 			}
 			"02"
 			{

@@ -885,7 +885,7 @@ function light_cardinal_harmony:OnUpgrade()
     if not IsServer() then
         return
     end
-    self.intToHealth = self:GetSpecialValueFor("int_to_health") / 100
+    self.intToHealth = self:GetSpecialValueFor("int_to_health")
     self.slowImmunityMaxHp = self:GetSpecialValueFor("slow_immunity_max_hp") / 100
     self.bonusMaxHealth = self:GetSpecialValueFor("bonus_max_health") / 100
     self.bonusMaxMana = self:GetSpecialValueFor("bonus_max_mana") / 100
