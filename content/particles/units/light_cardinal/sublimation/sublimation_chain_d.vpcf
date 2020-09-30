@@ -10,7 +10,6 @@
 			_class = "C_OP_RenderSprites"
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
 			m_bAdditive = true
-			m_bDisableZBuffering = true
 			m_hTexture = resource:"materials/particle/particle_flares/particle_flare_004b_mod.vtex"
 			m_flAnimationRate2 = 0.1
 			m_flAnimationRate = 0.75
@@ -98,7 +97,6 @@
 	[
 		{
 			m_name = "preview"
-			m_drivers = [  ]
 		},
 	]
 }

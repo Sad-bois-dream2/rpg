@@ -10,7 +10,6 @@
 	[
 		{
 			m_ChildRef = resource:"particles/units/light_cardinal/consecration/consecration_halo.vpcf"
-			m_flDelay = 0.5
 		},
 		{
 			m_ChildRef = resource:"particles/units/light_cardinal/consecration/consecration_light_ray.vpcf"
