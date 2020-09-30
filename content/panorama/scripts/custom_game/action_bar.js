@@ -506,4 +506,39 @@ function FixHeroPanelLayout() {
     AutoUpdateValues();
     UpdateAbilityList(); // initial update
     FixHeroPanelLayout();
+    $.Schedule(1, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+        if(playerHero > -1) {
+            GameUI.SelectUnit(playerHero, false);
+            UpdateAbilityList();
+        }
+    });
+    $.Schedule(2, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+        if(playerHero > -1) {
+            GameUI.SelectUnit(playerHero, false);
+            UpdateAbilityList();
+        }
+    });
+    $.Schedule(3, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+        if(playerHero > -1) {
+            GameUI.SelectUnit(playerHero, false);
+            UpdateAbilityList();
+        }
+    });
+    $.Schedule(4, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+        if(playerHero > -1) {
+            GameUI.SelectUnit(playerHero, false);
+            UpdateAbilityList();
+        }
+    });
+    $.Schedule(5, function() {
+        var playerHero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+        if(playerHero > -1) {
+            GameUI.SelectUnit(playerHero, false);
+            UpdateAbilityList();
+        }
+    });
 })();
