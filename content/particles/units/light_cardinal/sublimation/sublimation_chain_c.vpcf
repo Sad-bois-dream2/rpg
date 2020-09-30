@@ -144,7 +144,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/light_cardinal/consecration/consecration_impact_glow.vpcf"
+			m_ChildRef = resource:"particles/units/light_cardinal/sublimation/sublimation_chain_e.vpcf"
 		},
 	]
 }

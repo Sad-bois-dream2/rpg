@@ -40,6 +40,7 @@
 		},
 		{
 			_class = "C_OP_PositionLock"
+			m_nControlPointNumber = 1
 		},
 	]
 	m_Initializers = 
@@ -102,6 +103,7 @@
 				}
 			}
 			m_fRadiusMax = 1.0
+			m_nControlPointNumber = 1
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -144,7 +146,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/light_cardinal/consecration/consecration_impact_glow.vpcf"
+			m_ChildRef = resource:"particles/units/light_cardinal/sublimation/sublimation_chain_d.vpcf"
 		},
 	]
 }

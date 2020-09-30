@@ -1356,7 +1356,7 @@ function abyssal_stalker_dagger_throw:OnPostModifierApplied(modifierTable)
     if (ability.currentStacksCd) then
         return
     end
-    if (ability.stacksDuration) then
+    if (ability.stacksDuration and ability.stacksDuration > 0) then
         local modifier = {}
         modifier.ability = ability
         modifier.caster = modifierTable.caster

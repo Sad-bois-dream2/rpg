@@ -553,33 +553,33 @@ function Inventory:SetupForHero(hero)
             hero.inventory.equipped_items[i] = {}
             hero.inventory.equipped_items[i].name = ""
         end
-        Inventory:AddItem(hero,"item_one_handed_sword")
-        Inventory:AddItem(hero,"item_two_handed_sword")
-        Inventory:AddItem(hero,"item_silver_ring")
-        Inventory:AddItem(hero,"item_chainshirt")
-        Inventory:AddItem(hero,"item_wooden_shield")
-        Inventory:AddItem(hero,"item_leather_boots")
-        Inventory:AddItem(hero,"item_wooden_wand")
-        Inventory:AddItem(hero,"item_glowing_weed")
-        Inventory:AddItem(hero,"item_witchs_broom")
-        Inventory:AddItem(hero,"item_twig")
-        Inventory:AddItem(hero,"item_elven_slippers")
-        Inventory:AddItem(hero,"item_warchief_belt")
-        Inventory:AddItem(hero,"item_elven_blade")
-        Inventory:AddItem(hero,"item_iron_gauntlets")
-        Inventory:AddItem(hero,"item_executioner_axe")
-        Inventory:AddItem(hero,"item_garnet_circlet")
-        Inventory:AddItem(hero,"item_kings_crown")
-        Inventory:AddItem(hero,"item_elven_armband")
-        Inventory:AddItem(hero,"item_apprentice_mantle")
-        Inventory:AddItem(hero,"item_wizard_robe")
-        Inventory:AddItem(hero,"item_jewel_staff")
-        Inventory:AddItem(hero,"item_sacred_tome")
-        Inventory:AddItem(hero,"item_hatchet")
-        Inventory:AddItem(hero,"item_citrine_ring")
-        Inventory:AddItem(hero,"item_martial_staff")
-        Inventory:AddItem(hero,"item_iron_spear")
-        Inventory:AddItem(hero,"item_wolf_claw")
+        Inventory:AddItem(hero, "item_one_handed_sword")
+        Inventory:AddItem(hero, "item_two_handed_sword")
+        Inventory:AddItem(hero, "item_silver_ring")
+        Inventory:AddItem(hero, "item_chainshirt")
+        Inventory:AddItem(hero, "item_wooden_shield")
+        Inventory:AddItem(hero, "item_leather_boots")
+        Inventory:AddItem(hero, "item_wooden_wand")
+        Inventory:AddItem(hero, "item_glowing_weed")
+        Inventory:AddItem(hero, "item_witchs_broom")
+        Inventory:AddItem(hero, "item_twig")
+        Inventory:AddItem(hero, "item_elven_slippers")
+        Inventory:AddItem(hero, "item_warchief_belt")
+        Inventory:AddItem(hero, "item_elven_blade")
+        Inventory:AddItem(hero, "item_iron_gauntlets")
+        Inventory:AddItem(hero, "item_executioner_axe")
+        Inventory:AddItem(hero, "item_garnet_circlet")
+        Inventory:AddItem(hero, "item_kings_crown")
+        Inventory:AddItem(hero, "item_elven_armband")
+        Inventory:AddItem(hero, "item_apprentice_mantle")
+        Inventory:AddItem(hero, "item_wizard_robe")
+        Inventory:AddItem(hero, "item_jewel_staff")
+        Inventory:AddItem(hero, "item_sacred_tome")
+        Inventory:AddItem(hero, "item_hatchet")
+        Inventory:AddItem(hero, "item_citrine_ring")
+        Inventory:AddItem(hero, "item_martial_staff")
+        Inventory:AddItem(hero, "item_iron_spear")
+        Inventory:AddItem(hero, "item_wolf_claw")
 
     end
 end
@@ -862,19 +862,12 @@ function Inventory:OnInventorySwapItemsRequest(event, args)
         local statsFromSlot = Inventory:GetItemStatsForHero(hero, true, event.fromslot)
         local statsInSlot = Inventory:GetItemStatsForHero(hero, false, event.inslot)
         -- swap equipped item with empty bottom slot
-        if (not Inventory:IsItemNotEmpty(itemInSlot)) then
+        if (Inventory:IsItemNotEmpty(itemInSlot)) then
+            Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot, statsFromSlot)
+            Inventory:SetItemInSlot(hero, itemInSlot, true, event.fromslot, statsInSlot)
+        else
             Inventory:SetItemInSlot(hero, itemFromSlot, false, event.inslot, statsFromSlot)
             Inventory:SetItemInSlot(hero, "", true, event.fromslot, statsInSlot)
-        else
-            -- swap equipped item with not empty bottom slot (conflict)
-            local eventData = {
-                inslot = event.fromslot,
-                fromslot = event.inslot,
-                item = itemInSlot,
-                player_id = event.PlayerID,
-                PlayerID = event.PlayerID
-            }
-            Inventory:OnInventoryItemReplaceDialogRequest(eventData, nil)
         end
     else
         -- swap in bottom slots
@@ -950,14 +943,11 @@ function Inventory:OnInventoryItemReplaceDialogRequest(event, args)
     if (not itemFromSlot or itemFromSlot ~= event.item) then
         return
     end
-    if (not Inventory:IsItemNotEmpty(Inventory:GetItemInSlot(hero, true, desiredItemSlot))) then
-        local statsInSlot = Inventory:GetItemStatsForHero(hero, true, desiredItemSlot)
-        local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.fromslot)
-        Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
-        Inventory:SetItemInSlot(hero, "", false, event.fromslot, statsInSlot)
-    else
-        CustomGameEventManager:Send_ServerToPlayer(player, "rpg_inventory_start_item_replace_dialog_from_server", { player_id = event.PlayerID, item = event.item, slot = event.fromslot })
-    end
+    local itemInSlot = Inventory:GetItemInSlot(hero, true, desiredItemSlot)
+    local statsInSlot = Inventory:GetItemStatsForHero(hero, true, desiredItemSlot)
+    local statsFromSlot = Inventory:GetItemStatsForHero(hero, false, event.fromslot)
+    Inventory:SetItemInSlot(hero, event.item, true, desiredItemSlot, statsFromSlot)
+    Inventory:SetItemInSlot(hero, itemInSlot, false, event.fromslot, statsInSlot)
 end
 
 function Inventory:OnInventoryWindowOpenRequest(event, args)
