@@ -470,16 +470,17 @@
         "MaxLevel"               "4"
         "RequiredLevel"          "0"
         "LevelsBetweenUpgrades"  "0"
-    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-        "AbilityCastRange"  "400"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastRange"  "900"
    		// Casting
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_3"
    		"AbilityCastGestureSlot"		"DEFAULT"
-   		"AbilityCastPoint"				"0.25"
+   		"AnimationPlaybackRate"  "0.001"
+   		"AbilityCastPoint"				"2"
     	// Time
    		//-------------------------------------------------------------------------------------------------------------
-   		"AbilityCooldown"				"1"
+   		"AbilityCooldown"				"0"
     	// Cost
    		//-------------------------------------------------------------------------------------------------------------
    		"AbilityManaCost"				"0"
@@ -495,17 +496,28 @@
    			"02"
    			{
    				"var_type"				"FIELD_INTEGER"
-   				"tick"				"1"
+   				"max_hp_burn"				"5"
    			}
    			"03"
    			{
    				"var_type"				"FIELD_INTEGER"
-   				"radius"				"400"
+   				"aoe"				"0 0 200 200"
+   			}
+   			"04"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"mana_shield"				"0 0 0 1"
+   			}
+   			"05"
+   			{
+   				"var_type"				"FIELD_INTEGER"
+   				"healing_block"				"0 1 1 1"
    			}
    		}
    		"precache"
    		{
    		    "particle"  "particles/units/light_cardinal/consecration/consecration.vpcf"
+   		    "particle"  "particles/units/light_cardinal/consecration/consecration_impact.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
     	}
     }

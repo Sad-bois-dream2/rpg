@@ -900,7 +900,119 @@ light_cardinal_consecration = class({
     GetAbilityTextureName = function(self)
         return "light_cardinal_consecration"
     end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("aoe")
+    end,
+    GetBehavior = function(self)
+        local behavior = DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        if (self:GetSpecialValueFor("aoe") > 0) then
+            behavior = behavior + DOTA_ABILITY_BEHAVIOR_AOE
+        end
+        if (self:GetSpecialValueFor("max_hp_burn") > 0) then
+            behavior = behavior + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        end
+        return behavior
+    end,
+    IsRequireCastbar = function(self)
+        return true
+    end
 })
+
+function light_cardinal_consecration:OnTakeDamage(damageTable)
+    local ability = damageTable.victim:FindAbilityByName("light_cardinal_consecration")
+    if (damageTable.damage > 0 and ability and ability.manaShield and ability.manaShield > 0) then
+        local casterMana = damageTable.victim:GetMana()
+        if (damageTable.damage >= casterMana) then
+            damageTable.damage = damageTable.damage - casterMana
+            damageTable.victim:SetMana(0)
+        else
+            damageTable.victim:SetMana(casterMana - damageTable.damage)
+            damageTable.damage = 0
+        end
+        modifier_out_of_combat:ResetTimer(damageTable.victim)
+        return damageTable
+    end
+end
+
+function light_cardinal_consecration:OnPostTakeDamage(damageTable)
+    local ability = damageTable.victim:FindAbilityByName("light_cardinal_consecration")
+    if (ability and ability.manaShield and ability.manaShield > 0) then
+        damageTable.victim:ForceKill(false)
+    end
+end
+
+function light_cardinal_consecration:OnPreHeal(healTable)
+    local ability = healTable.target:FindAbilityByName("light_cardinal_consecration")
+    if (ability and ability.healingBlock and ability.healingBlock > 0 and ability:GetAutoCastState()) then
+        healTable.heal = 0
+        return healTable
+    end
+    return healTable
+end
+
+function light_cardinal_consecration:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration.vpcf", PATTACH_ABSORIGIN, target)
+    local casterHealth = caster:GetHealth()
+    local casterMaxHealth = caster:GetMaxHealth()
+    local damage = (casterMaxHealth - casterHealth) * self.damage
+    caster:SetHealth(math.max(1, casterHealth - (casterMaxHealth * self.maxHpBurn)))
+    if (self.aoe > 0) then
+        ParticleManager:SetParticleControl(pidx, 5, Vector(2, 2, 1))
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                target:GetAbsOrigin(),
+                nil,
+                self.aoe,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            local damageTable = {}
+            damageTable.caster = caster
+            damageTable.target = enemy
+            damageTable.ability = self
+            damageTable.damage = damage
+            damageTable.holydmg = true
+            GameMode:DamageUnit(damageTable)
+            local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end
+    else
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = target
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.holydmg = true
+        GameMode:DamageUnit(damageTable)
+        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end
+    Timers:CreateTimer(3.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+    EmitSoundOn("Hero_Omniknight.Purification", target)
+end
+
+function light_cardinal_consecration:OnUpgrade()
+    if not IsServer() then
+        return
+    end
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.maxHpBurn = self:GetSpecialValueFor("max_hp_burn") / 100
+    self.aoe = self:GetSpecialValueFor("aoe")
+    self.manaShield = self:GetSpecialValueFor("mana_shield")
+    self.healingBlock = self:GetSpecialValueFor("healing_block")
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -911,5 +1023,8 @@ if (IsServer() and not GameMode.LIGHT_CARDINAL_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_salvation_aura_buff, 'OnTakeDamage'))
     GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_light_cardinal_piety, 'OnPostModifierApplied'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_light_cardinal_sublimation, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(light_cardinal_consecration, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(light_cardinal_consecration, 'OnPostTakeDamage'))
+    GameMode:RegisterPreHealEventHandler(Dynamic_Wrap(light_cardinal_consecration, 'OnPreHeal'))
     GameMode.LIGHT_CARDINAL_INIT = true
 end
