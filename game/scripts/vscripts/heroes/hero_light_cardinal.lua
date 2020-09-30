@@ -539,7 +539,7 @@ modifier_light_cardinal_salvation_aura = class({
 })
 
 function modifier_light_cardinal_salvation_aura:OnCreated()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
@@ -786,6 +786,121 @@ function light_cardinal_salvation:OnSpellStart()
         ally:Purge(false, true, false, true, true)
     end
 end
+
+-- light_cardinal_harmony
+modifier_light_cardinal_harmony = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_light_cardinal_harmony:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+end
+
+function modifier_light_cardinal_harmony:GetHealthPercentBonus()
+    return self.ability.bonusMaxHealth or 0
+end
+
+function modifier_light_cardinal_harmony:GetManaPercentBonus()
+    return self.ability.bonusMaxMana or 0
+end
+
+function modifier_light_cardinal_harmony:GetHealthRegenerationPercentBonus()
+    return self.ability.bonusHpRegeneration or 0
+end
+
+function modifier_light_cardinal_harmony:GetManaRegenerationPercentBonus()
+    return self.ability.bonusManaRegeneration or 0
+end
+
+function modifier_light_cardinal_harmony:GetHealthBonus()
+    return (self.ability.intToHealth or 0) * Units:GetHeroIntellect(self.caster)
+end
+
+function modifier_light_cardinal_harmony:GetDebuffResistanceBonus()
+    local missingHpPercent = 1 - (self.caster:GetHealth() / self.caster:GetMaxHealth())
+    return math.min(missingHpPercent * (self.ability.debuffResistancePerMissingHpPct or 0), (self.ability.debuffResistancePerMissingHpPctMax or 0))
+end
+
+LinkedModifiers["modifier_light_cardinal_harmony"] = LUA_MODIFIER_MOTION_NONE
+
+light_cardinal_harmony = class({
+    GetAbilityTextureName = function(self)
+        return "light_cardinal_harmony"
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_light_cardinal_harmony"
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("swap_active") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        else
+            return DOTA_ABILITY_BEHAVIOR_PASSIVE
+        end
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("swap_cd")
+    end,
+})
+
+function light_cardinal_harmony:OnSpellStart()
+    if not IsServer() then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterMaxHp = caster:GetMaxHealth()
+    local casterMaxMp = caster:GetMaxMana()
+    local hpPercent = caster:GetHealth() / casterMaxHp
+    local mpPercent = caster:GetMana() / casterMaxMp
+    caster:SetHealth(mpPercent * casterMaxHp)
+    caster:SetMana(hpPercent * casterMaxMp)
+    local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/harmony/harmony.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    Timers:CreateTimer(2.0, function()
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end)
+end
+
+function light_cardinal_harmony:OnUpgrade()
+    if not IsServer() then
+        return
+    end
+    self.intToHealth = self:GetSpecialValueFor("int_to_health") / 100
+    self.slowImmunityMaxHp = self:GetSpecialValueFor("slow_immunity_max_hp") / 100
+    self.bonusMaxHealth = self:GetSpecialValueFor("bonus_max_health") / 100
+    self.bonusMaxMana = self:GetSpecialValueFor("bonus_max_mana") / 100
+    self.bonusHpRegeneration = self:GetSpecialValueFor("bonus_hp_regeneration") / 100
+    self.bonusManaRegeneration = self:GetSpecialValueFor("bonus_mana_regeneration") / 100
+    self.debuffResistancePerMissingHpPct = self:GetSpecialValueFor("debuff_resistance_per_missing_hp_pct")
+    self.debuffResistancePerMissingHpPctMax = self:GetSpecialValueFor("debuff_resistance_per_missing_hp_pct_max") / 100
+end
+
+-- light_cardinal_consecration
+light_cardinal_consecration = class({
+    GetAbilityTextureName = function(self)
+        return "light_cardinal_consecration"
+    end,
+})
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do

@@ -377,7 +377,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_light_cardinal"
+		"ScriptFile"					"heroes/hero_light_cardinal"
 		"AbilityTextureName"			"light_cardinal_harmony"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
@@ -388,7 +388,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
+		"AbilityCastPoint"				"0"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -405,17 +405,52 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_bonus"				"2 3 4 5"
+				"int_to_health"				"10 20 30 40"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"int_bonus"				"2 4 6 8"
+				"swap_active"				"0 1 1 1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"swap_cd"				"0 30 30 30"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"debuff_resistance_per_missing_hp_pct"				"0 0 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"debuff_resistance_per_missing_hp_pct_max"				"0 0 50 50"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_max_health"				"0 0 0 50"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_max_mana"				"0 0 0 50"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_hp_regeneration"				"0 0 0 -75"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_mana_regeneration"				"0 0 0 -75"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/light_cardinal/harmony/harmony_effect.vpcf"
+			"particle" "particles/units/light_cardinal/harmony/harmony.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -426,7 +461,7 @@
     	// General
     	//-------------------------------------------------------------------------------------------------------------
     	"BaseClass"						"ability_lua"
-    	"ScriptFile"					"talents/talents_light_cardinal"
+    	"ScriptFile"					"heroes/hero_light_cardinal"
     	"AbilityTextureName"			"light_cardinal_consecration"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
     	"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"

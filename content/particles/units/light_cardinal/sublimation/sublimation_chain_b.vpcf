@@ -52,8 +52,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 32.0
-			m_flRadiusMax = 48.0
+			m_flRadiusMin = 16.0
+			m_flRadiusMax = 32.0
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"
@@ -141,6 +141,12 @@
 	[
 		{
 			m_name = "preview"
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/light_cardinal/sublimation/sublimation_chain_d.vpcf"
 		},
 	]
 }
