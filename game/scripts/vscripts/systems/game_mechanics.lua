@@ -695,7 +695,7 @@ if (IsServer()) then
         if (args.caster == nil or args.target == nil or args.heal == nil) then
             return
         end
-        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target))
+        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target) - 1)
         args.crit = 1.0
         local preHealHandlerResultTable
         local healCanceled = false
@@ -749,7 +749,7 @@ if (IsServer()) then
             return
         end
         args.crit = 1.0
-        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target))
+        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target) - 1)
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealManaEventHandlersTable do

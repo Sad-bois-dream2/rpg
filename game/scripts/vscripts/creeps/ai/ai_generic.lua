@@ -10,17 +10,21 @@ function Spawn(keys)
     end
     thisEntity.ai = {}
     thisEntity:SetContextThink("Think", Think, GENERIC_AI_THINK_INTERVAL)
+    Timers:CreateTimer(2, function()
+        thisEntity.ai.spawnPoint = thisEntity:GetAbsOrigin()
+    end)
 end
 
 function Think()
     if not IsServer() then
         return
     end
-    if(not thisEntity.ai.spawnPoint) then
-        thisEntity.ai.spawnPoint = thisEntity:GetAbsOrigin()
+    if (not thisEntity:IsAlive()) then
+        return
     end
     local aggroTarget = Aggro:GetUnitCurrentTarget(thisEntity)
-    if (aggroTarget and thisEntity:IsAlive()) then
+    if (aggroTarget) then
+        thisEntity.ai.moveBackOrderGiven = nil
         if (not (thisEntity.ai.castedAbility and (thisEntity.ai.castedAbility:IsInAbilityPhase() or thisEntity.ai.castedAbility:IsChanneling()))) then
             thisEntity.ai.castedAbility = nil
         else
@@ -72,12 +76,12 @@ function Think()
             thisEntity:MoveToTargetToAttack(aggroTarget)
             return GENERIC_AI_THINK_INTERVAL
         end
-    end
-    local position = thisEntity:GetAbsOrigin()
-    local distanceToSpawnPoint = math.pow(thisEntity.ai.spawnPoint.x - position.x, 2) + math.pow(thisEntity.ai.spawnPoint.y - position.y, 2)
-    if(distanceToSpawnPoint >= 2500) then -- 50^2
-        Aggro:Reset(thisEntity)
-        thisEntity:MoveToPositionAggressive(thisEntity.ai.spawnPoint)
+    else
+        if (not thisEntity.ai.moveBackOrderGiven and thisEntity.ai.spawnPoint) then
+            thisEntity:Stop()
+            thisEntity:MoveToPositionAggressive(thisEntity.ai.spawnPoint)
+            thisEntity.ai.moveBackOrderGiven = true
+        end
     end
     return GENERIC_AI_THINK_INTERVAL
 end

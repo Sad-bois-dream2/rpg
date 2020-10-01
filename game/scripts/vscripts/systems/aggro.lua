@@ -28,7 +28,7 @@ function Aggro:OnCreepSpawn(creep)
     if IsClient() then
         return
     end
-    if (creep ~= nil) then
+    if (creep ~= nil and creep:GetTeamNumber() == DOTA_TEAM_BADGUYS) then
         creep:AddNewModifier(creep, nil, "modifier_aggro_system", { Duration = -1 })
     end
 end

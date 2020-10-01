@@ -711,3 +711,7 @@
     height: 100%;
     margin-left: 10px;
 }
+
+#HeroAbilitiesPanelFiller {
+    min-width: 498px;
+}

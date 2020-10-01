@@ -251,19 +251,6 @@ function Enemies:Init()
     Enemies:InitPanaromaEvents()
 end
 
---[[
-CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = "item_claymore_custom", hero = HeroList:GetHero(0):GetUnitName(), player_id = 0, stats = json.encode({
-    {
-        name = "attack_damage",
-        value = 4
-    },
-    {
-        name = "attack_speed",
-        value = 1
-    }
-})})
---]]
-
 function Enemies:GetItemDropProjectileIndexByRarity(rarity)
     if (rarity >= Inventory.rarity.immortal) then
         return 10
@@ -424,42 +411,6 @@ function Enemies:IsBoss(unit)
     return false
 end
 
-function Enemies:GetBossHealingPercentFor(unit)
-    if (not unit or unit:IsNull()) then
-        return 0
-    end
-    local modifier = unit:FindModifierByName("modifier_creep_scaling")
-    if (not modifier) then
-        return 0
-    end
-    local result = 0.1
-    local difficulty = Difficulty:GetValue()
-    if (difficulty > 4) then
-        result = 0.2
-    end
-    if (difficulty > 7) then
-        result = 0.3
-    end
-    return result
-end
-
-function Enemies:OnBossHealing(boss, hero)
-    if (not boss or boss:IsNull()) then
-        return
-    end
-    local healTable = {}
-    healTable.caster = boss
-    healTable.target = boss
-    healTable.ability = nil
-    healTable.heal = boss:GetMaxHealth() * Enemies:GetBossHealingPercentFor(boss)
-    GameMode:HealUnit(healTable)
-    local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, boss)
-    Timers:CreateTimer(2, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
-end
-
 function Enemies:OverwriteAbilityFunctions(ability)
     if (not ability or ability:IsNull()) then
         return
@@ -541,7 +492,7 @@ function modifier_creep_scaling:OnCreated()
         --pull boss back if they run too far 2500 range
         Timers:CreateTimer(5, function()
             self.spawn_pos = self.creep:GetAbsOrigin()
-            self:StartIntervalThink(2)
+            self:StartIntervalThink(1)
         end)
     else
         local eliteChance = math.floor(5 * (1 + (self.difficulty)))
@@ -622,10 +573,9 @@ function modifier_creep_scaling:OnIntervalThink()
     local distance = displacement:Length2D()
     if distance > Enemies.BOSS_ZONE_SIZE then
         local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_teleport.vpcf", PATTACH_ABSORIGIN, self.creep)
-        Timers:CreateTimer(2, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
+        ParticleManager:SetParticleControl(pidx, 0, self.creep:GetAbsOrigin())
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
         FindClearSpaceForUnit(self.creep, self.spawn_pos, true)
         Aggro:Reset(self.creep)
         local healTable = {}
@@ -633,6 +583,15 @@ function modifier_creep_scaling:OnIntervalThink()
         healTable.target = self.creep
         healTable.ability = nil
         healTable.heal = self.creep:GetMaxHealth()
+        GameMode:HealUnit(healTable)
+    end
+    local aggroTarget = Aggro:GetUnitCurrentTarget(self.creep)
+    if(not aggroTarget) then
+        local healTable = {}
+        healTable.caster = self.creep
+        healTable.target = self.creep
+        healTable.ability = nil
+        healTable.heal = self.creep:GetMaxHealth() * 0.1
         GameMode:HealUnit(healTable)
     end
 end
@@ -1014,7 +973,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
     local unit = EntIndexToHScript(keys.entindex)
     local IsLegitUnit = unit:IsCreature() and not (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() ~= DOTA_TEAM_GOODGUYS) then
+    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() == DOTA_TEAM_BADGUYS) then
         unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
     end
 end, nil)
