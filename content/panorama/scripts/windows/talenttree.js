@@ -4,54 +4,26 @@ var hero = -1;
 var totalPointsLabel;
 
 var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3, TALENT_ABILITY = 4;
-var TALENT_BRANCH_PANEL = 0, TALENT_BRANCH_IMAGE = 1, TALENT_BRANCH_NAME = 2;
 var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME = 2, TOOLTIP_DESCRIPTION = 3;
-
-function IsUniversalTalent(id) {
-	if(id >= 25 && id <= 33) {
-		return true;
-	}
-	if(id >= 1 && id <= 18) {
-		return true;
-	}
-	return false;
-}
-
-function IsAbilityTalent(id) {
-    return (id >= 19 && id <= 24);
-}
 
 function OnTalentClick(id) {
 	GameEvents.SendCustomGameEventToServer("rpg_talenttree_lvlup_talent", {"player_id" : Players.GetLocalPlayer(), "talent_id" : id});
 }
 
-function ShowTalentTooltip(id, is_skill) {
-    if(is_skill) {
-        $.DispatchEvent("DOTAShowAbilityTooltip", talents[id-1][TALENT_PANEL], talents[id-1][TALENT_ABILITY].abilityname);
-    } else {
-        var IsHeroLoaded = (hero > -1);
-        var cursorPosition = GameUI.GetCursorPosition();
-        if(IsHeroLoaded) {
-            var talentName, talentDescription;
-            var talentImage = talents[id-1][TALENT_PANEL].Data().talentImage;
-            if(IsUniversalTalent(id)) {
-                talentName = $.Localize("#DOTA_TalentTree_Generic_Talent_"+id);
-                talentDescription = $.Localize("#DOTA_TalentTree_Generic_Talent_"+id+"_Description");
-            } else {
-                talentName = $.Localize("#DOTA_TalentTree_"+Entities.GetUnitName(hero)+"_Talent_"+id);
-                talentDescription = $.Localize("#DOTA_TalentTree_"+Entities.GetUnitName(hero)+"_Talent_"+id+"_Description");
-            }
-            CreateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
-        }
-	}
+function ShowTalentTooltip(id) {
+    var IsHeroLoaded = (hero > -1);
+    var cursorPosition = GameUI.GetCursorPosition();
+    if(IsHeroLoaded) {
+        var talentName, talentDescription;
+        var talentImage = talents[id-1][TALENT_PANEL].Data().talentImage;
+        talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
+        talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
+        CreateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
+    }
 }
-		
-function HideTalentTooltip(id, is_skill) {
-    if(is_skill) {
-        $.DispatchEvent("DOTAHideAbilityTooltip", talents[id-1][TALENT_PANEL]);
-    } else {
-	    tooltip[TOOLTIP_PANEL].style.visibility = "collapse";
-	}
+
+function HideTalentTooltip(id) {
+    tooltip[TOOLTIP_PANEL].style.visibility = "collapse";
 }
 
 function OnTalentTreeWindowCloseRequest() {
@@ -84,33 +56,22 @@ function BuildTalentTree() {
 	var root = $("#TalentTree");
 	var totalLines = 7;
 	var totalColumns = 3;
+	var talentsPerColumn = 3;
 	var talentId = 1;
 	for(var i = 0; i < totalLines; i++) {
-		var IsUniversalRow = (i == 0 || i == 1 || i == 3);
-		var IsSkillRow = (i == 2);
 		var talentsRow = $.CreatePanel("Panel", root, "");
 		talentsRow.SetHasClass("TalentsRow", true);
 		for(var j = 0; j < totalColumns; j++) {
 			var talentsColumn = $.CreatePanel("Panel", talentsRow, "");
 			talentsColumn.SetHasClass("TalentsColumn", true);
-			talentsColumn.SetHasClass("HeroSpecificTalentPanel", !IsUniversalRow);
-			var talentsPerColumn = 3;
-			if(!IsUniversalRow) {
-				talentsPerColumn = 2;
-			}
 			for(k = 0; k < talentsPerColumn; k++) {
 				var talent = $.CreatePanel("Panel", talentsColumn, "HeroTalent"+talentId);
 				talent.SetHasClass("disabled", true);
-				talent.SetHasClass("is_skill", IsSkillRow)
 				talent.BLoadLayout("file://{resources}/layout/custom_game/windows/talenttree/talenttree_talent.xml", false, false);
 				talent.Data().ShowTalentTooltip = ShowTalentTooltip;
 				talent.Data().HideTalentTooltip = HideTalentTooltip;
 				talent.Data().OnTalentClick = OnTalentClick;
-				if(IsUniversalTalent(talentId)) {
-					talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/talent_"+talentId+".png";
-				} else {
-					talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talent_"+talentId+".png";
-				}
+				talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/talent_"+talentId+".png";
 				var talentImageAndLevel = talent.GetChild(0);
 				var talentImage = talentImageAndLevel.GetChild(0);
 				var talentLevel = talentImageAndLevel.GetChild(2);
@@ -134,18 +95,7 @@ function OnTalentTreeStateUpdateRequest(event) {
 		talents[index][TALENT_PANEL].SetHasClass("disabled", parsedData[i].disabled);
 		talents[index][TALENT_PANEL].SetHasClass("lvlup", parsedData[i].lvlup);
 		talents[index][TALENT_LEVEL].text = parsedData[i].level + " / " + parsedData[i].maxlevel;
-		if(IsAbilityTalent(parsedData[i].talent_id)) {
-		    talents[index][TALENT_ABILITY].abilityname = parsedData[i].abilityname;
-		}
 	}
-}
-
-function UpdateTreeBranchesNameAndIcon() {
-    return;
-    for(var i = 1; i < 4; i++) {
-    $("#TreeBranchLabel" + i).text = $.Localize("#DOTA_TalentTree_"+Entities.GetUnitName(hero)+"_TalentBranch_"+i);
-    $("#TreeBranchImage" + i).SetImage("file://{images}/custom_game/hud/talenttree/"+Entities.GetUnitName(hero)+"/talentbranch_"+i+".png");
-    }
 }
 
 var TalentsDataRequired = false;
@@ -156,7 +106,6 @@ function UpdateValues() {
 	} else {
 		if(!TalentsDataRequired) {
 	        BuildTalentTree();
-	        UpdateTreeBranchesNameAndIcon();
 			GameEvents.SendCustomGameEventToServer("rpg_talenttree_require_player_talents_state", {"player_id" : Players.GetLocalPlayer()});
 			TalentsDataRequired = true;
 		}

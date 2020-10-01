@@ -11,15 +11,11 @@ function TalentTree:SetupForHero(hero)
         for i = 1, TalentTree.latest_talent_id do
             hero.talents.level[i] = 0
         end
-        -- for test only, remove later pls
-        if(hero:FindAbilityByName("antimage_blink")) then
-            hero:FindAbilityByName("antimage_blink"):SetLevel(4)
-        end
     end
 end
 
 -- for test only, remove later pls
-if (IsServer()) then
+if (IsServer() and IsInToolsMode()) then
     ListenToGameEvent("player_chat", function(event)
         if (event.text == "-reset") then
             local player = PlayerResource:GetPlayer(event.playerid)
@@ -30,51 +26,8 @@ if (IsServer()) then
 end
 
 ---@param hero CDOTA_BaseNPC_Hero
-function TalentTree:ChangeHeroAbilities(hero)
-    if (hero ~= nil and hero.talents ~= nil) then
-        local talentAbilties = {}
-        for i = 19, 24 do
-            if (hero.talents.level[i] > 0) then
-                table.insert(talentAbilties, TalentTree:GetTalentAbilityName(hero, i))
-            end
-        end
-        if (#talentAbilties > 2) then
-            DebugPrint("[TALENTTREE] Abilties.count > 2. WTF?")
-            DebugPrint("hero=" .. hero:GetUnitName())
-            DebugPrintTable(talentAbilties)
-            return
-        end
-        local freeIndex = -1
-        for i = 1, 5 do
-            local ability = hero:GetAbilityByIndex(i)
-            local abilityName = ability:GetAbilityName()
-            if (abilityName == TalentTree.tempAbilities[1] or abilityName == TalentTree.tempAbilities[2]) then
-                freeIndex = i
-                break
-            end
-        end
-        if (freeIndex < 0) then
-            return
-        end
-        for i = 1, #talentAbilties do
-            if (talentAbilties[i] and not hero:HasAbility(talentAbilties[i])) then
-                local tempAbilityName = hero:GetAbilityByIndex(freeIndex)
-                if (tempAbilityName) then
-                    tempAbilityName = tempAbilityName:GetAbilityName()
-                    hero:RemoveAbility(tempAbilityName)
-                    local ability = hero:AddAbility(talentAbilties[i])
-                    ability:SetAbilityIndex(freeIndex)
-                    freeIndex = freeIndex + 1
-                end
-            end
-        end
-    end
-end
-
----@param hero CDOTA_BaseNPC_Hero
 function TalentTree:Reset(hero)
     if (hero and hero.talents) then
-        TalentTree:RemoveAllTalentAbilities(hero)
         for talentId = 1, TalentTree.latest_talent_id do
             TalentTree:SetHeroTalentLevel(hero, talentId, 0)
         end
@@ -85,129 +38,10 @@ function TalentTree:Reset(hero)
     end
 end
 
----@param hero CDOTA_BaseNPC_Hero
-function TalentTree:RemoveAllTalentAbilities(hero)
-    if (hero ~= nil and hero.talents ~= nil) then
-        hero:RemoveAbility(TalentTree.tempAbilities[1])
-        hero:RemoveAbility(TalentTree.tempAbilities[2])
-        for i = 19, 24 do
-            local name = TalentTree:GetTalentAbilityName(hero, i)
-            local ability = hero:FindAbilityByName(name)
-            if (ability) then
-                hero:SetAbilityPoints(hero:GetAbilityPoints() + ability:GetLevel())
-                hero:RemoveAbility(name)
-            end
-        end
-        hero:AddAbility(TalentTree.tempAbilities[1])
-        hero:AddAbility(TalentTree.tempAbilities[2])
-        -- for test only, remove later pls
-        hero:FindAbilityByName("antimage_blink"):SetLevel(4)
-    end
-end
-
 function TalentTree:Init()
     -- Changing that require modifying all Get() functions  and IsRequiredPointsForLineConditionMeet() below...
     self.latest_talent_id = 51
     self.max_talent_points = 32
-    self.tempAbilities = { "empty5", "antimage_blink" }
-    self.talent_abilities = {
-        ["npc_dota_hero_drow_ranger"] = {
-             "terror_lord_ruthless_predator",
-             "terror_lord_ruthless_predator",
-             "terror_lord_ruthless_predator",
-            "phantom_ranger_hunters_focus",
-            "phantom_ranger_phantom_of_vengeance",
-             "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_juggernaut"] = {
-            "luminous_samurai_blade_dance",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_phantom_assassin"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_abyssal_underlord"] = {
-            "terror_lord_flame_of_menace",
-            "terror_lord_immolation",
-            "terror_lord_inferno_impulse",
-            "terror_lord_ruthless_predator",
-            "terror_lord_pit_of_seals",
-            "terror_lord_aura_of_seals"
-        },
-        ["npc_dota_hero_mars"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_axe"] = {
-            "blazing_berserker_rage_eruption",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_crystal_maiden"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_invoker"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_silencer"] = {
-            "light_cardinal_spirit_shield",
-            "light_cardinal_harmony",
-            "light_cardinal_desecration",
-            "light_cardinal_consecration",
-            "light_cardinal_smite",
-            "light_cardinal_patronage"
-        },
-        ["npc_dota_hero_enchantress"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_skeleton_king"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        },
-        ["npc_dota_hero_dark_willow"] = {
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator",
-            "terror_lord_ruthless_predator"
-        }
-    }
     TalentTree:InitPanaromaEvents()
 end
 
@@ -245,10 +79,10 @@ function TalentTree:IsHeroHaveTalentTree(hero)
 end
 
 function TalentTree:OnTalentTreeLevelUpRequest(event, args)
-    if (event == nil) then
+    if (event == nil or not event.PlayerID) then
         return
     end
-    event.player_id = tonumber(event.player_id)
+    event.player_id = tonumber(event.PlayerID)
     event.talent_id = tonumber(event.talent_id)
     if (event.talent_id == nil or event.player_id == nil) then
         return
@@ -524,89 +358,19 @@ function TalentTree:IsRequiredPointsForLineAndBranchConditionMeet(hero, line, br
     line = tonumber(line)
     branch = tonumber(branch)
     if (hero and line and line >= 1 and line <= 7 and branch) then
-        if (line >= 4) then
-            local pointsInAbilityLine = TalentTree:GetPointsSpendedInLineForBranch(hero, 3, branch)
-            local totalPointsSpended = TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) - pointsInAbilityLine
-            totalPointsSpended = totalPointsSpended + TalentTree:GetPointsSpendedInLine(hero, 3)
-            return totalPointsSpended >= (((line - 1) * 3) - 1)
-        else
-            return TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) >= ((line - 1) * 3)
-        end
+        return TalentTree:GetPointsSpendedInLinesIncludeThisForBranch(hero, line, branch) >= ((line - 1) * 3)
     end
     return false
-end
-
----@param talentId number
----@return number
-function TalentTree:GetMaxPointsForLineInBranch(line, branch)
-    line = tonumber(line)
-    branch = tonumber(branch)
-    if (line and branch) then
-        if (line == 7) then
-            return 1
-        end
-        return 99999
-    end
-    return 0
-end
-
----@param talentId number
----@return number
-function TalentTree:GetMaxPointsForLine(line)
-    line = tonumber(line)
-    if (line) then
-        if (line == 3) then
-            return 2
-        end
-        return 99999
-    end
-    return 0
 end
 
 ---@param talentId number
 ---@return number
 function TalentTree:GetMaxLevelForTalent(talentId)
     talentId = tonumber(talentId)
-    if (talentId ~= nil) then
-        if (talentId > 18 and talentId <= 24) then
-            return 1
-        end
-        if (talentId > 45 and talentId <= 51) then
-            return 1
-        end
+    if (talentId) then
         return 3
     end
     return 0
-end
-
----@param hero CDOTA_BaseNPC_Hero
----@param talentId number
----@return string
-function TalentTree:GetTalentAbilityName(hero, talentId)
-    local talentId = tonumber(talentId)
-    if (hero ~= nil and talentId ~= nil) then
-        if (talentId >= 19 and talentId <= 24) then
-            local heroName = hero:GetUnitName()
-            return self.talent_abilities[heroName][talentId - 18] or ""
-        end
-    end
-    return ""
-end
-
----@param talentId number
----@return boolean
-function TalentTree:IsUniversalTalent(talentId)
-    local talentId = tonumber(talentId)
-    if (talentId == nil) then
-        return false
-    end
-    if (talentId >= 25 and talentId <= 33) then
-        return true
-    end
-    if (talentId >= 1 and talentId <= 18) then
-        return true
-    end
-    return false
 end
 
 -- Panaroma stuff
@@ -662,7 +426,6 @@ function TalentTree:OnTalentTreeStateRequest(event, args)
                 end
                 CustomGameEventManager:Send_ServerToPlayer(player, "rpg_talenttree_require_player_talents_state_from_server", { player_id = event.player_id, data = json.encode(resultTable) })
                 TalentTree:SendTotalTalentPointsToPlayer(player)
-                TalentTree:ChangeHeroAbilities(hero)
             end)
 end
 
@@ -698,13 +461,13 @@ function TalentTree:OnTalentTreeWindowCloseRequest(event, args)
 end
 
 function TalentTree:LoadTalentsFromSaveData(playerHero, talentData)
-    if(not playerHero or not talentData) then
+    if (not playerHero or not talentData) then
         return
     end
     TalentTree:RemoveAllTalentAbilities(playerHero)
     for talentId = 1, TalentTree.latest_talent_id do
-        local talentLevel = tonumber(talentData["talent"..talentId])
-        if(not talentLevel) then
+        local talentLevel = tonumber(talentData["talent" .. talentId])
+        if (not talentLevel) then
             talentLevel = 0
         end
         TalentTree:SetHeroTalentLevel(playerHero, talentId, talentLevel)

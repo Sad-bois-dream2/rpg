@@ -10,13 +10,13 @@
 		function ShowTalentTooltip() {
 			var context = $.GetContextPanel();
 			var id = GetTalentId(context);
-			context.Data().ShowTalentTooltip(id, context.BHasClass("is_skill"));
+			context.Data().ShowTalentTooltip(id);
 		}
 		
 		function HideTalentTooltip() {
 			var context = $.GetContextPanel();
 			var id = GetTalentId(context);
-			context.Data().HideTalentTooltip(id, context.BHasClass("is_skill"));
+			context.Data().HideTalentTooltip(id);
 		}
 		
 		function OnTalentClick() {
@@ -24,6 +24,7 @@
 			if(!context.BHasClass("disabled") && context.BHasClass("lvlup")) {
 				var id = GetTalentId(context);
 				context.Data().OnTalentClick(id);
+				Game.EmitSound("General.SelectAction");
 			}
 		}
 	</script>
