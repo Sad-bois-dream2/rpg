@@ -811,7 +811,7 @@
 		"DOTA_TalentTree_Title"		"Talent tree"
 		"DOTA_TalentTree_Description"		"Manage your hero's talents here and create powerful builds.<br>Here you can Manage your hero talents and create any build that you want."
 		"DOTA_TalentTree_Total_Talent_Points"		"Talent points: %value%"
-		"DOTA_TalentTree_Help"		"You gain a talent point every .... To unlock each row you must spend at least 3 points (for third row 2 points) in the subtree."
+		"DOTA_TalentTree_Help"		"You gain a talent point every .... To unlock each row you must spend at least 3 points in the subtree."
         "DOTA_TalentTree_Talent_1"		"Strength"
 		"DOTA_TalentTree_Talent_1_Description"		"Grants you <font color='#96afff'><b><font color='#96afff'><b>10 / 20 / 30</b></font></b></font>  Strength."
 		"DOTA_TalentTree_Talent_2"		"Agility"
