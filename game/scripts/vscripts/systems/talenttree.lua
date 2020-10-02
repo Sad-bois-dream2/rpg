@@ -14,6 +14,7 @@ if (IsServer() and IsInToolsMode()) then
 end
 
 function TalentTree:Init()
+    -- Changing that value will prob require fix for TalentTree:GetTalentLine() and TalentTree:GetTalentBranch()
     self.latestTalentId = 63
     self.maxTalentPoints = 32
     TalentTree:InitPanaromaEvents()
