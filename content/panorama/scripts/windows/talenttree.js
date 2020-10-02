@@ -7,7 +7,7 @@ var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3, TALENT_
 var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME = 2, TOOLTIP_DESCRIPTION = 3;
 
 function OnTalentClick(id) {
-	GameEvents.SendCustomGameEventToServer("rpg_talenttree_lvlup_talent", {"player_id" : Players.GetLocalPlayer(), "talent_id" : id});
+	GameEvents.SendCustomGameEventToServer("rpg_talenttree_lvlup_talent", {"talent_id" : id});
 }
 
 function ShowTalentTooltip(id) {
@@ -20,6 +20,7 @@ function ShowTalentTooltip(id) {
         talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
         CreateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
     }
+
 }
 
 function HideTalentTooltip(id) {
@@ -106,7 +107,7 @@ function UpdateValues() {
 	} else {
 		if(!TalentsDataRequired) {
 	        BuildTalentTree();
-			GameEvents.SendCustomGameEventToServer("rpg_talenttree_require_player_talents_state", {"player_id" : Players.GetLocalPlayer()});
+			GameEvents.SendCustomGameEventToServer("rpg_talenttree_require_player_talents_state", {});
 			TalentsDataRequired = true;
 		}
 	}
