@@ -127,30 +127,6 @@
 				m_nMapType = "PF_MAP_TYPE_MULT"
 				m_flMultFactor = 0.7
 			}
-			m_flThickness = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 1
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
-			}
-			m_flInitialSpeedMin = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 2
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
-			}
-			m_flInitialSpeedMax = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 2
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
-			}
 		},
 		{
 			_class = "C_INIT_RandomColor"

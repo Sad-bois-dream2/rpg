@@ -11,7 +11,7 @@
 			_class = "C_OP_RenderRopes"
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
 			m_nOrientationType = 3
-			m_hTexture = resource:"materials/particle/beam_edge_01b.vtex"
+			m_hTexture = resource:"materials/particle/beam_crack_04.vtex"
 			m_flRadiusScale = 0.5
 			m_flTextureVWorldSize = 1176.470581
 			m_flTextureVScrollRate = -5882.353027
@@ -105,6 +105,7 @@
 			_class = "C_OP_ColorInterpolate"
 			m_ColorFade = [ 0, 0, 0, 255 ]
 			m_flFadeEndTime = 0.6
+			m_bDisableOperator = true
 		},
 	]
 	m_Initializers = 
@@ -148,7 +149,7 @@
 				m_flNoiseImgPreviewScale = 1.0
 				m_bNoiseImgPreviewLive = true
 				m_nInputMode = "PF_INPUT_MODE_CLAMPED"
-				m_flMultFactor = 0.5
+				m_flMultFactor = 1.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
@@ -162,30 +163,6 @@
 					m_vDomainMins = [ 0.0, 0.0 ]
 					m_vDomainMaxs = [ 0.0, 0.0 ]
 				}
-			}
-			m_flThickness = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 1
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
-			}
-			m_flInitialSpeedMin = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 2
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
-			}
-			m_flInitialSpeedMax = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 5
-				m_nVectorComponent = 2
-				m_nMapType = "PF_MAP_TYPE_MULT"
-				m_flMultFactor = 0.0
 			}
 		},
 		{
@@ -217,6 +194,12 @@
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, 90.0 ]
 			m_OffsetMax = [ 0.0, 0.0, 90.0 ]
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 0, 0, 0, 255 ]
+			m_ColorMax = [ 0, 0, 0, 255 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomColor"
@@ -252,7 +235,7 @@
 				{
 					m_iControlPoint = 5
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 100.0, 0.0, 0.0 ]
+					m_vecOffset = [ 200.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
