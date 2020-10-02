@@ -519,6 +519,27 @@ function blazing_berserker_furious_stance:OnSpellStart(unit, special_cast)
     EmitSoundOn("Hero_Axe.Berserkers_Call", modifierTable.caster)
 end
 
+-- blazing_berserker_eruption
+blazing_berserker_eruption = class({
+    GetAbilityTextureName = function(self)
+        return "blazing_berserker_eruption"
+    end
+})
+
+function blazing_berserker_eruption:OnToggle()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local time = caster:SequenceDuration("counter_helix_anim")
+    Timers:CreateTimer(0, function()
+        caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+        return time
+    end)
+    local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/eruption/eruption.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    ParticleManager:SetParticleControl(pidx, 5, Vector(200, 0, 0))
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_blazing_berserker", MotionController)

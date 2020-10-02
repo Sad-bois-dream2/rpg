@@ -7,7 +7,7 @@
         "Ability2"	"blazing_berserker_incinerating_souls"
         "Ability3"	"blazing_berserker_battle_hunger"
         "Ability4"	"blazing_berserker_furious_stance"
-        "Ability5"	"empty5"
+        "Ability5"	"blazing_berserker_eruption"
         "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
