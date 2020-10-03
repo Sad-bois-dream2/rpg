@@ -1606,6 +1606,7 @@ function modifier_molten_guardian_lava_spear_thinker:OnCreated()
         ParticleManager:SetParticleControl(modifier.particle, 2, Vector(modifier.ability.dotDuration, 0, 0))
         ParticleManager:SetParticleControl(modifier.particle, 4, modifier.startLocation)
     end)
+    self:OnIntervalThink()
     self:StartIntervalThink(self.ability.dotTick)
 end
 
