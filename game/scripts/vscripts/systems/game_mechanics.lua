@@ -264,12 +264,12 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
-                    if(not modifier.IsHidden) then
+                    if (not modifier.IsHidden) then
                         modifier.IsHidden = function(self)
                             return false
                         end
                     end
-                    if(not modifier.IsDebuff) then
+                    if (not modifier.IsDebuff) then
                         modifier.IsDebuff = function(self)
                             return false
                         end
@@ -389,12 +389,12 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
-                    if(not modifier.IsHidden) then
+                    if (not modifier.IsHidden) then
                         modifier.IsHidden = function(self)
                             return false
                         end
                     end
-                    if(not modifier.IsDebuff) then
+                    if (not modifier.IsDebuff) then
                         modifier.IsDebuff = function(self)
                             return true
                         end
@@ -930,6 +930,12 @@ function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
         return
     end
     if (keys.unit == self.unit) then
+        local charges = self.unit:FindAllModifiersByName("modifier_charges")
+        for _, charge in pairs(charges) do
+            if (charge.ability == keys.ability) then
+                return
+            end
+        end
         local cooldownTable = {}
         cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
         cooldownTable.ability = keys.ability:GetAbilityName()
