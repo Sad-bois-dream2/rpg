@@ -53,3 +53,5 @@ function Activate()
     GameRules.GameMode = GameMode()
     GameRules.GameMode:_InitGameMode()
 end
+
+LinkLuaModifier("modifier_charges", "generic/modifier_charges", LUA_MODIFIER_MOTION_NONE)
