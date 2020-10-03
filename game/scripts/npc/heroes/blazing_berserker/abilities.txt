@@ -409,6 +409,100 @@
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
+            "particle"  "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
+            "particle"  "particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Blazing Berserker: Flame Dash
+	//=================================================================================================================
+	"blazing_berserker_flame_dash"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_blazing_berserker"
+		"AbilityTextureName"			"axe_berserkers_call"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30 25 20 15"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"100 110 120 130"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dash_speed"				"1200"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dash_range"				"600"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"trail_width"				"0 200 200 200"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"trail_damage"				"0 50 50 50"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"trail_tick"				"0 1 1 1"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"trail_duration"				"0 7 7 7"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_reduction"				"0 0 20 20"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_resistance_reduction_duration"				"0 0 6 6"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"charges"				"0 0 0 2"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}

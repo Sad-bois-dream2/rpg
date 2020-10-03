@@ -535,6 +535,9 @@ modifier_blazing_berserker_fission_dot = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
     end
 })
 
@@ -783,6 +786,40 @@ function blazing_berserker_fission:OnUpgrade()
 end
 
 function blazing_berserker_fission:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_blazing_berserker_fission_spin"
+    modifierTable.duration = self.spinDuration
+    GameMode:ApplyBuff(modifierTable)
+end
+
+-- blazing_berserker_flame_dash
+blazing_berserker_flame_dash = class({})
+
+function blazing_berserker_flame_dash:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.minCdForProc = self:GetSpecialValueFor("min_cd_for_proc")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.spinDuration = self:GetSpecialValueFor("spin_duration")
+    self.spinCd = self:GetSpecialValueFor("spin_cd")
+    self.spinTick = self:GetSpecialValueFor("spin_tick")
+    self.aaProc = self:GetSpecialValueFor("aa_proc")
+    if (not self.caster and IsServer()) then
+        self.caster = self:GetCaster()
+        self.casterTeam = self.caster:GetTeamNumber()
+        self.animationDuration = self.caster:SequenceDuration("counter_helix_anim")
+    end
+end
+
+function blazing_berserker_flame_dash:OnSpellStart()
     if (not IsServer()) then
         return
     end
