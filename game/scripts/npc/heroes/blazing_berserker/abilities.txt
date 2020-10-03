@@ -358,7 +358,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"80 90 100 110"
+				"damage"				"115 130 145 160"
 			}
 			"02"
 			{
@@ -393,9 +393,14 @@
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spin_cd"				"0 0 30 30"
+				"spin_tick"				"0 0 1 1"
 			}
 			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spin_cd"				"0 0 30 30"
+			}
+			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"aa_proc"				"0 0 0 1"
@@ -404,6 +409,7 @@
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}
 }
