@@ -183,6 +183,10 @@
 		{
 			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_d.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_e.vpcf"
+			m_bDisableChild = true
+		},
 	]
 	m_controlPointConfigurations = 
 	[
