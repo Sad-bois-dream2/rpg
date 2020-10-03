@@ -168,26 +168,20 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_flying_thing.vpcf"
+			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_a.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_glow_a.vpcf"
+			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_b.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_glow_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_glow_c.vpcf"
+			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_c.vpcf"
 			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/juggernaut/bladekeeper_bladefury/dc_juggernaut_bladekeeper_blade_fury_c.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_glow_d.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/eruption/eruption_ground.vpcf"
+			m_ChildRef = resource:"particles/units/blazing_berserker/fission/fission_glow_d.vpcf"
 		},
 	]
 	m_controlPointConfigurations = 

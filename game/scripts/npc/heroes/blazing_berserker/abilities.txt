@@ -322,20 +322,20 @@
 		}
 	}
 	//=================================================================================================================
-	// Blazing Berserker: Eruption
+	// Blazing Berserker: Fission
 	//=================================================================================================================
-	"blazing_berserker_eruption"
+	"blazing_berserker_fission"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_eruption"
+		"AbilityTextureName"			"blazing_berserker_fission"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
@@ -345,7 +345,7 @@
 		"AbilityCastPoint"				"0"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"1"
+		"AbilityCooldown"				"0"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -358,12 +358,52 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_dmg"				"10 15 20 25"
+				"damage"				"80 90 100 110"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"300"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_cd_for_proc"				"1"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_damage"				"0 20 20 20"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"				"0 5 5 5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_tick"				"0 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spin_duration"				"0 0 7 7"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spin_cd"				"0 0 30 30"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aa_proc"				"0 0 0 1"
 			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/blazing_berserker/eruption/eruption.vpcf"
+            "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
 		}
 	}
 }

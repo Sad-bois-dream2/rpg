@@ -17,20 +17,14 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_flAnimationRate = 0.6
-			m_bSaturateColorPreAlphaBlend = false
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
 			m_flAddSelfAmount = 2.0
-			m_flOverbrightFactor = 8.0
+			m_flOverbrightFactor = 4.0
 			m_hTexture = resource:"materials/particle/smoke/steam/steam.vtex"
 		},
 	]
 	m_Operators = 
 	[
-		{
-			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, 75.0 ]
-			m_fDrag = 0.01
-		},
 		{
 			_class = "C_OP_Decay"
 		},
@@ -56,16 +50,16 @@
 			m_flEndTime = 99999.0
 		},
 		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 153, 28, 0, 255 ]
-			m_bDisableOperator = true
+			_class = "C_OP_LockToBone"
+			m_HitboxSetName = "select_high"
 		},
 	]
 	m_Initializers = 
 	[
 		{
-			_class = "C_INIT_CreateFromParentParticles"
-			m_bRandomDistribution = true
+			_class = "C_INIT_CreateOnModel"
+			m_vecDirectionBias = [ 0.0, 0.0, 1.0 ]
+			m_HitboxSetName = "select_high"
 		},
 		{
 			_class = "C_INIT_RandomColor"
@@ -94,7 +88,7 @@
 		{
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 10.0
-			m_flRadiusMax = 20.0
+			m_flRadiusMax = 15.0
 		},
 		{
 			_class = "C_INIT_RandomYawFlip"
@@ -103,16 +97,6 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 255, 69, 0, 255 ]
 			m_ColorMax = [ 255, 165, 0, 255 ]
-		},
-		{
-			_class = "C_INIT_InheritFromParentParticles"
-			m_flScale = 0.5
-		},
-		{
-			_class = "C_INIT_InitialVelocityNoise"
-			m_vecOutputMin = [ -24.0, -24.0, -24.0 ]
-			m_vecOutputMax = [ 24.0, 24.0, 24.0 ]
-			m_bLocalSpace = true
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -186,6 +170,9 @@
 			]
 			m_previewState = 
 			{
+				m_previewModel = "models/heroes/axe/axe.vmdl"
+				m_nModSpecificData = 2
+				m_sequenceName = "idle"
 				m_hitboxSetName = "default"
 			}
 		},
