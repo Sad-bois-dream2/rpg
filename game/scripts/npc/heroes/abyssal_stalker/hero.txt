@@ -28,8 +28,8 @@
         "AttackRate"		"1.700000"
         "AttackAnimationPoint"		"0.560000"
         "AttackAcquisitionRange"		"600"
-        "AttackRange"		"600"
-        "MovementSpeed"		"280"
+        "AttackRange"		"150"
+        "MovementSpeed"		"315"
         "MovementTurnRate"		"0.500000"
         "BoundsHullName"		"DOTA_HULL_SIZE_HERO"
 		"AttackDamageMin"            "1"       // Damage range min.
