@@ -14,21 +14,21 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
- 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
+ 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_4"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.3"
+		"AbilityCastPoint"				"0.25"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"25"
+		"AbilityCooldown"				"0"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"40"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -37,28 +37,22 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_dmg"				"10 15 20 25"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
 				"damage"				"10 15 20 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"350"
+				"max_hp_cost"				"5"
 			}
-			"04"
+			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"radius"				"300"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike.vpcf"
-            "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike_impact.vpcf"
 		}
 	}
 	//=================================================================================================================
