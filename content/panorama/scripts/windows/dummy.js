@@ -128,8 +128,10 @@ function OnDamageRegisterRequest(event) {
 	    currentEntryIndex++;
 	    UpdateLogCapacityText();
 	}
+	if(event.timer > 0) {
     storedDamage += event.damage;
     CalculateDPS();
+    }
 }
 
 function UpdateLogCapacityText() {
