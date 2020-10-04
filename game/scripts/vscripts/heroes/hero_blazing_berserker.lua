@@ -519,6 +519,567 @@ function blazing_berserker_furious_stance:OnSpellStart(unit, special_cast)
     EmitSoundOn("Hero_Axe.Berserkers_Call", modifierTable.caster)
 end
 
+-- blazing_berserker_fission
+modifier_blazing_berserker_fission_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
+    end
+})
+
+function modifier_blazing_berserker_fission_dot:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_blazing_berserker_fission_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.damage = Units:GetHeroStrength(self.caster) * self.ability.dotDamage
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.firedmg = true
+    GameMode:DamageUnit(damageTable)
+end
+
+LinkedModifiers["modifier_blazing_berserker_fission_dot"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_fission = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
+    end
+})
+
+function modifier_blazing_berserker_fission:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+end
+
+function modifier_blazing_berserker_fission:OnAbilityFullyCast(kv)
+    if (not IsServer()) then
+        return
+    end
+    local abilityLevel = kv.ability:GetLevel()
+    local abilityCooldown = kv.ability:GetCooldown(abilityLevel)
+    if (abilityCooldown < self.ability.minCdForProc or kv.unit ~= self.caster or not self.ability:IsCooldownReady()) then
+        return
+    end
+    self.ability:PerformSpin(true)
+end
+
+LinkedModifiers["modifier_blazing_berserker_fission"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_fission_spin = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_blazing_berserker_fission_spin:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/fission/fission.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    ParticleManager:SetParticleControl(self.pidx, 5, Vector(self.ability.radius, 0, 0))
+    self.tick = 0.1
+    self.localTick = 0
+    self.animationTick = 0
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.tick)
+end
+
+function modifier_blazing_berserker_fission_spin:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.localTick = self.localTick + self.tick
+    if (self.localTick >= self.ability.spinTick) then
+        self.ability:PerformSpin()
+        self.localTick = 0
+    end
+    self.animationTick = self.animationTick + self.tick
+    if (self.animationTick >= self.ability.animationDuration) then
+        self.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+        EmitSoundOn("Hero_Axe.CounterHelix", self.caster)
+        self.animationTick = 0
+    end
+end
+
+function modifier_blazing_berserker_fission_spin:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, true)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+end
+
+LinkedModifiers["modifier_blazing_berserker_fission_spin"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_fission_aa_fix = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE }
+    end,
+    GetModifierBaseDamageOutgoing_Percentage = function(self)
+        return -100
+    end
+})
+
+LinkedModifiers["modifier_blazing_berserker_fission_aa_fix"] = LUA_MODIFIER_MOTION_NONE
+
+blazing_berserker_fission = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_blazing_berserker_fission"
+    end,
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetBehavior = function(self)
+        local behavior = DOTA_ABILITY_BEHAVIOR_PASSIVE
+        if (self:GetSpecialValueFor("spin_duration") > 0) then
+            behavior = DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+        return behavior
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("spin_cd")
+    end,
+})
+
+function blazing_berserker_fission:PerformSpin(showAnimation)
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = Units:GetHeroStrength(self.caster) * self.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        if (self.dotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = self.caster
+            modifierTable.modifier_name = "modifier_blazing_berserker_fission_dot"
+            modifierTable.duration = self.dotDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+        if (self.aaProc > 0) then
+            local attackDamageModifier = self.caster:AddNewModifier(self.caster, nil, "modifier_blazing_berserker_fission_aa_fix", {})
+            self.caster:PerformAttack(enemy, true, true, true, true, false, false, true)
+            attackDamageModifier:Destroy()
+        end
+    end
+    if (showAnimation) then
+        local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/fission/fission.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+        ParticleManager:SetParticleControl(pidx, 5, Vector(self.radius, 0, 0))
+        self.caster:StartGesture(ACT_DOTA_CAST_ABILITY_3)
+        EmitSoundOn("Hero_Axe.CounterHelix", self.caster)
+        Timers:CreateTimer(self.animationDuration, function()
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+        end)
+    end
+end
+
+function blazing_berserker_fission:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.minCdForProc = self:GetSpecialValueFor("min_cd_for_proc")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.spinDuration = self:GetSpecialValueFor("spin_duration")
+    self.spinCd = self:GetSpecialValueFor("spin_cd")
+    self.spinTick = self:GetSpecialValueFor("spin_tick")
+    self.aaProc = self:GetSpecialValueFor("aa_proc")
+    if (not self.caster and IsServer()) then
+        self.caster = self:GetCaster()
+        self.casterTeam = self.caster:GetTeamNumber()
+        self.animationDuration = self.caster:SequenceDuration("counter_helix_anim")
+    end
+end
+
+function blazing_berserker_fission:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_blazing_berserker_fission_spin"
+    modifierTable.duration = self.spinDuration
+    GameMode:ApplyBuff(modifierTable)
+end
+
+-- blazing_berserker_flame_dash
+modifier_blazing_berserker_flame_dash_thinker = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_blazing_berserker_flame_dash_thinker:OnCreated(kv)
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.thinker = self:GetParent()
+    self.startLocation = self.thinker:GetAbsOrigin()
+    self.endLocation = Vector(kv.x, kv.y, kv.z)
+    self.caster = self.ability:GetCaster()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf", PATTACH_ABSORIGIN, self.thinker)
+    ParticleManager:SetParticleControl(self.pidx, 0, self.startLocation)
+    ParticleManager:SetParticleControl(self.pidx, 1, self.endLocation)
+    ParticleManager:SetParticleControl(self.pidx, 2, Vector(self.ability.trailDuration, 0, 0))
+    ParticleManager:SetParticleControl(self.pidx, 4, self.startLocation)
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.trailTick)
+end
+
+function modifier_blazing_berserker_flame_dash_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInLine(self.casterTeam,
+            self.startLocation,
+            self.endLocation,
+            nil,
+            self.ability.trailWidth,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
+            DOTA_UNIT_TARGET_FLAG_NONE)
+    local damage = Units:GetHeroStrength(self.caster) * self.ability.trailDamage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.damage = damage
+        damageTable.caster = self.caster
+        damageTable.target = enemy
+        damageTable.ability = self.ability
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+    end
+end
+
+function modifier_blazing_berserker_flame_dash_thinker:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    ParticleManager:DestroyParticle(self.pidx, false)
+    ParticleManager:ReleaseParticleIndex(self.pidx)
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_blazing_berserker_flame_dash_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_flame_dash_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_TOOLTIP
+        }
+    end
+})
+
+function modifier_blazing_berserker_flame_dash_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_blazing_berserker_flame_dash_debuff:GetFireProtectionBonus()
+    return -self.ability.fireResistanceReduction
+end
+
+function modifier_blazing_berserker_flame_dash_debuff:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("fire_resistance_reduction")
+end
+
+LinkedModifiers["modifier_blazing_berserker_flame_dash_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_flame_dash_motion = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetMotionControllerPriority = function(self)
+        return DOTA_MOTION_CONTROLLER_PRIORITY_MEDIUM
+    end,
+    GetEffectName = function(self)
+        return "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+    end,
+    CheckState = function(self)
+        return {
+            [MODIFIER_STATE_STUNNED] = true,
+            [MODIFIER_STATE_NO_UNIT_COLLISION] = true
+        }
+    end
+})
+
+function modifier_blazing_berserker_flame_dash_motion:OnCreated(kv)
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.startLocation = self.caster:GetAbsOrigin()
+    self.dashRange = math.min(self.ability.dashRange, DistanceBetweenVectors(self.startLocation, self.ability:GetCursorPosition()))
+    self.damagedEnemies = {}
+    self.caster:AddActivityModifier("forcestaff_friendly")
+    self.caster:StartGesture(ACT_DOTA_FLAIL)
+    if (self:ApplyHorizontalMotionController() == false) then
+        self:Destroy()
+    end
+end
+
+function modifier_blazing_berserker_flame_dash_motion:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    self.caster:RemoveHorizontalMotionController(self)
+    self.caster:ClearActivityModifiers()
+    self.caster:RemoveGesture(ACT_DOTA_FLAIL)
+    local casterPosition = self.caster:GetAbsOrigin()
+    CreateModifierThinker(
+            self.ability.caster,
+            self.ability,
+            "modifier_blazing_berserker_flame_dash_thinker",
+            {
+                duration = self.ability.trailDuration,
+                x = casterPosition[1],
+                y = casterPosition[2],
+                z = casterPosition[3],
+            },
+            self.startLocation,
+            self.caster:GetTeamNumber(),
+            false
+    )
+end
+
+function modifier_blazing_berserker_flame_dash_motion:OnHorizontalMotionInterrupted()
+    if IsServer() then
+        self:Destroy()
+    end
+end
+
+function modifier_blazing_berserker_flame_dash_motion:UpdateHorizontalMotion(me, dt)
+    if (IsServer()) then
+        local currentLocation = self.caster:GetAbsOrigin()
+        local expectedLocation = currentLocation + self.caster:GetForwardVector() * self.ability.dashSpeed * dt
+        local isTraversable = GridNav:IsTraversable(expectedLocation)
+        local isBlocked = GridNav:IsBlocked(expectedLocation)
+        local isTreeNearby = GridNav:IsNearbyTree(expectedLocation, self.caster:GetHullRadius(), true)
+        local traveled_distance = DistanceBetweenVectors(currentLocation, self.startLocation)
+        if (isTraversable and not isBlocked and not isTreeNearby and traveled_distance < self.dashRange) then
+            self.caster:SetAbsOrigin(expectedLocation)
+            local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+                    expectedLocation,
+                    nil,
+                    self.ability.trailWidth,
+                    DOTA_UNIT_TARGET_TEAM_ENEMY,
+                    DOTA_UNIT_TARGET_ALL,
+                    DOTA_UNIT_TARGET_FLAG_NONE,
+                    FIND_ANY_ORDER,
+                    false)
+            local damage = self.ability.damage * Units:GetHeroStrength(self.caster)
+            for _, enemy in pairs(enemies) do
+                if (not TableContains(self.damagedEnemies, enemy)) then
+                    local damageTable = {}
+                    damageTable.caster = self.caster
+                    damageTable.target = enemy
+                    damageTable.ability = self.ability
+                    damageTable.damage = damage
+                    damageTable.firedmg = true
+                    GameMode:DamageUnit(damageTable)
+                    table.insert(self.damagedEnemies, enemy)
+                end
+            end
+        else
+            self:Destroy()
+        end
+    end
+end
+
+LinkedModifiers["modifier_blazing_berserker_flame_dash_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
+
+blazing_berserker_flame_dash = class({})
+
+function blazing_berserker_flame_dash:OnPostTakeDamage(damageTable)
+    local ability = damageTable.attacker:FindAbilityByName("blazing_berserker_flame_dash")
+    if (ability and damageTable.ability and damageTable.ability == ability and ability.fireResistanceReductionDuration and ability.fireResistanceReductionDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = ability
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
+        modifierTable.modifier_name = "modifier_blazing_berserker_flame_dash_debuff"
+        modifierTable.duration = ability.fireResistanceReductionDuration
+        GameMode:ApplyDebuff(modifierTable)
+    end
+end
+
+function blazing_berserker_flame_dash:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dashSpeed = self:GetSpecialValueFor("dash_speed")
+    self.dashRange = self:GetSpecialValueFor("dash_range")
+    self.trailWidth = self:GetSpecialValueFor("trail_width")
+    self.trailDamage = self:GetSpecialValueFor("trail_damage") / 100
+    self.trailTick = self:GetSpecialValueFor("trail_tick")
+    self.trailDuration = self:GetSpecialValueFor("trail_duration")
+    self.fireResistanceReduction = self:GetSpecialValueFor("fire_resistance_reduction") / 100
+    self.fireResistanceReductionDuration = self:GetSpecialValueFor("fire_resistance_reduction_duration")
+    self.charges = self:GetSpecialValueFor("charges")
+    if (self.charges > 0 and not self.chargesModifier) then
+        local caster = self:GetCaster()
+        self.chargesModifier = caster:AddNewModifier(caster, self, "modifier_charges", {
+            max_count = self.charges,
+            start_count = self.charges,
+            replenish_time = self:GetCooldown(self:GetLevel())
+        })
+    end
+end
+
+function blazing_berserker_flame_dash:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local location = caster:GetAbsOrigin()
+    local vector = (self:GetCursorPosition() - location):Normalized()
+    caster:SetForwardVector(vector)
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_blazing_berserker_flame_dash_motion"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_blazing_berserker", MotionController)
@@ -526,5 +1087,6 @@ end
 
 if (IsServer() and not GameMode.BLAZING_BERSERKER_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modiifer_blazing_berserker_rage_eruption, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(blazing_berserker_flame_dash, 'OnPostTakeDamage'))
     GameMode.BLAZING_BERSERKER_INIT = true
 end

@@ -110,6 +110,7 @@
 		// Molten Guardian (mars)
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash"		"Scorching Clash"
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Description"		"Molten Guardian dashes forward furiously with his battle shield, dealing <font color='#d92129'>Fire</font> damage to all enemies along the way.\nRank 2: Enemies hit are set aflame and take <font color='#d92129'>Fire</font> damage equal <font color='white'><b>5%</b></font> of Molten Guardian's max health every second for <font color='white'><b>3</b></font> seconds.\nRank 3: After using this ability your next using of <font color='white'><b>Shields Up</b></font> ability will cause Taunt for <font color='white'><b>1</b></font> second.\nRank 4: Stuns all enemies in <font color='white'><b>300</b></font> radius around the target location for <font color='white'><b>0.5</b></font> seconds."
+		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_Note0"        "Effect of this ability may stop earlier than expected, if you try reach impassable terrain."
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_damage"		"%MAX HEALTH TO DAMAGE:"
 		"DOTA_Tooltip_Ability_molten_guardian_scorching_clash_dash_range"		"RANGE: "
 		"DOTA_Tooltip_modifier_molten_guardian_scorching_clash_dot"		"Scorching Clash"
@@ -413,9 +414,7 @@
         "DOTA_Tooltip_Ability_terror_lord_aura_of_seals_radius"		"RADIUS: "
         "DOTA_Tooltip_modifier_terror_lord_aura_of_seals_enemy_aura_debuff"		"Aura of Seals"
         "DOTA_Tooltip_modifier_terror_lord_aura_of_seals_enemy_aura_debuff_Description"		"Attack and Spell damage reduced."
-
 		// Blazing Berserker (Axe)
-
 		"DOTA_Tooltip_Ability_blazing_berserker_molten_strike"		"Molten Strike"
 		"DOTA_Tooltip_Ability_blazing_berserker_molten_strike_Description"		"Blazing Berserker refines his weapon in the boiling lava of the Molten Core, granting him bonus <font color='#d92129'>Fire</font> damage and making his attacks cleave."
         "DOTA_Tooltip_Ability_blazing_berserker_molten_strike_fire_dmg"		"%BONUS FIRE DAMAGE: "
@@ -461,9 +460,21 @@
 		"DOTA_Tooltip_Ability_blazing_berserker_furious_stance_duration"		"DURATION: "
         "DOTA_Tooltip_modiifer_blazing_berserker_furious_stance"		"Furious Stance"
         "DOTA_Tooltip_modiifer_blazing_berserker_furious_stance_Description"		"Attack damage, Attack speed  and <font color='#d92129'>Fire</font> damage increased, but reduced Armor and Elemental resistances."
+        "DOTA_Tooltip_Ability_blazing_berserker_fission"        "Fission"
+        "DOTA_Tooltip_Ability_blazing_berserker_fission_Description"		"Every time Blazing Berserker cast ability with at least <font color='white'><b>1</b></font> second cooldown he will rapidly spin his axe dealing <font color='#d92129'>Fire</font> to nearby enemies around him.\nRank 2: Enemies damaged by this ability spin will also suffer from <font color='#d92129'>Fire</font> equal to <font color='white'><b>20%</b></font> of your strength every second for <font color='white'><b>5</b></font> seconds.\nRank 3: You can activate this ability to spin for <font color='white'><b>7</b></font> seconds causing effects of this ability every second, but this ability will be disabled for next <font color='white'><b>30</b></font> seconds.\nRank 4: Spin damage from this ability may proc on hit effects."
+        "DOTA_Tooltip_Ability_blazing_berserker_fission_damage"        "%STRENGTH TO DAMAGE: "
+        "DOTA_Tooltip_Ability_blazing_berserker_fission_radius"        "RADIUS: "
+        "DOTA_Tooltip_modifier_blazing_berserker_fission_dot"		"Fission"
+        "DOTA_Tooltip_modifier_blazing_berserker_fission_dot_Description"		"Suffer from <font color='#d92129'>Fire</font> damage."
+        "DOTA_Tooltip_Ability_blazing_berserker_flame_dash"        "Flame Dash"
+        "DOTA_Tooltip_Ability_blazing_berserker_flame_dash_Description"		"Blazing Berserker rushing into middle of battle with all his might dealing <font color='#d92129'>Fire</font> damage to all enemies along the way.\nRank 2: Now also leaving flaming trail that deal <font color='#d92129'>Fire</font> damage to all nearby enemies equal to <font color='white'><b>50%</b></font> of your strength every second for <font color='white'><b>7</b></font> seconds.\nRank 3: Enemies damaged by this ability will have <font color='#d92129'>Fire</font> resistance reduced by <font color='white'><b>20%</b></font> for <font color='white'><b>6</b></font> seconds.\nRank 4: This ability gain <font color='white'><b>2</b></font> charges."
+        "DOTA_Tooltip_Ability_blazing_berserker_flame_dash_Note0"        "Effect of this ability may stop earlier than expected, if you try reach impassable terrain."
+        "DOTA_Tooltip_Ability_blazing_berserker_flame_dash_damage"        "%STRENGTH TO DAMAGE: "
+        "DOTA_Tooltip_Ability_blazing_berserker_flame_dash_dash_range"        "RANGE: "
+        "DOTA_Tooltip_modifier_blazing_berserker_flame_dash_debuff"		"Flame Dash"
+        "DOTA_Tooltip_modifier_blazing_berserker_flame_dash_debuff_Description"		"<font color='#d92129'>Fire</font> resistance reduced by %dMODIFIER_PROPERTY_TOOLTIP%%%."
 
 		// Light's Chosen (Invoker)
-
 		"DOTA_Tooltip_Ability_chosen_invoker_purification_brilliance"		"Purification Brilliance"
 		"DOTA_Tooltip_Ability_chosen_invoker_purification_brilliance_Description"		"The Light's Chosen channels his blazing brilliance on a target, purifying it with holy light and dealing <font color='#d29c0f'>Holy</font> damage (based on his max Mana). Killing an enemy with this grants him a stacking Mana regen buff.<br><br>Channel time: <font color='white'><b>5</b></font> seconds"
         "DOTA_Tooltip_Ability_chosen_invoker_purification_brilliance_base_damage"		"BASE DAMAGE: "
@@ -915,6 +926,8 @@
 		"DOTA_Tooltip_ElementsDamage_Description"		"Increases all Spell damage dealt of the respective element. The elements are <font color='#d92129'>Fire</font>, <font color='#2386f6'>Frost</font>, <font color='#583011'>Earth</font>, <font color='#238842'>Nature</font>, <font color='#9200fa'>Void</font>, <font color='#1f5b07'>Inferno</font> and <font color='#d29c0f'>Holy</font>."
 		"DOTA_Tooltip_modifier_out_of_combat_buff"		"Out of combat"
 		"DOTA_Tooltip_modifier_out_of_combat_buff_Description"		"Healing over time, Movement speed increased. You exit combat if you haven't taken or dealt damage for 5 seconds. This effect is removed, if you heal a target that is in combat."
+        "DOTA_Tooltip_modifier_charges"		"Charges"
+        "DOTA_Tooltip_modifier_charges_Description"		""
         "npc_dummy_dps_unit" 		"Trainer"
         "DOTA_Dummy_DPS_Label"		"DPS"
         "DOTA_Dummy_Stats_Label"		"TRAINER STATS"

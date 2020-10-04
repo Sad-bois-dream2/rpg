@@ -585,6 +585,7 @@
 		"precache"
 		{
             "particle"  "particles/units/heroes/hero_mars/mars_spear.vpcf"
+            "particle"  "particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}

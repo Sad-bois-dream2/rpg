@@ -8,8 +8,6 @@ function GetHEXPlayerColor(playerId) {
 function OnChatMessageRequest(event) {
     var chatLine = $.CreatePanel("Panel", chatLinesContainer, "");
     chatLine.BLoadLayout("file://{resources}/layout/custom_game/chat_line.xml", false, false);
-    var heroIcon = chatLine.FindChildTraverse('HeroIcon');
-    var chatLineLabel = chatLine.FindChildTraverse('ChatLabel');
     chatLine.SetHasClass("NotReallyExpired", true);
     var playerColor = GetHEXPlayerColor(event.player_id);
     if(event.args != "[]") {
@@ -27,13 +25,21 @@ function OnChatMessageRequest(event) {
         }
         event.text = event.text.replace(event.args[i].name, event.args[i].value);
     }
-    var chatLineTeamName = chatLine.FindChildTraverse('TeamName');
-    var chatLinePlayerName = chatLine.FindChildTraverse('PlayerName');
-    chatLinePlayerName.style.color = playerColor;
-    chatLinePlayerName.steamid = event.steamID;
-    chatLineTeamName.text = "[" + $.Localize("DOTA_ToolTip_Targeting_Allies") + "]";
-    chatLineLabel.text = ": " + event.text;
-    heroIcon.SetImage("file://{images}/heroes/" + event.hero + ".png");
+    var playerNamePanel = chatLine.FindChildTraverse('PlayerName');
+    playerNamePanel.steamid = event.steamID;
+    var playerName = "Unknown";
+    if(playerNamePanel) {
+        playerNamePanel = playerNamePanel.GetChild(0);
+        if(playerNamePanel) {
+            playerName = playerNamePanel.text;
+        }
+    }
+    var chatMessage = '<Panel class="CustomHeroBadge" selectionpos="auto" />';
+    chatMessage += '<img id="HeroIcon" class="CustomHeroIcon" selectionpos="auto" src="' + 'file://{images}/heroes/' + event.hero + '.png' + '" scaling="stretch-to-fit-preserve-aspect" />';
+    chatMessage += ' [' + $.Localize("DOTA_ToolTip_Targeting_Allies") + '] ';
+    chatMessage += '<font color="' + playerColor + '">' + playerName + '</font>' + ': ' + event.text;
+    var chatLabel = chatLine.FindChildTraverse('ChatLabel');
+    chatLabel.text = chatMessage;
 }
 
 function FixCastbarLayout() {
