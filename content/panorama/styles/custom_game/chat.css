@@ -34,40 +34,16 @@ DOTAChat#HudChat .CustomChatLineContainer.NotReallyExpired {
 .CustomHeroIcon {
     width: 40px;
     height: 23px;
-    margin-top: 0px;
-    margin-bottom: -6px;
     margin-left: 5px;
     transform: translateY(2px);
     border: 1px solid black;
-}
-
-#TeamName {
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 1px 1.5px 0px 2 #000000;
-    vertical-align: center;
-	font-family: defaultFont;
-    color: #ebdcbd;
-    margin-left: 4px;
 }
 
 #ChatLabel {
     font-size: 18px;
     font-weight: bold;
     text-shadow: 1px 1.5px 0px 2 #000000;
-    vertical-align: center;
+    vertical-align: bottom;
 	font-family: defaultFont;
     color: #ebdcbd;
-}
-
-#PlayerName {
-    vertical-align: center;
-}
-
-#PlayerName Label {
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 1px 1.5px 0px 2 #000000;
-	font-family: defaultFont;
-    margin-left: 4px;
 }
