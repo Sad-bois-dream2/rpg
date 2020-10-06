@@ -241,6 +241,9 @@ modifier_blazing_berserker_incinerating_souls_dot = class({
     end,
     DeclareFunctions = function(self)
         return { MODIFIER_PROPERTY_MISS_PERCENTAGE }
+    end,
+    ShouldUseOverheadOffset = function(self)
+        return true
     end
 })
 
@@ -301,7 +304,6 @@ function modifier_blazing_berserker_incinerating_souls:OnCreated()
     end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
-    self.ability.cooldownProc = 0
     self:OnIntervalThink()
     self:StartIntervalThink(0.05)
 end
@@ -309,13 +311,6 @@ end
 function modifier_blazing_berserker_incinerating_souls:OnIntervalThink()
     if (not IsServer()) then
         return
-    end
-    local casterHealth = self.caster:GetHealth()
-    local casterMaxHealth = self.caster:GetMaxHealth()
-    if (self.ability.maxHpForCooldownProc and casterHealth / casterMaxHealth <= self.ability.maxHpForCooldownProc) then
-        self.ability.cooldownProc = 1
-    else
-        self.ability.cooldownProc = 0
     end
     local keysToRemove = {}
     if (self.ability.affectedEnemies) then
@@ -351,22 +346,47 @@ blazing_berserker_incinerating_souls = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_blazing_berserker_incinerating_souls"
     end,
-    GetCooldown = function(self, lvl)
-        if (self.cooldownProc and self.cooldownProc > 0) then
-            return self.cooldownProcValue
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("radius") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_AOE
+        else
+            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
         end
-        return self.BaseClass.GetCooldown(self, lvl)
-    end
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
 })
 
 function blazing_berserker_incinerating_souls:OnSpellStart()
     if (not IsServer()) then
         return
     end
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    if (self.radius > 0) then
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+                target:GetAbsOrigin(),
+                nil,
+                self.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            self:ApplyEffect(caster, enemy)
+        end
+    else
+        self:ApplyEffect(caster, target)
+    end
+end
+
+function blazing_berserker_incinerating_souls:ApplyEffect(caster, target)
     local modifierTable = {}
     modifierTable.ability = self
-    modifierTable.target = self:GetCursorTarget()
-    modifierTable.caster = self:GetCaster()
+    modifierTable.target = target
+    modifierTable.caster = caster
     modifierTable.modifier_name = "modifier_blazing_berserker_incinerating_souls_dot"
     modifierTable.duration = self.dotDuration
     GameMode:ApplyDebuff(modifierTable)
@@ -383,8 +403,7 @@ function blazing_berserker_incinerating_souls:OnUpgrade()
     self.maxHpRegenBonusPerEnemy = self:GetSpecialValueFor("max_hp_regen_bonus_per_enemy") / 100
     self.minHpRegenBonusPerEnemy = self:GetSpecialValueFor("min_hp_regen_bonus_per_enemy") / 100
     self.missChance = self:GetSpecialValueFor("miss_chance")
-    self.maxHpForCooldownProc = self:GetSpecialValueFor("max_hp_for_cooldown_proc") / 100
-    self.cooldownProcValue = self:GetSpecialValueFor("cooldown_proc_value")
+    self.radius = self:GetSpecialValueFor("radius")
     if (not self.affectedEnemies) then
         self.affectedEnemies = {}
     end
