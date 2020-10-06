@@ -82,6 +82,53 @@ end
 
 LinkedModifiers["modifier_blazing_berserker_molten_strike_dot"] = LUA_MODIFIER_MOTION_NONE
 
+modifier_blazing_berserker_molten_strike = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_blazing_berserker_molten_strike:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.ability.cooldownProc = 0
+    self:OnIntervalThink()
+    self:StartIntervalThink(0.05)
+end
+
+function modifier_blazing_berserker_molten_strike:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local casterHealth = self.caster:GetHealth()
+    local casterMaxHealth = self.caster:GetMaxHealth()
+    if (self.ability.maxHpForCooldownProc and casterHealth / casterMaxHealth <= self.ability.maxHpForCooldownProc) then
+        self.ability.cooldownProc = 1
+    else
+        self.ability.cooldownProc = 0
+    end
+end
+
+LinkedModifiers["modifier_blazing_berserker_molten_strike"] = LUA_MODIFIER_MOTION_NONE
+
 blazing_berserker_molten_strike = class({
     GetAbilityTextureName = function(self)
         return "blazing_berserker_molten_strike"
@@ -89,14 +136,12 @@ blazing_berserker_molten_strike = class({
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
     end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_blazing_berserker_molten_strike"
+    end,
     GetCooldown = function(self, lvl)
-        local caster = self:GetCaster()
-        if(caster) then
-            local casterHealth = caster:GetHealth()
-            local casterMaxHealth = caster:GetMaxHealth()
-            if (casterHealth / casterMaxHealth <= self:GetSpecialValueFor("max_hp_for_cooldown_proc") / 100) then
-                return self:GetSpecialValueFor("cooldown_proc_value")
-            end
+        if (self.cooldownProc and self.cooldownProc > 0) then
+            return self.cooldownProcValue
         end
         return self.BaseClass.GetCooldown(self, lvl)
     end
@@ -167,6 +212,8 @@ function blazing_berserker_molten_strike:OnUpgrade()
     self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
     self.dotDuration = self:GetSpecialValueFor("dot_duration")
     self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.maxHpForCooldownProc = self:GetSpecialValueFor("max_hp_for_cooldown_proc") / 100
+    self.cooldownProcValue = self:GetSpecialValueFor("cooldown_proc_value")
 end
 
 -- blazing_berserker_incinerating_souls modifiers
