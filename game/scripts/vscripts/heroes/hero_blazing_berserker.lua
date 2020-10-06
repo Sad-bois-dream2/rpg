@@ -1164,7 +1164,7 @@ modifier_blazing_berserker_flame_dash_motion = class({
         return DOTA_MOTION_CONTROLLER_PRIORITY_MEDIUM
     end,
     GetEffectName = function(self)
-        return "particles/units/heroes/hero_phoenix/phoenix_icarus_dive.vpcf"
+        return "particles/units/blazing_berserker/flame_dash/flame_dash.vpcf"
     end,
     CheckState = function(self)
         return {
@@ -1311,6 +1311,7 @@ function blazing_berserker_flame_dash:OnSpellStart()
     modifierTable.modifier_name = "modifier_blazing_berserker_flame_dash_motion"
     modifierTable.duration = -1
     GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("Hero_Mars.Spear.Cast", caster)
 end
 
 -- Internal stuff

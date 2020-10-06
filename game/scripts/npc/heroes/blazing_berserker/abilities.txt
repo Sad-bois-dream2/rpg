@@ -495,8 +495,9 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
+            "particle"  "particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf"
+            "particle"  "particles/units/blazing_berserker/flame_dash/flame_dash.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}
 }
