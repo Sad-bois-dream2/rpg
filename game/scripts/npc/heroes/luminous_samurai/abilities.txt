@@ -389,27 +389,52 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"active_damage"			"75 100 125 150"
+				"active_damage"			"25 33 41 50"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_cost"				"3"
+				"bonus_seeds"			"0 1 1 1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"			"6"
+				"max_seeds"			"5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_cd"				"1 1 1 1"
+				"seed_cd"				"1 1 1 1"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"active_radius"				"300"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_reduction"		"0 20 20 20"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_reduction_duration"				"0 4 4 4"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"holy_damage_to_dr"		"0 0 20 20"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_dr"				"0 0 40 40"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cadence_stacks"		"0 0 0 3"
 			}
 		}
 		"precache"

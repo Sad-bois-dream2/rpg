@@ -493,7 +493,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_43:OnCreated()
     self.talent43_baseChance = 0
     self.talent43_chancePerLevel = 20 / 3
     self.talent43_stealthDuration = 1
-    self.talent43_cd = self.talent43_stealthDuration + 1.5
+    self.talent43_cd = self.talent43_stealthDuration + 2
     self.talent43_baseCritDmg = 25
     self.talent43_critDmgPerLevel = 25
 
