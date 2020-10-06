@@ -23,7 +23,6 @@
 			m_bForceLoopingAnimation = true
 			m_nSkin = 1
 			m_hOverrideMaterial = resource:"materials/particle/blob_lava_surface.vmat"
-			m_bIgnoreNormal = true
 			m_bIgnoreRadius = true
 		},
 	]
@@ -56,7 +55,7 @@
 		},
 		{
 			_class = "C_OP_OscillateScalarSimple"
-			m_Rate = 0.5
+			m_Rate = 0.15
 			m_nField = "20"
 		},
 	]
@@ -84,6 +83,10 @@
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, -206.0 ]
 			m_OffsetMax = [ 0.0, 0.0, -206.0 ]
+		},
+		{
+			_class = "C_INIT_RemapCPOrientationToRotations"
+			m_vecRotation = [ 0.0, 180.0, 0.0 ]
 		},
 	]
 	m_Emitters = 

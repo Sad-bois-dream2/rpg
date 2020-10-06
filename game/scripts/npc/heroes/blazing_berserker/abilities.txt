@@ -129,27 +129,48 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
+				"dot_damage"				"20 30 40 50"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_slow"				"25 30 35 40"
+				"dot_duration"				"3 4 5 6"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
+				"dot_tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"max_hp_regen_bonus_per_enemy"				"0 10 10 10"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_hp_regen_bonus_per_enemy"				"0 3 3 3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_chance"				"0 0 20 20"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_hp_for_cooldown_proc"				"0 0 0 35"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cooldown_proc_value"				"0 0 0 0"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/incinerating_souls/incinerating_souls.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}
 	//=================================================================================================================
