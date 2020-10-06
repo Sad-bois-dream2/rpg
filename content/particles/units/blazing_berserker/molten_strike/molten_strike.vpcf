@@ -9,6 +9,7 @@
 		{
 			m_ChildRef = resource:"particles/units/blazing_berserker/molten_strike/molten_strike_hit_lava.vpcf"
 			m_flDelay = 0.2
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_ember_spirit/ember_spirit_hit_discharge_sphere.vpcf"
@@ -53,13 +54,6 @@
 					m_iControlPoint = 62
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 7
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 300.0, 0.0, 0.0 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},

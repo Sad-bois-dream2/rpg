@@ -1,7 +1,7 @@
 local LinkedModifiers = {}
 
--- blazing_berserker_molten_strike modifiers
-modifier_blazing_berserker_molten_strike = class({
+-- blazing_berserker_molten_strike
+modifier_blazing_berserker_molten_strike_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -17,88 +17,158 @@ modifier_blazing_berserker_molten_strike = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return blazing_berserker_molten_strike:GetAbilityTextureName()
+    GetEffectName = function(self)
+        return "particles/units/blazing_berserker/molten_strike/molten_strike_buff.vpcf"
+    end,
+})
+
+function modifier_blazing_berserker_molten_strike_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_blazing_berserker_molten_strike_buff:GetFireDamageBonus()
+    return self.ability.fireDamageBonus
+end
+
+LinkedModifiers["modifier_blazing_berserker_molten_strike_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_molten_strike_dot = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end,
     GetEffectName = function(self)
-        return "particles/units/blazing_berserker/molten_strike/molten_strike.vpcf"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+        return "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
     end
 })
 
-function modifier_blazing_berserker_molten_strike:OnAttackLanded(kv)
+function modifier_blazing_berserker_molten_strike_dot:OnCreated()
     if (not IsServer()) then
         return
     end
-    local attacker = kv.attacker
-    local target = kv.target
-    if (attacker ~= nil and target ~= nil and attacker ~= target and attacker == self.owner) then
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                target:GetAbsOrigin(),
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/molten_strike/molten_strike_impact.vpcf", PATTACH_ABSORIGIN, target)
-        Timers:CreateTimer(2.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
-        local damage = self.damage * Units:GetAttackDamage(self.owner)
-        for _, enemy in pairs(enemies) do
-            local damageTable = {}
-            damageTable.caster = self.owner
-            damageTable.target = enemy
-            damageTable.ability = self.ability
-            damageTable.damage = damage
-            damageTable.firedmg = true
-            GameMode:DamageUnit(damageTable)
-        end
-    end
-end
-
-function modifier_blazing_berserker_molten_strike:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.owner = self:GetParent()
     self.ability = self:GetAbility()
-    self.fire_dmg = self.ability:GetSpecialValueFor("fire_dmg") / 100
-    self.damage = self.ability:GetSpecialValueFor("damage") / 100
-    self.radius = self.ability:GetSpecialValueFor("radius")
+    self.caster = self.ability:GetCaster()
+    self.target = self:GetParent()
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.dotTick)
 end
 
-function modifier_blazing_berserker_molten_strike:GetFireDamageBonus()
-    return self.fire_dmg or 0
+function modifier_blazing_berserker_molten_strike_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local damageTable = {}
+    damageTable.damage = Units:GetHeroStrength(self.caster) * self.ability.dotDamage
+    damageTable.caster = self.caster
+    damageTable.target = self.target
+    damageTable.ability = self.ability
+    damageTable.firedmg = true
+    GameMode:DamageUnit(damageTable)
 end
 
-LinkedModifiers["modifier_blazing_berserker_molten_strike"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_blazing_berserker_molten_strike_dot"] = LUA_MODIFIER_MOTION_NONE
 
--- blazing_berserker_molten_strike
 blazing_berserker_molten_strike = class({
     GetAbilityTextureName = function(self)
         return "blazing_berserker_molten_strike"
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetCooldown = function(self, lvl)
+        local caster = self:GetCaster()
+        if(caster) then
+            local casterHealth = caster:GetHealth()
+            local casterMaxHealth = caster:GetMaxHealth()
+            if (casterHealth / casterMaxHealth <= self:GetSpecialValueFor("max_hp_for_cooldown_proc") / 100) then
+                return self:GetSpecialValueFor("cooldown_proc_value")
+            end
+        end
+        return self.BaseClass.GetCooldown(self, lvl)
     end
 })
 
-function blazing_berserker_molten_strike:OnSpellStart(unit, special_cast)
+function blazing_berserker_molten_strike:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = caster
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_blazing_berserker_molten_strike"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
-    GameMode:ApplyBuff(modifierTable)
+    local targetPosition = self:GetCursorPosition()
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            targetPosition,
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damage = Units:GetHeroStrength(caster) * self.damage
+    for _, enemy in pairs(enemies) do
+        local damageTable = {}
+        damageTable.caster = caster
+        damageTable.target = enemy
+        damageTable.ability = self
+        damageTable.damage = damage
+        damageTable.firedmg = true
+        GameMode:DamageUnit(damageTable)
+        if (self.dotDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = enemy
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_blazing_berserker_molten_strike_dot"
+            modifierTable.duration = self.dotDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
+    end
+    local particle = ParticleManager:CreateParticle("particles/units/blazing_berserker/molten_strike/molten_strike.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 0, targetPosition)
+    ParticleManager:SetParticleControl(particle, 7, Vector(self.radius, 0, 0))
+    ParticleManager:SetParticleControl(particle, 60, Vector(210, 105, 30))
+    Timers:CreateTimer(0.3, function()
+        ParticleManager:DestroyParticle(particle, false)
+        ParticleManager:ReleaseParticleIndex(particle)
+    end)
+    if (self.fireDamageBonusDuration > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_blazing_berserker_molten_strike_buff"
+        modifierTable.duration = self.fireDamageBonusDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
+    EmitSoundOnLocationWithCaster(targetPosition, "Hero_Invoker.ChaosMeteor.Impact", caster)
+    caster:SetHealth(math.max(caster:GetHealth() - (self.maxHpCost * caster:GetMaxHealth()), 1))
+    self:EndCooldown()
 end
+
+function blazing_berserker_molten_strike:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.maxHpCost = self:GetSpecialValueFor("max_hp_cost") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.fireDamageBonus = self:GetSpecialValueFor("fire_damage_bonus") / 100
+    self.fireDamageBonusDuration = self:GetSpecialValueFor("fire_damage_bonus_duration")
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+end
+
 -- blazing_berserker_incinerating_souls modifiers
 modifier_blazing_berserker_incinerating_souls = class({
     IsDebuff = function(self)
@@ -538,6 +608,9 @@ modifier_blazing_berserker_fission_dot = class({
     end,
     GetEffectName = function(self)
         return "particles/units/heroes/hero_invoker/invoker_chaos_meteor_burn_debuff.vpcf"
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_MULTIPLE
     end
 })
 

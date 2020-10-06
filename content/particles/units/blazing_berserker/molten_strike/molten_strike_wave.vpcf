@@ -9,10 +9,6 @@
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			VisibilityInputs = 
-			{
-				m_flCameraBias = -100.0
-			}
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
 			m_hTexture = resource:"materials/particle/particle_heroring_6_crisp.vtex"
 			m_nOrientationType = 2
@@ -146,6 +142,11 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 225, 110, 34, 255 ]
 			m_ColorMax = [ 255, 165, 0, 255 ]
+		},
+		{
+			_class = "C_INIT_PositionOffset"
+			m_OffsetMin = [ 0.0, 0.0, 15.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 15.0 ]
 		},
 	]
 	m_Emitters = 
