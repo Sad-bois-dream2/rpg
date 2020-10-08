@@ -4,115 +4,88 @@
 	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 64
 	m_flConstantRadius = 15.0
+	m_ConstantColor = [ 255, 150, 0, 255 ]
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_flDepthBias = -25.0
-			m_flAnimationRate = 0.6
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
-			m_flAddSelfAmount = 2.0
-			m_flOverbrightFactor = 4.0
-			m_hTexture = resource:"materials/particle/smoke/steam/steam.vtex"
+			m_flAddSelfAmount = 1.0
+			m_bSaturateColorPreAlphaBlend = false
+			m_hTexture = resource:"materials/particle/lava_blasts/lava_blast.vtex"
+			m_flAnimationRate = 0.25
+			m_nHSVShiftControlPoint = 62
 		},
 	]
 	m_Operators = 
 	[
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, 25.0 ]
-			m_fDrag = 0.05
+			m_Gravity = [ 0.0, 0.0, -25.0 ]
 		},
 		{
 			_class = "C_OP_Decay"
+		},
+		{
+			_class = "C_OP_ColorInterpolate"
+			m_ColorFade = [ 143, 74, 0, 255 ]
+			m_flFadeStartTime = 0.5
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flStartScale = 0.0
+			m_flEndScale = 2.0
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
 			m_flFadeOutTime = 0.5
 		},
 		{
-			_class = "C_OP_FadeInSimple"
-			m_flFadeInTime = 0.1
-		},
-		{
-			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 4.0
-			m_flBias = 0.75
-		},
-		{
 			_class = "C_OP_RampScalarLinearSimple"
-			m_nOpEndCapState = 1
+			m_flEndTime = 1000000000.0
+			m_Rate = -5.0
 			m_nField = "16"
-			m_Rate = -2.0
-			m_flEndTime = 99999.0
-		},
-		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 153, 28, 0, 255 ]
-			m_bDisableOperator = true
+			m_nOpEndCapState = 1
 		},
 		{
 			_class = "C_OP_LockToBone"
+			m_HitboxSetName = "select_high"
 			m_bRigid = true
-		},
-		{
-			_class = "C_OP_PositionLock"
-			m_nControlPointNumber = 1
-			m_bDisableOperator = true
 		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMax = 2.5
-			m_fLifetimeMin = 2.0
-		},
-		{
-			_class = "C_INIT_RandomColor"
-			m_ColorMax = [ 221, 32, 73, 255 ]
-			m_ColorMin = [ 255, 140, 163, 255 ]
-			m_bDisableOperator = true
+			m_fLifetimeMax = 2.2
+			m_fLifetimeMin = 1.75
 		},
 		{
 			_class = "C_INIT_RandomRotation"
-			m_flDegreesMax = 30.0
-		},
-		{
-			_class = "C_INIT_RandomYaw"
-			m_flDegreesMax = 4.0
-			m_flDegreesMin = -4.0
-		},
-		{
-			_class = "C_INIT_CreateOnModel"
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 1
-		},
-		{
-			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 200
-			m_bDisableOperator = true
+			m_nSequenceMax = 3
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 10.0
-			m_flRadiusMax = 20.0
+			m_flRadiusMax = 40.0
+			m_flRadiusMin = 20.0
+			m_flRadiusRandExponent = 0.75
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMax = [ 255, 233, 174, 255 ]
 		},
 		{
 			_class = "C_INIT_RandomYawFlip"
 		},
 		{
-			_class = "C_INIT_InitialVelocityNoise"
-			m_vecOutputMin = [ -24.0, -24.0, -24.0 ]
-			m_vecOutputMax = [ 24.0, 24.0, 24.0 ]
-			m_bLocalSpace = true
-		},
-		{
-			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 255, 69, 0, 255 ]
-			m_ColorMax = [ 255, 165, 0, 255 ]
+			_class = "C_INIT_CreateOnModel"
+			m_HitboxSetName = "select_high"
 		},
 	]
 	m_Emitters = 
@@ -166,6 +139,14 @@
 			}
 		},
 	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_skin/lava_skin_base_lava_b.vpcf"
+		},
+	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 7
 	m_controlPointConfigurations = 
 	[
 		{
@@ -178,22 +159,28 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 62
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
 			]
 			m_previewState = 
 			{
-				m_previewModel = "models/heroes/axe/axe.vmdl"
-				m_nModSpecificData = 2
-				m_sequenceName = "idle"
+				m_previewModel = "models/heroes/mars/mars.vmdl"
+				m_nModSpecificData = 658
+				m_sequenceName = "mars_idle_rare_roar"
 				m_hitboxSetName = "default"
 			}
-		},
-	]
-	m_nBehaviorVersion = 10
-	m_nFirstMultipleOverride_BackwardCompat = 8
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/units/blazing_berserker/furious_stance/furious_stance_b.vpcf"
 		},
 	]
 }

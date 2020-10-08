@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -73,7 +73,7 @@
 			m_ChildRef = resource:"particles/units/molten_guardian/lava_skin/lava_skin_base_ground.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_lava.vpcf"
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_skin/lava_skin_base_lava.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_warp.vpcf"
@@ -147,7 +147,28 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ -10.921553, -8.095032, 99.564964 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 62
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
 			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/mars/mars.vmdl"
+				m_nModSpecificData = 658
+				m_sequenceName = "mars_idle_rare_roar"
+				m_hitboxSetName = "default"
+			}
 		},
 	]
 }

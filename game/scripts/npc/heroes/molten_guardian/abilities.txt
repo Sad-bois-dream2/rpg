@@ -109,7 +109,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC"
 
@@ -161,27 +161,32 @@
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"block_multiplier"				"1 1 1 2"
-			}
-			"06"
-			{
-				"var_type"				"FIELD_FLOAT"
 				"bonus_maxhp_per_block"				"0 0 5 5"
-			}
-			"06"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"bonus_maxhp_duration"				"0 0 10 10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"search_width_past_target"				"0 400 400 400"
+				"bonus_maxhp_duration"				"0 0 10 10"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"search_width_past_target"				"0 400 400 400"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"search_range_past_target"				"0 300 300 300"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat_per_enemy_hit"				"0 0 0 5"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_ability_cooldown_after_cdr_proc"				"0 0 0 5"
 			}
 		}
 		"precache"
@@ -297,7 +302,6 @@
 		{
             "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_base.vpcf"
             "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf"
-            "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -448,19 +452,24 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_immune"				"0 0 1 1"
+				"max_hp_to_dmg_on_proc"				"0 35 35 35"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_armor_aggro"				"0 0 0 5"
+				"status_immune"				"0 0 1 1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+				"primal_buff_per_armor_aggro"				"0 0 0 5"
 			}
 			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+			}
+			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
@@ -486,7 +495,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_5"
 		"AbilityCastGestureSlot"		"DEFAULT"
 		"AbilityCastPoint"				"0.25"
@@ -519,7 +528,7 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_slow_duration"				"0.25 0.5 0.75 1"
+				"ms_slow_duration"				"0.5"
 			}
 			"04"
 			{
@@ -544,7 +553,7 @@
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dot_duration"				"0 6 6 6"
+				"dot_duration"				"0 10 10 10"
 			}
 			"09"
 			{

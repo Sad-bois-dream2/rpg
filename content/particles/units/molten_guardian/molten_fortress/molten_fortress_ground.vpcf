@@ -5,49 +5,10 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_proj.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_light.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_smoke.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/molten_guardian/molten_fortress/molten_fortress_ground_dark.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_swirl.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_sparks.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_heat.vpcf"
-			m_bDisableChild = true
-		},
-		{
 			m_ChildRef = resource:"particles/units/molten_guardian/molten_fortress/molten_fortress_ground_fire.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_ground_flames.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_end_flames.vpcf"
-			m_bEndCap = true
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_clinkz/clinkz_burning_army_end_embers.vpcf"
-			m_bEndCap = true
-			m_bDisableChild = true
+			m_ChildRef = resource:"particles/units/molten_guardian/molten_fortress/molten_fortress_ground_fire_b.vpcf"
 		},
 	]
 	m_nMaxParticles = 0

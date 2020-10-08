@@ -14,21 +14,21 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
- 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.3"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+		"AbilityCastPoint"				"0.25"
+		"AbilityCastRange"				"250"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"25"
+		"AbilityCooldown"				"0"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"40"
+		"AbilityManaCost"				"0"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -37,28 +37,59 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fire_dmg"				"10 15 20 25"
+				"damage"				"100 105 110 115"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"10 15 20 25"
+				"max_hp_cost"				"5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"350"
+				"radius"				"300"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"fire_damage_bonus"				"0 25 25 25"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_damage_bonus_duration"				"0 3 3 3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_damage"				"0 0 40 40"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"				"0 0 5 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_tick"				"0 0 1 1"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_hp_for_cooldown_proc"				"0 0 0 35"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cooldown_proc_value"				"0 0 0 1"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike.vpcf"
-            "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike_impact.vpcf"
+            "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike_buff.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_invoker.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -75,14 +106,14 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
  		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.3"
+		"AbilityCastPoint"				"0.25"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"35"
@@ -98,27 +129,43 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
+				"dot_damage"				"20 30 40 50"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_slow"				"25 30 35 40"
+				"dot_duration"				"3 4 5 6"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
+				"dot_tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"max_hp_regen_bonus_per_enemy"				"0 10 10 10"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_hp_regen_bonus_per_enemy"				"0 3 3 3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"0 0 300 300"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"miss_chance"				"0 0 0 20"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/incinerating_souls/incinerating_souls.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}
 	//=================================================================================================================
@@ -187,60 +234,6 @@
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/battle_hunger/battle_hunger.vpcf"
-		}
-	}
-	//=================================================================================================================
-	// Blazing Berserker: Rage Eruption
-	//=================================================================================================================
-	"blazing_berserker_rage_eruption"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_rage_eruption"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
- 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"aaspeed"				"5 10 15 20"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"maxstacks"				"10"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"duration"				"3 4 5 6"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"proc_chance"				"6 9 12 15"
-			}
 		}
 	}
 	//=================================================================================================================
@@ -502,8 +495,9 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/units/blazing_berserker/fission/fission.vpcf"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
+            "particle"  "particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf"
+            "particle"  "particles/units/blazing_berserker/flame_dash/flame_dash.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
 		}
 	}
 }
