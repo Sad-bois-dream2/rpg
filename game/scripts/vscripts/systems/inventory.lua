@@ -247,7 +247,7 @@ function Inventory:Init()
     self.maxItemsPerRequest = 10
     -- slots count, changes here require same changes in client side inventory.js
     self.maxStoredItems = 14 * 7
-    -- slot types, changes here require changes in GetInventoryItemSlotName() in client side inventory.js and in GetSlotIdByName() in client side saveload.js
+    -- slot types, changes here require changes in GetItemSlotName() in client side tooltip_manager.js and in GetSlotIdByName() in client side saveload.js
     -- SaveLoad:GetItemSlotName(), SaveLoad:GetItemSlotIdByName() in server side
     self.slot = {}
     self.slot.mainhand = 0
@@ -266,7 +266,7 @@ function Inventory:Init()
     self.slot.last = 11
     -- Invalid slot id for internal stuff
     self.slot.invalid = -1
-    -- item types, changes here require changes in GetInventoryItemRarityName() in client side inventory.js
+    -- item types, changes here require changes in GetItemRarityName() in client side tooltip_manager.js
     self.rarity = {}
     self.rarity.common = 0
     self.rarity.uncommon = 1

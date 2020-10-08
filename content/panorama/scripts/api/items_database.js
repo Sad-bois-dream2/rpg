@@ -30,7 +30,6 @@ var ITEM_RARITY_CURSED_IMMORTAL = 12;
 
 // Internal stuff
 var ItemsDatabase = {};
-var itemsData = [];
 
 ItemsDatabase.GetItemRarityName = function(rarity) {
 	switch(rarity) {
@@ -123,18 +122,18 @@ ItemsDatabase.GetItemSlotName = function(slot) {
 }
 
 ItemsDatabase.GetItemRarity = function(itemname) {
-	for(var i = 0; i < itemsData.length; i++) {
-		if(itemsData[i].item == itemname) {
-			return itemsData[i].rarity;
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].item == itemname) {
+			return ItemsDatabase.data[i].rarity;
 		}
 	}
 	return -1;
 }
 
 ItemsDatabase.GetItemSlot = function(itemname) {
-	for(var i = 0; i < itemsData.length; i++) {
-		if(itemsData[i].item == itemname) {
-			return itemsData[i].slot;
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].item == itemname) {
+			return ItemsDatabase.data[i].slot;
 		}
 	}
 	return -1;
@@ -162,10 +161,10 @@ ItemsDatabase.GetItemQuality = function (itemName, itemStats) {
 
 function GetMinMaxValueForItemStat(itemName, itemStat) {
     var result = [];
-    for(var i = 0; i < itemsData.length; i++) {
-        if(itemsData[i].item == itemName && itemsData[i].stats[itemStat] != null) {
-            result[0] = itemsData[i].stats[itemStat].min;
-            result[1] = itemsData[i].stats[itemStat].max;
+    for(var i = 0; i < ItemsDatabase.data.length; i++) {
+        if(ItemsDatabase.data[i].item == itemName && ItemsDatabase.data[i].stats[itemStat] != null) {
+            result[0] = ItemsDatabase.data[i].stats[itemStat].min;
+            result[1] = ItemsDatabase.data[i].stats[itemStat].max;
             break;
         }
     }
@@ -190,14 +189,11 @@ function CalculateItemStatRoll(value, min, max, itemName, itemStat) {
 }
 
 function OnItemsDataRequest(event) {
-	itemsData = itemsData.concat(JSON.parse(event.items_data));
-}
-
-function Init() {
-
+	ItemsDatabase.data = ItemsDatabase.data.concat(JSON.parse(event.items_data));
 }
 
 (function() {
   GameUI.CustomUIConfig().ItemsDatabase = ItemsDatabase;
+  ItemsDatabase.data = [];
   GameEvents.Subscribe("rpg_inventory_items_data", OnItemsDataRequest);
 })();
