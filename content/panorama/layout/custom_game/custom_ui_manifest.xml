@@ -1,6 +1,8 @@
 <root>
     <scripts>
         <include src="file://{resources}/scripts/playertables/playertables_base.js"/>
+        <include src="file://{resources}/scripts/api/items_database.js"/>
+        <include src="file://{resources}/scripts/api/tooltip_manager.js"/>
     </scripts>
     <script>
         GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false ); //Time of day        (clock).
@@ -49,8 +51,9 @@
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/difficulty/difficulty.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/dummy/dummy.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/saveload/saveload.xml"/>
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/droplist/droplist.xml"/>
         <CustomUIElement type="GameSetup" layoutfile="file://{resources}/layout/custom_game/team_select.xml" />
         <CustomUIElement type="GameSetup" layoutfile="file://{resources}/layout/custom_game/windows/heroselection/heroselection_setup.xml"/>
-        <!--CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/inventory.xml" /> -->
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/tooltips/custom/tooltip_item.xml"/>
     </Panel>
 </root>

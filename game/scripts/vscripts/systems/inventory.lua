@@ -5,7 +5,7 @@ end
 -- items database
 function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_two_handed_sword", self.rarity.common, self.slot.mainhand, 5) --2H
-    Inventory:RegisterItemSlot("item_one_handed_sword", self.rarity.common, self.slot.mainhand, 5) --both
+    --[[Inventory:RegisterItemSlot("item_one_handed_sword", self.rarity.common, self.slot.mainhand, 5) --both
     Inventory:RegisterItemSlot("item_silver_ring", self.rarity.common, self.slot.ring, 5)
     Inventory:RegisterItemSlot("item_chainshirt", self.rarity.common, self.slot.body, 5)
     Inventory:RegisterItemSlot("item_wooden_shield", self.rarity.common, self.slot.offhand, 5)
@@ -240,14 +240,14 @@ function Inventory:SetupItems()
     Inventory:RegisterItemSlot("item_lucifera", self.rarity.cursedImmortal, self.slot.mainhand, 5)--2H
     Inventory:RegisterItemSlot("item_obstrutionum", self.rarity.uniqueImmortal, self.slot.offhand, 5)
     Inventory:RegisterItemSlot("item_holy_trident", self.rarity.uniqueImmortal, self.slot.mainhand, 5)--2H
-    --Inventory:RegisterItemSlot("item_", self.rarity., self.slot., 5)
+    --Inventory:RegisterItemSlot("item_", self.rarity., self.slot., 5) --]]
 end
 
 function Inventory:Init()
     self.maxItemsPerRequest = 10
     -- slots count, changes here require same changes in client side inventory.js
     self.maxStoredItems = 14 * 7
-    -- slot types, changes here require changes in GetInventoryItemSlotName() in client side inventory.js and in GetSlotIdByName() in client side saveload.js
+    -- slot types, changes here require changes in GetItemSlotName() in client side tooltip_manager.js and in GetSlotIdByName() in client side saveload.js
     -- SaveLoad:GetItemSlotName(), SaveLoad:GetItemSlotIdByName() in server side
     self.slot = {}
     self.slot.mainhand = 0
@@ -266,7 +266,7 @@ function Inventory:Init()
     self.slot.last = 11
     -- Invalid slot id for internal stuff
     self.slot.invalid = -1
-    -- item types, changes here require changes in GetInventoryItemRarityName() in client side inventory.js
+    -- item types, changes here require changes in GetItemRarityName() in client side tooltip_manager.js
     self.rarity = {}
     self.rarity.common = 0
     self.rarity.uncommon = 1
@@ -301,7 +301,7 @@ end
 ---@param hero CDOTA_BaseNPC_Hero
 ---@param item string
 ---@return number
-function Inventory:AddItem(hero, item, itemStats)
+function Inventory:AddItem(hero, item, itemStats, canDropOnGround)
     if (hero ~= nil and item ~= nil and hero.inventory ~= nil) then
         if (not Inventory:IsItemNameValid(item)) then
             DebugPrint("[INVENTORY] Attempt to add unknown item (" .. item .. ").")
@@ -318,30 +318,27 @@ function Inventory:AddItem(hero, item, itemStats)
                 return i, Inventory:GetItemInSlot(hero, false, i)
             end
         end
-        local item = CreateItem(item, hero, hero)
-        local positionOnGround = hero:GetAbsOrigin()
-        local itemId = item:GetEntityIndex()
-        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
-        Inventory:SetItemEntityStats(item, itemStats)
-        item:SetPurchaser(hero)
-        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
-        return Inventory.slot.invalid, item
+        if (canDropOnGround) then
+            local itemOnGround = Inventory:CreateItemOnGround(hero, hero:GetAbsOrigin(), item, itemStats)
+            return Inventory.slot.invalid, itemOnGround
+        else
+            return Inventory.slot.invalid, nil
+        end
     end
 end
 
 function Inventory:CreateItemOnGround(hero, location, item, itemStats)
-    local slot, item = Inventory:AddItem(hero, item, itemStats)
-    if (slot ~= Inventory.slot.invalid) then
-        local itemStats = Inventory:GetItemStatsForHero(hero, false, slot)
-        local itemEntity = CreateItem(item, hero, hero)
-        local itemId = itemEntity:GetEntityIndex()
-        local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
-        Inventory:SetItemEntityStats(itemEntity, itemStats)
-        itemEntity:SetPurchaser(hero)
-        Inventory:SetItemInSlot(hero, "", false, slot, {})
-        CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = itemEntity:GetAbilityName() })
+    local itemEntity = CreateItem(item, hero, hero)
+    if (not itemEntity) then
+        DebugPrint("[INVENTORY] Failed to create " .. tostring(item) .. ". Probably bugs related to npc_items.")
+        return nil, nil
     end
-    return item
+    local itemId = itemEntity:GetEntityIndex()
+    local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
+    Inventory:SetItemEntityStats(itemEntity, itemStats)
+    itemEntity:SetPurchaser(hero)
+    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = itemEntity:GetAbilityName() })
+    return itemOnGround, itemEntity
 end
 
 function Inventory:GetItemsByRarity(rarity)
@@ -553,34 +550,7 @@ function Inventory:SetupForHero(hero)
             hero.inventory.equipped_items[i] = {}
             hero.inventory.equipped_items[i].name = ""
         end
-        Inventory:AddItem(hero, "item_one_handed_sword")
         Inventory:AddItem(hero, "item_two_handed_sword")
-        Inventory:AddItem(hero, "item_silver_ring")
-        Inventory:AddItem(hero, "item_chainshirt")
-        Inventory:AddItem(hero, "item_wooden_shield")
-        Inventory:AddItem(hero, "item_leather_boots")
-        Inventory:AddItem(hero, "item_wooden_wand")
-        Inventory:AddItem(hero, "item_glowing_weed")
-        Inventory:AddItem(hero, "item_witchs_broom")
-        Inventory:AddItem(hero, "item_twig")
-        Inventory:AddItem(hero, "item_elven_slippers")
-        Inventory:AddItem(hero, "item_warchief_belt")
-        Inventory:AddItem(hero, "item_elven_blade")
-        Inventory:AddItem(hero, "item_iron_gauntlets")
-        Inventory:AddItem(hero, "item_executioner_axe")
-        Inventory:AddItem(hero, "item_garnet_circlet")
-        Inventory:AddItem(hero, "item_kings_crown")
-        Inventory:AddItem(hero, "item_elven_armband")
-        Inventory:AddItem(hero, "item_apprentice_mantle")
-        Inventory:AddItem(hero, "item_wizard_robe")
-        Inventory:AddItem(hero, "item_jewel_staff")
-        Inventory:AddItem(hero, "item_sacred_tome")
-        Inventory:AddItem(hero, "item_hatchet")
-        Inventory:AddItem(hero, "item_citrine_ring")
-        Inventory:AddItem(hero, "item_martial_staff")
-        Inventory:AddItem(hero, "item_iron_spear")
-        Inventory:AddItem(hero, "item_wolf_claw")
-
     end
 end
 
@@ -760,18 +730,14 @@ function Inventory:OnInventoryItemPickedFromGround(event)
                     local itemId = event.itemEntity:GetEntityIndex()
                     local itemOwner = event.itemEntity:GetPurchaser()
                     if (itemOwner == hero) then
-                        Inventory:AddItem(hero, event.item, event.itemEntity.inventoryStats)
-                    else
-                        local item = CreateItem(event.item, hero, hero)
-                        local positionOnGround = hero:GetAbsOrigin()
-                        local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
-                        local itemStats = Inventory:GetItemEntityStats(event.itemEntity)
-                        Inventory:SetItemEntityStats(item, itemStats)
-                        item:SetPurchaser(itemOwner)
-                        CustomNetTables:SetTableValue("inventory_world_items", tostring(item), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
+                        local itemSlot = Inventory:AddItem(hero, event.item, Inventory:GetItemEntityStats(event.itemEntity))
+                        print("Pickup attempt")
+                        print(itemSlot)
+                        if (itemSlot ~= Inventory.slot.invalid) then
+                            CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
+                            event.itemEntity:Destroy()
+                        end
                     end
-                    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
-                    event.itemEntity:Destroy()
                 end
             end
         end
@@ -805,15 +771,10 @@ function Inventory:OnInventoryDropItemRequest(event, args)
     if (itemInSlot ~= event.item) then
         return
     end
-    local item = CreateItem(event.item, hero, hero)
-    local positionOnGround = hero:GetAbsOrigin()
-    local itemOnGround = CreateItemOnPositionSync(positionOnGround, item)
     local itemStats = Inventory:GetItemStatsForHero(hero, event.equipped, event.slot)
-    Inventory:SetItemEntityStats(item, itemStats)
-    local itemId = item:GetEntityIndex()
-    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), { itemWorldId = itemOnGround:GetEntityIndex(), itemStats = itemStats, itemName = item:GetAbilityName() })
-    item:SetPurchaser(hero)
-    Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
+    if (Inventory:CreateItemOnGround(hero, hero:GetAbsOrigin(), event.item, itemStats)) then
+        Inventory:SetItemInSlot(hero, "", event.equipped, event.slot)
+    end
 end
 
 function Inventory:SetItemEntityStats(item, itemStats)
