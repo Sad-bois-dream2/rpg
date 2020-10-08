@@ -458,11 +458,6 @@ function modifier_molten_guardian_lava_skin_toggle:OnIntervalThink()
             modifierTable.max_stacks = self.ability.armorStacksCap
             GameMode:ApplyStackingDebuff(modifierTable)
         end
-        local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
     end
     if (self.ability:GetAutoCastState()) then
         local modifierTable = {}

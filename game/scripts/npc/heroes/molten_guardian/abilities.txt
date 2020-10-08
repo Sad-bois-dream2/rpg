@@ -302,7 +302,6 @@
 		{
             "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_base.vpcf"
             "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf"
-            "particle"  "particles/units/molten_guardian/lava_skin/lava_skin_hit.vpcf"
 		}
 	}
 	//=================================================================================================================

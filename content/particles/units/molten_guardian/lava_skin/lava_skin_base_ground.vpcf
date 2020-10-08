@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf27:version{36c3961f-02a4-4c52-bf8f-6e3147d7d142} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -16,6 +16,7 @@
 			m_nOrientationType = 2
 			m_flAnimationRate = 0.25
 			m_nHSVShiftControlPoint = 62
+			m_bDisableOperator = true
 		},
 	]
 	m_Operators = 
@@ -117,19 +118,21 @@
 	[
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_ground_scorch.vpcf"
+			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_ground_fire.vpcf"
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_skin/lava_skin_base_ground_fire.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_ground_ring.vpcf"
 			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_phoenix/phoenix_supernova_egg_ground_core.vpcf"
+			m_ChildRef = resource:"particles/units/molten_guardian/lava_skin/lava_skin_base_ground_core.vpcf"
 		},
 	]
-	m_nBehaviorVersion = 5
+	m_nBehaviorVersion = 10
 	m_nFirstMultipleOverride_BackwardCompat = 6
 	m_controlPointConfigurations = 
 	[
