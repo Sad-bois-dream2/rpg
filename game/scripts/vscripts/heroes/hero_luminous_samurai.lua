@@ -1233,6 +1233,67 @@ function modifier_luminous_samurai_light_iai_giri_debuff:OnTakeDamage(damageTabl
 end
 
 --------------------------------------------------------------------------------
+
+modifier_luminous_samurai_light_iai_giri_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_light_iai_giri_buff"] = LUA_MODIFIER_MOTION_NONE
+
+function modifier_luminous_samurai_light_iai_giri_buff:OnCreated()
+
+    if not IsServer() then return end
+    self.ability = self:GetAbility()
+    
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_judgment_of_light_jump:GetHolyDamageBonus()
+    return self.ability.buffHolyDmg
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_light_iai_giri_buff:OnTakeDamage(damageTable)
+
+    if not IsServer() then return end
+    local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_light_iai_giri_buff")
+    if (modifier and damageTable.physdmg) then 
+
+        local convertedDamage = damageTable.damage * modifier.ability.buffHolyConversion / 100
+        damageTable.damage = damageTable.damage - convertedDamage
+        GameMode:DamageUnit({
+            caster = damageTable.attacker,
+            target = damageTable.victim,
+            ability = damageTable.ability, 
+            damage = convertedDamage,
+            holydmg = true
+        }) 
+        return damageTable
+        
+    end
+
+end
+
+--------------------------------------------------------------------------------
 -- Light Iai-Giri
 
 luminous_samurai_light_iai_giri = class({
@@ -1283,6 +1344,15 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
             ParticleManager:ReleaseParticleIndex(pidx)
         end)
         -- Rank 4     
+        local buffProc = RollPercentage(self.buffChance * stacks)
+        if not buffProc then return end
+        GameMode:ApplyBuff({
+            caster = self.caster,
+            target = self.caster,
+            ability = self,
+            modifier_name = "modifier_luminous_samurai_light_iai_giri_buff",
+            duration = self.buffDuration
+        })
 
     end  
 
@@ -1306,6 +1376,10 @@ function luminous_samurai_light_iai_giri:OnUpgrade()
     self.damageReductionDuration = self:GetSpecialValueFor("damage_reduction_duration")
     self.holyDamageToDR = self:GetSpecialValueFor("holy_damage_to_dr")
     self.maxDR = self:GetSpecialValueFor("max_dr")
+    self.buffChance = self:GetSpecialValueFor("buff_chance")
+    self.buffDuration = self:GetSpecialValueFor("buff_duration")
+    self.buffHolyConversion = self:GetSpecialValueFor("buff_holy_conversion")
+    self.buffHolyDmg = self:GetSpecialValueFor("buff_holy_dmg")
     self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_light_iai_giri", {})
 
 end
@@ -1487,6 +1561,7 @@ if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     --GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_jhana, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri_stacks, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri_debuff, 'OnTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri_buff, 'OnTakeDamage'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
