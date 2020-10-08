@@ -11,50 +11,64 @@ var TOOLTIP_TYPE_LABEL = 4;
 var TOOLTIP_DESCRIPTION_LABEL = 5;
 var TOOLTIP_QUALITY_LABEL = 6;
 var TOOLTIP_STATS_CONTAINER = 7;
+var TOOLTIP_STATS_LABELS = 8;
+var initialStatsLabelsInTooltip = 10;
 
 TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
 	var position = GameUI.GetCursorPosition();
-	var itemNameTooltip = $.Localize("#DOTA_Tooltip_Ability_"+itemName);
+	var itemNameLabel = $.Localize("#DOTA_Tooltip_Ability_"+itemName);
 	var itemDesiredSlot = ItemsDatabase.GetItemSlot(itemName);
-	var itemRarity = ItemsDatabase.GetItemRarityName(ItemsDatabase.GetItemRarity(itemName));
-	var itemType = ItemsDatabase.GetItemSlotName(itemDesiredSlot);
-	var itemDescription = $.Localize("#DOTA_Tooltip_Ability_" + itemName + "_Description");
-	var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", ItemsDatabase.GetItemQuality(itemName, itemStats));
+	var itemRarity = ItemsDatabase.GetItemRarity(itemName);
+	var itemRarityLabel = ItemsDatabase.GetItemRarityName(itemRarity);
+	var itemTypeLabel = ItemsDatabase.GetItemSlotName(itemDesiredSlot);
+	var itemDescriptionLabel = $.Localize("#DOTA_Tooltip_Ability_" + itemName + "_Description");
+	var itemQuality = ItemsDatabase.GetItemQuality(itemName, itemStats);
+	var itemQualityLabel = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", itemQuality);
 	var itemStatsCount = itemStats.length;
-	var missedLabels = itemStatsCount - tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount();
+	var missedLabels = itemStatsCount - TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount();
 	if(missedLabels > 0) {
 	    for(var i = 0; i < missedLabels; i++) {
-	        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-               statsLabel.html = true;
-               statsLabel.style.visibility = "collapse";
-               statsLabels.push(statsLabel);
+            CreateItemStatsLabel();
 	    }
 	}
-	UpdateItemTooltip(itemName, itemNameTooltip, itemRarity, itemType, itemDescription, itemQuality, itemStats, position[0], position[1]);
-}
+	UpdateItemTooltip(
+	itemName,
+	itemNameLabel,
+	itemRarityLabel,
+	itemTypeLabel,
+	itemDescriptionLabel,
+	itemQualityLabel,
+	itemStats,
+	position[0],
+	position[1]
+	);
+};
+
+TooltipManager.HideItemTooltip = function() {
+	TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].style.visibility = "collapse";
+};
 
 function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats, x, y) {
-    var itemTooltip = GameUI.CustomUIConfig().TooltipManager.itemTooltipPanel;
-    itemTooltip[TOOLTIP_IMAGE].itemname = icon;
-	itemTooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
-	itemTooltip[TOOLTIP_RARITY_LABEL].text = rarity;
-	itemTooltip[TOOLTIP_TYPE_LABEL].text = type;
+    TooltipManager.itemTooltipContainer[TOOLTIP_IMAGE].itemname = icon;
+	TooltipManager.itemTooltipContainer[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
+	TooltipManager.itemTooltipContainer[TOOLTIP_RARITY_LABEL].text = rarity;
+	TooltipManager.itemTooltipContainer[TOOLTIP_TYPE_LABEL].text = type;
     if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
-        itemTooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
+        TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
     } else {
-        itemTooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
+        TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
     }
-	itemTooltip[TOOLTIP_DESCRIPTION_LABEL].text = description;
-	itemTooltip[TOOLTIP_QUALITY_LABEL].text = quality;
-	if(itemTooltip[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
-	    x -= itemTooltip[TOOLTIP_PANEL].actuallayoutwidth;
+	TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].text = description;
+	TooltipManager.itemTooltipContainer[TOOLTIP_QUALITY_LABEL].text = quality;
+	if(TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
+	    x -= TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutwidth;
 	}
-	if(tooltip[TOOLTIP_PANEL].actuallayoutheight + y > Game.GetScreenHeight()) {
-	    y -= itemTooltip[TOOLTIP_PANEL].actuallayoutheight;
+	if(TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutheight + y > Game.GetScreenHeight()) {
+	    y -= TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutheight;
 	}
-	itemTooltip[TOOLTIP_PANEL].style.marginLeft = x + "px";
-	itemTooltip[TOOLTIP_PANEL].style.marginTop = y + "px";
-	itemTooltip[TOOLTIP_PANEL].style.visibility = "visible";
+	TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].style.marginLeft = x + "px";
+	TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].style.marginTop = y + "px";
+	TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].style.visibility = "visible";
 	var latestStatId = 0;
 	for(var i = 0; i < stats.length; i++) {
 	    var statName = $.Localize("#DOTA_Tooltip_Ability_"+icon+"_"+stats[i].name);
@@ -64,12 +78,12 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             statName = statName.slice(1, statName.length);
             statValue += "%";
         }
-	    statsLabels[i].text = statName + statValue;
-	    statsLabels[i].style.visibility = "visible";
+	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = statName + statValue;
+	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    latestStatId++;
 	}
-	for(var i = latestStatId; i < itemTooltip[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
-		statsLabels[i].style.visibility = "collapse";
+	for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
+		TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "collapse";
 	}
 }
 
@@ -84,18 +98,23 @@ function CreateItemTooltip() {
         $("#ItemTooltipTypeLabel"),
         $("#ItemTooltipLabel"),
         $("#ItemTooltipQualityLabel"),
-        $("#ItemTooltipStatsContainer")];
-        GameUI.CustomUIConfig().TooltipManager.itemTooltipPanel = itemTooltip;
+        $("#ItemTooltipStatsContainer"),
+        []];
+        GameUI.CustomUIConfig().TooltipManager.itemTooltipContainer = itemTooltip;
+        for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
+            CreateItemStatsLabel();
+        }
     }
 }
 
-function Init() {
-    if(!GameUI.CustomUIConfig().TooltipManager) {
-        GameUI.CustomUIConfig().TooltipManager = TooltipManager;
-    }
+function CreateItemStatsLabel() {
+    var statsLabel = $.CreatePanel("Label", TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER], "");
+    statsLabel.html = true;
+    statsLabel.style.visibility = "collapse";
+    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS].push(statsLabel);
 }
 
 (function() {
-    Init();
+    GameUI.CustomUIConfig().TooltipManager = TooltipManager;
     CreateItemTooltip();
 })();

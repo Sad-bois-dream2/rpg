@@ -1,11 +1,12 @@
 <root>
     <styles>
         <include src="file://{resources}/styles/custom_game/item_drops.css"/>
+        <include src="file://{resources}/styles/tooltips/custom/tooltip_item.css"/>
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/api/tooltip_manager.js"/>
     </scripts>
-    <Panel style="visibility: collapse;" hittest="false" hittestchildren="false" onload="CreateItemTooltip()">
+    <Panel class="ItemTooltip" hittest="false" hittestchildren="false" onload="CreateItemTooltip()">
         <Panel id="ItemTooltipHeader" class="ItemTooltipHeader">
             <Panel>
                 <DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false"
