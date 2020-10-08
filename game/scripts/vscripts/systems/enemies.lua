@@ -111,6 +111,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
     if (IsBoss) then
         dropChance = 100
     end
+    --dropChance = 100
     if (not RollPercentage(dropChance)) then
         return dropTable
     end
@@ -276,8 +277,8 @@ function Enemies:LaunchItem(itemData)
         if (itemData.launched) then
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            local createdItem = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
-            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats) })
+            local createdItem, createdItemEntity = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName, Inventory:GenerateStatsForItem(itemData.itemName, itemData.difficulty))
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(Inventory:GetItemEntityStats(createdItemEntity)) })
             EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius() + 50)
@@ -300,7 +301,8 @@ function Enemies:DropItems(enemy)
     local travelTime = 1.25
     for _, hero in pairs(HeroList:GetAllHeroes()) do
         local delay = 0
-        for _, item in pairs(Enemies:BuildDropTable(enemy, difficulty)) do
+        local dropTable = Enemies:BuildDropTable(enemy, difficulty)
+        for _, item in pairs(dropTable) do
             local itemData = {}
             itemData.hero = hero
             itemData.itemName = item.name
@@ -308,6 +310,7 @@ function Enemies:DropItems(enemy)
             itemData.launchPosition = enemy:GetAbsOrigin()
             itemData.travelTime = travelTime
             itemData.delay = delay
+            itemData.difficulty = difficulty
             Enemies:LaunchItem(itemData)
             delay = delay + 0.5
         end
@@ -586,7 +589,7 @@ function modifier_creep_scaling:OnIntervalThink()
         GameMode:HealUnit(healTable)
     end
     local aggroTarget = Aggro:GetUnitCurrentTarget(self.creep)
-    if(not aggroTarget) then
+    if (not aggroTarget) then
         local healTable = {}
         healTable.caster = self.creep
         healTable.target = self.creep

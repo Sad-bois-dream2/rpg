@@ -1,18 +1,22 @@
+var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
+
 var itemPanel;
 var DELETE_TIMER_INTERVAL = 0.1;
-var DELETE_TIMER = 5 + DELETE_TIMER_INTERVAL;
+var DELETE_TIMER = 999999 + DELETE_TIMER_INTERVAL;
 var dontDelete = false;
 
 function OnClick() {
     itemPanel.DeleteAsync(0);
 }
 
-function OnMouseOut() {
-    dontDelete = false;
+function ShowItemTooltip() {
+    TooltipManager.ShowItemTooltip(itemPanel.Data().itemName, itemPanel.Data().itemStats);
+    dontDelete = true;
 }
 
-function OnMouseOver() {
-    dontDelete = true;
+function HideItemTooltip() {
+    TooltipManager.HideItemTooltip();
+    dontDelete = false;
 }
 
 function OnDeleteTimerTick() {

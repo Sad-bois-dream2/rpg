@@ -10,8 +10,7 @@ var ELEMENTS_DEFENSIVE = "D", ELEMENTS_OFFENSIVE = "O";
 var defensiveElePanels = [], offensiveElePanels = [];
 var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
 var pagePanels = [], pageButtons = [];
-var inventoryItemsData = [], currentHero = -1;
-var dropContainer;
+var currentHero = -1;
 var ELEMENTS = [
 	["Fire", "file://{images}/custom_game/hud/fire_element.png"],
 	["Frost", "file://{images}/custom_game/hud/frost_element.png"],
@@ -316,7 +315,7 @@ function UpdateHeroModelAndIcon() {
 var dataRequestSended = false;
 
 function UpdateValues() {
-	if(inventoryItemsData.length == 0 && !dataRequestSended) {
+	if(!dataRequestSended) {
 		GameEvents.SendCustomGameEventToServer("rpg_inventory_require_items_and_rest_data", {"player_id" : Players.GetLocalPlayer()});
 		dataRequestSended = true;
 	}
@@ -475,33 +474,6 @@ function OnUpdateInventorySlotRequest(event) {
 	}
 }
 
-function GetHEXPlayerColor(playerId) {
-	var playerColor = Players.GetPlayerColor(playerId).toString(16);
-	return playerColor == null ? '#000000' : ('#' + playerColor.substring(6, 8) + playerColor.substring(4, 6) + playerColor.substring(2, 4) + playerColor.substring(0, 2));
-}
-
-function OnItemDrop(event) {
-	var itemDropPanel = $.CreatePanel("Panel", dropContainer, "");
-	itemDropPanel.BLoadLayout("file://{resources}/layout/custom_game/dropped_item.xml", false, false);
-	var itemIcon = itemDropPanel.FindChildTraverse('DropItemIcon');
-    itemIcon.itemname = event.item;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerIcon').heroname = event.hero;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerLabel').text = "<font color='" + GetHEXPlayerColor(event.player_id) + "'>" + Players.GetPlayerName(event.player_id) + "</font>";
-    itemIcon.SetPanelEvent(
-      "onmouseover",
-      function(){
-        ShowItemDropTooltip(event.item, JSON.parse(event.stats));
-      }
-    )
-    itemIcon.SetPanelEvent(
-      "onmouseout",
-      function(){
-        HideItemTooltip();
-      }
-    )
-    dropContainer.MoveChildBefore(itemDropPanel, dropContainer.GetChild(0));
-}
-
 var DROPPED_ITEM_HITBOX_SIZE = 70;
 var latestShowedItemId = -1;
 
@@ -548,13 +520,10 @@ function ShowDroppedItemTooltip() {
 	SetupDragAndDropForInventoryEquippedSlots();
 	CreateElementPanels($("#OffensiveElements"), ELEMENTS_OFFENSIVE);
 	CreateElementPanels($("#DefensiveElements"), ELEMENTS_DEFENSIVE);
-    dropContainer = $("#DropContainer");
     GameEvents.Subscribe("rpg_inventory_open_window_from_server", OnInventoryButtonClicked);
 	GameEvents.Subscribe("rpg_inventory_close_window_from_server", OnInventoryWindowCloseRequest);
 	GameEvents.Subscribe("rpg_inventory_update_slot", OnUpdateInventorySlotRequest);
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
-    GameEvents.Subscribe("rpg_enemy_item_dropped", OnItemDrop);
-	ShowDroppedItemTooltip();
     AutoUpdateValues();
     UpdateHeroModelAndIcon();
 })();
