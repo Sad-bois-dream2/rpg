@@ -6,7 +6,7 @@
     <scripts>
         <include src="file://{resources}/scripts/api/tooltip_manager.js"/>
     </scripts>
-    <Panel class="ItemTooltip" hittest="false" hittestchildren="false" onload="CreateItemTooltip()">
+    <Panel class="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
         <Panel id="ItemTooltipHeader" class="ItemTooltipHeader">
             <Panel>
                 <DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false"
