@@ -621,7 +621,7 @@ end
 
 function modifier_molten_guardian_volcanic_blow_block:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_volcanic_blow_block")
-    if (modifier and damageTable.physdmg and modifier.ability and RollPercentage(modifier.ability.blockChance * modifier.ability.blockMultiplier)) then
+    if (modifier and damageTable.physdmg and modifier.ability and RollPercentage(modifier.ability.blockChance)) then
         if (modifier.ability.bonusMaxHpPerBlock > 0) then
             local modifierTable = {}
             modifierTable.ability = modifier.ability
@@ -667,13 +667,12 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
     modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_taunt"
     modifierTable.duration = self.tauntDuration
     GameMode:ApplyBuff(modifierTable)
-    self:ApplySpellEffectToTarget(caster, target)
     local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/volcanic_blow/volcanic_blow_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
     if (self.searchWidthPastTarget > 0) then
         local targetPosition = target:GetAbsOrigin()
         local enemies = FindUnitsInLine(DOTA_TEAM_GOODGUYS,
                 targetPosition,
-                targetPosition + target:GetForwardVector() * -self.searchRangePastTarget,
+                targetPosition + caster:GetForwardVector() * self.searchRangePastTarget,
                 caster,
                 self.searchWidthPastTarget,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
@@ -684,6 +683,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
         end
         ParticleManager:SetParticleControl(pidx, 1, Vector(self.searchWidthPastTarget, self.searchWidthPastTarget, self.searchWidthPastTarget))
     else
+        self:ApplySpellEffectToTarget(caster, target)
         ParticleManager:SetParticleControl(pidx, 1, Vector(200, 200, 200))
     end
     Timers:CreateTimer(3.0, function()
@@ -710,6 +710,19 @@ function molten_guardian_volcanic_blow:ApplySpellEffectToTarget(caster, target)
         modifierTable.duration = self.stunDuration
         GameMode:ApplyDebuff(modifierTable)
     end
+    if(self.cdrFlatPerEnemyHit > 0) then
+        local cooldownTable = {
+            target = caster,
+            ability = "molten_guardian_volcanic_blow",
+            reduction = self.cdrFlatPerEnemyHit,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+        if(self:GetCooldownTimeRemaining() < self.minAbilityCooldownAfterCdrProc) then
+            self:EndCooldown()
+            self:StartCooldown(self.minAbilityCooldownAfterCdrProc)
+        end
+    end
 end
 
 function molten_guardian_volcanic_blow:OnUpgrade()
@@ -717,12 +730,13 @@ function molten_guardian_volcanic_blow:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.blockChance = self:GetSpecialValueFor("block_chance")
     self.blockDuration = self:GetSpecialValueFor("block_duration")
-    self.blockMultiplier = self:GetSpecialValueFor("block_multiplier")
     self.tauntDuration = self:GetSpecialValueFor("taunt_duration")
     self.bonusMaxHpPerBlock = self:GetSpecialValueFor("bonus_maxhp_per_block") / 100
     self.searchWidthPastTarget = self:GetSpecialValueFor("search_width_past_target")
     self.searchRangePastTarget = self:GetSpecialValueFor("search_range_past_target")
     self.bonusMaxHpDuration = self:GetSpecialValueFor("bonus_maxhp_duration")
+    self.cdrFlatPerEnemyHit = self:GetSpecialValueFor("cdr_flat_per_enemy_hit")
+    self.minAbilityCooldownAfterCdrProc = self:GetSpecialValueFor("min_ability_cooldown_after_cdr_proc")
 end
 
 --molten_guardian_molten_fortress
@@ -1391,6 +1405,15 @@ function modifier_molten_guardian_shields_up_channel:OnTakeDamage(damageTable)
                 isflat = true
             }
             GameMode:ReduceAbilityCooldown(cooldownTable)
+            if(modifier.ability.maxHpToDmgOnProc > 0) then
+                local damageTable = {}
+                damageTable.damage = damageTable.victim:GetMaxHealth() * modifier.ability.maxHpToDmgOnProc
+                damageTable.caster = damageTable.victim
+                damageTable.target = damageTable.attacker
+                damageTable.ability = modifier.ability
+                damageTable.firedmg = true
+                GameMode:DamageUnit(damageTable)
+            end
         end
         EmitSoundOn("Hero_Mars.Shield.Block", damageTable.victim)
         return damageTable
@@ -1419,6 +1442,7 @@ function molten_guardian_shields_up:OnUpgrade()
     self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
     self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
     self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
+    self.maxHpToDmgOnProc = self:GetSpecialValueFor("max_hp_to_dmg_on_proc") / 100
 end
 
 function molten_guardian_shields_up:OnChannelFinish()
