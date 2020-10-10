@@ -333,8 +333,6 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
         DebugPrint("[INVENTORY] Failed to create " .. tostring(item) .. ". Probably bugs related to npc_items.")
         return nil, nil
     end
-    print("We here")
-    print(hero, location, item, itemStats)
     local itemId = itemEntity:GetEntityIndex()
     local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
     Inventory:SetItemEntityStats(itemEntity, itemStats)
