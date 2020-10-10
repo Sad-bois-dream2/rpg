@@ -10,6 +10,7 @@
 	flow-children: down;
 	transform-origin: 0% 0%;
 	visibility: collapse;
+	margin-top: -99999px;
 }
 
 .ItemTooltipImage

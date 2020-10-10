@@ -90,7 +90,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
 function CreateItemTooltip() {
     var root = $.GetContextPanel();
     var itemTooltipRoot = root.FindChildTraverse("ItemTooltipHeader");
-    if(itemTooltipRoot) {
+    if(itemTooltipRoot && GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized == false) {
         var itemTooltip = [itemTooltipRoot.GetParent(),
         $("#ItemTooltipImage"),
         $("#ItemTooltipNameLabel"),
@@ -101,6 +101,7 @@ function CreateItemTooltip() {
         $("#ItemTooltipStatsContainer"),
         []];
         GameUI.CustomUIConfig().TooltipManager.itemTooltipContainer = itemTooltip;
+        GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized = true;
         for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
             CreateItemStatsLabel();
         }
@@ -116,5 +117,6 @@ function CreateItemStatsLabel() {
 
 (function() {
     GameUI.CustomUIConfig().TooltipManager = TooltipManager;
+    GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized = false;
     CreateItemTooltip();
 })();

@@ -1,12 +1,11 @@
 <root>
     <styles>
-        <include src="file://{resources}/styles/custom_game/item_drops.css"/>
         <include src="file://{resources}/styles/tooltips/custom/tooltip_item.css"/>
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/api/tooltip_manager.js"/>
     </scripts>
-    <Panel class="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
+    <Panel style="visibility: collapse;" class="ItemTooltip" hittest="false" hittestchildren="false">
         <Panel id="ItemTooltipHeader" class="ItemTooltipHeader">
             <Panel>
                 <DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false"
@@ -25,6 +24,5 @@
             <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description"/>
             <Panel id="ItemTooltipStatsContainer" class="ItemTooltipStatsContainer"/>
         </Panel>
-
     </Panel>
 </root>
