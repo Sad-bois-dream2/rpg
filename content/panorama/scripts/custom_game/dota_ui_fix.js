@@ -136,4 +136,5 @@ function ShowDroppedItemTooltip() {
     GameEvents.Subscribe("rpg_say_chat_message_from_server", OnChatMessageRequest);
     StartCastbarFixTimer();
     ShowDroppedItemTooltip();
+    TooltipManager.HideItemTooltip();
 })();
