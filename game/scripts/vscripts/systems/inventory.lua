@@ -333,6 +333,8 @@ function Inventory:CreateItemOnGround(hero, location, item, itemStats)
         DebugPrint("[INVENTORY] Failed to create " .. tostring(item) .. ". Probably bugs related to npc_items.")
         return nil, nil
     end
+    print("We here")
+    print(hero, location, item, itemStats)
     local itemId = itemEntity:GetEntityIndex()
     local itemOnGround = CreateItemOnPositionSync(location, itemEntity)
     Inventory:SetItemEntityStats(itemEntity, itemStats)
@@ -720,28 +722,36 @@ function Inventory:OnInventoryItemsAndRestDataRequest(event, args)
             end)
 end
 
+--Inventory:CreateItemOnGround(HeroList:GetHero(0), HeroList:GetHero(0):GetAbsOrigin(), "item_two_handed_sword", Inventory:GenerateStatsForItem("item_two_handed_sword", 1))
+
 function Inventory:OnInventoryItemPickedFromGround(event)
-    if (event ~= nil and event.item ~= nil and event.itemEntity ~= nil and event.player_id ~= nil) then
-        local player = PlayerResource:GetPlayer(event.player_id)
-        if (player ~= nil) then
-            local hero = player:GetAssignedHero()
-            if (hero ~= nil) then
-                if (Inventory:IsHeroHaveInventory(hero)) then
-                    local itemId = event.itemEntity:GetEntityIndex()
-                    local itemOwner = event.itemEntity:GetPurchaser()
-                    if (itemOwner == hero) then
-                        local itemSlot = Inventory:AddItem(hero, event.item, Inventory:GetItemEntityStats(event.itemEntity))
-                        print("Pickup attempt")
-                        print(itemSlot)
-                        if (itemSlot ~= Inventory.slot.invalid) then
-                            CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
-                            event.itemEntity:Destroy()
-                        end
-                    end
-                end
-            end
-        end
+    if (not event or not event.item or not event.itemEntity or not event.player_id) then
+        return
     end
+    local player = PlayerResource:GetPlayer(event.player_id)
+    if (not player) then
+        return
+    end
+    local hero = player:GetAssignedHero()
+    if (not hero) then
+        return
+    end
+    if (not Inventory:IsHeroHaveInventory(hero)) then
+        return
+    end
+    local itemId = event.itemEntity:GetEntityIndex()
+    local itemOwner = event.itemEntity:GetPurchaser()
+    local itemStats = Inventory:GetItemEntityStats(event.itemEntity)
+    if (itemOwner == hero) then
+        local itemSlot = Inventory:AddItem(hero, event.item, itemStats)
+        if (itemSlot == Inventory.slot.invalid) then
+            Inventory:CreateItemOnGround(hero, hero:GetAbsOrigin(), event.item, itemStats)
+        end
+    else
+        Inventory:CreateItemOnGround(itemOwner, hero:GetAbsOrigin(), event.item, itemStats)
+    end
+    CustomNetTables:SetTableValue("inventory_world_items", tostring(itemId), nil)
+    event.itemEntity:Destroy()
 end
 
 function Inventory:OnInventoryDropItemRequest(event, args)
