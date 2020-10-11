@@ -237,15 +237,15 @@
 		}
 	}
 	//=================================================================================================================
-	// Blazing Berserker: Furious Stance
+	// Blazing Berserker: Boiling Rage
 	//=================================================================================================================
-	"blazing_berserker_furious_stance"
+	"blazing_berserker_boiling_rage"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_furious_stance"
+		"AbilityTextureName"			"blazing_berserker_boiling_rage"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"

@@ -6,7 +6,7 @@
         "Ability1"	"blazing_berserker_molten_strike"
         "Ability2"	"blazing_berserker_incinerating_souls"
         "Ability3"	"blazing_berserker_flame_dash"
-        "Ability4"	"blazing_berserker_furious_stance"
+        "Ability4"	"blazing_berserker_boiling_rage"
         "Ability5"	"blazing_berserker_fission"
         "Ability6"	"antimage_blink"
 		"AbilityTalentStart"		"7"
