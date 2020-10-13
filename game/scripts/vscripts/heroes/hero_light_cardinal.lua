@@ -755,7 +755,6 @@ function light_cardinal_salvation:OnSpellStart()
     caster:SetHealth(math.max(casterHealth - (self.healthCost * casterMaxHealth), 1))
     caster:EmitSound("Hero_Silencer.Curse.Cast")
     local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/salvation/light.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:DestroyParticle(pidx, false)
     ParticleManager:ReleaseParticleIndex(pidx)
     local healing = self.healing * Units:GetHeroIntellect(caster) + self.healingMissingHealth * (casterMaxHealth - casterHealth)
     local allies = FindUnitsInRadius(caster:GetTeamNumber(),
