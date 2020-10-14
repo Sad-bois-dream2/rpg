@@ -1203,11 +1203,11 @@ function modifier_blazing_berserker_fire_frenzy:OnCreated()
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
     self.casterTeam = self.caster:GetTeamNumber()
-    self:StartIntervalThink(self.ability.incinerationSoulsTick)
+    self:StartIntervalThink(self.ability:GetSpecialValueFor("incineration_souls_tick"))
 end
 
 function modifier_blazing_berserker_fire_frenzy:OnIntervalThink()
-    if (not self.ability.incinerationSoulsRadius > 0 or not self.ability.incinerationSoulsAbility or self.ability.incinerationSoulsAbility:GetLevel() == 0) then
+    if (not (self.ability.incinerationSoulsRadius > 0) or not self.ability.incinerationSoulsAbility or self.ability.incinerationSoulsAbility:GetLevel() == 0) then
         return
     end
     local enemies = FindUnitsInRadius(self.casterTeam,
@@ -1232,10 +1232,13 @@ function modifier_blazing_berserker_fire_frenzy:OnIntervalThink()
 end
 
 function modifier_blazing_berserker_fire_frenzy:OnTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_blazing_berserker_fire_frenzy")
+    local modifier = damageTable.victim:FindModifierByName("modifier_blazing_berserker_fire_frenzy")
     if (modifier and modifier.ability and modifier.ability.autoUse and modifier.ability.autoUse > 0 and modifier.ability:IsCooldownReady()) then
-        modifier.ability:OnSpellStart()
-        modifier.ability:UseResources(false, false, true)
+        local healthAfterDamage = damageTable.victim:GetHealth() - damageTable.damage
+        if (healthAfterDamage < 1) then
+            modifier.ability:OnSpellStart()
+            modifier.ability:UseResources(false, false, true)
+        end
     end
     return damageTable
 end
@@ -1249,10 +1252,9 @@ blazing_berserker_fire_frenzy = class({
 })
 
 function blazing_berserker_fire_frenzy:OnUpgrade()
-    self.damage = self:GetSpecialValueFor("duration")
+    self.duration = self:GetSpecialValueFor("duration")
     self.endHealing = self:GetSpecialValueFor("end_healing") / 100
     self.autoUse = self:GetSpecialValueFor("auto_use")
-    self.incinerationSoulsTick = self:GetSpecialValueFor("incineration_souls_tick")
     self.incinerationSoulsRadius = self:GetSpecialValueFor("incineration_souls_radius")
     if (not self.incinerationSoulsAbility) then
         self.incinerationSoulsAbility = self:GetCaster():FindAbilityByName("blazing_berserker_incinerating_souls")
