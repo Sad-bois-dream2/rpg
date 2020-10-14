@@ -8,7 +8,7 @@
         "Ability3"	"blazing_berserker_flame_dash"
         "Ability4"	"blazing_berserker_boiling_rage"
         "Ability5"	"blazing_berserker_fission"
-        "Ability6"	"antimage_blink"
+        "Ability6"	"blazing_berserker_fire_frenzy"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""

@@ -1113,6 +1113,170 @@ function blazing_berserker_flame_dash:OnSpellStart()
     EmitSoundOn("Hero_Mars.Spear.Cast", caster)
 end
 
+-- blazing_berserker_fire_frenzy
+modifier_blazing_berserker_fire_frenzy_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function()
+        return "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_buff.vpcf"
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_PROPERTY_MIN_HEALTH
+        }
+    end,
+    GetMinHealth = function()
+        return 1
+    end
+})
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.damage = 0
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    if (self.ability.endHealing > 0) then
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.caster
+        healTable.ability = self.ability
+        healTable.heal = self.damage * self.ability.endHealing
+        GameMode:HealUnit(healTable)
+    end
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_blazing_berserker_fire_frenzy_buff")
+    if (modifier and modifier.ability and modifier.ability.endHealing and modifier.ability.endHealing > 0) then
+        modifier.damage = modifier.damage + damageTable.damage
+    end
+end
+
+LinkedModifiers["modifier_blazing_berserker_fire_frenzy_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_fire_frenzy = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_blazing_berserker_fire_frenzy:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self:StartIntervalThink(self.ability.incinerationSoulsTick)
+end
+
+function modifier_blazing_berserker_fire_frenzy:OnIntervalThink()
+    if (not self.ability.incinerationSoulsRadius > 0 or not self.ability.incinerationSoulsAbility or self.ability.incinerationSoulsAbility:GetLevel() == 0) then
+        return
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.incinerationSoulsRadius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        if (not enemy:HasModifier("modifier_blazing_berserker_incinerating_souls_dot")) then
+            local cooldownRemaining = self.ability.incinerationSoulsAbility:GetCooldownTimeRemaining()
+            self.ability.incinerationSoulsAbility:EndCooldown()
+            self.caster:SetCursorCastTarget(enemy)
+            self.ability.incinerationSoulsAbility:OnSpellStart()
+            self.ability.incinerationSoulsAbility:StartCooldown(cooldownRemaining)
+            return
+        end
+    end
+end
+
+function modifier_blazing_berserker_fire_frenzy:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_blazing_berserker_fire_frenzy")
+    if (modifier and modifier.ability and modifier.ability.autoUse and modifier.ability.autoUse > 0 and modifier.ability:IsCooldownReady()) then
+        modifier.ability:OnSpellStart()
+        modifier.ability:UseResources(false, false, true)
+    end
+    return damageTable
+end
+
+LinkedModifiers["modifier_blazing_berserker_fire_frenzy"] = LUA_MODIFIER_MOTION_NONE
+
+blazing_berserker_fire_frenzy = class({
+    GetIntrinsicModifierName = function()
+        return "modifier_blazing_berserker_fire_frenzy"
+    end
+})
+
+function blazing_berserker_fire_frenzy:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("duration")
+    self.endHealing = self:GetSpecialValueFor("end_healing") / 100
+    self.autoUse = self:GetSpecialValueFor("auto_use")
+    self.incinerationSoulsTick = self:GetSpecialValueFor("incineration_souls_tick")
+    self.incinerationSoulsRadius = self:GetSpecialValueFor("incineration_souls_radius")
+    if (not self.incinerationSoulsAbility) then
+        self.incinerationSoulsAbility = self:GetCaster():FindAbilityByName("blazing_berserker_incinerating_souls")
+    end
+end
+
+function blazing_berserker_fire_frenzy:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_blazing_berserker_fire_frenzy_buff"
+    modifierTable.duration = self.duration
+    local modifier = GameMode:ApplyBuff(modifierTable)
+    modifier:SetDuration(self.duration, true)
+    EmitSoundOn("Hero_Axe.Berserkers_Call", caster)
+    local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/fire_frenzy/fire_frenzy_start.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    ParticleManager:ReleaseParticleIndex(pidx)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_blazing_berserker", MotionController)
@@ -1121,5 +1285,8 @@ end
 if (IsServer() and not GameMode.BLAZING_BERSERKER_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(blazing_berserker_flame_dash, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_boiling_rage, 'OnTakeDamage'), true)
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_fire_frenzy_buff, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_fire_frenzy, 'OnTakeDamage'))
+    GameMode:RegisterMinimumAbilityCooldown('blazing_berserker_fire_frenzy', 30)
     GameMode.BLAZING_BERSERKER_INIT = true
 end

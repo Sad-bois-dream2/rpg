@@ -433,7 +433,7 @@
         "DOTA_Tooltip_modifier_blazing_berserker_incinerating_souls_dot"		"Incinerating Souls"
         "DOTA_Tooltip_modifier_blazing_berserker_incinerating_souls_dot_Description"		"Suffer from <font color='#d92129'>Fire</font> damage."
 		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage"		"Boiling Rage"
-		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage_Description"		"Blazing Berserker enrages, gaining attack speed and <font color='#d92129'>Fire</font> damage based on missing health, but sacrificing his own health every second.\nRank 2: Passievly increase your damage reduction by <font color='white'><b>1%</b></font> for every percent of missing health, up to <font color='white'><b>35%</b></font>.\nRank 3: Passievly increase base damage of your abilities by <font color='white'><b>10%</b></font> of your missing health.\nRank 4: If your health below <font color='white'><b>35%</b></font> of your maximum health cause effect of <font color='white'><b>Fission</b></font> ability every second."
+		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage_Description"		"Blazing Berserker enrages, gaining attack speed and <font color='#d92129'>Fire</font> damage based on missing health, but sacrificing his own health every second.\nRank 2: Passievly increase your damage reduction by <font color='white'><b>1%</b></font> for every percent of missing health, up to <font color='white'><b>35%</b></font>.\nRank 3: Passievly increase base damage of your abilities by <font color='white'><b>10%</b></font> of your missing health.\nRank 4: If your health below <font color='white'><b>35%</b></font> of your maximum health cause effect of <font color='white'><b>Fission</b></font> ability, if it at least level <font color='white'><b>1</b></font>, every second."
 		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage_Note0" "This damage can't kill you."
 		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage_max_hp_cost_per_sec"		"%MAX HP COST: "
 		"DOTA_Tooltip_Ability_blazing_berserker_boiling_rage_bonus_as_per_missing_health_pct"		"%ATTACK SPEED PER MISSING HEALTH %: "
@@ -451,7 +451,12 @@
         "DOTA_Tooltip_Ability_blazing_berserker_flame_dash_dash_range"        "RANGE: "
         "DOTA_Tooltip_modifier_blazing_berserker_flame_dash_debuff"		"Flame Dash"
         "DOTA_Tooltip_modifier_blazing_berserker_flame_dash_debuff_Description"		"<font color='#d92129'>Fire</font> resistance reduced by %dMODIFIER_PROPERTY_TOOLTIP%%%."
-
+		"DOTA_Tooltip_Ability_blazing_berserker_fire_frenzy"		"Fire Frenzy"
+		"DOTA_Tooltip_Ability_blazing_berserker_fire_frenzy_Description"		"Blazing Berserker kindles the unstoppable fury in his veins and preventing his health drop below <font color='white'><b>1</b></font> for duration.\nCooldown of this ability cannot be reduced and duration can't be increased.\nRank 2: This ability will be used automatically (if ready), when you receive killing blow.\nRank 3: After this ability effect ends you will be healed by <font color='white'><b>10%</b></font> of your damage caused during duration.\nRank 4: Passievly every second cause effect of <font color='white'><b>Incineration Souls</b></font> ability, if it at least level <font color='white'><b>1</b></font>, on random not affected enemy in <font color='white'><b>900</b></font> radius around you."
+        "DOTA_Tooltip_Ability_blazing_berserker_fire_frenzy_duration"		"DURATION: "
+        "DOTA_Tooltip_Ability_blazing_berserker_fire_frenzy_Note0"		"Instant kill effects still can kill you."
+        "DOTA_Tooltip_modifier_blazing_berserker_fire_frenzy_buff"		"Fire Frenzy"
+        "DOTA_Tooltip_modifier_blazing_berserker_fire_frenzy_buff_Description"		"Too mad to die."
 		// Light's Chosen (Invoker)
 		"DOTA_Tooltip_Ability_chosen_invoker_purification_brilliance"		"Purification Brilliance"
 		"DOTA_Tooltip_Ability_chosen_invoker_purification_brilliance_Description"		"The Light's Chosen channels his blazing brilliance on a target, purifying it with holy light and dealing <font color='#d29c0f'>Holy</font> damage (based on his max Mana). Killing an enemy with this grants him a stacking Mana regen buff.<br><br>Channel time: <font color='white'><b>5</b></font> seconds"
