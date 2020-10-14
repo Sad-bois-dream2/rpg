@@ -163,6 +163,7 @@ function TalentTree:SetHeroTalentLevel(hero, talentId, level)
                     modifierTable.duration = -1
                     hero.talents.modifiers[talentId] = GameMode:ApplyBuff(modifierTable)
                 end
+                Units:ForceStatsCalculation(hero)
             end
         end
     end

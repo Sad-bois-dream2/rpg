@@ -9,7 +9,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_molten_strike"
+		"AbilityTextureName"			"axe_culling_blade"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -88,7 +88,6 @@
 		"precache"
 		{
             "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike.vpcf"
-            "particle"  "particles/units/blazing_berserker/molten_strike/molten_strike_buff.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_invoker.vsndevts"
 		}
 	}
@@ -101,7 +100,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_incinerating_souls"
+		"AbilityTextureName"			"axe_battle_hunger"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -114,6 +113,7 @@
  		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
 		"AbilityCastGestureSlot"		"DEFAULT"
 		"AbilityCastPoint"				"0.25"
+		"AbilityCastRange"				"900"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"35"
@@ -169,15 +169,15 @@
 		}
 	}
 	//=================================================================================================================
-	// Blazing Berserker: Battle Hunger
+	// Blazing Berserker: Boiling Rage
 	//=================================================================================================================
-	"blazing_berserker_battle_hunger"
+	"blazing_berserker_boiling_rage"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_battle_hunger"
+		"AbilityTextureName"			"blazing_berserker_boiling_rage"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
@@ -185,12 +185,12 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
- 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_2"
+ 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_1"
 		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
+		"AbilityCastPoint"				"0"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"3"
+		"AbilityCooldown"				"1"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -203,115 +203,47 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primary"				"25 50 75 100"
+				"max_hp_cost_per_sec"				"1"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_bonusdmg"				"100"
+				"bonus_as_per_missing_health_pct"				"0.25 0.5 0.75 1"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_chance"				"10"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"0.3"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"mana"				"2 3 4 5"
+				"bonus_fire_damage_per_missing_health_pct"				"0.25 0.5 0.75 1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
-			}
-		}
-		"precache"
-		{
-            "particle"  "particles/units/blazing_berserker/battle_hunger/battle_hunger.vpcf"
-		}
-	}
-	//=================================================================================================================
-	// Blazing Berserker: Furious Stance
-	//=================================================================================================================
-	"blazing_berserker_furious_stance"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"heroes/hero_blazing_berserker"
-		"AbilityTextureName"			"blazing_berserker_furious_stance"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
- 		"AbilityCastAnimation"			"ACT_DOTA_OVERRIDE_ABILITY_1"
-		"AbilityCastGestureSlot"		"DEFAULT"
-		"AbilityCastPoint"				"0.25"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"damage"				"2 3 4 5"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"armor_reduction"				"15 20 25 30"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"elemental_reduction"				"15 20 25 30"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"aadamage"				"25 50 75 100"
-			}
-			"05"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"aaspeed"				"25 50 75 100"
+				"missing_health_to_damage_reduction"				"0 1 1 1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"firedmg"				"10 15 20 25"
+				"missing_health_to_damage_reduction_max"				"0 35 35 35"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5 6 7 8"
+				"missing_health_to_base_spell_damage"				"0 0 10 10"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
 			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fission_proc_health"				"0 0 0 35"
+			}
 		}
 		"precache"
 		{
-            "particle"  "particles/units/blazing_berserker/furious_stance/furious_stance.vpcf"
+            "particle"  "particles/units/blazing_berserker/boiling_rage/boiling_rage_buff.vpcf"
 		}
 	}
 	//=================================================================================================================
@@ -498,6 +430,74 @@
             "particle"  "particles/units/molten_guardian/lava_spear/lava_spear_ground.vpcf"
             "particle"  "particles/units/blazing_berserker/flame_dash/flame_dash.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_mars.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Blazing Berserker: Fire Frenzy
+	//=================================================================================================================
+	"blazing_berserker_fire_frenzy"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_blazing_berserker"
+		"AbilityTextureName"			"blazing_berserker_fire_frenzy"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCastGestureSlot"		"DEFAULT"
+		"AbilityCastPoint"				"0"
+        "AbilityCastRange"				"900"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"end_healing"				"0 0 0 10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"auto_use"				"0 1 1 1"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"incineration_souls_tick"				"1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"incineration_souls_radius"				"0 0 0 900"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_start.vpcf"
+            "particle"  "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_buff.vpcf"
+            "particle"  "particles/status_fx/status_effect_snapfire_magma.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}
 }

@@ -16,10 +16,7 @@ modifier_blazing_berserker_molten_strike_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetEffectName = function(self)
-        return "particles/units/blazing_berserker/molten_strike/molten_strike_buff.vpcf"
-    end,
+    end
 })
 
 function modifier_blazing_berserker_molten_strike_buff:OnCreated()
@@ -130,9 +127,6 @@ end
 LinkedModifiers["modifier_blazing_berserker_molten_strike"] = LUA_MODIFIER_MOTION_NONE
 
 blazing_berserker_molten_strike = class({
-    GetAbilityTextureName = function(self)
-        return "blazing_berserker_molten_strike"
-    end,
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
     end,
@@ -340,9 +334,6 @@ end
 LinkedModifiers["modifier_blazing_berserker_incinerating_souls"] = LUA_MODIFIER_MOTION_NONE
 
 blazing_berserker_incinerating_souls = class({
-    GetAbilityTextureName = function(self)
-        return "blazing_berserker_incinerating_souls"
-    end,
     GetIntrinsicModifierName = function(self)
         return "modifier_blazing_berserker_incinerating_souls"
     end,
@@ -409,160 +400,8 @@ function blazing_berserker_incinerating_souls:OnUpgrade()
     end
 end
 
--- blazing_berserker_battle_hunger modifiers
-modifier_blazing_berserker_battle_hunger = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return blazing_berserker_battle_hunger:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/blazing_berserker/battle_hunger/battle_hunger.vpcf"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
-    end,
-})
-
-function modifier_blazing_berserker_battle_hunger:OnAttackLanded(kv)
-    if (not IsServer()) then
-        return
-    end
-    if (self.ability:GetLevel() < 4) then
-        return
-    end
-    local attacker = kv.attacker
-    local target = kv.target
-    if (attacker ~= nil and target ~= nil and attacker ~= target and attacker == self.caster and RollPercentage(self.stun_chance)) then
-        local modifierTable = {}
-        modifierTable.ability = self.ability
-        modifierTable.target = target
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = self.stun_duration
-        GameMode:ApplyDebuff(modifierTable)
-        local damageTable = {}
-        damageTable.caster = self.caster
-        damageTable.target = target
-        damageTable.ability = self.ability
-        damageTable.damage = self.stun_bonusdmg * Units:GetAttackDamage(self.caster)
-        damageTable.firedmg = true
-        GameMode:DamageUnit(damageTable)
-    end
-end
-
-function modifier_blazing_berserker_battle_hunger:OnCreated()
-    if (not IsServer()) then
-        return
-    end
-    self.ability = self:GetAbility()
-    self.caster = self:GetParent()
-    self.primary = self.ability:GetSpecialValueFor("primary") / 100
-    self.stun_chance = self.ability:GetSpecialValueFor("stun_chance")
-    self.stun_bonusdmg = self.ability:GetSpecialValueFor("stun_bonusdmg") / 100
-    self.stun_duration = self.ability:GetSpecialValueFor("stun_duration")
-    self.mana = self.ability:GetSpecialValueFor("mana") / 100
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
-end
-
-function modifier_blazing_berserker_battle_hunger:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
-    local mana = self.caster:GetMana() - (self.caster:GetMaxMana() * self.mana)
-    if (mana < 0) then
-        self.ability:ToggleAbility()
-        self:Destroy()
-    end
-    self.caster:SetMana(math.max(0, mana))
-end
-
-function modifier_blazing_berserker_battle_hunger:GetPrimaryAttributePercentBonus()
-    return self.primary or 0
-end
-
-LinkedModifiers["modifier_blazing_berserker_battle_hunger"] = LUA_MODIFIER_MOTION_NONE
-
--- blazing_berserker_battle_hunger
-blazing_berserker_battle_hunger = class({
-    GetAbilityTextureName = function(self)
-        return "blazing_berserker_battle_hunger"
-    end
-})
-
-function blazing_berserker_battle_hunger:OnToggle(unit, special_cast)
-    if (not IsServer()) then
-        return
-    end
-    local caster = self:GetCaster()
-    caster.blazing_berserker_battle_hunger = caster.blazing_berserker_battle_hunger or {}
-    if (self:GetToggleState()) then
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = caster
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_blazing_berserker_battle_hunger"
-        modifierTable.duration = -1
-        caster.blazing_berserker_battle_hunger.modifier = GameMode:ApplyBuff(modifierTable)
-        self:EndCooldown()
-        self:StartCooldown(self:GetCooldown(1))
-        EmitSoundOn("Hero_Axe.Berserkers_Call", caster)
-    else
-        if (caster.blazing_berserker_battle_hunger.modifier ~= nil) then
-            caster.blazing_berserker_battle_hunger.modifier:Destroy()
-        end
-    end
-end
--- blazing_berserker_rage_eruption modifiers
-modiifer_blazing_berserker_rage_eruption_buff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return blazing_berserker_rage_eruption:GetAbilityTextureName()
-    end
-})
-
-function modiifer_blazing_berserker_rage_eruption_buff:OnCreated(keys)
-    if (not IsServer()) then
-        return
-    end
-    self.aaspeed = keys.aaspeed or 0
-end
-
-function modiifer_blazing_berserker_rage_eruption_buff:GetAttackSpeedBonus()
-    return (self.aaspeed * self:GetStackCount()) or 0
-end
-
-LinkedModifiers["modiifer_blazing_berserker_rage_eruption_buff"] = LUA_MODIFIER_MOTION_NONE
-
-modiifer_blazing_berserker_rage_eruption = class({
+-- blazing_berserker_boiling_rage
+modifier_blazing_berserker_boiling_rage = class({
     IsDebuff = function(self)
         return false
     end,
@@ -583,60 +422,49 @@ modiifer_blazing_berserker_rage_eruption = class({
     end
 })
 
-function modiifer_blazing_berserker_rage_eruption:OnCreated()
+function modifier_blazing_berserker_boiling_rage:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.aaspeed = self.ability:GetSpecialValueFor("aaspeed")
-    self.maxstacks = self.ability:GetSpecialValueFor("maxstacks")
-    self.proc_chance = self.ability:GetSpecialValueFor("proc_chance")
-    self.duration = self.ability:GetSpecialValueFor("duration")
+    self.caster = self:GetParent()
+    self.missingHealthPct = 0
+    self:StartIntervalThink(0.05)
 end
 
-function modiifer_blazing_berserker_rage_eruption:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modiifer_blazing_berserker_rage_eruption")
-    if (modifier) then
-        local modifierTable = {}
-        modifierTable.ability = modifier.ability
-        modifierTable.target = modifier.caster
-        modifierTable.caster = modifier.caster
-        modifierTable.modifier_name = "modiifer_blazing_berserker_rage_eruption_buff"
-        modifierTable.duration = modifier.duration
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = modifier.maxstacks
-        GameMode:ApplyStackingBuff(modifierTable)
-        local ability = modifier.caster:FindAbilityByName("blazing_berserker_incinerating_souls")
-        if (RollPercentage(modifier.proc_chance) and ability and ability:GetLevel() > 0) then
-            local cd = ability:GetCooldownTimeRemaining()
-            ability:EndCooldown()
-            modifier.caster:SetCursorCastTarget(damageTable.attacker)
-            ability:OnSpellStart()
-            ability:StartCooldown(cd)
-        end
-    end
+function modifier_blazing_berserker_boiling_rage:OnIntervalThink()
+    self:SetStackCount(1)
 end
 
-LinkedModifiers["modiifer_blazing_berserker_rage_eruption"] = LUA_MODIFIER_MOTION_NONE
+function modifier_blazing_berserker_boiling_rage:GetDamageReductionBonus()
+    local missingHealthPct = 1 - (self.caster:GetHealth() / self.caster:GetMaxHealth())
+    return math.min((self.ability.missingHealthToDamageReduction or 0) * missingHealthPct, self.ability.missingHealthToDamageReductionCap or 0)
+end
 
--- blazing_berserker_rage_eruption
-blazing_berserker_rage_eruption = class({
-    GetAbilityTextureName = function(self)
-        return "blazing_berserker_rage_eruption"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modiifer_blazing_berserker_rage_eruption"
+function modifier_blazing_berserker_boiling_rage:OnTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_blazing_berserker_boiling_rage")
+    if (not (damageTable.damage > 0 and modifier)) then
+        return damageTable
     end
-})
+    if (not (modifier.ability and modifier.ability.missingHealthToBaseSpellDamage and modifier.ability.missingHealthToBaseSpellDamage > 0)) then
+        return damageTable
+    end
+    if (not damageTable.ability) then
+        return damageTable
+    end
+    local missingHealth = damageTable.attacker:GetMaxHealth() - damageTable.attacker:GetHealth()
+    damageTable.damage = damageTable.damage + (missingHealth * modifier.ability.missingHealthToBaseSpellDamage)
+    return damageTable
+end
 
--- blazing_berserker_rage_eruption modifiers
-modifier_blazing_berserker_furious_stance = class({
+LinkedModifiers["modifier_blazing_berserker_boiling_rage"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_boiling_rage_toggle = class({
     IsDebuff = function(self)
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
@@ -647,106 +475,77 @@ modifier_blazing_berserker_furious_stance = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return blazing_berserker_furious_stance:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/blazing_berserker/furious_stance/furious_stance.vpcf"
+    GetEffectName = function()
+        return "particles/units/blazing_berserker/boiling_rage/boiling_rage_buff.vpcf"
     end
 })
 
-function modifier_blazing_berserker_furious_stance:OnCreated()
+function modifier_blazing_berserker_boiling_rage_toggle:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
-    self.damage = self.ability:GetSpecialValueFor("damage") / 100
-    self.armor_reduction = self.ability:GetSpecialValueFor("armor_reduction") * -0.01
-    self.elemental_reduction = self.ability:GetSpecialValueFor("elemental_reduction") * -0.01
-    self.aadamage = self.ability:GetSpecialValueFor("aadamage") / 100
-    self.aaspeed = self.ability:GetSpecialValueFor("aaspeed") / 100
-    self.firedmg = self.ability:GetSpecialValueFor("firedmg") / 100
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    self.fissionAbility = self.caster:FindAbilityByName("blazing_berserker_fission")
+    self:StartIntervalThink(self.ability.tick)
 end
 
-function modifier_blazing_berserker_furious_stance:OnIntervalThink()
-    if (not IsServer()) then
-        return
+function modifier_blazing_berserker_boiling_rage_toggle:OnIntervalThink()
+    local casterNewHealth = self.caster:GetHealth() - (self.caster:GetMaxHealth() * self.ability.maxHpCostPerSec)
+    self.caster:SetHealth(math.max(1, casterNewHealth))
+    if (self.caster:IsAlive() and casterNewHealth <= self.ability.fissionProcHealth and self.fissionAbility and self.fissionAbility:GetLevel() > 0) then
+        self.fissionAbility:PerformSpin(true)
     end
-    local casterHealth = self.caster:GetHealth() - (self.caster:GetMaxHealth() * self.damage)
-    if (casterHealth < 1) then
-        casterHealth = 1
-    end
-    self.caster:SetHealth(casterHealth)
 end
 
-function modifier_blazing_berserker_furious_stance:GetAttackDamagePercentBonus()
-    return self.aadamage or 0
+function modifier_blazing_berserker_boiling_rage_toggle:GetAttackSpeedPercentBonus()
+    local missingHealthPct = 1 - (self.caster:GetHealth() / self.caster:GetMaxHealth())
+    return (self.ability.bonusAsPerMissingHealthPct or 0) * missingHealthPct
 end
 
-function modifier_blazing_berserker_furious_stance:GetAttackSpeedPercentBonus()
-    return self.aaspeed or 0
+function modifier_blazing_berserker_boiling_rage_toggle:GetFireDamageBonus()
+    local missingHealthPct = 1 - (self.caster:GetHealth() / self.caster:GetMaxHealth())
+    return (self.ability.bonusFireDamagePerMissingHealthPct or 0) * missingHealthPct
 end
 
-function modifier_blazing_berserker_furious_stance:GetArmorPercentBonus()
-    return self.armor_reduction or 0
-end
+LinkedModifiers["modifier_blazing_berserker_boiling_rage_toggle"] = LUA_MODIFIER_MOTION_NONE
 
-function modifier_blazing_berserker_furious_stance:GetFireProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetFrostProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetEarthProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetVoidProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetHolyProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetNatureProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetInfernoProtectionBonus()
-    return self.elemental_reduction or 0
-end
-
-function modifier_blazing_berserker_furious_stance:GetFireDamageBonus()
-    return self.firedmg or 0
-end
-
-LinkedModifiers["modifier_blazing_berserker_furious_stance"] = LUA_MODIFIER_MOTION_NONE
-
--- blazing_berserker_furious_stance
-blazing_berserker_furious_stance = class({
-    GetAbilityTextureName = function(self)
-        return "blazing_berserker_furious_stance"
+blazing_berserker_boiling_rage = class({
+    GetIntrinsicModifierName = function()
+        return "modifier_blazing_berserker_boiling_rage"
     end
 })
 
-function blazing_berserker_furious_stance:OnSpellStart(unit, special_cast)
+function blazing_berserker_boiling_rage:OnToggle()
     if (not IsServer()) then
         return
     end
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.caster = self:GetCaster()
-    modifierTable.target = modifierTable.caster
-    modifierTable.modifier_name = "modifier_blazing_berserker_furious_stance"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
-    GameMode:ApplyBuff(modifierTable)
-    EmitSoundOn("Hero_Axe.Berserkers_Call", modifierTable.caster)
+    local caster = self:GetCaster()
+    local modifier = caster:FindModifierByName("modifier_blazing_berserker_boiling_rage_toggle")
+    if (modifier) then
+        modifier:Destroy()
+    end
+    if (self:GetToggleState()) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.target = caster
+        modifierTable.caster = caster
+        modifierTable.modifier_name = "modifier_blazing_berserker_boiling_rage_toggle"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
+        self:UseResources(true, true, true)
+    end
+end
+
+function blazing_berserker_boiling_rage:OnUpgrade()
+    self.maxHpCostPerSec = self:GetSpecialValueFor("max_hp_cost_per_sec") / 100
+    self.bonusAsPerMissingHealthPct = self:GetSpecialValueFor("bonus_as_per_missing_health_pct")
+    self.bonusFireDamagePerMissingHealthPct = self:GetSpecialValueFor("bonus_fire_damage_per_missing_health_pct")
+    self.missingHealthToDamageReduction = self:GetSpecialValueFor("missing_health_to_damage_reduction")
+    self.missingHealthToDamageReductionCap = self:GetSpecialValueFor("missing_health_to_damage_reduction_max") / 100
+    self.missingHealthToBaseSpellDamage = self:GetSpecialValueFor("missing_health_to_base_spell_damage") / 100
+    self.tick = self:GetSpecialValueFor("tick")
+    self.fissionProcHealth = self:GetSpecialValueFor("fission_proc_health") / 100
 end
 
 -- blazing_berserker_fission
@@ -1314,13 +1113,190 @@ function blazing_berserker_flame_dash:OnSpellStart()
     EmitSoundOn("Hero_Mars.Spear.Cast", caster)
 end
 
+-- blazing_berserker_fire_frenzy
+modifier_blazing_berserker_fire_frenzy_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetEffectName = function()
+        return "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_buff.vpcf"
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_PROPERTY_MIN_HEALTH
+        }
+    end,
+    GetMinHealth = function()
+        return 1
+    end
+})
+
+function modifier_blazing_berserker_fire_frenzy_buff:GetStatusEffectName()
+    return "particles/status_fx/status_effect_snapfire_magma.vpcf"
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:StatusEffectPriority()
+    return 15
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.damage = 0
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnDestroy()
+    if not IsServer() then
+        return
+    end
+    if (self.ability.endHealing > 0) then
+        local healTable = {}
+        healTable.caster = self.caster
+        healTable.target = self.caster
+        healTable.ability = self.ability
+        healTable.heal = self.damage * self.ability.endHealing
+        GameMode:HealUnit(healTable)
+    end
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_blazing_berserker_fire_frenzy_buff")
+    if (modifier and modifier.ability and modifier.ability.endHealing and modifier.ability.endHealing > 0) then
+        modifier.damage = modifier.damage + damageTable.damage
+    end
+end
+
+LinkedModifiers["modifier_blazing_berserker_fire_frenzy_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_blazing_berserker_fire_frenzy = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_blazing_berserker_fire_frenzy:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self:StartIntervalThink(self.ability:GetSpecialValueFor("incineration_souls_tick"))
+end
+
+function modifier_blazing_berserker_fire_frenzy:OnIntervalThink()
+    if (not (self.ability.incinerationSoulsRadius > 0) or not self.ability.incinerationSoulsAbility or self.ability.incinerationSoulsAbility:GetLevel() == 0) then
+        return
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.incinerationSoulsRadius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        if (not enemy:HasModifier("modifier_blazing_berserker_incinerating_souls_dot")) then
+            local cooldownRemaining = self.ability.incinerationSoulsAbility:GetCooldownTimeRemaining()
+            self.ability.incinerationSoulsAbility:EndCooldown()
+            self.caster:SetCursorCastTarget(enemy)
+            self.ability.incinerationSoulsAbility:OnSpellStart()
+            self.ability.incinerationSoulsAbility:StartCooldown(cooldownRemaining)
+            return
+        end
+    end
+end
+
+function modifier_blazing_berserker_fire_frenzy:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_blazing_berserker_fire_frenzy")
+    if (modifier and modifier.ability and modifier.ability.autoUse and modifier.ability.autoUse > 0 and modifier.ability:IsCooldownReady()) then
+        local healthAfterDamage = damageTable.victim:GetHealth() - damageTable.damage
+        if (healthAfterDamage < 1) then
+            modifier.ability:OnSpellStart()
+            modifier.ability:UseResources(false, false, true)
+        end
+    end
+    return damageTable
+end
+
+LinkedModifiers["modifier_blazing_berserker_fire_frenzy"] = LUA_MODIFIER_MOTION_NONE
+
+blazing_berserker_fire_frenzy = class({
+    GetIntrinsicModifierName = function()
+        return "modifier_blazing_berserker_fire_frenzy"
+    end
+})
+
+function blazing_berserker_fire_frenzy:OnUpgrade()
+    self.duration = self:GetSpecialValueFor("duration")
+    self.endHealing = self:GetSpecialValueFor("end_healing") / 100
+    self.autoUse = self:GetSpecialValueFor("auto_use")
+    self.incinerationSoulsRadius = self:GetSpecialValueFor("incineration_souls_radius")
+    if (not self.incinerationSoulsAbility) then
+        self.incinerationSoulsAbility = self:GetCaster():FindAbilityByName("blazing_berserker_incinerating_souls")
+    end
+end
+
+function blazing_berserker_fire_frenzy:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = caster
+    modifierTable.caster = caster
+    modifierTable.modifier_name = "modifier_blazing_berserker_fire_frenzy_buff"
+    modifierTable.duration = self.duration
+    local modifier = GameMode:ApplyBuff(modifierTable)
+    modifier:SetDuration(self.duration, true)
+    EmitSoundOn("Hero_Axe.Berserkers_Call", caster)
+    local pidx = ParticleManager:CreateParticle("particles/units/blazing_berserker/fire_frenzy/fire_frenzy_start.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    ParticleManager:ReleaseParticleIndex(pidx)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_blazing_berserker", MotionController)
 end
 
 if (IsServer() and not GameMode.BLAZING_BERSERKER_INIT) then
-    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modiifer_blazing_berserker_rage_eruption, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(blazing_berserker_flame_dash, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_boiling_rage, 'OnTakeDamage'), true)
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_fire_frenzy_buff, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_blazing_berserker_fire_frenzy, 'OnTakeDamage'))
+    GameMode:RegisterMinimumAbilityCooldown('blazing_berserker_fire_frenzy', 30)
     GameMode.BLAZING_BERSERKER_INIT = true
 end
