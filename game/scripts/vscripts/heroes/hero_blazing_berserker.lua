@@ -1143,6 +1143,14 @@ modifier_blazing_berserker_fire_frenzy_buff = class({
     end
 })
 
+function modifier_blazing_berserker_fire_frenzy_buff:GetStatusEffectName()
+    return "particles/status_fx/status_effect_snapfire_magma.vpcf"
+end
+
+function modifier_blazing_berserker_fire_frenzy_buff:StatusEffectPriority()
+    return 15
+end
+
 function modifier_blazing_berserker_fire_frenzy_buff:OnCreated()
     if not IsServer() then
         return

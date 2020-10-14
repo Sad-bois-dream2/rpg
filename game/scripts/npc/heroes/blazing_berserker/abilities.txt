@@ -496,6 +496,7 @@
 		{
             "particle"  "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_start.vpcf"
             "particle"  "particles/units/blazing_berserker/fire_frenzy/fire_frenzy_buff.vpcf"
+            "particle"  "particles/status_fx/status_effect_snapfire_magma.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
 		}
 	}
