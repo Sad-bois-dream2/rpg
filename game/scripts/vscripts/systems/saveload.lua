@@ -189,7 +189,7 @@ function SaveLoad:OnGetSlotsForHeroRequest(event, args)
                 for _, heroSlots in pairs(SaveLoad.playersData[entryId].heroes) do
                     for _, slotData in pairs(heroSlots.slots) do
                         if (slotData.hero == SaveLoad.heroes[HeroSelection.playerHeroes["player" .. playerId].hero]) then
-                            table.insert(data, { hero = slotData.hero, heroLevel = SaveLoad:GetHeroLevel(slotData.heroXP), items = json.encode(slotData.items.equipped), slotNumber = slotData.slotNumber, locked = slotData.locked, new = slotData.new })
+                            table.insert(data, { hero = slotData.hero, heroLevel = SaveLoad:GetHeroLevel(slotData.heroXP), slotNumber = slotData.slotNumber, locked = slotData.locked, new = slotData.new })
                         end
                     end
                 end
