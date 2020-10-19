@@ -201,7 +201,7 @@ function phantom_ranger_phantom_of_vengeance:OnProjectileHit_ExtraData(target, l
 
     if (target and not target:IsNull()) then
 
-        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true, fromsummon = ExtraData.fromsummon })
+        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damage / 100, voiddmg = true, fromsummon = ExtraData.fromsummon, single = true })
         target:EmitSound("Hero_Spectre.HauntCast")
         if (self.level >= 2 and (Enemies:IsBoss(target) or Enemies:IsElite(target)) and not self.receivedCdr) then
 
@@ -844,7 +844,7 @@ function phantom_ranger_shadow_waves:OnProjectileHit_ExtraData(target, location,
 
     if (target ~= nil) then
 
-        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damageScaling, voiddmg = true, fromsummon = ExtraData.fromsummon })
+        GameMode:DamageUnit({ caster = self.caster, target = target, ability = self, damage = Units:GetAttackDamage(self.caster) * self.damageScaling, voiddmg = true, fromsummon = ExtraData.fromsummon, aoe = true })
         target:EmitSound("Hero_ShadowDemon.ShadowPoison.Impact")
         GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_phantom_ranger_shadow_waves_debuff", duration = self.duration })
         if not (self.level >= 4) then
@@ -1180,6 +1180,7 @@ function phantom_ranger_phantom_harmonic:OnProjectileHit_ExtraData(target, vLoca
     damageTable.ability = self
     damageTable.damage = self.proc_damage * Units:GetAttackDamage(self.caster)
     damageTable.voiddmg = true
+    damageTable.aoe = true
     GameMode:DamageUnit(damageTable)
     table.insert(self.projectiles[ExtraData.index].reachedTargets, target)
     while #enemies > 0 do

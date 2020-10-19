@@ -978,6 +978,7 @@ function light_cardinal_consecration:OnSpellStart()
             damageTable.ability = self
             damageTable.damage = damage
             damageTable.holydmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
             local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
             ParticleManager:DestroyParticle(pidx, false)
@@ -990,6 +991,7 @@ function light_cardinal_consecration:OnSpellStart()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.holydmg = true
+        damageTable.single = true
         GameMode:DamageUnit(damageTable)
         local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
         ParticleManager:DestroyParticle(pidx, false)

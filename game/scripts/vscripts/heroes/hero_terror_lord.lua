@@ -50,6 +50,7 @@ function modifier_terror_lord_malicious_flames:OnIntervalThink()
     damageTable.ability = self.ability
     damageTable.damage = self.damage
     damageTable.infernodmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -382,6 +383,7 @@ function modifier_terror_lord_destructive_stomp_thinker:OnIntervalThink()
         damageTable.ability = self.ability
         damageTable.damage = self.damage * Units:GetHeroPrimaryAttribute(self.caster)
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end

@@ -74,6 +74,7 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
             damageTable.ability = self
             damageTable.damage = damage
             damageTable.frostdmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
             local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_smoke.vpcf", PATTACH_POINT, enemy)
             ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
@@ -90,6 +91,7 @@ function crystal_sorceress_frost_comet:OnProjectileHit()
     damageTable.ability = self
     damageTable.damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
     damageTable.frostdmg = true
+    damageTable.single = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -532,6 +534,7 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.frostdmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self
@@ -721,6 +724,7 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
                 damageTable.ability = self
                 damageTable.damage = damage
                 damageTable.frostdmg = true
+                damageTable.aoe = true
                 GameMode:DamageUnit(damageTable)
             end
             table.insert(anotherParticleTable, pidx)
