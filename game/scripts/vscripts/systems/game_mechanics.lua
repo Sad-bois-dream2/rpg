@@ -540,7 +540,6 @@ if (IsServer()) then
         end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
         local totalReduction = 1
-        local totalBlock = 0
         local IsPureDamage = (damageTable.puredmg == true)
         local IsPhysicalDamage = (damageTable.physdmg == true)
         local IsFireDamage = (damageTable.firedmg == true)
@@ -601,14 +600,6 @@ if (IsServer()) then
             end
             totalReduction = elementalReduction
         end
-        -- post reduction effects
-        if (IsPhysicalDamage == true) then
-            totalBlock = totalBlock + Units:GetBlock(damageTable.victim)
-        end
-        if (args.ability) then
-            totalBlock = totalBlock + Units:GetMagicBlock(damageTable.victim)
-            damageTable.damage = damageTable.damage * (Units:GetSpellDamage(damageTable.attacker))
-        end
         local totalAmplification = 1
         if (IsFireDamage == true) then
             totalAmplification = totalAmplification + Units:GetFireDamage(damageTable.attacker) - 1
@@ -638,7 +629,7 @@ if (IsServer()) then
             totalReduction = 0.01
         end
         -- final damage
-        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification) - totalBlock
+        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification)
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
         if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc

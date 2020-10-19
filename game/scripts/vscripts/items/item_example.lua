@@ -204,22 +204,6 @@ function modifier_inventory_item_example:GetInfernoDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetBlockBonus()
-    return 0
-end
-
-function modifier_inventory_item_example:GetBlockPercentBonus()
-    return 0
-end
-
-function modifier_inventory_item_example:GetMagicBlockBonus()
-    return 0
-end
-
-function modifier_inventory_item_example:GetMagicBlockPercentBonus()
-    return 0
-end
-
 function modifier_inventory_item_example:GetArmorBonus()
     return 0
 end

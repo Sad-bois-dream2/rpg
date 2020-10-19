@@ -1107,24 +1107,6 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetBlock(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.block or 0
-    end
-    return 0
-end
-
----@param unit CDOTA_BaseNPC
----@return number
-function Units:GetMagicBlock(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.magicBlock or 0
-    end
-    return 0
-end
-
----@param unit CDOTA_BaseNPC
----@return number
 function Units:GetDamageReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.damageReduction or 1
