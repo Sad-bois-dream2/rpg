@@ -57,7 +57,7 @@ function modifier_charges:OnAbilityFullyCast(params)
         if (self:GetStackCount() > 0) then
             self.ability:EndCooldown()
         else
-            self.ability:StartCooldown(self:GetRemainingTime() * Units:GetCooldownReduction(self.caster))
+            self.ability:StartCooldown(self:GetRemainingTime() * Units:GetCooldownReduction(self.caster, self.ability))
         end
         self:DecrementStackCount()
         self:Update()

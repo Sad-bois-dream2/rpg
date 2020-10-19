@@ -109,6 +109,12 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitArmorPercent = 1
         local unitArmorPercentMulti = 1
         local unitCooldownReduction = 1
+        local unitCooldownReductionForAbility1 = 1
+        local unitCooldownReductionForAbility2 = 1
+        local unitCooldownReductionForAbility3 = 1
+        local unitCooldownReductionForAbility4 = 1
+        local unitCooldownReductionForAbility5 = 1
+        local unitCooldownReductionForAbility6 = 1
         local unitHealingReceivedPercent = 1
         local unitHealingReceivedPercentMulti = 1
         local unitHealingCausedPercent = 1
@@ -312,8 +318,26 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetArmorPercentBonusMulti) then
                 unitArmorPercentMulti = unitArmorPercentMulti * (tonumber(unitModifiers[i].GetArmorPercentBonusMulti(unitModifiers[i])) or 1)
             end
-            if (unitModifiers[i].GetCooldownReduction) then
-                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReduction(unitModifiers[i])) or 0))
+            if (unitModifiers[i].GetCooldownReductionBonus) then
+                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFirstAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility1 = unitCooldownReductionForAbility1 * (1 - (tonumber(unitModifiers[i].GetFirstAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetSecondAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility2 = unitCooldownReductionForAbility2 * (1 - (tonumber(unitModifiers[i].GetSecondAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetThirdAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility3 = unitCooldownReductionForAbility3 * (1 - (tonumber(unitModifiers[i].GetThirdAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFourthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility4 = unitCooldownReductionForAbility4 * (1 - (tonumber(unitModifiers[i].GetFourthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFifthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility5 = unitCooldownReductionForAbility5 * (1 - (tonumber(unitModifiers[i].GetFifthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetSixthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility6 = unitCooldownReductionForAbility6 * (1 - (tonumber(unitModifiers[i].GetSixthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
             end
             if (unitModifiers[i].GetBaseAttackTime) then
                 local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]))
@@ -464,6 +488,14 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.armor = unitArmor * unitArmorPercent * unitArmorPercentMulti
         -- cdr
         statsTable.cdr = unitCooldownReduction
+        statsTable.cdrForAbilities = {
+            unitCooldownReductionForAbility1,
+            unitCooldownReductionForAbility2,
+            unitCooldownReductionForAbility3,
+            unitCooldownReductionForAbility4,
+            unitCooldownReductionForAbility5,
+            unitCooldownReductionForAbility6
+        }
         -- bat
         statsTable.bat = unitBaseAttackTime
         unit:SetBaseAttackTime(unitBaseAttackTime)
@@ -1228,9 +1260,14 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetCooldownReduction(unit)
+function Units:GetCooldownReduction(unit, ability)
     if (unit ~= nil and unit.stats ~= nil) then
-        return math.max(unit.stats.cdr or 1, 0.5)
+        local totalCdr = unit.stats.cdr or 1
+        if (ability) then
+            local index = ability:GetAbilityIndex() + 1
+            totalCdr = totalCdr - (1 - math.max(unit.stats.cdrForAbilities[index] or 1, 0.5))
+        end
+        return math.max(totalCdr, 0.5)
     end
     return 1
 end

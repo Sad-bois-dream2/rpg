@@ -854,7 +854,7 @@ function phantom_ranger_shadow_waves:OnProjectileHit_ExtraData(target, location,
         else
 
             local silenceCoolingDown = target:FindModifierByName("modifier_phantom_ranger_shadow_waves_silence_cd")
-            local silenceCd = self:GetOriginalCooldown(self.level - 1) * Units:GetCooldownReduction(self.caster)
+            local silenceCd = self:GetOriginalCooldown(self.level - 1) * Units:GetCooldownReduction(self.caster, self)
             if (not silenceCoolingDown) then
 
                 GameMode:ApplyDebuff({ caster = self.caster, target = target, ability = self, modifier_name = "modifier_silence", duration = self.silenceDuration })

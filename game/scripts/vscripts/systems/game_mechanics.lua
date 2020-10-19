@@ -937,7 +937,7 @@ function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
             end
         end
         local cooldownTable = {}
-        cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
+        cooldownTable.reduction = Units:GetCooldownReduction(self.unit, keys.ability)
         cooldownTable.ability = keys.ability:GetAbilityName()
         cooldownTable.isflat = false
         cooldownTable.target = self.unit
