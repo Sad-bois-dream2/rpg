@@ -417,7 +417,7 @@ function SaveLoad:GenerateSaveDataForSlot(playerId, slotId)
         }
     end
     data.talents = {}
-    for i = 1, TalentTree.latest_talent_id do
+    for i = 1, TalentTree:GetLatestTalentID() do
         data.talents["talent" .. i] = TalentTree:GetHeroTalentLevel(playerHero, i)
     end
     return data
