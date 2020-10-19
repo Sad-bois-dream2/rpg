@@ -46,6 +46,7 @@ function modifier_catastrophe_demolisher_curse_of_doom_dot:OnIntervalThink()
     damageTable.target = self.target
     damageTable.ability = self.ability
     damageTable.infernodmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -324,6 +325,7 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
         damageTable.ability = self
         damageTable.target = enemy
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local stacksPerEnemy = self.strStacksPerCreep
         if Enemies:IsBoss(enemy) then
@@ -677,6 +679,7 @@ function modifier_catastrophe_demolisher_essence_devouer:OnIntervalThink()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
     self:SetStackCount(#enemies)
@@ -1169,6 +1172,7 @@ function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnInter
         damageTable.target = enemy
         damageTable.ability = self.ability
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -1336,6 +1340,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         damageTable.target = enemy
         damageTable.ability = self
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self

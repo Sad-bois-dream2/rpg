@@ -99,6 +99,7 @@ function modifier_chosen_invoker_purification_brilliance:OnIntervalThink()
     damageTable.ability = self.ability
     damageTable.damage = self.damage * self.caster:GetMaxMana()
     damageTable.holydmg = true
+    damageTable.single = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -207,6 +208,7 @@ function modifier_chosen_invoker_flare_array_dot:OnIntervalThink()
     damageTable.ability = self.ability
     damageTable.damage = self.damage * self.caster:GetMaxMana() * self.bonusDamage
     damageTable.holydmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -322,6 +324,7 @@ function chosen_invoker_flare_array:OnSpellStart()
                 damageTable.ability = self
                 damageTable.damage = baseDamage
                 damageTable.holydmg = true
+                damageTable.aoe = true
                 GameMode:DamageUnit(damageTable)
                 modifierTable = {}
                 modifierTable.ability = self
@@ -472,6 +475,7 @@ function chosen_invoker_photon_pulse:OnSpellStart()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.holydmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         modifierTable = {}
         modifierTable.ability = self
@@ -556,6 +560,7 @@ function chosen_invoker_light_shock:OnSpellStart()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.holydmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self

@@ -1,5 +1,19 @@
 if Units == nil then
     _G.Units = class({})
+    Units.heroesInnateElement = {
+        npc_dota_hero_axe = "firedmg",
+        npc_dota_hero_crystal_maiden = "frostdmg",
+        npc_dota_hero_dark_willow = "naturedmg",
+        npc_dota_hero_enchantress = "naturedmg",
+        npc_dota_hero_juggernaut = "holydmg",
+        npc_dota_hero_drow_ranger = "voiddmg",
+        npc_dota_hero_mars = "firedmg",
+        npc_dota_hero_silencer = "holydmg",
+        npc_dota_hero_invoker = "holydmg",
+        npc_dota_hero_phantom_assassin = "voiddmg",
+        npc_dota_hero_abyssal_underlord = "infernodmg",
+        npc_dota_hero_skeleton_king = "infernodmg"
+    }
 end
 
 ---@class UNIT_STATS_ELEMENTS_TABLE
@@ -109,6 +123,12 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitArmorPercent = 1
         local unitArmorPercentMulti = 1
         local unitCooldownReduction = 1
+        local unitCooldownReductionForAbility1 = 1
+        local unitCooldownReductionForAbility2 = 1
+        local unitCooldownReductionForAbility3 = 1
+        local unitCooldownReductionForAbility4 = 1
+        local unitCooldownReductionForAbility5 = 1
+        local unitCooldownReductionForAbility6 = 1
         local unitHealingReceivedPercent = 1
         local unitHealingReceivedPercentMulti = 1
         local unitHealingCausedPercent = 1
@@ -119,6 +139,10 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitCriticalChance = 1
         local unitCriticalDamage = 1
         local unitAggroCaused = 1
+        local unitSummonDamage = 1
+        local unitSingleDamage = 1
+        local unitDOTDamage = 1
+        local unitAOEDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         table.sort(unitModifiers, function(a, b)
@@ -312,8 +336,26 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetArmorPercentBonusMulti) then
                 unitArmorPercentMulti = unitArmorPercentMulti * (tonumber(unitModifiers[i].GetArmorPercentBonusMulti(unitModifiers[i])) or 1)
             end
-            if (unitModifiers[i].GetCooldownReduction) then
-                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReduction(unitModifiers[i])) or 0))
+            if (unitModifiers[i].GetCooldownReductionBonus) then
+                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFirstAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility1 = unitCooldownReductionForAbility1 * (1 - (tonumber(unitModifiers[i].GetFirstAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetSecondAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility2 = unitCooldownReductionForAbility2 * (1 - (tonumber(unitModifiers[i].GetSecondAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetThirdAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility3 = unitCooldownReductionForAbility3 * (1 - (tonumber(unitModifiers[i].GetThirdAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFourthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility4 = unitCooldownReductionForAbility4 * (1 - (tonumber(unitModifiers[i].GetFourthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetFifthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility5 = unitCooldownReductionForAbility5 * (1 - (tonumber(unitModifiers[i].GetFifthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+            end
+            if (unitModifiers[i].GetSixthAbilityCooldownReductionBonus) then
+                unitCooldownReductionForAbility6 = unitCooldownReductionForAbility6 * (1 - (tonumber(unitModifiers[i].GetSixthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
             end
             if (unitModifiers[i].GetBaseAttackTime) then
                 local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]))
@@ -350,6 +392,18 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             end
             if (unitModifiers[i].GetAggroCausedBonus) then
                 unitAggroCaused = unitAggroCaused + (tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetSummonDamageBonus) then
+                unitSummonDamage = unitSummonDamage + (tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetSingleDamageBonus) then
+                unitSingleDamage = unitSingleDamage + (tonumber(unitModifiers[i].GetSingleDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetAOEDamageBonus) then
+                unitAOEDamage = unitAOEDamage + (tonumber(unitModifiers[i].GetAOEDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetDOTDamageBonus) then
+                unitDOTDamage = unitDOTDamage + (tonumber(unitModifiers[i].GetDOTDamageBonus(unitModifiers[i])) or 0)
             end
         end
         local primaryAttribute = 0
@@ -464,6 +518,14 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.armor = unitArmor * unitArmorPercent * unitArmorPercentMulti
         -- cdr
         statsTable.cdr = unitCooldownReduction
+        statsTable.cdrForAbilities = {
+            unitCooldownReductionForAbility1,
+            unitCooldownReductionForAbility2,
+            unitCooldownReductionForAbility3,
+            unitCooldownReductionForAbility4,
+            unitCooldownReductionForAbility5,
+            unitCooldownReductionForAbility6
+        }
         -- bat
         statsTable.bat = unitBaseAttackTime
         unit:SetBaseAttackTime(unitBaseAttackTime)
@@ -501,6 +563,10 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.display.maxmana = unit:GetMaxMana()
         -- aggro caused
         statsTable.aggroCaused = unitAggroCaused
+        statsTable.summonDamage = unitSummonDamage
+        statsTable.damageSingle = unitSingleDamage
+        statsTable.damageAOE = unitAOEDamage
+        statsTable.damageDOT = unitDOTDamage
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
@@ -624,6 +690,7 @@ function modifier_stats_system:OnAttackLanded(event)
             if (attacker:IsRealHero()) then
                 modifier_summon:OnSummonMasterAttackLanded(event)
             end
+
             -- deal aa dmg via modifier
             ---@type DAMAGE_TABLE
             local damageTable = {}
@@ -632,6 +699,10 @@ function modifier_stats_system:OnAttackLanded(event)
             damageTable.target = target
             damageTable.physdmg = true
             damageTable.ability = nil
+            local unitName = attacker:GetUnitName()
+            if (attacker:IsRealHero() and Units.heroesInnateElement[unitName]) then
+                damageTable[Units.heroesInnateElement[unitName]] = true
+            end
             GameMode:DamageUnit(damageTable)
         end
     end
@@ -1075,24 +1146,6 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetBlock(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.block or 0
-    end
-    return 0
-end
-
----@param unit CDOTA_BaseNPC
----@return number
-function Units:GetMagicBlock(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.magicBlock or 0
-    end
-    return 0
-end
-
----@param unit CDOTA_BaseNPC
----@return number
 function Units:GetDamageReduction(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.damageReduction or 1
@@ -1228,9 +1281,14 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetCooldownReduction(unit)
+function Units:GetCooldownReduction(unit, ability)
     if (unit ~= nil and unit.stats ~= nil) then
-        return math.max(unit.stats.cdr or 1, 0.5)
+        local totalCdr = unit.stats.cdr or 1
+        if (ability) then
+            local index = ability:GetAbilityIndex() + 1
+            totalCdr = totalCdr - (1 - math.max(unit.stats.cdrForAbilities[index] or 1, 0.5))
+        end
+        return math.max(totalCdr, 0.5)
     end
     return 1
 end
@@ -1305,6 +1363,42 @@ function Units:GetAggroCaused(unit)
         return unit.stats.aggroCaused or 1
     end
     return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetSummonDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.summonDamage or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetSingleDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageSingle or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetAOEDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageAOE or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDOTDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageDOT or 1
+    end
+    return 0
 end
 
 LinkLuaModifier("modifier_stats_system", "systems/units", LUA_MODIFIER_MOTION_NONE)

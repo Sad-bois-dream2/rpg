@@ -424,6 +424,7 @@ function modifier_luminous_samurai_judgment_of_light_jump:OnIntervalThink()
         damageTable.ability = self.ability
         damageTable.damage = Units:GetAttackDamage(self.caster) * self.jumpDamage
         damageTable.holydmg = true
+        damageTable.single = true
         GameMode:DamageUnit(damageTable)
         self.caster:PerformAttack(self.target, true, true, true, true, false, false, true)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/judgment_of_light/judgment_of_light_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.target)
@@ -637,6 +638,7 @@ function modifier_luminous_samurai_blade_dance_debuff:OnStackCountChanged()
             damageTable.ability = self.ability
             damageTable.damage = damage
             damageTable.holydmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
         end
     end
@@ -758,6 +760,7 @@ function modifier_luminous_samurai_blade_dance_motion:UpdateHorizontalMotion(me,
                     damageTable.ability = self.ability
                     damageTable.damage = self.ability.damage
                     damageTable.holydmg = true
+                    damageTable.aoe = true
                     GameMode:DamageUnit(damageTable)
                     local modifierTable = {}
                     modifierTable.ability = self.ability
@@ -912,6 +915,7 @@ function luminous_samurai_light_iai_giri:OnSpellStart()
             damageTable.ability = self
             damageTable.damage = damage
             damageTable.holydmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
         end
         Timers:CreateTimer(1.0, function()

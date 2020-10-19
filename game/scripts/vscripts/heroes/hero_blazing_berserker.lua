@@ -73,6 +73,7 @@ function modifier_blazing_berserker_molten_strike_dot:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
+    damageTable.dot = true
     damageTable.firedmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -163,6 +164,7 @@ function blazing_berserker_molten_strike:OnSpellStart()
         damageTable.target = enemy
         damageTable.ability = self
         damageTable.damage = damage
+        damageTable.aoe = true
         damageTable.firedmg = true
         GameMode:DamageUnit(damageTable)
         if (self.dotDuration > 0) then
@@ -261,6 +263,7 @@ function modifier_blazing_berserker_incinerating_souls_dot:OnIntervalThink()
     damageTable.target = self.target
     damageTable.ability = self.ability
     damageTable.damage = self.ability.dotDamage * Units:GetHeroStrength(self.caster)
+    damageTable.dot = true
     damageTable.firedmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -593,6 +596,7 @@ function modifier_blazing_berserker_fission_dot:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
+    damageTable.dot = true
     damageTable.firedmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -768,6 +772,7 @@ function blazing_berserker_fission:PerformSpin(showAnimation)
         damageTable.target = enemy
         damageTable.ability = self
         damageTable.firedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         if (self.dotDuration > 0) then
             local modifierTable = {}
@@ -884,6 +889,7 @@ function modifier_blazing_berserker_flame_dash_thinker:OnIntervalThink()
         damageTable.caster = self.caster
         damageTable.target = enemy
         damageTable.ability = self.ability
+        damageTable.aoe = true
         damageTable.firedmg = true
         GameMode:DamageUnit(damageTable)
     end
@@ -1047,6 +1053,7 @@ function modifier_blazing_berserker_flame_dash_motion:UpdateHorizontalMotion(me,
                     damageTable.ability = self.ability
                     damageTable.damage = damage
                     damageTable.firedmg = true
+                    damageTable.aoe = true
                     GameMode:DamageUnit(damageTable)
                     table.insert(self.damagedEnemies, enemy)
                 end

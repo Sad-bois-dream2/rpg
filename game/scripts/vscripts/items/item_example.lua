@@ -204,19 +204,19 @@ function modifier_inventory_item_example:GetInfernoDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetBlockBonus()
+function modifier_inventory_item_example:GetSummonDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetBlockPercentBonus()
+function modifier_inventory_item_example:GetSingleDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetMagicBlockBonus()
+function modifier_inventory_item_example:GetAOEDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetMagicBlockPercentBonus()
+function modifier_inventory_item_example:GetDOTDamageBonus()
     return 0
 end
 
@@ -239,8 +239,38 @@ function modifier_inventory_item_example:GetIgnoreAggroTarget()
     return self:GetParent()
 end
 
--- 1.0 = 100%, pls no, decrease % cooldown (capped at 50%). Fixed from set % cooldown to decrease % cooldown.
-function modifier_inventory_item_example:GetCooldownReduction()
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFirstAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetSecondAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetThirdAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFourthAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFifthAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetSixthAbilityCooldownReductionBonus()
     return 0.0
 end
 

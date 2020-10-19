@@ -144,6 +144,7 @@ function modifier_abyssal_stalker_blade_of_darkness_dot:OnIntervalThink()
     damageTable.caster = self.caster
     damageTable.target = self.target
     damageTable.ability = self.ability
+    damageTable.dot = true
     damageTable.voiddmg = true
     GameMode:DamageUnit(damageTable)
 end
@@ -397,6 +398,7 @@ function abyssal_stalker_shadow_rush:OnSpellStart()
         damageTable.target = target
         damageTable.ability = self
         damageTable.damage = damage
+        damageTable.single = true
         damageTable.voiddmg = true
         GameMode:DamageUnit(damageTable)
         if (self.stacksPerStrike > 0) then
@@ -811,6 +813,7 @@ function modifier_abyssal_stalker_void_dust_buff:OnDestroy()
             damageTable.caster = caster
             damageTable.target = unit
             damageTable.ability = self.ability
+            damageTable.aoe = true
             damageTable.voiddmg = true
             GameMode:DamageUnit(damageTable)
         end
@@ -1276,6 +1279,7 @@ function abyssal_stalker_dagger_throw:OnProjectileHit(enemy, location)
     damageTable.target = enemy
     damageTable.ability = self
     damageTable.damage = Units:GetAttackDamage(self.caster) * self.damage
+    damageTable.single = true
     damageTable.voiddmg = true
     GameMode:DamageUnit(damageTable)
     if (self:GetAutoCastState()) then

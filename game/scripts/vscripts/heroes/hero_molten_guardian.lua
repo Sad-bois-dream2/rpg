@@ -75,6 +75,7 @@ function modifier_molten_guardian_scorching_clash_dot:OnIntervalThink()
         damageTable.ability = self.ability
         damageTable.damage = self.caster:GetMaxHealth() * self.ability.dotDamage
         damageTable.firedmg = true
+        damageTable.dot = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -201,6 +202,7 @@ function modifier_molten_guardian_scorching_clash_motion:UpdateHorizontalMotion(
                     damageTable.ability = self.ability
                     damageTable.damage = damage
                     damageTable.firedmg = true
+                    damageTable.aoe = true
                     GameMode:DamageUnit(damageTable)
                     if (self.ability.dotDuration > 0) then
                         local modifierTable = {}
@@ -446,6 +448,7 @@ function modifier_molten_guardian_lava_skin_toggle:OnIntervalThink()
         damageTable.ability = self.ability
         damageTable.damage = damage
         damageTable.firedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         if (self.ability.armorStacksDuration > 0) then
             local modifierTable = {}
@@ -674,7 +677,7 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
                 DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_HERO,
                 DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
         for _, enemy in pairs(enemies) do
-            self:ApplySpellEffectToTarget(caster, enemy)
+            self:ApplySpellEffectToTarget(caster, enemy, true)
         end
         ParticleManager:SetParticleControl(pidx, 1, Vector(self.searchWidthPastTarget, self.searchWidthPastTarget, self.searchWidthPastTarget))
     else
@@ -688,13 +691,18 @@ function molten_guardian_volcanic_blow:OnSpellStart(unit, special_cast)
     EmitSoundOn("Hero_Mars.Shield.Cast", caster)
 end
 
-function molten_guardian_volcanic_blow:ApplySpellEffectToTarget(caster, target)
+function molten_guardian_volcanic_blow:ApplySpellEffectToTarget(caster, target, aoe)
     local damageTable = {}
     damageTable.caster = caster
     damageTable.target = target
     damageTable.ability = self
     damageTable.damage = caster:GetMaxHealth() * self.damage
     damageTable.firedmg = true
+    if(aoe) then
+        damageTable.aoe = true
+    else
+        damageTable.single = true
+    end
     GameMode:DamageUnit(damageTable)
     if (self:GetAutoCastState()) then
         local modifierTable = {}
@@ -1407,6 +1415,7 @@ function modifier_molten_guardian_shields_up_channel:OnTakeDamage(damageTable)
                 damageTable.target = damageTable.attacker
                 damageTable.ability = modifier.ability
                 damageTable.firedmg = true
+                damageTable.single = true
                 GameMode:DamageUnit(damageTable)
             end
         end
@@ -1649,6 +1658,7 @@ function modifier_molten_guardian_lava_spear_thinker:OnIntervalThink()
         damageTable.target = enemy
         damageTable.ability = self.ability
         damageTable.firedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -1677,6 +1687,7 @@ function molten_guardian_lava_spear:OnProjectileHit(target, location)
         damageTable.ability = self
         damageTable.damage = self.damage * self.caster:GetMaxHealth()
         damageTable.firedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self

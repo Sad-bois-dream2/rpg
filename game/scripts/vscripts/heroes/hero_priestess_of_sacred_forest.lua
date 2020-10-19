@@ -1463,6 +1463,7 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
             damageTable.ability = self
             damageTable.damage = damage
             damageTable.naturedmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
         end
     else
@@ -1472,6 +1473,7 @@ function priestess_of_sacred_forest_herbaceous_essence_night:OnSpellStart()
         damageTable.ability = self
         damageTable.damage = self.damage * Units:GetHeroIntellect(caster) * nightWindStacksBonusDamage
         damageTable.naturedmg = true
+        damageTable.single = true
         GameMode:DamageUnit(damageTable)
     end
     if (self.natureReductionDuration > 0) then
@@ -1614,6 +1616,7 @@ function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnI
         damageTable.ability = self.ability
         damageTable.target = enemy
         damageTable.naturedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -1650,6 +1653,7 @@ function modifier_priestess_of_sacred_forest_thorny_protection_night_thinker:OnD
             damageTable.ability = self.ability
             damageTable.target = enemy
             damageTable.naturedmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
         end
     end
@@ -1826,6 +1830,7 @@ function modifier_priestess_of_sacred_forest_twilight_breeze_night_dot:OnInterva
     damageTable.ability = self.ability
     damageTable.target = self.target
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -1983,6 +1988,7 @@ function modifier_priestess_of_sacred_forest_tranquility_night_thinker:OnInterva
         damageTable.ability = self.ability
         damageTable.damage = damage
         damageTable.naturedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -2256,6 +2262,7 @@ function modifier_priestess_of_sacred_forest_sleep_dust_night_dot:OnIntervalThin
     damageTable.ability = self.ability
     damageTable.damage = self.ability.dotDamage * Units:GetHeroIntellect(self.caster)
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -2304,6 +2311,7 @@ function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, loc
         damageTable.ability = self
         damageTable.damage = self.damage * Units:GetHeroIntellect(self.caster)
         damageTable.naturedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         if (self:GetAutoCastState()) then
             local modifierTable = {}

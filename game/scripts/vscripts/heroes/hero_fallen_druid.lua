@@ -318,6 +318,7 @@ function fallen_druid_wisp_companion:DealWispyDamageToTarget(owner, target)
     damageTable.damage = self.wispDamage * Units:GetHeroAgility(owner)
     damageTable.naturedmg = true
     damageTable.fromsummon = true
+    damageTable.single = true
     GameMode:DamageUnit(damageTable)
     target:EmitSound("Hero_DarkWillow.WillOWisp.Damage")
     if (self.wispDamageOnHitProc > 0) then
@@ -646,6 +647,7 @@ function fallen_druid_flashbang:OnSpellStart(customPosition)
         damageTable.target = enemy
         damageTable.ability = self
         damageTable.naturedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self
@@ -760,6 +762,7 @@ function modifier_fallen_druid_grasping_roots_dot:OnIntervalThink()
     damageTable.ability = self.ability
     damageTable.damage = self.ability.dotDamage * Units:GetHeroAgility(self.caster)
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -942,6 +945,7 @@ function modifier_fallen_druid_crown_of_death_crit_dot:OnIntervalThink()
     damageTable.target = self.target
     damageTable.ability = self.ability
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -1013,6 +1017,7 @@ function modifier_fallen_druid_crown_of_death_dot:OnIntervalThink()
     damageTable.target = self.target
     damageTable.ability = self.ability
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -1045,6 +1050,7 @@ function modifier_fallen_druid_crown_of_death_dot:OnDestroy()
             damageTable.target = enemy
             damageTable.ability = self.ability
             damageTable.naturedmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
         end
     end
@@ -1252,6 +1258,7 @@ function modifier_fallen_druid_whispering_doom_dot:OnIntervalThink()
     damageTable.ability = self.ability
     damageTable.damage = self.ability.dotDamage * Units:GetHeroAgility(self.caster)
     damageTable.naturedmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
     local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/wisp_companion/wispy_impact.vpcf", PATTACH_ABSORIGIN, self.target)
     ParticleManager:SetParticleControlEnt(pidx, 3, self.target, PATTACH_POINT_FOLLOW, "attach_hitloc", self.target:GetAbsOrigin(), true)
@@ -1293,6 +1300,7 @@ function fallen_druid_whispering_doom:OnProjectileHit(enemy, vLocation)
         damageTable.ability = self.ability
         damageTable.damage = self.damage * Units:GetHeroAgility(self.caster)
         damageTable.naturedmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         if (self.dotDuration > 0) then
             local modifierTable = {}
@@ -1421,6 +1429,7 @@ function modifier_fallen_druid_shadow_vortex_stacks:OnDestroy()
         damageTable.ability = self.ability
         damageTable.damage = self.ability.damage * Units:GetHeroAgility(self.caster)
         damageTable.naturedmg = true
+        damageTable.single = true
         GameMode:DamageUnit(damageTable)
         if (self.ability:GetAutoCastState()) then
             local modifierTable = {}
@@ -1566,6 +1575,7 @@ function modifier_fallen_druid_shadow_vortex_thinker:OnIntervalThink()
             damageTable.ability = self.ability
             damageTable.damage = self.ability.bonusDmg * Units:GetHeroAgility(self.caster)
             damageTable.naturedmg = true
+            damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
             local pidx = ParticleManager:CreateParticle("particles/units/fallen_druid/shadow_vortex/shadow_vortex_impact.vpcf", PATTACH_ABSORIGIN, enemy)
             Timers:CreateTimer(1.0, function()
