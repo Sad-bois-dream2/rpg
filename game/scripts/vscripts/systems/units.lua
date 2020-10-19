@@ -126,6 +126,9 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitCriticalDamage = 1
         local unitAggroCaused = 1
         local unitSummonDamage = 1
+        local unitSingleDamage = 1
+        local unitDOTDamage = 1
+        local unitAOEDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         table.sort(unitModifiers, function(a, b)
@@ -379,6 +382,15 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetSummonDamageBonus) then
                 unitSummonDamage = unitSummonDamage + (tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i])) or 0)
             end
+            if (unitModifiers[i].GetSingleDamageBonus) then
+                unitSingleDamage = unitSingleDamage + (tonumber(unitModifiers[i].GetSingleDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetAOEDamageBonus) then
+                unitAOEDamage = unitAOEDamage + (tonumber(unitModifiers[i].GetAOEDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetDOTDamageBonus) then
+                unitDOTDamage = unitDOTDamage + (tonumber(unitModifiers[i].GetDOTDamageBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -538,6 +550,9 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         -- aggro caused
         statsTable.aggroCaused = unitAggroCaused
         statsTable.summonDamage = unitSummonDamage
+        statsTable.damageSingle = unitSingleDamage
+        statsTable.damageAOE = unitAOEDamage
+        statsTable.damageDOT = unitDOTDamage
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
@@ -1336,6 +1351,33 @@ end
 function Units:GetSummonDamage(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.summonDamage or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetSingleDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageSingle or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetAOEDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageAOE or 1
+    end
+    return 0
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetDOTDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.damageDOT or 1
     end
     return 0
 end

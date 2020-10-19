@@ -208,6 +208,18 @@ function modifier_inventory_item_example:GetSummonDamageBonus()
     return 0
 end
 
+function modifier_inventory_item_example:GetSingleDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetAOEDamageBonus()
+    return 0
+end
+
+function modifier_inventory_item_example:GetDOTDamageBonus()
+    return 0
+end
+
 function modifier_inventory_item_example:GetArmorBonus()
     return 0
 end

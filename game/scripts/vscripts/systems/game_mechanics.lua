@@ -490,7 +490,10 @@ if (IsServer()) then
     ---@field public infernodmg boolean
     ---@field public holydmg boolean
     ---@field public fromsummon boolean
-
+    ---@field public single boolean
+    ---@field public dot boolean
+    ---@field public aoe boolean
+    ---
     ---@param args DAMAGE_TABLE
     function GameMode:DamageUnit(args)
         if (not args) then
@@ -625,12 +628,17 @@ if (IsServer()) then
         if(args.fromsummon == true) then
             totalAmplification = totalAmplification + Units:GetSummonDamage(damageTable.attacker) - 1
         end
+        if(args.dot == true) then
+            totalAmplification = totalAmplification + Units:GetDOTDamage(damageTable.attacker) - 1
+        end
+        if(args.single == true) then
+            totalAmplification = totalAmplification + Units:GetSingleDamage(damageTable.attacker) - 1
+        end
+        if(args.aoe == true) then
+            totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
+        end
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
-        -- well, let them suffer
-        if (totalReduction < 0.01) then
-            totalReduction = 0.01
-        end
         -- final damage
         damageTable.damage = (damageTable.damage * totalReduction * totalAmplification)
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
