@@ -679,7 +679,7 @@ if (IsServer()) then
     ---@field public heal number
     ---@param args HEAL_TABLE
     function GameMode:HealUnit(args)
-        if (args == null) then
+        if (args == nil) then
             return
         end
         args.heal = tonumber(args.heal)
@@ -732,7 +732,7 @@ if (IsServer()) then
     ---@field public heal number
     ---@param args HEAL_MANA_TABLE
     function GameMode:HealUnitMana(args)
-        if (args == null) then
+        if (args == nil) then
             return
         end
         args.heal = tonumber(args.heal)
