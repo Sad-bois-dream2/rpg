@@ -125,6 +125,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitCriticalChance = 1
         local unitCriticalDamage = 1
         local unitAggroCaused = 1
+        local unitSummonDamage = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         table.sort(unitModifiers, function(a, b)
@@ -375,6 +376,9 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetAggroCausedBonus) then
                 unitAggroCaused = unitAggroCaused + (tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i])) or 0)
             end
+            if (unitModifiers[i].GetSummonDamageBonus) then
+                unitSummonDamage = unitSummonDamage + (tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i])) or 0)
+            end
         end
         local primaryAttribute = 0
         -- str, agi, int
@@ -533,6 +537,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.display.maxmana = unit:GetMaxMana()
         -- aggro caused
         statsTable.aggroCaused = unitAggroCaused
+        statsTable.summonDamage = unitSummonDamage
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
@@ -1324,6 +1329,15 @@ function Units:GetAggroCaused(unit)
         return unit.stats.aggroCaused or 1
     end
     return 1
+end
+
+---@param unit CDOTA_BaseNPC
+---@return number
+function Units:GetSummonDamage(unit)
+    if (unit ~= nil and unit.stats ~= nil) then
+        return unit.stats.summonDamage or 1
+    end
+    return 0
 end
 
 LinkLuaModifier("modifier_stats_system", "systems/units", LUA_MODIFIER_MOTION_NONE)

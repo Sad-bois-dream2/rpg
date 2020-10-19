@@ -204,6 +204,10 @@ function modifier_inventory_item_example:GetInfernoDamageBonus()
     return 0
 end
 
+function modifier_inventory_item_example:GetSummonDamageBonus()
+    return 0
+end
+
 function modifier_inventory_item_example:GetArmorBonus()
     return 0
 end

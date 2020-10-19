@@ -622,6 +622,9 @@ if (IsServer()) then
         if (IsHolyDamage == true) then
             totalAmplification = totalAmplification + Units:GetHolyDamage(damageTable.attacker) - 1
         end
+        if(args.fromsummon == true) then
+            totalAmplification = totalAmplification + Units:GetSummonDamage(damageTable.attacker) - 1
+        end
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
         -- well, let them suffer
