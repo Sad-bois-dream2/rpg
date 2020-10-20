@@ -637,6 +637,20 @@ if (IsServer()) then
         if(args.aoe == true) then
             totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
         end
+        if(args.ability) then
+            totalAmplification = totalAmplification + Units:GetSpellDamage(damageTable.attacker, args.ability) - 1
+        end
+        local unitAdditionalConditionalDamage = 0
+        local unitModifiers = damageTable.victim:FindAllModifiers()
+        table.sort(unitModifiers, function(a, b)
+            return (a:GetCreationTime() > b:GetCreationTime())
+        end)
+        for i = 1, #unitModifiers do
+            if (unitModifiers[i].GetAdditionalConditionalDamage) then
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + (tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable)) or 0)
+            end
+        end
+        totalAmplification = totalAmplification + unitAdditionalConditionalDamage
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
         -- final damage

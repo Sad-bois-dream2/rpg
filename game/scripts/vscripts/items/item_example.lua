@@ -208,15 +208,57 @@ function modifier_inventory_item_example:GetSummonDamageBonus()
     return 0
 end
 
+-- 1.0 = 100%
 function modifier_inventory_item_example:GetSingleDamageBonus()
     return 0
 end
 
+-- 1.0 = 100%
 function modifier_inventory_item_example:GetAOEDamageBonus()
     return 0
 end
 
+-- 1.0 = 100%
 function modifier_inventory_item_example:GetDOTDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFirstAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFirstAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSecondAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetThirdAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFourthAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFifthAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSixthAbilitySpellDamageBonus()
+    return 0
+end
+-- 1.0 = 100%, damageTable = table of incoming damage instance
+function modifier_inventory_item_example:GetAdditionalConditionalDamage(damageTable)
     return 0
 end
 

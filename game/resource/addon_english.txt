@@ -872,7 +872,7 @@
 		"DOTA_Tooltip_HeroLevel"		"Level"
 		"DOTA_Tooltip_CurrentXP"		"Current XP"
 		"DOTA_Tooltip_OffensiveStats"		"Offensive Stats"
-		"DOTA_Tooltip_SpellDamage"		"Spell Damage"
+		"DOTA_Tooltip_SpellDamage"		"Bonus Spell Damage"
 		"DOTA_Tooltip_SpellDamage_Description"		"Increases the damage of your spells."
 		"DOTA_Tooltip_SpellHaste"		"Cast Speed"
 		"DOTA_Tooltip_SpellHaste_Description"		"Speeds up the cast time of cast-time abilities."
