@@ -132,35 +132,34 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"10"
+				"mana"				"5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_chance"				"25"
+				"max_stacks"				"10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"2"
+				"stun_chance"				"25"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_cd"				"30"
+				"stun_duration"				"2"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"mana"				"2 3 4 5"
+				"stun_cd"				"30"
 			}
-		
-			"10"
+			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
 			}
-			"11"
+			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"radius"				"800"
