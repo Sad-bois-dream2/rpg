@@ -38,22 +38,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"50 60 70 80"
+				"damage"				"100 110 120 130"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_damage"				"20 40 60 80"
+				"proc_damage"				"0 70 70 70"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_chance"				"5 10 15 20"
+				"proc_chance"				"0 40 40 40"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_aoe"				"300"
+				"proc_aoe"				"0 300 300 300"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_resistance_reduction"				"0 0 10 10"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_resistance_reduction_duration"				"0 0 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"freezing_destruction_cdr_flat"				"0 0 0 0.5"
 			}
 		}
 		"precache"
