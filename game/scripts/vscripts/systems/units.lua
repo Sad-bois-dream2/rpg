@@ -1105,7 +1105,7 @@ function Units:GetSpellDamage(unit, ability)
         local totalBonus = unit.stats.spellDamage or 1
         if (ability) then
             local index = ability:GetAbilityIndex() + 1
-            totalBonus = totalBonus - (unit.stats.spellDamageForAbilities[index] or 1) - 1
+            totalBonus = totalBonus + ((unit.stats.spellDamageForAbilities[index] or 1) - 1)
         end
         return totalBonus
     end
