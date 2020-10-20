@@ -143,6 +143,12 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitSingleDamage = 1
         local unitDOTDamage = 1
         local unitAOEDamage = 1
+        local unitSpellDamageForAbility1 = 1
+        local unitSpellDamageForAbility2 = 1
+        local unitSpellDamageForAbility3 = 1
+        local unitSpellDamageForAbility4 = 1
+        local unitSpellDamageForAbility5 = 1
+        local unitSpellDamageForAbility6 = 1
         local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
         table.sort(unitModifiers, function(a, b)
@@ -205,6 +211,24 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             end
             if (unitModifiers[i].GetSpellDamageBonus) then
                 unitBonusSpellDamage = unitBonusSpellDamage + (tonumber(unitModifiers[i].GetSpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetFirstAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility1 = unitSpellDamageForAbility1 + (tonumber(unitModifiers[i].GetFirstAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetSecondAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility2 = unitSpellDamageForAbility2 + (tonumber(unitModifiers[i].GetSecondAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetThirdAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility3 = unitSpellDamageForAbility3 + (tonumber(unitModifiers[i].GetThirdAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetFourthAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility4 = unitSpellDamageForAbility4 + (tonumber(unitModifiers[i].GetFourthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetFifthAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility5 = unitSpellDamageForAbility5 + (tonumber(unitModifiers[i].GetFifthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+            end
+            if (unitModifiers[i].GetSixthAbilitySpellDamageBonus) then
+                unitSpellDamageForAbility6 = unitSpellDamageForAbility6 + (tonumber(unitModifiers[i].GetSixthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetSpellDamageBonusMulti) then
                 unitBonusSpellDamageMulti = unitBonusSpellDamageMulti * (tonumber(unitModifiers[i].GetSpellDamageBonusMulti(unitModifiers[i])) or 1)
@@ -474,6 +498,18 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         unit:SetModifierStackCount("modifier_stats_system_aaspeed", unit, statsTable.attackSpeed)
         -- spell damage
         statsTable.spellDamage = unitBonusSpellDamage * unitBonusSpellDamageMulti
+        statsTable.spellDamageForAbilities = {
+            unitSpellDamageForAbility1,
+            unitSpellDamageForAbility2,
+            unitSpellDamageForAbility3,
+            unitSpellDamageForAbility4,
+            unitSpellDamageForAbility5,
+            unitSpellDamageForAbility6
+        }
+        statsTable.summonDamage = unitSummonDamage
+        statsTable.damageSingle = unitSingleDamage
+        statsTable.damageAOE = unitAOEDamage
+        statsTable.damageDOT = unitDOTDamage
         -- spell haste
         local totalSpellHaste = unitBonusSpellHaste * unitBonusPercentSpellHaste * unitBonusPercentSpellHasteMulti-- work like AS
         --compared to AS dota vanilla has 600 AS + 100 initial = 700 total AS cap
@@ -563,10 +599,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.display.maxmana = unit:GetMaxMana()
         -- aggro caused
         statsTable.aggroCaused = unitAggroCaused
-        statsTable.summonDamage = unitSummonDamage
-        statsTable.damageSingle = unitSingleDamage
-        statsTable.damageAOE = unitAOEDamage
-        statsTable.damageDOT = unitDOTDamage
         if (unit.CalculateStatBonus) then
             unit:CalculateStatBonus()
         end
@@ -1068,9 +1100,14 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetSpellDamage(unit)
+function Units:GetSpellDamage(unit, ability)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.spellDamage or 0
+        local totalBonus = unit.stats.spellDamage or 1
+        if (ability) then
+            local index = ability:GetAbilityIndex() + 1
+            totalBonus = totalBonus - (unit.stats.spellDamageForAbilities[index] or 1) - 1
+        end
+        return totalBonus
     end
     return 0
 end
