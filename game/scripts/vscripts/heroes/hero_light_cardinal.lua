@@ -961,7 +961,7 @@ function light_cardinal_consecration:OnSpellStart()
     local damage = (casterMaxHealth - casterHealth) * self.damage
     caster:SetHealth(math.max(1, casterHealth - (casterMaxHealth * self.maxHpBurn)))
     if (self.aoe > 0) then
-        ParticleManager:SetParticleControl(pidx, 5, Vector(2, 2, 1))
+        ParticleManager:SetParticleControl(pidx, 1, Vector(self.aoe, self.aoe, self.aoe))
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 target:GetAbsOrigin(),
                 nil,
@@ -980,11 +980,9 @@ function light_cardinal_consecration:OnSpellStart()
             damageTable.holydmg = true
             damageTable.aoe = true
             GameMode:DamageUnit(damageTable)
-            local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
         end
     else
+        ParticleManager:SetParticleControl(pidx, 1, Vector(50, 50, 50))
         local damageTable = {}
         damageTable.caster = caster
         damageTable.target = target
@@ -993,14 +991,8 @@ function light_cardinal_consecration:OnSpellStart()
         damageTable.holydmg = true
         damageTable.single = true
         GameMode:DamageUnit(damageTable)
-        local pidx = ParticleManager:CreateParticle("particles/units/light_cardinal/consecration/consecration_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, target)
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
     end
-    Timers:CreateTimer(3.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+    ParticleManager:ReleaseParticleIndex(pidx)
     EmitSoundOn("Hero_Omniknight.Purification", target)
 end
 
