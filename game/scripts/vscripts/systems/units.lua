@@ -1,19 +1,5 @@
 if Units == nil then
     _G.Units = class({})
-    Units.heroesInnateElement = {
-        npc_dota_hero_axe = "firedmg",
-        npc_dota_hero_crystal_maiden = "frostdmg",
-        npc_dota_hero_dark_willow = "naturedmg",
-        npc_dota_hero_enchantress = "naturedmg",
-        npc_dota_hero_juggernaut = "holydmg",
-        npc_dota_hero_drow_ranger = "voiddmg",
-        npc_dota_hero_mars = "firedmg",
-        npc_dota_hero_silencer = "holydmg",
-        npc_dota_hero_invoker = "holydmg",
-        npc_dota_hero_phantom_assassin = "voiddmg",
-        npc_dota_hero_abyssal_underlord = "infernodmg",
-        npc_dota_hero_skeleton_king = "infernodmg"
-    }
 end
 
 ---@class UNIT_STATS_ELEMENTS_TABLE
@@ -731,10 +717,6 @@ function modifier_stats_system:OnAttackLanded(event)
             damageTable.target = target
             damageTable.physdmg = true
             damageTable.ability = nil
-            local unitName = attacker:GetUnitName()
-            if (attacker:IsRealHero() and Units.heroesInnateElement[unitName]) then
-                damageTable[Units.heroesInnateElement[unitName]] = true
-            end
             GameMode:DamageUnit(damageTable)
         end
     end
