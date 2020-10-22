@@ -525,11 +525,9 @@
         "DOTA_Tooltip_modifier_crystal_sorceress_glacier_rush_slow"		"Glacier Rush"
         "DOTA_Tooltip_modifier_crystal_sorceress_glacier_rush_slow_Description"		"Slowed by %dMODIFIER_PROPERTY_TOOLTIP%%%."
 		"DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction"		"Freezing Destruction"
-		"DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_Description"		"Trap a target in ice and summon several comets from the Frozen Realm to crash into it, dealing <font color='#2386f6'>Frost</font> damage to all enemies in a <font color='white'><b>350</b></font> radius. Critical strikes with this ability deal increased damage.<br><br>Cast time: <font color='white'><b>2</b></font> seconds"
-        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_damage"		"%INT TO DAMAGE: "
+		"DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_Description"		"Crystal Sorceress calls several comets from the frozen realm to crash into target area and deal <font color='#2386f6'>Frost</font> damage to all enemies inside.\nCast time: <font color='white'><b>2</b></font> seconds.\nRank 2: Damage of critical strikes caused by this ability increased by <font color='white'><b>100%</b></font>.\nRank 3: Enemies damaged by this ability will be stunned for <font color='white'><b>5</b></font> seconds (if autocast turned on).\nRank 4: Passievly increase your mana regeneration by <font color='white'><b>1%</b></font> of your max mana."
+        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_damage"		"%INTELLECT TO DAMAGE: "
         "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_meteors"		"COMETS: "
-        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_crit_dmg"		"%BONUS CRITICAL DAMAGE: "
-        "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_stun_duration"		"FREEZE DURATION: "
 
         // Luminous Samurai (Juggernaut)
 

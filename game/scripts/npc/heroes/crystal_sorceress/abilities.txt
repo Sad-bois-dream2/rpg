@@ -315,6 +315,7 @@
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_projectile.vpcf"
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf"
             "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf"
+            "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_aoe.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
 		}
 	}
