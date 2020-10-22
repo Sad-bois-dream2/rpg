@@ -468,49 +468,45 @@ function crystal_sorceress_deep_freeze:OnUpgrade()
     self.maxManaCostMultiplierAfterGlacierRushDuration = self:GetSpecialValueFor("max_mana_cost_multiplier_after_glacier_rush_duration")
 end
 
--- crystal_sorceress_glacier_rush modifiers
-modifier_crystal_sorceress_glacier_rush = class({
+-- crystal_sorceress_glacier_rush
+modifier_crystal_sorceress_glacier_rush_slow = class({
     IsDebuff = function(self)
-        return false
+        return true
     end,
     IsHidden = function(self)
         return false
     end,
     IsPurgable = function(self)
-        return false
+        return true
     end,
     RemoveOnDeath = function(self)
         return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return crystal_sorceress_glacier_rush:GetAbilityTextureName()
     end,
     DeclareFunctions = function(self)
         return { MODIFIER_PROPERTY_TOOLTIP }
     end
 })
 
-function modifier_crystal_sorceress_glacier_rush:OnTooltip()
-    return self.critChancePerStack * self:GetStackCount() * 100
+function modifier_crystal_sorceress_glacier_rush_slow:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("movespeed_slow")
 end
 
-function modifier_crystal_sorceress_glacier_rush:OnCreated()
+function modifier_crystal_sorceress_glacier_rush_slow:OnCreated()
     self.ability = self:GetAbility()
-    self.critChancePerStack = self.ability:GetSpecialValueFor("stack_crit") / 100
 end
 
-function modifier_crystal_sorceress_glacier_rush:GetCriticalChanceBonus()
-    return self.critChancePerStack * self:GetStackCount()
+function modifier_crystal_sorceress_glacier_rush_slow:GetMoveSpeedPercentBonus()
+    return self.movespeedSlow
 end
 
-LinkedModifiers["modifier_crystal_sorceress_glacier_rush"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_crystal_sorceress_glacier_rush_slow"] = LUA_MODIFIER_MOTION_NONE
 
-modifier_crystal_sorceress_glacier_rush_stun = class({
+modifier_crystal_sorceress_glacier_rush_buff = class({
     IsDebuff = function(self)
-        return true
+        return false
     end,
     IsHidden = function(self)
         return false
@@ -518,37 +514,32 @@ modifier_crystal_sorceress_glacier_rush_stun = class({
     IsPurgable = function(self)
         return false
     end,
-    IsStunDebuff = function(self)
-        return true
-    end,
     RemoveOnDeath = function(self)
         return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return crystal_sorceress_glacier_rush:GetAbilityTextureName()
-    end,
-    CheckState = function(self)
-        return {
-            [MODIFIER_STATE_STUNNED] = true,
-            [MODIFIER_STATE_FROZEN] = true
-        }
-    end,
-    GetEffectName = function(self)
-        return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
     end
 })
 
-LinkedModifiers["modifier_crystal_sorceress_glacier_rush_stun"] = LUA_MODIFIER_MOTION_NONE
+function modifier_crystal_sorceress_glacier_rush_buff:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("bonus_crit_chance_per_stack") * self:GetStackCount()
+end
 
--- crystal_sorceress_glacier_rush
-crystal_sorceress_glacier_rush = class({
-    GetAbilityTextureName = function(self)
-        return "crystal_sorceress_glacier_rush"
-    end
-})
+function modifier_crystal_sorceress_glacier_rush_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_glacier_rush_buff:GetCriticalChanceBonus()
+    return self.ability.bonusCritChancePerStack * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_crystal_sorceress_glacier_rush_buff"] = LUA_MODIFIER_MOTION_NONE
+
+crystal_sorceress_glacier_rush = class({})
 
 function crystal_sorceress_glacier_rush:OnSpellStart()
     if (not IsServer()) then
@@ -558,10 +549,8 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
     local casterPosition = caster:GetAbsOrigin()
     local targetPosition = self:GetCursorPosition()
     local direction = (targetPosition - casterPosition):Normalized()
-    local width = self:GetSpecialValueFor("width")
-    local range = self:GetSpecialValueFor("range")
     local lifeDuration = 2
-    targetPosition = casterPosition + (direction * range)
+    targetPosition = casterPosition + (direction * self.range)
     EmitSoundOn("Hero_Jakiro.IcePath", caster)
     local pidx = ParticleManager:CreateParticle("particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 1, targetPosition)
@@ -580,12 +569,11 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
             casterPosition,
             targetPosition,
             caster,
-            width,
+            self.width,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE)
-    local damage = self:GetSpecialValueFor("damage") * Units:GetHeroIntellect(caster) * 0.01
-    local stunDuration = self:GetSpecialValueFor("stun_duration")
+    local damage = self.damage * Units:GetHeroIntellect(caster)
     for _, enemy in pairs(enemies) do
         local damageTable = {}
         damageTable.caster = caster
@@ -599,21 +587,55 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         modifierTable.ability = self
         modifierTable.caster = caster
         modifierTable.target = enemy
-        modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush_stun"
-        modifierTable.duration = stunDuration
+        modifierTable.modifier_name = "modifier_stunned"
+        modifierTable.duration = self.stunDuration
         GameMode:ApplyDebuff(modifierTable)
+        if(self.movespeedSlowDuration > 0) then
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.caster = caster
+            modifierTable.target = enemy
+            modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush_slow"
+            modifierTable.duration = self.movespeedSlowDuration
+            GameMode:ApplyDebuff(modifierTable)
+        end
     end
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.caster = caster
-    modifierTable.target = caster
-    modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush"
-    modifierTable.duration = self:GetSpecialValueFor("stacks_duration")
-    modifierTable.stacks = #enemies
-    modifierTable.max_stacks = self:GetSpecialValueFor("max_stacks")
-    GameMode:ApplyStackingBuff(modifierTable)
+    if (self.bonusCritChancePerStack > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self
+        modifierTable.caster = caster
+        modifierTable.target = caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_glacier_rush_buff"
+        modifierTable.duration = self.stacksDuration
+        modifierTable.stacks = #enemies
+        modifierTable.max_stacks = self.maxStacks
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+    if(self.cdrFlatPerEnemyDamaged > 0) then
+        local cooldownTable = {
+            target = caster,
+            ability = "crystal_sorceress_glacier_rush",
+            reduction = self.cdrFlatPerEnemyDamaged * #enemies,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+    end
 end
 
+function crystal_sorceress_glacier_rush:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.bonusCritChancePerStack = self:GetSpecialValueFor("bonus_crit_chance_per_stack") / 100
+    self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.range = self:GetSpecialValueFor("range")
+    self.width = self:GetSpecialValueFor("width")
+    self.movespeedSlow = -self:GetSpecialValueFor("movespeed_slow") / 100
+    self.movespeedSlowDuration = self:GetSpecialValueFor("movespeed_slow_duration")
+    self.cdrFlatPerEnemyDamaged = self:GetSpecialValueFor("cdr_flat_per_enemy_damaged")
+end
+
+-- crystal_sorceress_freezing_destruction
 modifier_crystal_sorceress_freezing_destruction_stun = class({
     IsDebuff = function(self)
         return true
@@ -691,7 +713,6 @@ end
 
 LinkedModifiers["modifier_crystal_sorceress_freezing_destruction"] = LUA_MODIFIER_MOTION_NONE
 
--- crystal_sorceress_freezing_destruction
 crystal_sorceress_freezing_destruction = class({
     GetAbilityTextureName = function(self)
         return "crystal_sorceress_freezing_destruction"

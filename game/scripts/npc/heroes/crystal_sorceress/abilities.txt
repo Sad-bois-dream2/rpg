@@ -201,17 +201,17 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_crit"				"6 8 10 12"
+				"bonus_crit_chance_per_stack"				"0 10 10 10"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"5"
+				"stacks_duration"				"15"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_duration"				"15"
+				"max_stacks"				"10"
 			}
 			"05"
 			{
@@ -227,6 +227,21 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"width"				"200"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"movespeed_slow"				"0 0 30 30"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"movespeed_slow_duration"				"0 0 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat_per_enemy_damaged"				"0 0 0 5"
 			}
 		}
 		"precache"
