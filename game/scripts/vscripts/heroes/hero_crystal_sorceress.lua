@@ -590,7 +590,7 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         modifierTable.modifier_name = "modifier_stunned"
         modifierTable.duration = self.stunDuration
         GameMode:ApplyDebuff(modifierTable)
-        if(self.movespeedSlowDuration > 0) then
+        if (self.movespeedSlowDuration > 0) then
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.caster = caster
@@ -611,7 +611,7 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         modifierTable.max_stacks = self.maxStacks
         GameMode:ApplyStackingBuff(modifierTable)
     end
-    if(self.cdrFlatPerEnemyDamaged > 0) then
+    if (self.cdrFlatPerEnemyDamaged > 0) then
         local cooldownTable = {
             target = caster,
             ability = "crystal_sorceress_glacier_rush",
@@ -636,41 +636,6 @@ function crystal_sorceress_glacier_rush:OnUpgrade()
 end
 
 -- crystal_sorceress_freezing_destruction
-modifier_crystal_sorceress_freezing_destruction_stun = class({
-    IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    IsStunDebuff = function(self)
-        return true
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return crystal_sorceress_freezing_destruction:GetAbilityTextureName()
-    end,
-    CheckState = function(self)
-        return {
-            [MODIFIER_STATE_STUNNED] = true,
-            [MODIFIER_STATE_FROZEN] = true
-        }
-    end,
-    GetEffectName = function(self)
-        return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
-    end
-})
-
-LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_stun"] = LUA_MODIFIER_MOTION_NONE
-
 modifier_crystal_sorceress_freezing_destruction = class({
     IsDebuff = function(self)
         return false
@@ -693,32 +658,64 @@ modifier_crystal_sorceress_freezing_destruction = class({
 })
 
 function modifier_crystal_sorceress_freezing_destruction:OnCreated()
-    if (not IsServer()) then
-        return
-    end
+    self.caster = self:GetParent()
     self.ability = self:GetAbility()
-    self.bonusCritDamage = self.ability:GetSpecialValueFor("crit_dmg") * 0.01
+    self.ability:OnUpgrade()
 end
 
-function modifier_crystal_sorceress_freezing_destruction:OnCreated()
-    return self.bonusCritDamage
-end
-
-function modifier_crystal_sorceress_freezing_destruction:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.attacker:FindModifierByName("modifier_crystal_sorceress_freezing_destruction")
-    if (modifier and damageTable.ability and damageTable.ability == modifier.ability) then
-        modifier:Destroy()
-    end
+function modifier_crystal_sorceress_freezing_destruction:GetManaRegenerationBonus()
+    return self.ability.passiveMaxManaRegeneration * self.caster:GetMaxMana()
 end
 
 LinkedModifiers["modifier_crystal_sorceress_freezing_destruction"] = LUA_MODIFIER_MOTION_NONE
 
-crystal_sorceress_freezing_destruction = class({
-    GetAbilityTextureName = function(self)
-        return "crystal_sorceress_freezing_destruction"
+modifier_crystal_sorceress_freezing_destruction_buff = class({
+    IsDebuff = function(self)
+        return false
     end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_crystal_sorceress_freezing_destruction_buff:OnCreated()
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_freezing_destruction_buff:GetCriticalDamageBonus()
+    return self.ability.bonusCritDmg
+end
+
+LinkedModifiers["modifier_crystal_sorceress_freezing_destruction_buff"] = LUA_MODIFIER_MOTION_NONE
+
+crystal_sorceress_freezing_destruction = class({
     IsRequireCastbar = function(self)
         return true
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("stun_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetIntrinsicModifierName = function()
+        return "modifier_crystal_sorceress_freezing_destruction"
     end
 })
 
@@ -727,71 +724,88 @@ function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
         return true
     end
     self.caster = self:GetCaster()
-    self.target = self:GetCursorTarget()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.targetPosition = self:GetCursorPosition()
     EmitSoundOn("hero_Crystal.freezingField.wind", self.caster)
-    self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN, self.caster)
-    ParticleManager:SetParticleControlEnt(self.pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_staff1", self.caster:GetAbsOrigin(), true)
+    self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_aoe.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(self.pidx, 0, self.targetPosition)
+    ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.radius, 0, 0))
     return true
+end
+
+function crystal_sorceress_freezing_destruction:OnAbilityPhaseInterrupted()
+    if (not IsServer()) then
+        return
+    end
+    self:DestroyCastEffect()
+end
+
+function crystal_sorceress_freezing_destruction:DestroyCastEffect()
+    if (not IsServer()) then
+        return
+    end
+    StopSoundOn("hero_Crystal.freezingField.wind", self.caster)
+    if (self.pidx) then
+        ParticleManager:DestroyParticle(self.pidx, false)
+        ParticleManager:ReleaseParticleIndex(self.pidx)
+        self.pidx = nil
+    end
+end
+
+function crystal_sorceress_freezing_destruction:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.meteors = self:GetSpecialValueFor("meteors")
+    self.bonusCritDmg = self:GetSpecialValueFor("bonus_crit_dmg") / 100
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.passiveMaxManaRegeneration = self:GetSpecialValueFor("passive_max_mana_regeneration") / 100
 end
 
 function crystal_sorceress_freezing_destruction:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    StopSoundOn("hero_Crystal.freezingField.wind", self.caster)
-    ParticleManager:DestroyParticle(self.pidx, false)
-    ParticleManager:ReleaseParticleIndex(self.pidx)
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.caster = self.caster
-    modifierTable.target = self.target
-    modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction_stun"
-    modifierTable.duration = self:GetSpecialValueFor("stun_duration")
-    GameMode:ApplyDebuff(modifierTable)
-    EmitSoundOn("Hero_Ancient_Apparition.ColdFeetCast", self.target)
-    local meteors = self:GetSpecialValueFor("meteors")
-    local angleBetweenMeteors = 360 / meteors
-    local distanceFromCenter = 200
-    local targetPosition = self.target:GetAbsOrigin()
-    local currentAngle = angleBetweenMeteors
-    local particlesTable = {}
-    local landTime = 0
-    local meteorSpeed = 1250
-    for i = 1, meteors do
+    self:DestroyCastEffect()
+    local angleBetweenMeteors = 360 / self.meteors
+    local distanceFromCenter = self.radius / 2
+    local currentAngle = 0
+    local velocity
+    local meteorProjectiles = {}
+    for _ = 1, self.meteors do
         local angleInRadians = math.rad(currentAngle)
-        local landPoint = Vector(targetPosition[1] + distanceFromCenter * math.cos(angleInRadians), targetPosition[2] + distanceFromCenter * math.sin(angleInRadians), targetPosition[3])
-        local lengthVector = (landPoint - targetPosition)
-        local direction = lengthVector:Normalized()
-        local spawnPoint = landPoint + (direction * 800) + Vector(0, 0, 700)
-        landTime = (landPoint - spawnPoint):Length() / meteorSpeed
+        local landPoint = Vector(self.targetPosition[1] + distanceFromCenter * math.cos(angleInRadians), self.targetPosition[2] + distanceFromCenter * math.sin(angleInRadians), self.targetPosition[3])
+        local direction = (landPoint - self.targetPosition):Normalized()
+        local spawnPoint = landPoint + (direction * self.radius * 2) + Vector(0, 0, 700)
         local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_projectile.vpcf", PATTACH_ABSORIGIN, self.caster)
         ParticleManager:SetParticleControl(pidx, 0, spawnPoint)
-        ParticleManager:SetParticleControl(pidx, 1, landPoint)
-        ParticleManager:SetParticleControl(pidx, 5, Vector(landTime, 0, 0))
-        table.insert(particlesTable, { id = pidx, point = landPoint })
+        velocity = landPoint - spawnPoint
+        ParticleManager:SetParticleControl(pidx, 1, velocity)
+        table.insert(meteorProjectiles, { pidx = pidx, landPoint = landPoint })
         currentAngle = currentAngle + angleBetweenMeteors
     end
+    local meteorSpeed = 1250
+    local landTime = velocity:Length() / meteorSpeed
+    local damage = self.damage * Units:GetHeroIntellect(self.caster)
     Timers:CreateTimer(landTime, function()
-        local anotherParticleTable = {}
-        local casterTeam = self.caster:GetTeam()
-        local damageAoe = self:GetSpecialValueFor("damage_aoe")
-        local damage = Units:GetHeroIntellect(self.caster) * self:GetSpecialValueFor("damage") * 0.01
         local modifierTable = {}
         modifierTable.ability = self
-        modifierTable.caster = self.caster
         modifierTable.target = self.caster
-        modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction"
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_freezing_destruction_buff"
         modifierTable.duration = -1
-        local modifier = GameMode:ApplyBuff(modifierTable)
-        for _, particleInfo in pairs(particlesTable) do
-            ParticleManager:DestroyParticle(particleInfo.id, true)
-            ParticleManager:ReleaseParticleIndex(particleInfo.id)
+        local critDmgModifier = GameMode:ApplyBuff(modifierTable)
+        for _, meteorInfo in pairs(meteorProjectiles) do
+            ParticleManager:DestroyParticle(meteorInfo.pidx, true)
+            ParticleManager:ReleaseParticleIndex(meteorInfo.pidx)
             local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf", PATTACH_ABSORIGIN, self.caster)
-            ParticleManager:SetParticleControl(pidx, 0, particleInfo.point)
-            local enemies = FindUnitsInRadius(casterTeam,
-                    particleInfo.point,
+            ParticleManager:SetParticleControl(pidx, 0, meteorInfo.landPoint)
+            ParticleManager:SetParticleControl(pidx, 1, Vector(distanceFromCenter, 0, 0))
+            ParticleManager:DestroyParticle(pidx, false)
+            ParticleManager:ReleaseParticleIndex(pidx)
+            local enemies = FindUnitsInRadius(self.casterTeam,
+                    meteorInfo.landPoint,
                     nil,
-                    damageAoe,
+                    self.radius,
                     DOTA_UNIT_TARGET_TEAM_ENEMY,
                     DOTA_UNIT_TARGET_ALL,
                     DOTA_UNIT_TARGET_FLAG_NONE,
@@ -806,27 +820,20 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
                 damageTable.frostdmg = true
                 damageTable.aoe = true
                 GameMode:DamageUnit(damageTable)
+                if (self:GetAutoCastState()) then
+                    local modifierTable = {}
+                    modifierTable.ability = self
+                    modifierTable.target = enemy
+                    modifierTable.caster = self.caster
+                    modifierTable.modifier_name = "modifier_stunned"
+                    modifierTable.duration = self.stunDuration
+                    GameMode:ApplyDebuff(modifierTable)
+                end
             end
-            table.insert(anotherParticleTable, pidx)
+            EmitSoundOnLocationWithCaster(meteorInfo.landPoint, "Hero_Ancient_Apparition.IceBlast.Target", self.caster)
         end
-        modifier:Destroy()
-        EmitSoundOn("Hero_Crystal.CrystalNova", self.target)
-        Timers:CreateTimer(2, function()
-            for _, pidx in pairs(anotherParticleTable) do
-                ParticleManager:DestroyParticle(pidx, true)
-                ParticleManager:ReleaseParticleIndex(pidx)
-            end
-        end, self)
+        critDmgModifier:Destroy()
     end, self)
-end
-
-function crystal_sorceress_freezing_destruction:OnAbilityPhaseInterrupted()
-    if (not IsServer()) then
-        return
-    end
-    StopSoundOn("hero_Crystal.freezingField.wind", self.caster)
-    ParticleManager:DestroyParticle(self.pidx, false)
-    ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
 -- Internal stuff
@@ -835,7 +842,7 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
-    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
+    --GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(crystal_sorceress_frost_comet, 'OnPostTakeDamage'))
     GameMode.CRYSTAL_SORCERESS_INIT = true
 end

@@ -58,6 +58,7 @@
 		{
 			_class = "C_INIT_VelocityFromCP"
 			m_nControlPoint = 1
+			m_flVelocityScale = 1.3
 		},
 	]
 	m_Emitters = 
