@@ -730,6 +730,8 @@ function crystal_sorceress_freezing_destruction:OnAbilityPhaseStart()
     self.pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_aoe.vpcf", PATTACH_ABSORIGIN, self.caster)
     ParticleManager:SetParticleControl(self.pidx, 0, self.targetPosition)
     ParticleManager:SetParticleControl(self.pidx, 1, Vector(self.radius, 0, 0))
+    self.pidx2 = ParticleManager:CreateParticle("particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    ParticleManager:SetParticleControlEnt(self.pidx2, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_staff1", self.caster:GetAbsOrigin(), true)
     return true
 end
 
@@ -749,6 +751,11 @@ function crystal_sorceress_freezing_destruction:DestroyCastEffect()
         ParticleManager:DestroyParticle(self.pidx, false)
         ParticleManager:ReleaseParticleIndex(self.pidx)
         self.pidx = nil
+    end
+    if (self.pidx2) then
+        ParticleManager:DestroyParticle(self.pidx2, false)
+        ParticleManager:ReleaseParticleIndex(self.pidx2)
+        self.pidx2 = nil
     end
 end
 
@@ -842,7 +849,6 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
-    --GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_freezing_destruction, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(crystal_sorceress_frost_comet, 'OnPostTakeDamage'))
     GameMode.CRYSTAL_SORCERESS_INIT = true
 end
