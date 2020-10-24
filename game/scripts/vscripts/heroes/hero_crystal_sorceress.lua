@@ -843,6 +843,167 @@ function crystal_sorceress_freezing_destruction:OnSpellStart()
     end, self)
 end
 
+-- crystal_sorceress_cold_embrace
+modifier_crystal_sorceress_cold_embrace_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    GetEffectName = function()
+        return "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
+    end
+})
+
+function modifier_crystal_sorceress_cold_embrace_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.target = self:GetParent()
+    EmitSoundOn("Hero_Winter_Wyvern.ColdEmbrace.Cast", self.target)
+    EmitSoundOn("Hero_Winter_Wyvern.ColdEmbrace", self.target)
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
+    StopSoundOn("Hero_Winter_Wyvern.ColdEmbrace", self.target)
+end
+
+LinkedModifiers["modifier_crystal_sorceress_cold_embrace_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_cold_embrace_buff_damage_reduction = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:GetDamageReductionBonus()
+    return self.ability.bonusDamageReduction
+end
+
+LinkedModifiers["modifier_crystal_sorceress_cold_embrace_buff_damage_reduction"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_cold_embrace_buff_cast_speed = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:GetSpellHasteBonus()
+    return self.ability.bonusCastSpeed
+end
+
+LinkedModifiers["modifier_crystal_sorceress_cold_embrace_buff_cast_speed"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_cold_embrace = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_crystal_sorceress_cold_embrace:OnCreated()
+    self.ability = self:GetAbility()
+    self.ability:OnUpgrade()
+end
+
+function modifier_crystal_sorceress_cold_embrace:GetCriticalDamageBonus()
+    return self.ability.passiveCriticalDamageBonus
+end
+
+LinkedModifiers["modifier_crystal_sorceress_cold_embrace"] = LUA_MODIFIER_MOTION_NONE
+
+crystal_sorceress_cold_embrace = class({
+    GetIntrinsicModifierName = function()
+        return "modifier_crystal_sorceress_cold_embrace"
+    end
+})
+
+function crystal_sorceress_cold_embrace:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+
+end
+
+function crystal_sorceress_cold_embrace:OnUpgrade()
+    self.duration = self:GetSpecialValueFor("duration")
+    self.bonusDamageReduction = self:GetSpecialValueFor("bonus_damage_reduction") / 100
+    self.bonusDamageReductionDuration = self:GetSpecialValueFor("bonus_damage_reduction_duration")
+    self.bonusCastSpeed = self:GetSpecialValueFor("bonus_cast_speed")
+    self.bonusCastSpeedStacks = self:GetSpecialValueFor("bonus_cast_speed_stacks")
+    self.bonusCastSpeedDuration = self:GetSpecialValueFor("bonus_cast_speed_duration")
+    self.passiveCriticalDamageBonus = self:GetSpecialValueFor("passive_critical_damage_bonus") / 100
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_crystal_sorceress", MotionController)

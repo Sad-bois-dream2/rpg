@@ -180,7 +180,6 @@
 		//-------------------------------------------------------------------------------------------------------------
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
 		"AbilityCastPoint"				"0.25"
-		"AbilityCastRange"				"900"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -270,6 +269,7 @@
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "900"
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
 		"AbilityCastPoint"				"2"
 
@@ -322,6 +322,82 @@
             "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf"
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_aoe.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Crystal Sorceress: Cold Embrace
+	//=================================================================================================================
+	"crystal_sorceress_cold_embrace"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"winter_wyvern_cold_embrace"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "900"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_damage_reduction"				"0 60 60 60"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_damage_reduction_duration"				"0 3 3 3"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed"				"0 0 350 350"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed_stacks"				"0 0 3 3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed_duration"				"0 0 15 15"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_critical_damage_bonus"				"0 0 0 50"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_winter_wyvern.vsndevts"
 		}
 	}
 }
