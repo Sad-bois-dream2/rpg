@@ -366,7 +366,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_damage_reduction"				"0 60 60 60"
+				"bonus_damage_reduction"				"0 90 90 90"
 			}
 			"03"
 			{
@@ -391,12 +391,13 @@
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"passive_critical_damage_bonus"				"0 0 0 50"
+				"cdr_flat_on_damage"				"0 0 0 1"
 			}
 		}
 		"precache"
 		{
             "particle"  "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
+            "particle"  "particles/econ/items/drow/drow_ti9_immortal/status_effect_drow_ti9_frost_arrow.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_winter_wyvern.vsndevts"
 		}
 	}

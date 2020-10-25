@@ -529,14 +529,14 @@
         "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_damage"		"%INTELLECT TO DAMAGE: "
         "DOTA_Tooltip_Ability_crystal_sorceress_freezing_destruction_meteors"		"COMETS: "
 		"DOTA_Tooltip_Ability_crystal_sorceress_cold_embrace"		"Cold Embrace"
-		"DOTA_Tooltip_Ability_crystal_sorceress_cold_embrace_Description"		"Crystal Sorceress encases an ally in an icy cocoon, freezing him solid while preventing any damage received.\nRank 2: After this ability effect ends target will receive effect that provide <font color='white'><b>60%</b></font> damage reduction for <font color='white'><b>3</b></font> seconds.\nRank 3: After using this ability you will gain <font color='white'><b>350</b></font> cast speed for next <font color='white'><b>3</b></font> abilities with cast time for <font color='white'><b>15</b></font> seconds.\nRank 4: Passievly increase your critical damage by <font color='white'><b>50%</b></font>."
+		"DOTA_Tooltip_Ability_crystal_sorceress_cold_embrace_Description"		"Crystal Sorceress encases an ally in an icy cocoon, freezing him solid while preventing any damage received.\nRank 2: After this ability effect ends target will receive effect that provide <font color='white'><b>90%</b></font> damage reduction for <font color='white'><b>3</b></font> seconds.\nRank 3: After using this ability you will gain <font color='white'><b>350</b></font> cast speed for next <font color='white'><b>3</b></font> abilities with cast time for <font color='white'><b>15</b></font> seconds.\nRank 4: Passievly every time you receive damage reduce cooldown of this ability by <font color='white'><b>1</b></font> second."
         "DOTA_Tooltip_Ability_crystal_sorceress_cold_embrace_duration"		"DURATION: "
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff"		"Cold Embrace"
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_Description"		"Frozen and immune to damage."
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_cast_speed"		"Cold Embrace"
-        "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_cast_speed_Description"		"Cast speed increased."
+        "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_cast_speed_Description"		"Cast speed increased by %dMODIFIER_PROPERTY_TOOLTIP%."
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_damage_reduction"		"Cold Embrace"
-        "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_damage_reduction_Description"		"Damage reduction increased."
+        "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_damage_reduction_Description"		"Damage reduction increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
         // Luminous Samurai (Juggernaut)
 
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai"		"Bankai"

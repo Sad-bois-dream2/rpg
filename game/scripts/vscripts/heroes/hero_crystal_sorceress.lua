@@ -865,7 +865,13 @@ modifier_crystal_sorceress_cold_embrace_buff = class({
     end,
     GetEffectName = function()
         return "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
-    end
+    end,
+    CheckState = function()
+        return {
+            [MODIFIER_STATE_FROZEN] = true,
+            [MODIFIER_STATE_STUNNED] = true
+        }
+    end,
 })
 
 function modifier_crystal_sorceress_cold_embrace_buff:OnCreated()
@@ -882,7 +888,24 @@ function modifier_crystal_sorceress_cold_embrace_buff:OnDestroy()
     if (not IsServer()) then
         return
     end
+    if (self.ability.bonusDamageReduction > 0) then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.target
+        modifierTable.caster = self.ability:GetCaster()
+        modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff_damage_reduction"
+        modifierTable.duration = self.ability.bonusDamageReductionDuration
+        GameMode:ApplyBuff(modifierTable)
+    end
     StopSoundOn("Hero_Winter_Wyvern.ColdEmbrace", self.target)
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_crystal_sorceress_cold_embrace_buff")
+    if (modifier) then
+        damageTable.damage = 0
+        return damageTable
+    end
 end
 
 LinkedModifiers["modifier_crystal_sorceress_cold_embrace_buff"] = LUA_MODIFIER_MOTION_NONE
@@ -902,14 +925,31 @@ modifier_crystal_sorceress_cold_embrace_buff_damage_reduction = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_PROPERTY_TOOLTIP
+        }
     end
 })
+
+function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("bonus_damage_reduction")
+end
 
 function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:GetStatusEffectName()
+    return "particles/econ/items/drow/drow_ti9_immortal/status_effect_drow_ti9_frost_arrow.vpcf"
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:StatusEffectPriority()
+    return 5
 end
 
 function modifier_crystal_sorceress_cold_embrace_buff_damage_reduction:GetDamageReductionBonus()
@@ -933,14 +973,38 @@ modifier_crystal_sorceress_cold_embrace_buff_cast_speed = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    DeclareFunctions = function(self)
+        return {
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
+            MODIFIER_PROPERTY_TOOLTIP
+        }
     end
 })
+
+function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("bonus_cast_speed")
+end
 
 function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit == self.caster and keys.ability.IsRequireCastbar and keys.ability:IsRequireCastbar() == true) then
+        local stacks = self:GetStackCount() - 1
+        self:SetStackCount(stacks)
+        if (stacks < 1) then
+            self:Destroy()
+        end
+    end
 end
 
 function modifier_crystal_sorceress_cold_embrace_buff_cast_speed:GetSpellHasteBonus()
@@ -975,8 +1039,16 @@ function modifier_crystal_sorceress_cold_embrace:OnCreated()
     self.ability:OnUpgrade()
 end
 
-function modifier_crystal_sorceress_cold_embrace:GetCriticalDamageBonus()
-    return self.ability.passiveCriticalDamageBonus
+function modifier_crystal_sorceress_cold_embrace:OnPostTakeDamage(damageTable)
+    local ability = damageTable.victim:FindAbilityByName("crystal_sorceress_cold_embrace")
+    if (ability and ability.cdrFlatOnDamage and ability.cdrFlatOnDamage > 0) then
+        GameMode:ReduceAbilityCooldown({
+            target = damageTable.victim,
+            ability = "crystal_sorceress_cold_embrace",
+            reduction = ability.cdrFlatOnDamage,
+            isflat = true
+        })
+    end
 end
 
 LinkedModifiers["modifier_crystal_sorceress_cold_embrace"] = LUA_MODIFIER_MOTION_NONE
@@ -991,7 +1063,21 @@ function crystal_sorceress_cold_embrace:OnSpellStart()
     if (not IsServer()) then
         return
     end
-
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self:GetCursorTarget()
+    modifierTable.caster = self:GetCaster()
+    modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    if (self.bonusCastSpeed > 0) then
+        modifierTable.duration = self.bonusCastSpeedDuration
+        modifierTable.stacks = self.bonusCastSpeedStacks
+        modifierTable.max_stacks = self.bonusCastSpeedStacks
+        modifierTable.target = modifierTable.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff_cast_speed"
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
 end
 
 function crystal_sorceress_cold_embrace:OnUpgrade()
@@ -1001,7 +1087,7 @@ function crystal_sorceress_cold_embrace:OnUpgrade()
     self.bonusCastSpeed = self:GetSpecialValueFor("bonus_cast_speed")
     self.bonusCastSpeedStacks = self:GetSpecialValueFor("bonus_cast_speed_stacks")
     self.bonusCastSpeedDuration = self:GetSpecialValueFor("bonus_cast_speed_duration")
-    self.passiveCriticalDamageBonus = self:GetSpecialValueFor("passive_critical_damage_bonus") / 100
+    self.cdrFlatOnDamage = self:GetSpecialValueFor("cdr_flat_on_damage")
 end
 
 -- Internal stuff
@@ -1011,5 +1097,7 @@ end
 
 if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(crystal_sorceress_frost_comet, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_cold_embrace, 'OnPostTakeDamage'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_cold_embrace_buff, 'OnTakeDamage'))
     GameMode.CRYSTAL_SORCERESS_INIT = true
 end
