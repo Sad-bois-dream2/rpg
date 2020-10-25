@@ -208,7 +208,7 @@
                                    onmouseout="DOTAHideTitleTextTooltip()">>
                                 <Image class="StatIcon" src="file://{images}/custom_game/hud/spellhaste.png"/>
                                 <Label class="WindowText InventoryAttributeLabel" text="#DOTA_Tooltip_SpellHaste"/>
-                                <Label id="SpellhasteLabel" class="WindowText InventoryAttributeValue" text="0%"/>
+                                <Label id="SpellHasteLabel" class="WindowText InventoryAttributeValue" text="0%"/>
                             </Panel>
                             <Panel id="AttackRange" class="InventoryAttributeWithValue">
                                 <Image class="StatIcon"

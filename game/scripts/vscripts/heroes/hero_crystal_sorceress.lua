@@ -54,7 +54,7 @@ function crystal_sorceress_frost_comet:OnAbilityPhaseStart(causeEffect)
     local targetPosition = self.target:GetAbsOrigin()
     local direction = (targetPosition - casterPosition):Normalized()
     self.orbPosition = casterPosition + (direction * 100) + Vector(0, 0, 200)
-    local lifeDuration = ((100 - math.abs(modifier_castbar.GetModifierPercentageCasttime({ hero = self.caster }))) / 100) * 2
+    local lifeDuration = modifier_castbar.GetCastTimeReductionRatio({ hero = self.caster }) * 2
     if (causeEffect == false) then
         lifeDuration = 0.1
     else
@@ -73,12 +73,17 @@ function crystal_sorceress_frost_comet:OnAbilityPhaseInterrupted()
     self:DestroyAbilityPhaseEffects()
 end
 
-function crystal_sorceress_frost_comet:DestroyAbilityPhaseEffects()
+function crystal_sorceress_frost_comet:DestroyAbilityPhaseEffects(castFinished)
     if (not IsServer()) then
         return
     end
+    if(not castFinished) then
+        castFinished = true
+    else
+        castFinished = false
+    end
     StopSoundOn("Hero_Ancient_Apparition.ColdFeetCast", self.caster)
-    ParticleManager:DestroyParticle(self.pidx, true)
+    ParticleManager:DestroyParticle(self.pidx, castFinished)
     ParticleManager:ReleaseParticleIndex(self.pidx)
 end
 
@@ -86,7 +91,6 @@ function crystal_sorceress_frost_comet:OnProjectileHit(target)
     if (not IsServer() or not target) then
         return
     end
-    self:DestroyAbilityPhaseEffects()
     if (RollPercentage(self.procChance)) then
         local pidx = ParticleManager:CreateParticle("particles/units/crystal_sorceress/frost_comet/crystal_sorceress_frost_comet_hit_b.vpcf", PATTACH_ABSORIGIN, target)
         ParticleManager:ReleaseParticleIndex(pidx)
@@ -128,6 +132,7 @@ function crystal_sorceress_frost_comet:OnSpellStart()
     if (not IsServer()) then
         return
     end
+    self:DestroyAbilityPhaseEffects(true)
     local projectile = {
         Target = self.target,
         Ability = self,

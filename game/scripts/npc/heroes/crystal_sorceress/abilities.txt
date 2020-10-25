@@ -376,7 +376,7 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_cast_speed"				"0 0 350 350"
+				"bonus_cast_speed"				"0 0 800 800"
 			}
 			"05"
 			{

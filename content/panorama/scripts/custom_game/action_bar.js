@@ -363,7 +363,7 @@ function UpdateValues() {
             infernoAmpLabel.text = Math.round((latestStats.elementsDamage["inferno"] - 1) * 100) +"%";
             holyAmpLabel.text = Math.round((latestStats.elementsDamage["holy"] - 1) * 100) +"%";
             spellDamageLabel.text = Math.round((latestStats.spellDamage-1) * 100) + "%";
-            spellHasteLabel.text = Math.round((latestStats.spellHaste-1)*100);
+            spellHasteLabel.text = latestStats.spellHaste;
             attackRangeLabel.text = Entities.GetAttackRange(hero);
             var attackDelay = (hero > -1 ? Entities.GetSecondsPerAttack(hero) : "0");
             attackDelay = Math.round(attackDelay * 100) / 100;

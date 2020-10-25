@@ -77,11 +77,12 @@ function modifier_inventory_item_example:GetSpellDamageBonus()
     return 0
 end
 
--- this is flat like AS but capped at 8 this is so that old code dont need fix. Every flat spellhaste related stuff need to be *0.01 in lua from the display value in addon_english
+-- flat value 1-800
 function modifier_inventory_item_example:GetSpellHasteBonus()
     return 0
 end
---this work like % AS 1.0 = 100%
+
+-- 1.0 = 100%
 function modifier_inventory_item_example:GetSpellHastePercentBonus()
     return 0
 end
@@ -389,31 +390,3 @@ end
 
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)
-
---Stats that can set as multi "intended for boss debuff"
--- copy the additive one and add multi to the back
---for example
---function modifier_inventory_item_example:GetStrengthPercentBonusMulti()
---    return 2 --this will *2 overall strength (calculate after the % additive)
---end
---function modifier_inventory_item_example:GetSpellHastePercentBonusMulti()
---    return 0.2 --this will set spellhaste to 20%  (calculate after the % additive )
---end
---[[local unitBonusPercentStrMulti = 1
-local unitBonusPercentAgiMulti = 1
-local unitBonusPercentIntMulti = 1
-local unitBonusPercentPrimaryMulti = 1
-local unitBonusPercentAttackDamageMulti = 1
-local unitBonusPercentAttackSpeedMulti = 1
-local unitBonusSpellDamageMulti = 1
-local unitBonusPercentSpellHasteMulti = 1
-local unitBonusPercentAttackRangeMulti = 1
-local unitBonusPercentCastRangeMulti = 1
-local unitBonusPercentMoveSpeedMulti = 1
-local unitBonusPercentHealthRegenerationMulti = 1
-local unitBonusPercentManaRegenerationMulti = 1
-local unitBonusPercentHealthMulti = 1
-local unitBonusPercentManaMulti = 1
-local unitArmorPercentMulti = 1
-local unitHealingReceivedPercentMulti = 1
-local unitHealingCausedPercentMulti = 1 --]]
