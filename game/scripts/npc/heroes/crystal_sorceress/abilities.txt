@@ -195,7 +195,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"100 110 120 130"
+				"damage"				"150 175 200 225"
 			}
 			"02"
 			{
@@ -392,6 +392,95 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"cdr_flat_on_damage"				"0 0 0 1"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
+            "particle"  "particles/econ/items/drow/drow_ti9_immortal/status_effect_drow_ti9_frost_arrow.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_winter_wyvern.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Crystal Sorceress: Flash Freeze
+	//=================================================================================================================
+	"crystal_sorceress_flash_freeze"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"crystal_maiden_brilliance_aura"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+		"AbilityCastPoint"				"0"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_damage_per_stack"				"0.25 0.5 0.75 1"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_per_ability_damage"				"1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stacks_every_tick_in_combat"				"0 1 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stack_every_tick_in_combat_timer"				"0 1 1 1"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stack_every_tick_in_combat_tick"				"0 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_for_enchance_proc"				"0 0 20 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_multiplier"				"0 0 0 2"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_chance"				"0 0 0 40"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"				"100"
 			}
 		}
 		"precache"

@@ -6,7 +6,7 @@
         "Ability1"	"crystal_sorceress_frost_comet"
         "Ability2"	"crystal_sorceress_deep_freeze"
         "Ability3"	"crystal_sorceress_glacier_rush"
-        "Ability4"	"empty5"
+        "Ability4"	"crystal_sorceress_flash_freeze"
         "Ability5"	"crystal_sorceress_cold_embrace"
         "Ability6"	"crystal_sorceress_freezing_destruction"
 		"AbilityTalentStart"		"7"

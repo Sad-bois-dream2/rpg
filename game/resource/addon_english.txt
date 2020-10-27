@@ -537,8 +537,16 @@
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_cast_speed_Description"		"Cast speed increased by %dMODIFIER_PROPERTY_TOOLTIP%."
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_damage_reduction"		"Cold Embrace"
         "DOTA_Tooltip_modifier_crystal_sorceress_cold_embrace_buff_damage_reduction_Description"		"Damage reduction increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
+		"DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze"		"Flash Freeze"
+		"DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Description"		"Every time Crystal Sorceress cause damage with one of her abilities she will gain stack of Frozen effect that provide bonus <font color='#2386f6'>Frost</font> damage, stacks up to <font color='white'><b>100</b></font>.\nRank 2: Passievly for every second in combat provide you <font color='white'><b>1</b></font> stack of Frozen effect.\nRank 3: If you have at least <font color='white'><b>20</b></font> stacks of Frozen effect you can activate this ability to consume them and enhance your next offensive ability. Hold ALT for details.\nRank 4: You have <font color='white'><b>40%</b></font> chance to gain double amount of stacks."
+        "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_frost_damage_per_stack"		"%FROST DAMAGE PER STACK:"
+        "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_duration"		"STACKS DURATION:"
+        "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Note0"		"Enchanted Frost Comet - After using this ability you will gain 25% chance to cause effect of this ability again for 10 seconds."
+        "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Note1"		"\nEnchanted Glacier Rush - Ability will be used without cooldown and you will gain effect that prevent cooldown of next 2 using of this ability for 30 seconds."
+        "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Note2"		"\nEnchanted Freezing Destruction - After using this ability you will gain 150 cast speed for 15 seconds."
+        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_buff"		"Flash Freeze"
+        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_buff_Description"		"Frost damage increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
         // Luminous Samurai (Juggernaut)
-
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai"		"Bankai"
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai_Description"		"Awaken your katana for a short time, granting you bonus Attack damage and Critical strike damage with each successful attack, stacking up to <font color='white'><b>15</b></font> times. Each enemy you kill during Bankai will extend its duration."
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai_Lore" "As Luminous Samurai baptizes his katana in the Light of Origination, its true power awakens."

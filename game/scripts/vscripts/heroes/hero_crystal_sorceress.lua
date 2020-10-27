@@ -77,7 +77,7 @@ function crystal_sorceress_frost_comet:DestroyAbilityPhaseEffects(castFinished)
     if (not IsServer()) then
         return
     end
-    if(not castFinished) then
+    if (not castFinished) then
         castFinished = true
     else
         castFinished = false
@@ -1094,6 +1094,172 @@ function crystal_sorceress_cold_embrace:OnUpgrade()
     self.bonusCastSpeedDuration = self:GetSpecialValueFor("bonus_cast_speed_duration")
     self.cdrFlatOnDamage = self:GetSpecialValueFor("cdr_flat_on_damage")
 end
+-- crystal_sorceress_flash_freeze
+modifier_crystal_sorceress_flash_freeze_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_PROPERTY_TOOLTIP
+        }
+    end
+})
+
+function modifier_crystal_sorceress_flash_freeze_buff:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("frost_damage_per_stack") * self:GetStackCount()
+end
+
+function modifier_crystal_sorceress_flash_freeze_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_flash_freeze_buff:GetFrostDamageBonus()
+    return self.ability.frostDamagePerStack * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_flash_freeze = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+function modifier_crystal_sorceress_flash_freeze:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.tick = 0
+    self.ability:OnUpgrade()
+    self:OnRefresh()
+end
+
+function modifier_crystal_sorceress_flash_freeze:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
+    self:StartIntervalThink(self.ability.passiveStacksEveryTickInCombatTick)
+end
+
+function modifier_crystal_sorceress_flash_freeze:OnIntervalThink()
+    if (not self.caster:HasModifier("modifier_out_of_combat_buff")) then
+        self.tick = self.tick + self.ability.passiveStacksEveryTickInCombatTick
+        if (self.tick >= self.ability.passiveStacksEveryTickInCombatTimer) then
+            self.ability:ApplyStack()
+            self.tick = 0
+        end
+    end
+end
+
+function modifier_crystal_sorceress_flash_freeze:ApplyStack()
+    local modifierTable = {}
+    modifierTable.ability = self.ability
+    modifierTable.target = self.caster
+    modifierTable.caster = self.caster
+    modifierTable.modifier_name = "modifier_crystal_sorceress_flash_freeze_buff"
+    modifierTable.duration = self.ability.duration
+    modifierTable.stacks = 1
+    if (RollPercentage(self.ability.stacksProcChance)) then
+        modifierTable.stacks = 1 * self.ability.stacksProcMultiplier
+    end
+    modifierTable.max_stacks = self.ability.maxStacks
+    GameMode:ApplyStackingBuff(modifierTable)
+end
+
+function modifier_crystal_sorceress_flash_freeze:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.attacker:FindModifierByName("modifier_crystal_sorceress_flash_freeze")
+    if (modifier and damageTable.ability and modifier.ability and modifier.ability.stacksPerAbilityDamage and modifier.ability.stacksPerAbilityDamage > 0) then
+        modifier.ability:ApplyStack()
+    end
+end
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze"] = LUA_MODIFIER_MOTION_NONE
+
+crystal_sorceress_flash_freeze = class({
+    GetIntrinsicModifierName = function()
+        return "modifier_crystal_sorceress_flash_freeze"
+    end,
+    GetCooldown = function(self, level)
+        if (self:GetSpecialValueFor("stacks_for_enchance_proc") > 0) then
+            return self.BaseClass.GetCooldown(self, level)
+        end
+        return 0
+    end
+})
+
+function crystal_sorceress_flash_freeze:ApplyStack()
+    self.modifier:ApplyStack()
+end
+
+function crystal_sorceress_flash_freeze:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local modifierTable = {}
+    modifierTable.ability = self
+    modifierTable.target = self:GetCursorTarget()
+    modifierTable.caster = self:GetCaster()
+    modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff"
+    modifierTable.duration = self.duration
+    GameMode:ApplyBuff(modifierTable)
+    if (self.bonusCastSpeed > 0) then
+        modifierTable.duration = self.bonusCastSpeedDuration
+        modifierTable.stacks = self.bonusCastSpeedStacks
+        modifierTable.max_stacks = self.bonusCastSpeedStacks
+        modifierTable.target = modifierTable.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff_cast_speed"
+        GameMode:ApplyStackingBuff(modifierTable)
+    end
+end
+
+function crystal_sorceress_cold_embrace:OnUpgrade()
+    self.frostDamagePerStack = self:GetSpecialValueFor("frost_damage_per_stack") / 100
+    self.stacksPerAbilityDamage = self:GetSpecialValueFor("stacks_per_ability_damage")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.passiveStacksEveryTickInCombat = self:GetSpecialValueFor("passive_stacks_every_tick_in_combat")
+    self.passiveStacksEveryTickInCombatTimer = self:GetSpecialValueFor("passive_stack_every_tick_in_combat_timer")
+    self.passiveStacksEveryTickInCombatTick = self:GetSpecialValueFor("passive_stack_every_tick_in_combat_tick")
+    self.stacksForEnchanceProc = self:GetSpecialValueFor("stacks_for_enchance_proc")
+    self.stacksProcMultiplier = self:GetSpecialValueFor("stacks_proc_multiplier")
+    self.stacksProcChance = self:GetSpecialValueFor("stacks_proc_chance")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    if (not self.modifier) then
+        self.modifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
+    end
+end
 
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
@@ -1103,6 +1269,7 @@ end
 if (IsServer() and not GameMode.CRYSTAL_SORCERESS_INIT) then
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(crystal_sorceress_frost_comet, 'OnPostTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_cold_embrace, 'OnPostTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_flash_freeze, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_crystal_sorceress_cold_embrace_buff, 'OnTakeDamage'))
     GameMode.CRYSTAL_SORCERESS_INIT = true
 end
