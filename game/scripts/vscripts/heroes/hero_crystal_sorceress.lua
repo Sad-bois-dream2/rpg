@@ -1095,6 +1095,26 @@ function crystal_sorceress_cold_embrace:OnUpgrade()
     self.cdrFlatOnDamage = self:GetSpecialValueFor("cdr_flat_on_damage")
 end
 -- crystal_sorceress_flash_freeze
+modifier_crystal_sorceress_flash_freeze_enchant_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze_enchant_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_crystal_sorceress_flash_freeze_buff = class({
     IsDebuff = function(self)
         return false
@@ -1115,6 +1135,9 @@ modifier_crystal_sorceress_flash_freeze_buff = class({
         return {
             MODIFIER_PROPERTY_TOOLTIP
         }
+    end,
+    GetEffectName = function()
+        return "particles/econ/items/drow/drow_ti9_immortal/drow_ti9_frost_arrow_debuff.vpcf"
     end
 })
 
@@ -1163,7 +1186,6 @@ function modifier_crystal_sorceress_flash_freeze:OnCreated()
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
     self.tick = 0
-    self.ability:OnUpgrade()
     self:OnRefresh()
 end
 
@@ -1171,7 +1193,10 @@ function modifier_crystal_sorceress_flash_freeze:OnRefresh()
     if (not IsServer()) then
         return
     end
-    self:StartIntervalThink(self.ability.passiveStacksEveryTickInCombatTick)
+    self.ability:OnUpgrade()
+    if (self.ability.passiveStacksEveryTickInCombatTick > 0) then
+        self:StartIntervalThink(self.ability.passiveStacksEveryTickInCombatTick)
+    end
 end
 
 function modifier_crystal_sorceress_flash_freeze:OnIntervalThink()
@@ -1217,7 +1242,14 @@ crystal_sorceress_flash_freeze = class({
             return self.BaseClass.GetCooldown(self, level)
         end
         return 0
-    end
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("stacks_for_enchance_proc") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        else
+            return DOTA_ABILITY_BEHAVIOR_PASSIVE
+        end
+    end,
 })
 
 function crystal_sorceress_flash_freeze:ApplyStack()
@@ -1228,24 +1260,31 @@ function crystal_sorceress_flash_freeze:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    local modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = self:GetCursorTarget()
-    modifierTable.caster = self:GetCaster()
-    modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff"
-    modifierTable.duration = self.duration
-    GameMode:ApplyBuff(modifierTable)
-    if (self.bonusCastSpeed > 0) then
-        modifierTable.duration = self.bonusCastSpeedDuration
-        modifierTable.stacks = self.bonusCastSpeedStacks
-        modifierTable.max_stacks = self.bonusCastSpeedStacks
-        modifierTable.target = modifierTable.caster
-        modifierTable.modifier_name = "modifier_crystal_sorceress_cold_embrace_buff_cast_speed"
-        GameMode:ApplyStackingBuff(modifierTable)
+    local caster = self:GetCaster()
+    local modifier = caster:FindModifierByName("modifier_crystal_sorceress_flash_freeze_buff")
+    if (modifier) then
+        local stacks = modifier:GetStackCount()
+        if (stacks >= self.stacksForEnchanceProc) then
+            stacks = stacks - self.stacksForEnchanceProc
+            if (stacks > 0) then
+                modifier:SetStackCount(stacks)
+            else
+                modifier:Destroy()
+            end
+            local modifierTable = {}
+            modifierTable.ability = self
+            modifierTable.target = caster
+            modifierTable.caster = caster
+            modifierTable.modifier_name = "modifier_crystal_sorceress_flash_freeze_enchant_buff"
+            modifierTable.duration = -1
+            GameMode:ApplyBuff(modifierTable)
+        end
+    else
+        self:EndCooldown()
     end
 end
 
-function crystal_sorceress_cold_embrace:OnUpgrade()
+function crystal_sorceress_flash_freeze:OnUpgrade()
     self.frostDamagePerStack = self:GetSpecialValueFor("frost_damage_per_stack") / 100
     self.stacksPerAbilityDamage = self:GetSpecialValueFor("stacks_per_ability_damage")
     self.duration = self:GetSpecialValueFor("duration")

@@ -545,7 +545,9 @@
         "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Note1"		"\nEnchanted Glacier Rush - Ability will be used without cooldown and you will gain effect that prevent cooldown of next 2 using of this ability for 30 seconds."
         "DOTA_Tooltip_Ability_crystal_sorceress_flash_freeze_Note2"		"\nEnchanted Freezing Destruction - After using this ability you will gain 150 cast speed for 15 seconds."
         "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_buff"		"Flash Freeze"
-        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_buff_Description"		"Frost damage increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
+        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_buff_Description"		"Frost damage increased by %fMODIFIER_PROPERTY_TOOLTIP%%%."
+        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_enchant_buff"		"Flash Freeze Enchant"
+        "DOTA_Tooltip_modifier_crystal_sorceress_flash_freeze_enchant_buff_Description"		"Next offensive ability will be enchanted."
         // Luminous Samurai (Juggernaut)
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai"		"Bankai"
 		"DOTA_Tooltip_Ability_luminous_samurai_bankai_Description"		"Awaken your katana for a short time, granting you bonus Attack damage and Critical strike damage with each successful attack, stacking up to <font color='white'><b>15</b></font> times. Each enemy you kill during Bankai will extend its duration."

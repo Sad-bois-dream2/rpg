@@ -485,9 +485,8 @@
 		}
 		"precache"
 		{
-            "particle"  "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
-            "particle"  "particles/econ/items/drow/drow_ti9_immortal/status_effect_drow_ti9_frost_arrow.vpcf"
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_winter_wyvern.vsndevts"
+            "particle"  "particles/econ/items/drow/drow_ti9_immortal/drow_ti9_frost_arrow_debuff.vpcf"
+            "particle"  "particles/units/crystal_sorceress/flash_freeze/flash_freeze_enchant_buff.vpcf"
 		}
 	}
 }
