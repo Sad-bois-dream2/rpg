@@ -516,7 +516,7 @@
 		"precache"
 		{
             "particle"  "particles/econ/items/drow/drow_ti9_immortal/drow_ti9_frost_arrow_debuff.vpcf"
-            "particle"  "particles/units/crystal_sorceress/flash_freeze/flash_freeze_enchant_buff.vpcf"
+            "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_e_cowlofice.vpcf"
 		}
 	}
 }

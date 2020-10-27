@@ -1296,6 +1296,10 @@ function modifier_crystal_sorceress_flash_freeze_enchant_buff:OnCreated()
     end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
+    local pidx = ParticleManager:CreateParticle("particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_e_cowlofice.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(100, 0, 0))
+    ParticleManager:ReleaseParticleIndex(pidx)
+    EmitSoundOn("hero_Crystal.CrystalNova", self.caster)
 end
 
 function modifier_crystal_sorceress_flash_freeze_enchant_buff:OnAbilityFullyCast(keys)
@@ -1492,7 +1496,7 @@ function crystal_sorceress_flash_freeze:OnSpellStart()
     end
     local caster = self:GetCaster()
     local modifier = caster:FindModifierByName("modifier_crystal_sorceress_flash_freeze_buff")
-    if (modifier) then
+    if (modifier and not caster:HasModifier("modifier_crystal_sorceress_flash_freeze_enchant_buff")) then
         local stacks = modifier:GetStackCount()
         if (stacks >= self.stacksForEnchanceProc) then
             stacks = stacks - self.stacksForEnchanceProc
