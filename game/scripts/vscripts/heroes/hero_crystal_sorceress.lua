@@ -625,6 +625,9 @@ function crystal_sorceress_glacier_rush:OnSpellStart()
         }
         GameMode:ReduceAbilityCooldown(cooldownTable)
     end
+    if (caster:HasModifier("modifier_crystal_sorceress_flash_freeze_enchant_buff")) then
+        self:EndCooldown()
+    end
 end
 
 function crystal_sorceress_glacier_rush:OnUpgrade()
@@ -1094,7 +1097,176 @@ function crystal_sorceress_cold_embrace:OnUpgrade()
     self.bonusCastSpeedDuration = self:GetSpecialValueFor("bonus_cast_speed_duration")
     self.cdrFlatOnDamage = self:GetSpecialValueFor("cdr_flat_on_damage")
 end
+
 -- crystal_sorceress_flash_freeze
+modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
+            MODIFIER_PROPERTY_TOOLTIP
+        }
+    end,
+    GetTexture = function()
+        return "crystal_sorceress_frost_comet"
+    end,
+})
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("enchanted_frost_comet_chance")
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.frostCometAbility = self:GetParent():FindAbilityByName("crystal_sorceress_frost_comet")
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (self.fromproc) then
+        return
+    end
+    if (keys.unit ~= self.caster) then
+        return
+    end
+    if (keys.ability ~= self.frostCometAbility) then
+        return
+    end
+    if (RollPercentage(self.ability.enchantedFrostCometChance)) then
+        self.fromproc = true
+        self.caster:SetCursorCastTarget(keys.target)
+        self.frostCometAbility:OnAbilityPhaseStart(false)
+        self.frostCometAbility:OnSpellStart()
+        self.fromproc = nil
+    end
+end
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
+            MODIFIER_PROPERTY_TOOLTIP
+        }
+    end,
+    GetTexture = function()
+        return "crystal_sorceress_glacier_rush"
+    end,
+})
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff:OnTooltip()
+    return self:GetStackCount()
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.glacierRushAbility = self.caster:FindAbilityByName("crystal_sorceress_glacier_rush")
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit ~= self.caster) then
+        return
+    end
+    if (keys.ability ~= self.glacierRushAbility) then
+        return
+    end
+    self.glacierRushAbility:EndCooldown()
+    local stacks = self:GetStackCount() - 1
+    if (stacks < 1) then
+        self:Destroy()
+    else
+        self:SetStackCount(stacks)
+    end
+end
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_PROPERTY_TOOLTIP
+        }
+    end,
+    GetTexture = function()
+        return "crystal_sorceress_freezing_destruction"
+    end,
+})
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff:OnTooltip()
+    return self:GetAbility():GetSpecialValueFor("enchanted_freezing_destruction_cast_speed")
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff:GetSpellHasteBonus()
+    return self.ability.enchantedFreezingDestructionCastSpeed
+end
+
+LinkedModifiers["modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_crystal_sorceress_flash_freeze_enchant_buff = class({
     IsDebuff = function(self)
         return false
@@ -1110,8 +1282,66 @@ modifier_crystal_sorceress_flash_freeze_enchant_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end,
+    DeclareFunctions = function()
+        return {
+            MODIFIER_EVENT_ON_ABILITY_FULLY_CAST
+        }
     end
 })
+
+function modifier_crystal_sorceress_flash_freeze_enchant_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+end
+
+function modifier_crystal_sorceress_flash_freeze_enchant_buff:OnAbilityFullyCast(keys)
+    if (not IsServer()) then
+        return
+    end
+    if (keys.unit ~= self.caster) then
+        return
+    end
+    local abilityName = keys.ability:GetAbilityName()
+    if (abilityName == "crystal_sorceress_frost_comet") then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_flash_freeze_enchanted_frost_comet_buff"
+        modifierTable.duration = self.ability.enchantedFrostCometDuration
+        GameMode:ApplyBuff(modifierTable)
+        self:Destroy()
+        return
+    end
+    if (abilityName == "crystal_sorceress_glacier_rush") then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_flash_freeze_enchanted_glacier_rush_buff"
+        modifierTable.duration = self.ability.enchantedGlacierRushChargesDuration
+        modifierTable.stacks = self.ability.enchantedGlacierRushCharges
+        modifierTable.max_stacks = self.ability.enchantedGlacierRushCharges
+        GameMode:ApplyStackingBuff(modifierTable)
+        self:Destroy()
+        return
+    end
+    if (abilityName == "crystal_sorceress_freezing_destruction") then
+        local modifierTable = {}
+        modifierTable.ability = self.ability
+        modifierTable.target = self.caster
+        modifierTable.caster = self.caster
+        modifierTable.modifier_name = "modifier_crystal_sorceress_flash_freeze_enchanted_freezing_destruction_buff"
+        modifierTable.duration = self.ability.enchantedFreezingDestructionCastSpeedDuration
+        GameMode:ApplyBuff(modifierTable)
+        self:Destroy()
+        return
+    end
+end
 
 LinkedModifiers["modifier_crystal_sorceress_flash_freeze_enchant_buff"] = LUA_MODIFIER_MOTION_NONE
 
@@ -1295,6 +1525,12 @@ function crystal_sorceress_flash_freeze:OnUpgrade()
     self.stacksProcMultiplier = self:GetSpecialValueFor("stacks_proc_multiplier")
     self.stacksProcChance = self:GetSpecialValueFor("stacks_proc_chance")
     self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.enchantedFrostCometChance = self:GetSpecialValueFor("enchanted_frost_comet_chance")
+    self.enchantedFrostCometDuration = self:GetSpecialValueFor("enchanted_frost_comet_duration")
+    self.enchantedGlacierRushCharges = self:GetSpecialValueFor("enchanted_glacier_rush_charges")
+    self.enchantedGlacierRushChargesDuration = self:GetSpecialValueFor("enchanted_glacier_rush_charges_duration")
+    self.enchantedFreezingDestructionCastSpeed = self:GetSpecialValueFor("enchanted_freezing_destruction_cast_speed")
+    self.enchantedFreezingDestructionCastSpeedDuration = self:GetSpecialValueFor("enchanted_freezing_destruction_cast_speed_duration")
     if (not self.modifier) then
         self.modifier = self:GetCaster():FindModifierByName(self:GetIntrinsicModifierName())
     end

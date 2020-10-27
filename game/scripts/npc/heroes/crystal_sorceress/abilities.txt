@@ -482,6 +482,36 @@
 				"var_type"				"FIELD_FLOAT"
 				"max_stacks"				"100"
 			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_frost_comet_chance"				"40"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_frost_comet_duration"				"10"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_glacier_rush_charges"				"2"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_glacier_rush_charges_duration"				"30"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_freezing_destruction_cast_speed"				"150"
+			}
+			"16"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_freezing_destruction_cast_speed_duration"				"15"
+			}
 		}
 		"precache"
 		{
