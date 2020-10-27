@@ -960,7 +960,7 @@ function enemies_boss_skill:OnUpgrade()
     if (not IsServer()) then
         return
     end
-    self.spellhastePerStack = self:GetSpecialValueFor("castspeed") / 100
+    self.spellhastePerStack = self:GetSpecialValueFor("castspeed")
     self.debuffResPerStack = self:GetSpecialValueFor("status_res") / 100
     self.debuffResDuration = self:GetSpecialValueFor("duration")
     self.minDurationForDebuffRes = self:GetSpecialValueFor("min_duration_for_status_res")

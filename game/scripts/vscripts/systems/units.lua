@@ -1,19 +1,5 @@
 if Units == nil then
     _G.Units = class({})
-    Units.heroesInnateElement = {
-        npc_dota_hero_axe = "firedmg",
-        npc_dota_hero_crystal_maiden = "frostdmg",
-        npc_dota_hero_dark_willow = "naturedmg",
-        npc_dota_hero_enchantress = "naturedmg",
-        npc_dota_hero_juggernaut = "holydmg",
-        npc_dota_hero_drow_ranger = "voiddmg",
-        npc_dota_hero_mars = "firedmg",
-        npc_dota_hero_silencer = "holydmg",
-        npc_dota_hero_invoker = "holydmg",
-        npc_dota_hero_phantom_assassin = "voiddmg",
-        npc_dota_hero_abyssal_underlord = "infernodmg",
-        npc_dota_hero_skeleton_king = "infernodmg"
-    }
 end
 
 ---@class UNIT_STATS_ELEMENTS_TABLE
@@ -55,6 +41,10 @@ function Units:ForceStatsCalculation(unit)
     modifier:OnIntervalThink()
 end
 
+function Units:GetSpellHasteCap()
+    return 800
+end
+
 ---@param unit CDOTA_BaseNPC
 ---@param statsTable UNIT_STATS_TABLE
 ---@return UNIT_STATS_TABLE
@@ -62,48 +52,33 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
     if (unit ~= nil and not unit:IsNull() and statsTable ~= nil and IsServer()) then
         local unitBonusStr = 0
         local unitBonusPercentStr = 1
-        local unitBonusPercentStrMulti = 1
         local unitBonusAgi = 0
         local unitBonusPercentAgi = 1
-        local unitBonusPercentAgiMulti = 1
         local unitBonusInt = 0
         local unitBonusPercentInt = 1
-        local unitBonusPercentIntMulti = 1
         local unitBonusPrimary = 0
         local unitBonusPercentPrimary = 0
-        local unitBonusPercentPrimaryMulti = 1
         local unitBonusAttackDamage = 0
         local unitBonusPercentAttackDamage = 1
-        local unitBonusPercentAttackDamageMulti = 1
         local unitBonusAttackSpeed = 0
         local unitBonusPercentAttackSpeed = 1
-        local unitBonusPercentAttackSpeedMulti = 1
-        local unitBonusSpellDamage = 1 --fixed from 0 and remove the +1 in gamemechanics.lua. This make reducing that +1 possible for debuff that reduce damage output. Fixed tooltip by putting -1 before showing
-        local unitBonusSpellDamageMulti = 1
-        local unitBonusSpellHaste = 0 --this become flat
-        local unitBonusPercentSpellHaste = 1 --this is total additive percent
-        local unitBonusPercentSpellHasteMulti = 1
+        local unitBonusSpellDamage = 1
+        local unitBonusSpellHaste = 0
+        local unitBonusPercentSpellHaste = 1
         local unitBonusAttackRange = 0
         local unitBonusPercentAttackRange = 1
-        local unitBonusPercentAttackRangeMulti = 1
         local unitBonusCastRange = 0
         local unitBonusPercentCastRange = 1
-        local unitBonusPercentCastRangeMulti = 1
         local unitBonusMoveSpeed = 0
         local unitBonusPercentMoveSpeed = 1
-        local unitBonusPercentMoveSpeedMulti = 1
         local unitBonusHealthRegeneration = 0
         local unitBonusPercentHealthRegeneration = 1
-        local unitBonusPercentHealthRegenerationMulti = 1
         local unitBonusManaRegeneration = 0
         local unitBonusPercentManaRegeneration = 1
-        local unitBonusPercentManaRegenerationMulti = 1
         local unitBonusHealth = 0
         local unitBonusPercentHealth = 1
-        local unitBonusPercentHealthMulti = 1
         local unitBonusMana = 0
         local unitBonusPercentMana = 1
-        local unitBonusPercentManaMulti = 1
         local unitDamageReduction = 1
         local unitFireProtection = 1
         local unitFrostProtection = 1
@@ -161,17 +136,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetStrengthPercentBonus) then
                 unitBonusPercentStr = unitBonusPercentStr + (tonumber(unitModifiers[i].GetStrengthPercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetStrengthPercentBonusMulti) then
-                unitBonusPercentStrMulti = unitBonusPercentStrMulti * (tonumber(unitModifiers[i].GetStrengthPercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetAgilityBonus) then
                 unitBonusAgi = unitBonusAgi + (tonumber(unitModifiers[i].GetAgilityBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetAgilityPercentBonus) then
                 unitBonusPercentAgi = unitBonusPercentAgi + (tonumber(unitModifiers[i].GetAgilityPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetAgilityPercentBonusMulti) then
-                unitBonusPercentAgiMulti = unitBonusPercentAgiMulti * (tonumber(unitModifiers[i].GetAgilityPercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetIntellectBonus) then
                 unitBonusInt = unitBonusInt + (tonumber(unitModifiers[i].GetIntellectBonus(unitModifiers[i])) or 0)
@@ -179,17 +148,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetIntellectPercentBonus) then
                 unitBonusPercentInt = unitBonusPercentInt + (tonumber(unitModifiers[i].GetIntellectPercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetIntellectPercentBonusMulti) then
-                unitBonusPercentIntMulti = unitBonusPercentIntMulti * (tonumber(unitModifiers[i].GetIntellectPercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetPrimaryAttributeBonus) then
                 unitBonusPrimary = unitBonusPrimary + (tonumber(unitModifiers[i].GetPrimaryAttributeBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetPrimaryAttributePercentBonus) then
                 unitBonusPercentPrimary = unitBonusPercentPrimary + (tonumber(unitModifiers[i].GetPrimaryAttributePercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetPrimaryAttributePercentBonusMulti) then
-                unitBonusPercentPrimaryMulti = unitBonusPercentPrimaryMulti * (tonumber(unitModifiers[i].GetPrimaryAttributePercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetAttackDamageBonus) then
                 unitBonusAttackDamage = unitBonusAttackDamage + (tonumber(unitModifiers[i].GetAttackDamageBonus(unitModifiers[i])) or 0)
@@ -197,17 +160,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetAttackDamagePercentBonus) then
                 unitBonusPercentAttackDamage = unitBonusPercentAttackDamage + (tonumber(unitModifiers[i].GetAttackDamagePercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetAttackDamagePercentBonusMulti) then
-                unitBonusPercentAttackDamageMulti = unitBonusPercentAttackDamageMulti * (tonumber(unitModifiers[i].GetAttackDamagePercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetAttackSpeedBonus) then
                 unitBonusAttackSpeed = unitBonusAttackSpeed + (tonumber(unitModifiers[i].GetAttackSpeedBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetAttackSpeedPercentBonus) then
                 unitBonusPercentAttackSpeed = unitBonusPercentAttackSpeed + (tonumber(unitModifiers[i].GetAttackSpeedPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetAttackSpeedPercentBonusMulti) then
-                unitBonusPercentAttackSpeedMulti = unitBonusPercentAttackSpeedMulti * (tonumber(unitModifiers[i].GetAttackSpeedPercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetSpellDamageBonus) then
                 unitBonusSpellDamage = unitBonusSpellDamage + (tonumber(unitModifiers[i].GetSpellDamageBonus(unitModifiers[i])) or 0)
@@ -230,17 +187,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetSixthAbilitySpellDamageBonus) then
                 unitSpellDamageForAbility6 = unitSpellDamageForAbility6 + (tonumber(unitModifiers[i].GetSixthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetSpellDamageBonusMulti) then
-                unitBonusSpellDamageMulti = unitBonusSpellDamageMulti * (tonumber(unitModifiers[i].GetSpellDamageBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetSpellHasteBonus) then
                 unitBonusSpellHaste = unitBonusSpellHaste + (tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetSpellHastePercentBonus) then
                 unitBonusPercentSpellHaste = unitBonusPercentSpellHaste + (tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetSpellHastePercentBonusMulti) then
-                unitBonusPercentSpellHasteMulti = unitBonusPercentSpellHasteMulti * (tonumber(unitModifiers[i].GetSpellHastePercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetAttackRangeBonus) then
                 unitBonusAttackRange = unitBonusAttackRange + (tonumber(unitModifiers[i].GetAttackRangeBonus(unitModifiers[i])) or 0)
@@ -248,17 +199,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetAttackRangePercentBonus) then
                 unitBonusPercentAttackRange = unitBonusPercentAttackRange + (tonumber(unitModifiers[i].GetAttackRangePercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetAttackRangePercentBonusMulti) then
-                unitBonusPercentAttackRangeMulti = unitBonusPercentAttackRangeMulti * (tonumber(unitModifiers[i].GetAttackRangePercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetCastRangeBonus) then
                 unitBonusCastRange = unitBonusCastRange + (tonumber(unitModifiers[i].GetCastRangeBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetCastRangePercentBonus) then
                 unitBonusPercentCastRange = unitBonusPercentCastRange + (tonumber(unitModifiers[i].GetCastRangePercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetCastRangePercentBonusMulti) then
-                unitBonusPercentCastRangeMulti = unitBonusPercentCastRangeMulti * (tonumber(unitModifiers[i].GetCastRangePercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetMoveSpeedBonus) then
                 unitBonusMoveSpeed = unitBonusMoveSpeed + (tonumber(unitModifiers[i].GetMoveSpeedBonus(unitModifiers[i])) or 0)
@@ -266,17 +211,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetMoveSpeedPercentBonus) then
                 unitBonusPercentMoveSpeed = unitBonusPercentMoveSpeed + (tonumber(unitModifiers[i].GetMoveSpeedPercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetMoveSpeedPercentBonusMulti) then
-                unitBonusPercentMoveSpeedMulti = unitBonusPercentMoveSpeedMulti * (tonumber(unitModifiers[i].GetMoveSpeedPercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetHealthRegenerationBonus) then
                 unitBonusHealthRegeneration = unitBonusHealthRegeneration + (tonumber(unitModifiers[i].GetHealthRegenerationBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetHealthRegenerationPercentBonus) then
                 unitBonusPercentHealthRegeneration = unitBonusPercentHealthRegeneration + (tonumber(unitModifiers[i].GetHealthRegenerationPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetHealthRegenerationPercentBonusMulti) then
-                unitBonusPercentHealthRegenerationMulti = unitBonusPercentHealthRegenerationMulti * (tonumber(unitModifiers[i].GetHealthRegenerationPercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetManaRegenerationBonus) then
                 unitBonusManaRegeneration = unitBonusManaRegeneration + (tonumber(unitModifiers[i].GetManaRegenerationBonus(unitModifiers[i])) or 0)
@@ -284,26 +223,17 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetManaRegenerationPercentBonus) then
                 unitBonusPercentManaRegeneration = unitBonusPercentManaRegeneration + (tonumber(unitModifiers[i].GetManaRegenerationPercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetManaRegenerationPercentBonusMulti) then
-                unitBonusPercentManaRegenerationMulti = unitBonusPercentManaRegenerationMulti * (tonumber(unitModifiers[i].GetManaRegenerationPercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetHealthBonus) then
                 unitBonusHealth = unitBonusHealth + (tonumber(unitModifiers[i].GetHealthBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetHealthPercentBonus) then
                 unitBonusPercentHealth = unitBonusPercentHealth + (tonumber(unitModifiers[i].GetHealthPercentBonus(unitModifiers[i])) or 0)
             end
-            if (unitModifiers[i].GetHealthPercentBonusMulti) then
-                unitBonusPercentHealthMulti = unitBonusPercentHealthMulti * (tonumber(unitModifiers[i].GetHealthPercentBonusMulti(unitModifiers[i])) or 1)
-            end
             if (unitModifiers[i].GetManaBonus) then
                 unitBonusMana = unitBonusMana + (tonumber(unitModifiers[i].GetManaBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetManaPercentBonus) then
                 unitBonusPercentMana = unitBonusPercentMana + (tonumber(unitModifiers[i].GetManaPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetManaPercentBonusMulti) then
-                unitBonusPercentManaMulti = unitBonusPercentManaMulti * (tonumber(unitModifiers[i].GetManaPercentBonusMulti(unitModifiers[i])) or 1)
             end
             if (unitModifiers[i].GetDamageReductionBonus) then
                 local damageReduction = tonumber(unitModifiers[i].GetDamageReductionBonus(unitModifiers[i])) or 0
@@ -446,34 +376,22 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             local primaryAttributeIndex = unit:GetPrimaryAttribute()
             if (primaryAttributeIndex == 0) then
                 statsTable.str = statsTable.str + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr + unitBonusPercentPrimary) * unitBonusPercentStrMulti * unitBonusPercentPrimaryMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi) * unitBonusPercentAgiMulti
-                unitBonusPercentInt = (unitBonusPercentInt) * unitBonusPercentIntMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
+                unitBonusPercentStr = unitBonusPercentStr + unitBonusPercentPrimary
                 primaryAttribute = statsTable.str
             end
             if (primaryAttributeIndex == 1) then
                 statsTable.agi = statsTable.agi + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr) * unitBonusPercentStrMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi + unitBonusPercentPrimary) * unitBonusPercentAgiMulti * unitBonusPercentPrimaryMulti
-                unitBonusPercentInt = (unitBonusPercentInt) * unitBonusPercentIntMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
+                unitBonusPercentAgi = unitBonusPercentAgi + unitBonusPercentPrimary
                 primaryAttribute = statsTable.agi
             end
             if (primaryAttributeIndex == 2) then
                 statsTable.int = statsTable.int + unitBonusPrimary
-                unitBonusPercentStr = (unitBonusPercentStr) * unitBonusPercentStrMulti
-                unitBonusPercentAgi = (unitBonusPercentAgi) * unitBonusPercentAgiMulti
-                unitBonusPercentInt = (unitBonusPercentInt + unitBonusPercentPrimary) * unitBonusPercentIntMulti * unitBonusPercentPrimaryMulti
-                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
-                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
-                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
+                unitBonusPercentInt = unitBonusPercentInt + unitBonusPercentPrimary
                 primaryAttribute = statsTable.int
             end
+            statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
+            statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
+            statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
             statsTable.primaryAttributeIndex = primaryAttributeIndex
             --old one primary attribute to base damage calculation is wrong
         else
@@ -488,16 +406,16 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         -- attack damage
         local heroBaseDamage = 0
         local attackDamagePerPrimary = 1
-        local totalAttackDamage = (heroBaseDamage + (primaryAttribute * attackDamagePerPrimary) + unitBonusAttackDamage) * unitBonusPercentAttackDamage * unitBonusPercentAttackDamageMulti
+        local totalAttackDamage = (heroBaseDamage + (primaryAttribute * attackDamagePerPrimary) + unitBonusAttackDamage) * unitBonusPercentAttackDamage
         unit:SetBaseDamageMax(totalAttackDamage)
         unit:SetBaseDamageMin(totalAttackDamage)
         -- attack speed
         local attackSpeedPerAgi = 1
-        local totalAttackSpeed = ((attackSpeedPerAgi * statsTable.agi) + unitBonusAttackSpeed) * unitBonusPercentAttackSpeed * unitBonusPercentAttackSpeedMulti
+        local totalAttackSpeed = ((attackSpeedPerAgi * statsTable.agi) + unitBonusAttackSpeed) * unitBonusPercentAttackSpeed
         statsTable.attackSpeed = math.floor(totalAttackSpeed)
         unit:SetModifierStackCount("modifier_stats_system_aaspeed", unit, statsTable.attackSpeed)
         -- spell damage
-        statsTable.spellDamage = unitBonusSpellDamage * unitBonusSpellDamageMulti
+        statsTable.spellDamage = unitBonusSpellDamage
         statsTable.spellDamageForAbilities = {
             unitSpellDamageForAbility1,
             unitSpellDamageForAbility2,
@@ -511,39 +429,39 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.damageAOE = unitAOEDamage
         statsTable.damageDOT = unitDOTDamage
         -- spell haste
-        local totalSpellHaste = unitBonusSpellHaste * unitBonusPercentSpellHaste * unitBonusPercentSpellHasteMulti-- work like AS
+        local totalSpellHaste = unitBonusSpellHaste * unitBonusPercentSpellHaste
         --compared to AS dota vanilla has 600 AS + 100 initial = 700 total AS cap
         --but in our custom game it is 800 (tested) so lets cap it at 800 too for easier balance and late game scaling this mean 2s cast time cap at 0.25 cast time (1.7 BAT need nerf too)
         --everything /100 to not break old code
-        statsTable.spellHaste = math.min(8, totalSpellHaste)
+        statsTable.spellHaste = math.min(Units:GetSpellHasteCap(), totalSpellHaste)
         -- attack range
         local baseAttackRange = unit:GetBaseAttackRange()
-        statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange * unitBonusPercentAttackRangeMulti) - baseAttackRange)
+        statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange) - baseAttackRange)
         unit:SetModifierStackCount("modifier_stats_system_aarange", unit, statsTable.attackRangeBonus)
         -- cast range
-        statsTable.castRangeBonus = math.floor(unitBonusCastRange * unitBonusPercentCastRange * unitBonusPercentCastRangeMulti)
+        statsTable.castRangeBonus = math.floor(unitBonusCastRange * unitBonusPercentCastRange)
         unit:SetModifierStackCount("modifier_stats_system_castrange", unit, statsTable.castRangeBonus)
         -- move speed
         local baseMoveSpeed = unit:GetBaseMoveSpeed()
-        statsTable.movespeedBonus = math.floor(((baseMoveSpeed + unitBonusMoveSpeed) * unitBonusPercentMoveSpeed * unitBonusPercentMoveSpeedMulti) - baseMoveSpeed)
+        statsTable.movespeedBonus = math.floor(((baseMoveSpeed + unitBonusMoveSpeed) * unitBonusPercentMoveSpeed) - baseMoveSpeed)
         unit:SetModifierStackCount("modifier_stats_system_movespeed", unit, statsTable.movespeedBonus)
         -- hp regen
         local healthRegenPerStr = 0.1
         local baseHpRegen = (statsTable.str * healthRegenPerStr)
-        statsTable.hpRegen = (baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration * unitBonusPercentHealthRegenerationMulti
+        statsTable.hpRegen = (baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration
         -- mana regen
         local manaRegenPerInt = 0.05
         local baseMpRegen = (statsTable.int * manaRegenPerInt)
-        statsTable.mpRegen = (baseMpRegen + unitBonusManaRegeneration) * unitBonusPercentManaRegeneration * unitBonusPercentManaRegenerationMulti
+        statsTable.mpRegen = (baseMpRegen + unitBonusManaRegeneration) * unitBonusPercentManaRegeneration
         -- max hp
         local healthPerStr = 20
         local baseHealthBonus = (statsTable.str * healthPerStr)
-        statsTable.bonusHealth = math.floor((baseHealthBonus + unitBonusHealth) * unitBonusPercentHealth * unitBonusPercentHealthMulti)
+        statsTable.bonusHealth = math.floor((baseHealthBonus + unitBonusHealth) * unitBonusPercentHealth)
         statsTable.bonusHealth = statsTable.bonusHealth
         -- max mp
         local manaPerInt = 12
         local baseManaBonus = (manaPerInt * statsTable.int)
-        statsTable.bonusMana = math.floor((baseManaBonus + unitBonusMana) * unitBonusPercentMana * unitBonusPercentManaMulti)
+        statsTable.bonusMana = math.floor((baseManaBonus + unitBonusMana) * unitBonusPercentMana)
         if (not unit:IsRealHero()) then
             unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxhp", { Duration = -1 })
             unit:AddNewModifier(self.unit, nil, "modifier_stats_system_enemies_maxmp", { Duration = -1 })
@@ -710,10 +628,6 @@ function modifier_stats_system:GetAttackSpeedBonus()
     return 100
 end
 
-function modifier_stats_system:GetSpellHasteBonus()
-    return 1 --this is actually 100 but to prevent fixing everything hero / boss code removing *0.01 from old spellhaste we go with this everything /100
-end
-
 function modifier_stats_system:OnAttackLanded(event)
     if IsServer() then
         local attacker = event.attacker
@@ -731,10 +645,6 @@ function modifier_stats_system:OnAttackLanded(event)
             damageTable.target = target
             damageTable.physdmg = true
             damageTable.ability = nil
-            local unitName = attacker:GetUnitName()
-            if (attacker:IsRealHero() and Units.heroesInnateElement[unitName]) then
-                damageTable[Units.heroesInnateElement[unitName]] = true
-            end
             GameMode:DamageUnit(damageTable)
         end
     end
@@ -1116,9 +1026,9 @@ end
 ---@return number
 function Units:GetSpellHaste(unit)
     if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.spellHaste  -- this is equal to statsTable.spellHaste for hero
+        return unit.stats.spellHaste
     end
-    return 1 --for creep
+    return 0
 end
 
 ---@param unit CDOTA_BaseNPC

@@ -243,11 +243,11 @@ modifier_priestess_of_sacred_forest_thorny_protection_slow = class({
     end
 })
 
-function modifier_priestess_of_sacred_forest_thorny_protection_slow:GetAttackSpeedBonus()
+function modifier_priestess_of_sacred_forest_thorny_protection_slow:GetAttackSpeedPercentBonus()
     return self.ability.asSlow
 end
 
-function modifier_priestess_of_sacred_forest_thorny_protection_slow:GetSpellHasteBonus()
+function modifier_priestess_of_sacred_forest_thorny_protection_slow:GetSpellHastePercentBonus()
     return self.ability.sphSlow
 end
 

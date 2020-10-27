@@ -517,7 +517,6 @@
    		"precache"
    		{
    		    "particle"  "particles/units/light_cardinal/consecration/consecration.vpcf"
-   		    "particle"  "particles/units/light_cardinal/consecration/consecration_impact.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
     	}
     }

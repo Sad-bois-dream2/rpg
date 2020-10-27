@@ -105,11 +105,12 @@ function BuildDamageSourceString(event) {
     if(event.fromsummon) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Summon");
     }
-    if(!event.ability && event.physdmg) {
+    if(!event.ability) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
     } else {
         return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", $.Localize("#DOTA_Tooltip_Ability_" + event.abilityName));
     }
+    return "Unknown"
 }
 
 function FormatDamageNumber(number) {

@@ -929,10 +929,7 @@ end
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_51:GetSpellHasteBonus()
-	
-	--return 1 - (100 / Units:GetAttackSpeed(self.hero))
-    return (Units:GetAttackSpeed(self.hero) - 100) / 100 -- fix this remove /100 after fixing spellhaste
-
+    return Units:GetAttackSpeed(self.hero)
 end
 
 

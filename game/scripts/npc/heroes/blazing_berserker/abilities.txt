@@ -144,12 +144,12 @@
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_hp_regen_bonus_per_enemy"				"0 10 10 10"
+				"max_hp_regen_bonus_per_enemy"				"0 3 3 1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"min_hp_regen_bonus_per_enemy"				"0 3 3 3"
+				"min_hp_regen_bonus_per_enemy"				"0 1 1 1"
 			}
 			"06"
 			{
