@@ -5,8 +5,9 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
-	border: 1px solid gray;
-	border-radius: 5px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
 }
 
 .IsItem #Contents
@@ -28,7 +29,7 @@
 
 Label.TitleFont, TextEntry.TitleFont
 {
-	font-family: Radiance,FZLanTingHei-R-GBK,TH Sarabun New,YDYGO 540,Gulim,MingLiU;
+	font-family: defaultFont;
 	text-transform: uppercase;
 	letter-spacing: 2px;
 	text-shadow: 2px 2px 0px 1.0 #000000;
