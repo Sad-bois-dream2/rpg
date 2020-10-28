@@ -13,25 +13,28 @@
 }
 
 .HeroHpBarPanel {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
 }
 
 .HeroHpBar
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 100%;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #74D680 ), to( #378B29 ) );
-    border: 1px solid #ffffff09;
-    border-bottom: 0px none white;
+    border-top: 1px solid #ffffff09;
+    border-right: 0px none white;
+    border-left: 0px none white;
 }
 
 .HeroMpBar
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 100%;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
-    border: 1px solid #ffffff09;
+    border-top: 1px solid #ffffff09;
+    border-right: 0px none white;
+    border-left: 0px none white;
 }
 
 .HeroHpMpBarValue
@@ -44,7 +47,7 @@
 }
 
 .HeroMpBarPanel {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
 }
 
