@@ -3,7 +3,7 @@ var tooltip = [];
 var hero = -1;
 var totalPointsLabel;
 
-var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3, TALENT_ABILITY = 4;
+var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3;
 var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME = 2, TOOLTIP_DESCRIPTION = 3;
 
 function OnTalentClick(id) {
@@ -74,11 +74,10 @@ function BuildTalentTree() {
 				talent.Data().OnTalentClick = OnTalentClick;
 				talent.Data().talentImage = "file://{images}/custom_game/hud/talenttree/talent_"+talentId+".png";
 				var talentImageAndLevel = talent.GetChild(0);
-				var talentImage = talentImageAndLevel.GetChild(0);
-				var talentLevel = talentImageAndLevel.GetChild(2);
-				var talentAbility = talentImageAndLevel.GetChild(1);
+				var talentImage = talentImageAndLevel.FindChildTraverse('TalentImage');
+				var talentLevel = talentImageAndLevel.FindChildTraverse('TalentLevel');
 				talentImage.SetImage(talent.Data().talentImage);
-				talents.push([talent, talentImage, talentLevel, talentId, talentAbility]);
+				talents.push([talent, talentImage, talentLevel, talentId]);
 				talentId++;
 			}
 		}

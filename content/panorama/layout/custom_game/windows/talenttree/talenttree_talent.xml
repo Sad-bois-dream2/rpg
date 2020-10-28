@@ -32,7 +32,9 @@
 		<Panel class="TalentImageAndLevel" >
 			<Image class="TalentImage" id="TalentImage" src="file://{images}/spellicons/drow_ranger_wave_of_silence.png"/>
 			<DOTAAbilityImage class="TalentImage" id="TalentSkillImage" abilityname="phantom_ranger_void_disciple" />
-			<Label class="TalentLevel" id="TalentLevel" text="0 / 4" />
+			<Panel class="TalentLevelContainer">
+				<Label class="TalentLevel" id="TalentLevel" text="0 / 4" />
+			</Panel>
 		</Panel>
 		<DOTAScenePanel class="TalentLevelAnimation" map="scenes/hud/autocasting" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
 	</Panel>
