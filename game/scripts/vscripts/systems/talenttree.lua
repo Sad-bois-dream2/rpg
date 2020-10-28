@@ -15,7 +15,7 @@ end
 
 function TalentTree:Init()
     -- Changing that value will prob require fix for TalentTree:GetTalentLine() and TalentTree:GetTalentBranch()
-    self.latestTalentId = 63
+    self.latestTalentId = 54
     self.maxTalentPoints = 32
     TalentTree:InitPanaromaEvents()
 end
@@ -44,6 +44,7 @@ function TalentTree:SetupForHero(hero)
         for i = 1, TalentTree:GetLatestTalentID() do
             hero.talents.level[i] = 0
         end
+
     end
 end
 

@@ -9,7 +9,7 @@
         <include src="file://{resources}/scripts/windows/talenttree.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
-        <Panel id="MainWindow" class="Window TalentTreeWindow" style="width: 1160px; height: 730px;">
+        <Panel id="MainWindow" class="Window TalentTreeWindow" style="width: 900px; height: 640px;">
             <Panel id="TalentTree" class="TalentTree">
             </Panel>
             <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
