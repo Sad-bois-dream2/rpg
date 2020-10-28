@@ -371,6 +371,7 @@ function OnSwitchPageButtonClick(page) {
 	pageButtons[0].SetHasClass("is_pressed", IsPage0);
 	pageButtons[1].SetHasClass("is_pressed", IsPage1);
 	pageButtons[2].SetHasClass("is_pressed", IsPage2);
+    Game.EmitSound("General.SelectAction");
 }
 
 function ShowItemTooltip(slotId) {
