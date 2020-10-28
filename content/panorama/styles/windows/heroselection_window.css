@@ -29,7 +29,7 @@
     flow-children: down;
     margin-left: 5px;
     margin-right: 5px;
-    border-radius: 5px;
+    box-shadow: 0px 0px 10px #000000aa;
 }
 
 .HeroIcon {
@@ -75,12 +75,12 @@
 	height: 350px;
 	vertical-align: center;
 	horizontal-align: right;
-	border: 1px solid gray;
-	border-radius: 5px;
 	margin-right: 100px;
 	flow-children: down;
 	visibility: collapse;
 	margin-top: -150px;
+    box-shadow: 0px 0px 10px #000000aa;
+    border: 1px solid #ffffff09;
 }
 
 .HeroNameContainer {
@@ -106,6 +106,7 @@
     text-align: center;
     horizontal-align: center;
     vertical-align: center;
+	text-shadow: 0px 0px 10px 4 #00000088;
 }
 
 #HeroAbilitiesContainer {
@@ -121,8 +122,8 @@
 .HeroAbility {
     width: 52px;
     height: 52px;
-    border-radius: 5px;
-    border: 1px solid gray;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
     margin-right: 10px;
 }
 
@@ -160,6 +161,7 @@
 	margin-top: 3px;
 	margin-bottom: 5px;
 	horizontal-align: center;
+	text-shadow: 0px 0px 10px 4 #00000088;
 }
 
 .HeroStat {
@@ -184,7 +186,7 @@
 
 .HeroStatChild.hover {
 	background-image: url("s2r://panorama/images/hero_complexity_full_png.vtex");
-	wash-color: gold;
+	wash-color: gray;
 }
 
 .HeroStatChild.filter {
@@ -204,8 +206,8 @@
     padding-right: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
+    box-shadow: 0px 0px 10px #000000aa;
+    border: 1px solid #ffffff09;
     width: 100px;
     height: fit-children;
     flow-children: down;
@@ -217,6 +219,7 @@
     text-align: center;
     horizontal-align: center;
     text-overflow: shrink;
+	text-shadow: 0px 0px 10px 4 #00000088;
 }
 
 #TimerLabel {
@@ -224,6 +227,7 @@
     font-size: 20px;
     text-align: center;
     horizontal-align: center;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 #AvailableHeroesContainer {
@@ -254,6 +258,7 @@
     vertical-align: center;
     margin-left: 3px;
     text-transform: uppercase;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 #AvailableHeroesStrength, #AvailableHeroesAgility, #AvailableHeroesIntellect {
@@ -270,12 +275,13 @@
     margin-bottom: 20px;
     margin-left: 5px;
     margin-right: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 }
 
 .AvailableHeroesButton:hover {
-    border: 1px solid gold;
+	opacity: 1;
+	border: 1px solid #ffffff2f;
 }
 
 .AvailableHeroesButton.filter {
@@ -320,8 +326,8 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
-	border: 1px solid gray;
-	border-radius: 5px;
+    box-shadow: 0px 0px 10px #000000aa;
+    border: 1px solid #ffffff09;
 	flow-children: down;
     vertical-align: center;
     horizontal-align: center;
@@ -329,12 +335,11 @@
 }
 
 .HeroSlot:hover {
-	border: 1px solid gold;
-    transform: translatey(-5px);
+	border: 1px solid #ffffff2f;
 }
 
 .HeroSlot.Locked:hover {
-    transform: translatey(0px);
+	border: 1px solid #ffffff2f;
 }
 
 .HeroSlot DOTAHeroImage {
@@ -395,12 +400,14 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
+	border-radius: 0px;
 }
 
 .WindowButton:hover {
-    opacity: 1;
-    border: 1px solid gold;
-    horizontal-align: center;
+	opacity: 1;
+	border: 1px solid #ffffff2f;
 }
 
 .ResetFilterButton {
