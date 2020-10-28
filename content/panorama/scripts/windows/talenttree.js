@@ -55,7 +55,7 @@ function CreateTalentTooltip(icon, name, description, x, y) {
 
 function BuildTalentTree() {
 	var root = $("#TalentTree");
-	var totalLines = 7;
+	var totalLines = 6;
 	var totalColumns = 3;
 	var talentsPerColumn = 3;
 	var talentId = 1;
