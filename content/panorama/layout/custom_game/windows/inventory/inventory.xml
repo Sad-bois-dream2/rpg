@@ -337,8 +337,7 @@
                 </Panel>
                 <Panel id="InventoryContainer" class="InventoryContainer"/>
             </Panel>
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
-                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+            <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
         </Panel>
         <!-- weird hack to make them auto recompile -->
         <Panel style="visibility: collapse;">
