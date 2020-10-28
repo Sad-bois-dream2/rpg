@@ -6,21 +6,24 @@
 .BossPanel {
 	horizontal-align: center;
 	vertical-align: top;
-	width: 642px;
+	width: fit-children;
 	height: fit-children;
 	visibility: collapse;
 }
 
 .BossPortrait {
 	width: 100px;
-	height: 109px;
+	height: 108px;
 	border: 1px solid #7F8C8D;
-	margin-left: 70px;
-	margin-top: -1px;
-	border-radius: 10px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+	transition-property: box-shadow, brightness;
+	transition-duration: 0.15s;
+	transition-timing-function: ease-in-out;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
 }
 
 .BossPortrait #BossPortraitImage {
@@ -35,15 +38,41 @@
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #A71D31 ), to( #3F0D12 ) );
 }
 
-.BossHpBarPanel {
-	width: 478px;
+.BossHpBarPanel, .BossMpBarPanel, .BossNamePanel, .BossAbilitiesPanel {
+	width: 480px;
 	height: 20px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	margin-left: 161px;
-	margin-top: 23px;
-	border: 1px solid grey;
-	border-bottom: 0px solid grey;
-	border-top: 0px solid grey;
+	margin-left: 98px;
+	margin-top: 20px;
+}
+
+.BossAbilitiesPanel {
+    background-color: none;
+	flow-children: right;
+	width: 100%;
+	height: 100%;
+	margin-top: 60px;
+}
+
+.BossNamePanel {
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	margin-top: 0px;
+}
+
+.BossNamePanel #BossName {
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 15px;
+	font-family: defaultFont;
+	color: white;
+    text-shadow: 0px 0px 2px 4 #00000088;
+}
+
+.BossMpBarPanel {
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
+	margin-top: 40px;
 }
 
 .BossMpBar
@@ -51,16 +80,6 @@
 	width: 100%;
 	height: 100%;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
-}
-
-.BossMpBarPanel {
-	width: 478px;
-	height: 20px;
-	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	margin-left: 161px;
-	margin-top: 41px;
-	border: 1px solid grey;
-	border-top: 0px solid grey;
 }
 
 .BossHpMpBarValue
@@ -106,36 +125,8 @@
 {
 	width: 48px;
 	height: 48px;
-	border: 1px solid grey;
-	border-radius: 5px;
-}
-
-.BossAbilitiesPanel {
-	flow-children: right;
-	width: 100%;
-	margin-left: 160px;
-	margin-top: 59px;
-}
-
-.BossNamePanel {
-	width: 478px;
-	height: 25px;
-	border: 1px solid grey;
-	border-bottom: 0px solid grey;
-	horizontal-align: center;
-	margin-left: 159px;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	margin-right: 1px;
-}
-
-.BossNamePanel #BossName {
-	horizontal-align: center;
-	vertical-align: center;
-	font-size: 15px;
-	font-family: platformfont;
-	color: white;
+    box-shadow: 0px 0px 10px #000000aa;
+	border: 1px solid #ffffff09;
 }
 
 #CooldownOverlay
@@ -209,7 +200,7 @@
     width: 565px;
     height: fit-children;
     margin-top: 110px;
-    margin-left: 70px;
+    horizontal-align: center;
     flow-children: down;
 }
 
@@ -256,32 +247,25 @@
     vertical-align: center;
 	color: white;
 	font-size: 12px;
-	font-family: platformfont;
+	font-family: defaultFont;
 	text-overflow: shrink;
 	height: 16px;
 	text-align: right;
-}
-
-.CloseButton
-{
-	width: 16px;
-	height: 16px;
-	border-radius: 100%;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	horizontal-align: right;
-	vertical-align: top;
-	margin-top: 4px;
-	margin-right: 5px;
+    text-shadow: 0px 0px 10px 4 #00000088;
 }
 
 #BossZoneAbilityImage {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
 	horizontal-align: left;
-	border: 1px solid grey;
-	border-radius: 24px;
-	margin-left: 55px;
-	margin-top: 75px;
+    border: 1px solid #ffffff09;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
+	margin-left: -5px;
+	margin-top: 85px;
+}
+
+.WindowCloseIcon {
+    margin-right: 0px;
+    margin-top: 0px;
 }

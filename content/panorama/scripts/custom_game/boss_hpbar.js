@@ -395,6 +395,7 @@ function OnUpdateStatsRequest(event) {
 function ClosePanel() {
     latestSelectedCreep = null
     bossPanel.style.visibility = "collapse";
+    Game.EmitSound("General.SelectAction");
 }
 
 var bossZoneAbilityLevel = 1;

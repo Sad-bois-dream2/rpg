@@ -13,25 +13,28 @@
 }
 
 .HeroHpBarPanel {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
-	border-radius: 4px;
 }
 
 .HeroHpBar
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 100%;
-	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #74D680 ), to( #378B29 ) );
+    border-top: 1px solid #ffffff09;
+    border-right: 0px none white;
+    border-left: 0px none white;
 }
 
 .HeroMpBar
 {
-	width: 100%;
+	width: fill-parent-flow(1.0);
 	height: 100%;
-	border-radius: 4px;
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #009FFD ), to( #2A2A72 ) );
+    border-top: 1px solid #ffffff09;
+    border-right: 0px none white;
+    border-left: 0px none white;
 }
 
 .HeroHpMpBarValue
@@ -44,8 +47,7 @@
 }
 
 .HeroMpBarPanel {
-	width: 100%;
-	border-radius: 4px;
+	width: fill-parent-flow(1.0);
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #434343 ), to( #000000 ) );
 }
 
@@ -108,8 +110,11 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-    border-top-left-radius: 15px;
 	horizontal-align: right;
+    box-shadow: 0px 0px 4px #000000aa;
+    border: 1px solid #ffffff09;
+    border-bottom: 0px none white;
+    border-right: 0px none white;
 }
 
 .HeroPortrait.is_dead {
@@ -296,14 +301,21 @@
 
 #AbilityButton
 {
-	width: 63px;
+	width: 64px;
 	height: 64px;
-	border: 1px solid grey;
-	border-radius: 6px; 
+	border: 2px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 }
 
-.is_passive #AbilityButton
+#AbilityButton:hover
 {
+	border: 1px solid #ffffff2f;
+}
+
+#AbilityImage
+{
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
 }
 
 #UpgradeBorder
@@ -314,18 +326,9 @@
 .learnable_ability #UpgradeBorder
 {
    background-color: gradient( linear, 0% 0%, 0% 100%, from( #ffffff ), color-stop( 0.1, #c4a529 ), color-stop( 0.75, #9e8b2c ), color-stop( 0.9, #c4a529 ), to( #ffffff ) );
-   border-radius: 6px;
+   border-radius: 2px;
 }
 
-#AbilityButton:hover
-{
-	border: 2px solid white;
-}
-
-#AbilityButton:active
-{
-	border: 4px solid white;
-}
 .no_level DOTAAbilityImage
 {
 	saturation: 0;
@@ -403,7 +406,8 @@
 	transition-property: opacity, brightness, pre-transform-scale2d;
 	transition-timing-function: ease-in-out;
 	transition-duration: .12s;	
-	height: 40px;	
+	height: 40px;
+	z-index: 999999;
 }
 
 #LevelUpIcon
@@ -452,9 +456,9 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
     vertical-align: bottom;
-    border-radius: 5px;
     padding: 5px;
-    border: 1px solid grey;
+    box-shadow: 0px 0px 10px #000000aa;
+    border: 1px solid #ffffff09;
 }
 
 .HeroLevelExpBackground {
@@ -557,7 +561,6 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border-top-right-radius: 15px;
 }
 
 .HeroPanelRightContainer.Abilities {
@@ -585,6 +588,7 @@
     text-align: center;
     vertical-align: center;
     horizontal-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 #HeroStatsTooltip {
@@ -597,10 +601,15 @@
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border-radius: 15px;
 	margin-bottom: 180px;
     z-index: 20;
     margin-left: -150px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
+	transition-property: box-shadow, brightness;
+	transition-duration: 0.15s;
+	transition-timing-function: ease-in-out;
 }
 
 .HeroStatsElementsContainer {
@@ -656,12 +665,14 @@
 
 .HeroMainStatsMainLabelsContainer Label {
     color: white;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroStatsCategoryName {
     color: white;
     text-align: center;
     horizontal-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .OffensiveStats {
@@ -701,6 +712,7 @@
     margin-left: 5px;
     color: white;
     text-overflow: shrink;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroStatsLabel .Value {
@@ -710,8 +722,13 @@
     text-overflow: shrink;
     height: 100%;
     margin-left: 10px;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 #HeroAbilitiesPanelFiller {
     min-width: 498px;
+	box-shadow: 0px 0px 4px #000000aa;
+    border: 1px solid #ffffff09;
+    border-bottom: 0px none white;
+    border-left: 0px none white;
 }

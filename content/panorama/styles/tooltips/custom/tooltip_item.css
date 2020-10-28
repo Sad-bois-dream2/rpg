@@ -6,7 +6,9 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
-	border-radius: 4px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
 	flow-children: down;
 	transform-origin: 0% 0%;
 	visibility: collapse;
@@ -17,9 +19,9 @@
 {
 	width: 77px;
 	height: 57px;
-	border-radius: 5px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border: 1px solid grey;
+    border: 1px solid #ffffff09;
+    box-shadow: 0px 0px 16px #000000aa;
 }
 
 .ItemTooltipName
@@ -48,6 +50,7 @@
 	text-transform: uppercase;
 	horizontal-align: left;
 	vertical-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .ItemTooltipInfoContainer
@@ -89,6 +92,7 @@
 	horizontal-align: left;
 	text-align: left;
 	margin-top: 1px;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .ItemTooltipTypeLabel
@@ -107,7 +111,7 @@
 {
 	width: fill-parent-flow(1.0);
 	color: white;
-	font-size: 14px;
+	font-size: 16px;
 	font-family: platformfont;
 	horizontal-align: center;
 	vertical-align: center;

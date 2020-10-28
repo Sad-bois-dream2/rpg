@@ -19,7 +19,13 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
-	border: 1px solid grey;
+	border: 1px solid #ffffff08;
+	border-left: 0px none white;
+}
+
+.InventorySlot.last
+{
+	border-right: 0px none white;
 }
 
 .InventorySlot DOTAItemImage
@@ -33,13 +39,13 @@
 	width: 77px;
 	height: 57px;
 	margin: 10px; /* change that in OnInventorySlotDragEnd (inventory.js) too (slotSpacingX/Y) */
-	border: 1px solid gray;
-	border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 }
 
 .InventoryEquippedSlot.Drag
 {
-	border: 1px solid gold;
+	border: 1px solid #ffffff5f;
 }
 
 .InventoryEquippedSlot Label
@@ -171,6 +177,7 @@
 	horizontal-align: left;
 	margin-left: 10px;
 	margin-bottom: 5px;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .InventoryAttributeValue 
@@ -178,6 +185,7 @@
 	vertical-align: center;
 	horizontal-align: right;
 	padding-right: 25px;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .InventoryAttributeGrouplabel 
@@ -185,12 +193,7 @@
 	margin-top: 10px;
 	margin-left: 29px;
 	margin-bottom: 10px;
-}
-
-.WindowCloseIcon 
-{
-	margin-top: 2px;
-	margin-right: 4px;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroNameContainer 
@@ -211,6 +214,11 @@
 	vertical-align: center;
 	padding-left: 6px;
 	padding-bottom: -4px;
+}
+
+.HeroName Label
+{
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .BoxedAttributes 
@@ -250,6 +258,7 @@
 {
 	font-size: 12px;
 	horizontal-align: center;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .SwitchPageButtons {
@@ -262,8 +271,8 @@
 	width: fit-children;
 	height: 24px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 	vertical-align: center;
 	margin-right: 10px;
 	padding-right: 10px; 
@@ -283,7 +292,8 @@
 }
 
 .InventoryButton:hover {
-	opacity: 0.5;
+	opacity: 1;
+	border: 1px solid #ffffff2f;
 }
 
 .InventoryButton Label {
@@ -292,7 +302,9 @@
 	vertical-align: center;
 	font-size: 16px;
 	text-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
+
 #HeroModelContainer
 {
     width: 100%;
