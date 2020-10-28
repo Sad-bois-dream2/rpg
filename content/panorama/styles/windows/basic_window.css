@@ -53,6 +53,8 @@
 	opacity: .2;
 	transition-property: opacity;
 	transition-duration: .2s;
+    margin-right: 4px;
+    margin-top: 2px;
 }
 
 .WindowCloseIcon:hover
@@ -80,7 +82,8 @@
 	font-size: 16px;
 	letter-spacing: 1px;
 	color: white;
-	font-family: platformfont;
+	font-family: defaultFont;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .WindowName

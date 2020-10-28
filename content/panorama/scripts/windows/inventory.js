@@ -432,6 +432,7 @@ function CreateInventorySlots() {
 			inventorySlot.Data().OnDragEnd = OnInventorySlotDragEnd;
 			inventorySlots.push([inventorySlot, inventorySlotItemImage, []]);
 		}
+		inventorySlot.SetHasClass("last", true);
 	}
 }
 
