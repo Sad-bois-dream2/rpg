@@ -1,3 +1,5 @@
 local prefix = "talents/"
-require(prefix.."talents_generic")
-require(prefix.."talents_phantom_ranger")
+for id = 1, TalentTree:GetLatestTalentID() do
+    require(prefix .. "talent_" .. id)
+end
+require(prefix .. "talents_phantom_ranger")
