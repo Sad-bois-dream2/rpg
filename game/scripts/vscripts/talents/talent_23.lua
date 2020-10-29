@@ -90,6 +90,9 @@ function modifier_talent_23_buff:OnCreated()
         return
     end
     self.hero = self:GetParent()
+    local pidx = ParticleManager:CreateParticle("particles/talents/talent_23/sun.vpcf", PATTACH_OVERHEAD_FOLLOW, self.hero)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(450, 0, 0))
+    self:AddParticle(pidx, true, false, 1, true, true)
 end
 
 function modifier_talent_23_buff:GetCriticalDamageBonus()
@@ -122,6 +125,8 @@ function modifier_talent_23_debuff:OnCreated()
         return
     end
     self.hero = self:GetParent()
+    local pidx = ParticleManager:CreateParticle("particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf", PATTACH_OVERHEAD_FOLLOW, self.hero)
+    self:AddParticle(pidx, true, false, 1, true, true)
 end
 
 function modifier_talent_23_debuff:GetCriticalDamageBonus()

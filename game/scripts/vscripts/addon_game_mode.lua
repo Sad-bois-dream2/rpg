@@ -22,8 +22,7 @@ function Precache(context)
     PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_ogre_magi.vsndevts", context)
     -- Elite enemies
     PrecacheResource("particle", "particles/units/elite/elite_overhead.vpcf", context)
-    -- Boss healing mechanic particle
-    PrecacheResource("particle", "particles/units/boss/boss_healing.vpcf", context)
+    -- Generic particles for bossses
     PrecacheResource("particle", "particles/units/boss/boss_teleport.vpcf", context)
     -- Item drops
     PrecacheResource("particle", "particles/items/drop/projectile/item_projectile.vpcf", context)
@@ -46,6 +45,10 @@ function Precache(context)
             PrecacheResource("soundfile", heroesStatsData[hero]["VoiceFile"], context)
         end
     end
+    -- Talent particles
+    -- talent 23 (sun & moon)
+    PrecacheResource("particle", "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf", context)
+    PrecacheResource("particle", "particles/talents/talent_23/sun.vpcf", context)
 end
 
 -- Create the game mode when we activate
