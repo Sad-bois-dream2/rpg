@@ -867,7 +867,7 @@
 		"DOTA_TalentTree_Talent_22"		"Swift Blade"
 		"DOTA_TalentTree_Talent_22_Description"		"Decrease your attack damage by <font color='#96afff'><b>5% / 10% / 15%</b></font>, but grants you <font color='#96afff'><b>5% / 10% / 15%</b></font> spell damage and <font color='#96afff'><b>10% / 20% / 30%</b></font> attack speed."
 		"DOTA_TalentTree_Talent_23"		"Sun & Moon"
-		"DOTA_TalentTree_Talent_23_Description"		"Every 15 seconds switch between Sun that critical damage by <font color='#96afff'><b>10% / 20% / 30%</b></font> and Moon that decrease critical damage by <font color='#96afff'><b>10% / 20% / 30%</b></font>."
+		"DOTA_TalentTree_Talent_23_Description"		"Every 15 seconds switch between Sun that increase critical damage by <font color='#96afff'><b>10% / 20% / 30%</b></font> and Moon that decrease critical damage by <font color='#96afff'><b>10% / 20% / 30%</b></font>."
 		"DOTA_Tooltip_modifier_talent_23_buff"	"Sun"
 		"DOTA_Tooltip_modifier_talent_23_buff_Description"	"Critical damage increased."
 		"DOTA_Tooltip_modifier_talent_23_debuff"	"Moon"
