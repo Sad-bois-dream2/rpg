@@ -644,13 +644,13 @@ if (IsServer()) then
         local unitModifiers = damageTable.victim:FindAllModifiers()
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetAdditionalConditionalDamage) then
-                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + (tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable)) or 0)
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
             end
         end
         local unitModifiers = damageTable.attacker:FindAllModifiers()
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetAdditionalConditionalDamage) then
-                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + (tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable)) or 0)
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
             end
         end
         totalAmplification = totalAmplification + unitAdditionalConditionalDamage

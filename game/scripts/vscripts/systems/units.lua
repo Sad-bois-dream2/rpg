@@ -96,7 +96,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitInfernoDamage = 1
         local unitArmor = 0
         local unitArmorPercent = 1
-        local unitArmorPercentMulti = 1
         local unitCooldownReduction = 1
         local unitCooldownReductionForAbility1 = 1
         local unitCooldownReductionForAbility2 = 1
@@ -105,9 +104,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitCooldownReductionForAbility5 = 1
         local unitCooldownReductionForAbility6 = 1
         local unitHealingReceivedPercent = 1
-        local unitHealingReceivedPercentMulti = 1
         local unitHealingCausedPercent = 1
-        local unitHealingCausedPercentMulti = 1
         local unitBuffAmplification = 1
         local unitDebuffAmplification = 1
         local unitDebuffResistance = 1
@@ -131,19 +128,19 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         end)
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetStrengthBonus) then
-                unitBonusStr = unitBonusStr + (tonumber(unitModifiers[i].GetStrengthBonus(unitModifiers[i])) or 0)
+                unitBonusStr = unitBonusStr + tonumber(unitModifiers[i].GetStrengthBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetStrengthPercentBonus) then
-                unitBonusPercentStr = unitBonusPercentStr + (tonumber(unitModifiers[i].GetStrengthPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentStr = unitBonusPercentStr + tonumber(unitModifiers[i].GetStrengthPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAgilityBonus) then
-                unitBonusAgi = unitBonusAgi + (tonumber(unitModifiers[i].GetAgilityBonus(unitModifiers[i])) or 0)
+                unitBonusAgi = unitBonusAgi + tonumber(unitModifiers[i].GetAgilityBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAgilityPercentBonus) then
-                unitBonusPercentAgi = unitBonusPercentAgi + (tonumber(unitModifiers[i].GetAgilityPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentAgi = unitBonusPercentAgi + tonumber(unitModifiers[i].GetAgilityPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetIntellectBonus) then
-                unitBonusInt = unitBonusInt + (tonumber(unitModifiers[i].GetIntellectBonus(unitModifiers[i])) or 0)
+                unitBonusInt = unitBonusInt + tonumber(unitModifiers[i].GetIntellectBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetIntellectPercentBonus) then
                 unitBonusPercentInt = unitBonusPercentInt + (tonumber(unitModifiers[i].GetIntellectPercentBonus(unitModifiers[i])) or 0)
@@ -152,164 +149,161 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitBonusPrimary = unitBonusPrimary + (tonumber(unitModifiers[i].GetPrimaryAttributeBonus(unitModifiers[i])) or 0)
             end
             if (unitModifiers[i].GetPrimaryAttributePercentBonus) then
-                unitBonusPercentPrimary = unitBonusPercentPrimary + (tonumber(unitModifiers[i].GetPrimaryAttributePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentPrimary = unitBonusPercentPrimary + tonumber(unitModifiers[i].GetPrimaryAttributePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackDamageBonus) then
-                unitBonusAttackDamage = unitBonusAttackDamage + (tonumber(unitModifiers[i].GetAttackDamageBonus(unitModifiers[i])) or 0)
+                unitBonusAttackDamage = unitBonusAttackDamage + tonumber(unitModifiers[i].GetAttackDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackDamagePercentBonus) then
-                unitBonusPercentAttackDamage = unitBonusPercentAttackDamage + (tonumber(unitModifiers[i].GetAttackDamagePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentAttackDamage = unitBonusPercentAttackDamage + tonumber(unitModifiers[i].GetAttackDamagePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackSpeedBonus) then
-                unitBonusAttackSpeed = unitBonusAttackSpeed + (tonumber(unitModifiers[i].GetAttackSpeedBonus(unitModifiers[i])) or 0)
+                unitBonusAttackSpeed = unitBonusAttackSpeed + tonumber(unitModifiers[i].GetAttackSpeedBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackSpeedPercentBonus) then
-                unitBonusPercentAttackSpeed = unitBonusPercentAttackSpeed + (tonumber(unitModifiers[i].GetAttackSpeedPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentAttackSpeed = unitBonusPercentAttackSpeed + tonumber(unitModifiers[i].GetAttackSpeedPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSpellDamageBonus) then
-                unitBonusSpellDamage = unitBonusSpellDamage + (tonumber(unitModifiers[i].GetSpellDamageBonus(unitModifiers[i])) or 0)
+                unitBonusSpellDamage = unitBonusSpellDamage + tonumber(unitModifiers[i].GetSpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetFirstAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility1 = unitSpellDamageForAbility1 + (tonumber(unitModifiers[i].GetFirstAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility1 = unitSpellDamageForAbility1 + tonumber(unitModifiers[i].GetFirstAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSecondAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility2 = unitSpellDamageForAbility2 + (tonumber(unitModifiers[i].GetSecondAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility2 = unitSpellDamageForAbility2 + tonumber(unitModifiers[i].GetSecondAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetThirdAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility3 = unitSpellDamageForAbility3 + (tonumber(unitModifiers[i].GetThirdAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility3 = unitSpellDamageForAbility3 + tonumber(unitModifiers[i].GetThirdAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetFourthAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility4 = unitSpellDamageForAbility4 + (tonumber(unitModifiers[i].GetFourthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility4 = unitSpellDamageForAbility4 + tonumber(unitModifiers[i].GetFourthAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetFifthAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility5 = unitSpellDamageForAbility5 + (tonumber(unitModifiers[i].GetFifthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility5 = unitSpellDamageForAbility5 + tonumber(unitModifiers[i].GetFifthAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSixthAbilitySpellDamageBonus) then
-                unitSpellDamageForAbility6 = unitSpellDamageForAbility6 + (tonumber(unitModifiers[i].GetSixthAbilitySpellDamageBonus(unitModifiers[i])) or 0)
+                unitSpellDamageForAbility6 = unitSpellDamageForAbility6 + tonumber(unitModifiers[i].GetSixthAbilitySpellDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSpellHasteBonus) then
-                unitBonusSpellHaste = unitBonusSpellHaste + (tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i])) or 0)
+                unitBonusSpellHaste = unitBonusSpellHaste + tonumber(unitModifiers[i].GetSpellHasteBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSpellHastePercentBonus) then
-                unitBonusPercentSpellHaste = unitBonusPercentSpellHaste + (tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentSpellHaste = unitBonusPercentSpellHaste + tonumber(unitModifiers[i].GetSpellHastePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackRangeBonus) then
-                unitBonusAttackRange = unitBonusAttackRange + (tonumber(unitModifiers[i].GetAttackRangeBonus(unitModifiers[i])) or 0)
+                unitBonusAttackRange = unitBonusAttackRange + tonumber(unitModifiers[i].GetAttackRangeBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAttackRangePercentBonus) then
-                unitBonusPercentAttackRange = unitBonusPercentAttackRange + (tonumber(unitModifiers[i].GetAttackRangePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentAttackRange = unitBonusPercentAttackRange + tonumber(unitModifiers[i].GetAttackRangePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetCastRangeBonus) then
-                unitBonusCastRange = unitBonusCastRange + (tonumber(unitModifiers[i].GetCastRangeBonus(unitModifiers[i])) or 0)
+                unitBonusCastRange = unitBonusCastRange + tonumber(unitModifiers[i].GetCastRangeBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetCastRangePercentBonus) then
-                unitBonusPercentCastRange = unitBonusPercentCastRange + (tonumber(unitModifiers[i].GetCastRangePercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentCastRange = unitBonusPercentCastRange + tonumber(unitModifiers[i].GetCastRangePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetMoveSpeedBonus) then
-                unitBonusMoveSpeed = unitBonusMoveSpeed + (tonumber(unitModifiers[i].GetMoveSpeedBonus(unitModifiers[i])) or 0)
+                unitBonusMoveSpeed = unitBonusMoveSpeed + tonumber(unitModifiers[i].GetMoveSpeedBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetMoveSpeedPercentBonus) then
-                unitBonusPercentMoveSpeed = unitBonusPercentMoveSpeed + (tonumber(unitModifiers[i].GetMoveSpeedPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentMoveSpeed = unitBonusPercentMoveSpeed + tonumber(unitModifiers[i].GetMoveSpeedPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealthRegenerationBonus) then
-                unitBonusHealthRegeneration = unitBonusHealthRegeneration + (tonumber(unitModifiers[i].GetHealthRegenerationBonus(unitModifiers[i])) or 0)
+                unitBonusHealthRegeneration = unitBonusHealthRegeneration + tonumber(unitModifiers[i].GetHealthRegenerationBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealthRegenerationPercentBonus) then
-                unitBonusPercentHealthRegeneration = unitBonusPercentHealthRegeneration + (tonumber(unitModifiers[i].GetHealthRegenerationPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentHealthRegeneration = unitBonusPercentHealthRegeneration + tonumber(unitModifiers[i].GetHealthRegenerationPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetManaRegenerationBonus) then
-                unitBonusManaRegeneration = unitBonusManaRegeneration + (tonumber(unitModifiers[i].GetManaRegenerationBonus(unitModifiers[i])) or 0)
+                unitBonusManaRegeneration = unitBonusManaRegeneration + tonumber(unitModifiers[i].GetManaRegenerationBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetManaRegenerationPercentBonus) then
-                unitBonusPercentManaRegeneration = unitBonusPercentManaRegeneration + (tonumber(unitModifiers[i].GetManaRegenerationPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentManaRegeneration = unitBonusPercentManaRegeneration + tonumber(unitModifiers[i].GetManaRegenerationPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealthBonus) then
-                unitBonusHealth = unitBonusHealth + (tonumber(unitModifiers[i].GetHealthBonus(unitModifiers[i])) or 0)
+                unitBonusHealth = unitBonusHealth + tonumber(unitModifiers[i].GetHealthBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealthPercentBonus) then
-                unitBonusPercentHealth = unitBonusPercentHealth + (tonumber(unitModifiers[i].GetHealthPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentHealth = unitBonusPercentHealth + tonumber(unitModifiers[i].GetHealthPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetManaBonus) then
-                unitBonusMana = unitBonusMana + (tonumber(unitModifiers[i].GetManaBonus(unitModifiers[i])) or 0)
+                unitBonusMana = unitBonusMana + tonumber(unitModifiers[i].GetManaBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetManaPercentBonus) then
-                unitBonusPercentMana = unitBonusPercentMana + (tonumber(unitModifiers[i].GetManaPercentBonus(unitModifiers[i])) or 0)
+                unitBonusPercentMana = unitBonusPercentMana + tonumber(unitModifiers[i].GetManaPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetDamageReductionBonus) then
                 local damageReduction = tonumber(unitModifiers[i].GetDamageReductionBonus(unitModifiers[i])) or 0
                 unitDamageReduction = unitDamageReduction * (1 - damageReduction)
             end
             if (unitModifiers[i].GetFireDamageBonus) then
-                unitFireDamage = unitFireDamage + (tonumber(unitModifiers[i].GetFireDamageBonus(unitModifiers[i])) or 0)
+                unitFireDamage = unitFireDamage + tonumber(unitModifiers[i].GetFireDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetFrostDamageBonus) then
-                unitFrostDamage = unitFrostDamage + (tonumber(unitModifiers[i].GetFrostDamageBonus(unitModifiers[i])) or 0)
+                unitFrostDamage = unitFrostDamage + tonumber(unitModifiers[i].GetFrostDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetEarthDamageBonus) then
-                unitEarthDamage = unitEarthDamage + (tonumber(unitModifiers[i].GetEarthDamageBonus(unitModifiers[i])) or 0)
+                unitEarthDamage = unitEarthDamage + tonumber(unitModifiers[i].GetEarthDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetVoidDamageBonus) then
-                unitVoidDamage = unitVoidDamage + (tonumber(unitModifiers[i].GetVoidDamageBonus(unitModifiers[i])) or 0)
+                unitVoidDamage = unitVoidDamage + tonumber(unitModifiers[i].GetVoidDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHolyDamageBonus) then
-                unitHolyDamage = unitHolyDamage + (tonumber(unitModifiers[i].GetHolyDamageBonus(unitModifiers[i])) or 0)
+                unitHolyDamage = unitHolyDamage + tonumber(unitModifiers[i].GetHolyDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetNatureDamageBonus) then
-                unitNatureDamage = unitNatureDamage + (tonumber(unitModifiers[i].GetNatureDamageBonus(unitModifiers[i])) or 0)
+                unitNatureDamage = unitNatureDamage + tonumber(unitModifiers[i].GetNatureDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetInfernoDamageBonus) then
-                unitInfernoDamage = unitInfernoDamage + (tonumber(unitModifiers[i].GetInfernoDamageBonus(unitModifiers[i])) or 0)
+                unitInfernoDamage = unitInfernoDamage + tonumber(unitModifiers[i].GetInfernoDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetFireProtectionBonus) then
-                unitFireProtection = unitFireProtection * (1 - (tonumber(unitModifiers[i].GetFireProtectionBonus(unitModifiers[i])) or 0))
+                unitFireProtection = unitFireProtection * (1 - tonumber(unitModifiers[i].GetFireProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetFrostProtectionBonus) then
-                unitFrostProtection = unitFrostProtection * (1 - (tonumber(unitModifiers[i].GetFrostProtectionBonus(unitModifiers[i])) or 0))
+                unitFrostProtection = unitFrostProtection * (1 - tonumber(unitModifiers[i].GetFrostProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetEarthProtectionBonus) then
-                unitEarthProtection = unitEarthProtection * (1 - (tonumber(unitModifiers[i].GetEarthProtectionBonus(unitModifiers[i])) or 0))
+                unitEarthProtection = unitEarthProtection * (1 - tonumber(unitModifiers[i].GetEarthProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetVoidProtectionBonus) then
-                unitVoidProtection = unitVoidProtection * (1 - (tonumber(unitModifiers[i].GetVoidProtectionBonus(unitModifiers[i])) or 0))
+                unitVoidProtection = unitVoidProtection * (1 - tonumber(unitModifiers[i].GetVoidProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetHolyProtectionBonus) then
-                unitHolyProtection = unitHolyProtection * (1 - (tonumber(unitModifiers[i].GetHolyProtectionBonus(unitModifiers[i])) or 0))
+                unitHolyProtection = unitHolyProtection * (1 - tonumber(unitModifiers[i].GetHolyProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetNatureProtectionBonus) then
-                unitNatureProtection = unitNatureProtection * (1 - (tonumber(unitModifiers[i].GetNatureProtectionBonus(unitModifiers[i])) or 0))
+                unitNatureProtection = unitNatureProtection * (1 - tonumber(unitModifiers[i].GetNatureProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetInfernoProtectionBonus) then
-                unitInfernoProtection = unitInfernoProtection * (1 - (tonumber(unitModifiers[i].GetInfernoProtectionBonus(unitModifiers[i])) or 0))
+                unitInfernoProtection = unitInfernoProtection * (1 - tonumber(unitModifiers[i].GetInfernoProtectionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetArmorBonus) then
-                unitArmor = unitArmor + (tonumber(unitModifiers[i].GetArmorBonus(unitModifiers[i])) or 0)
+                unitArmor = unitArmor + tonumber(unitModifiers[i].GetArmorBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetArmorPercentBonus) then
-                unitArmorPercent = unitArmorPercent + (tonumber(unitModifiers[i].GetArmorPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetArmorPercentBonusMulti) then
-                unitArmorPercentMulti = unitArmorPercentMulti * (tonumber(unitModifiers[i].GetArmorPercentBonusMulti(unitModifiers[i])) or 1)
+                unitArmorPercent = unitArmorPercent + tonumber(unitModifiers[i].GetArmorPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetCooldownReductionBonus) then
-                unitCooldownReduction = unitCooldownReduction * (1 - (tonumber(unitModifiers[i].GetCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReduction = unitCooldownReduction * (1 - tonumber(unitModifiers[i].GetCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetFirstAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility1 = unitCooldownReductionForAbility1 * (1 - (tonumber(unitModifiers[i].GetFirstAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility1 = unitCooldownReductionForAbility1 * (1 - tonumber(unitModifiers[i].GetFirstAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetSecondAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility2 = unitCooldownReductionForAbility2 * (1 - (tonumber(unitModifiers[i].GetSecondAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility2 = unitCooldownReductionForAbility2 * (1 - tonumber(unitModifiers[i].GetSecondAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetThirdAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility3 = unitCooldownReductionForAbility3 * (1 - (tonumber(unitModifiers[i].GetThirdAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility3 = unitCooldownReductionForAbility3 * (1 - tonumber(unitModifiers[i].GetThirdAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetFourthAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility4 = unitCooldownReductionForAbility4 * (1 - (tonumber(unitModifiers[i].GetFourthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility4 = unitCooldownReductionForAbility4 * (1 - tonumber(unitModifiers[i].GetFourthAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetFifthAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility5 = unitCooldownReductionForAbility5 * (1 - (tonumber(unitModifiers[i].GetFifthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility5 = unitCooldownReductionForAbility5 * (1 - tonumber(unitModifiers[i].GetFifthAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetSixthAbilityCooldownReductionBonus) then
-                unitCooldownReductionForAbility6 = unitCooldownReductionForAbility6 * (1 - (tonumber(unitModifiers[i].GetSixthAbilityCooldownReductionBonus(unitModifiers[i])) or 0))
+                unitCooldownReductionForAbility6 = unitCooldownReductionForAbility6 * (1 - tonumber(unitModifiers[i].GetSixthAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetBaseAttackTime) then
                 local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]))
@@ -318,46 +312,40 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 end
             end
             if (unitModifiers[i].GetHealingReceivedPercentBonus) then
-                unitHealingReceivedPercent = unitHealingReceivedPercent + (tonumber(unitModifiers[i].GetHealingReceivedPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetHealingReceivedPercentBonusMulti) then
-                unitHealingReceivedPercentMulti = unitHealingReceivedPercentMulti * (tonumber(unitModifiers[i].GetHealingReceivedPercentBonusMulti(unitModifiers[i])) or 1)
+                unitHealingReceivedPercent = unitHealingReceivedPercent + tonumber(unitModifiers[i].GetHealingReceivedPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealingCausedPercentBonus) then
-                unitHealingCausedPercent = unitHealingCausedPercent + (tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i])) or 0)
-            end
-            if (unitModifiers[i].GetHealingCausedPercentBonusMulti) then
-                unitHealingCausedPercentMulti = unitHealingCausedPercentMulti * (tonumber(unitModifiers[i].GetHealingCausedPercentBonusMulti(unitModifiers[i])) or 1)
+                unitHealingCausedPercent = unitHealingCausedPercent + tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetDebuffAmplificationBonus) then
-                unitDebuffAmplification = unitDebuffAmplification + (tonumber(unitModifiers[i].GetDebuffAmplificationBonus(unitModifiers[i])) or 0)
+                unitDebuffAmplification = unitDebuffAmplification + tonumber(unitModifiers[i].GetDebuffAmplificationBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetDebuffResistanceBonus) then
-                unitDebuffResistance = unitDebuffResistance * (1 - (tonumber(unitModifiers[i].GetDebuffResistanceBonus(unitModifiers[i])) or 0))
+                unitDebuffResistance = unitDebuffResistance * (1 - tonumber(unitModifiers[i].GetDebuffResistanceBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetBuffAmplificationBonus) then
-                unitBuffAmplification = unitBuffAmplification + (tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i])) or 0)
+                unitBuffAmplification = unitBuffAmplification + tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetCriticalDamageBonus) then
-                unitCriticalDamage = unitCriticalDamage + (tonumber(unitModifiers[i].GetCriticalDamageBonus(unitModifiers[i])) or 0)
+                unitCriticalDamage = unitCriticalDamage + tonumber(unitModifiers[i].GetCriticalDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetCriticalChanceBonus) then
-                unitCriticalChance = unitCriticalChance + (tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i])) or 0)
+                unitCriticalChance = unitCriticalChance + tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAggroCausedBonus) then
-                unitAggroCaused = unitAggroCaused + (tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i])) or 0)
+                unitAggroCaused = unitAggroCaused + tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSummonDamageBonus) then
-                unitSummonDamage = unitSummonDamage + (tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i])) or 0)
+                unitSummonDamage = unitSummonDamage + tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSingleDamageBonus) then
-                unitSingleDamage = unitSingleDamage + (tonumber(unitModifiers[i].GetSingleDamageBonus(unitModifiers[i])) or 0)
+                unitSingleDamage = unitSingleDamage + tonumber(unitModifiers[i].GetSingleDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetAOEDamageBonus) then
-                unitAOEDamage = unitAOEDamage + (tonumber(unitModifiers[i].GetAOEDamageBonus(unitModifiers[i])) or 0)
+                unitAOEDamage = unitAOEDamage + tonumber(unitModifiers[i].GetAOEDamageBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetDOTDamageBonus) then
-                unitDOTDamage = unitDOTDamage + (tonumber(unitModifiers[i].GetDOTDamageBonus(unitModifiers[i])) or 0)
+                unitDOTDamage = unitDOTDamage + tonumber(unitModifiers[i].GetDOTDamageBonus(unitModifiers[i]) or 0)
             end
         end
         local primaryAttribute = 0
@@ -469,7 +457,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         -- damage reduction
         statsTable.damageReduction = unitDamageReduction
         -- armor
-        statsTable.armor = unitArmor * unitArmorPercent * unitArmorPercentMulti
+        statsTable.armor = unitArmor * unitArmorPercent
         -- cdr
         statsTable.cdr = unitCooldownReduction
         statsTable.cdrForAbilities = {
@@ -484,8 +472,8 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.bat = unitBaseAttackTime
         unit:SetBaseAttackTime(unitBaseAttackTime)
         -- healing related bonuses
-        statsTable.healingReceivedPercent = unitHealingReceivedPercent * unitHealingReceivedPercentMulti
-        statsTable.healingCausedPercent = unitHealingCausedPercent * unitHealingCausedPercentMulti
+        statsTable.healingReceivedPercent = unitHealingReceivedPercent
+        statsTable.healingCausedPercent = unitHealingCausedPercent
         -- modifier related bonuses
         statsTable.buffAmplification = unitBuffAmplification
         statsTable.debuffAmplification = unitDebuffAmplification
