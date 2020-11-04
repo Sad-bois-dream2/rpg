@@ -742,7 +742,7 @@ if (IsServer()) then
                     GameMode.CritHealEventHandlersTable[i](nil, args)
                 end
             end
-            args.target:Heal(args.heal, caster)
+            args.target:Heal(args.heal, args.caster)
             PopupHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealEventHandlersTable do
                 if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
@@ -919,8 +919,8 @@ if (IsServer()) then
         end
         if (not modifier.OnRefresh2) then
             modifier.OnRefresh2 = modifier.OnRefresh
-            modifier.OnRefresh = function(context)
-                context.OnRefresh2(context)
+            modifier.OnRefresh = function(context, table)
+                context.OnRefresh2(context, table)
                 if (IsServer()) then
                     Units:ForceStatsCalculation(context:GetParent())
                 end

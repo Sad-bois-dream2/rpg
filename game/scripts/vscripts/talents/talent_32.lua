@@ -89,6 +89,9 @@ function modifier_talent_32_effect:OnCreated()
         return
     end
     self.hero = self:GetParent()
+    self.hero:EmitSound("Item.GuardianGreaves.Activate")
+    local pidx = ParticleManager:CreateParticle("particles/talents/talent_32/buff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.hero)
+    self:AddParticle(pidx, true, false, 1, true, false)
 end
 
 function modifier_talent_32_effect:OnTakeDamage(damageTable)
