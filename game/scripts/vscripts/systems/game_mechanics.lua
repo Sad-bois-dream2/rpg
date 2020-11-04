@@ -917,6 +917,15 @@ if (IsServer()) then
                 end
             end
         end
+        if (not modifier.OnRefresh2) then
+            modifier.OnRefresh2 = modifier.OnRefresh
+            modifier.OnRefresh = function(context)
+                context.OnRefresh2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
     end
 end
 
