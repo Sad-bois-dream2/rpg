@@ -40,9 +40,6 @@ modifier_dps_dummy = class({
     end
 })
 
-GameMode.PostDamageEventHandlersTable = {}
-GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_dps_dummy, 'OnPostTakeDamage'))
-
 ---@param damageTable DAMAGE_TABLE
 function modifier_dps_dummy:OnPostTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_dps_dummy")
