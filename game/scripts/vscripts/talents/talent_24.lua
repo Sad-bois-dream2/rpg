@@ -38,7 +38,7 @@ function modifier_talent_24:OnIntervalThink()
     local abilityCooldown = ability:GetCooldown(ability:GetLevel())
     for i = 1, self.hero:GetAbilityCount() - 1 do
         local newAbility = self.hero:GetAbilityByIndex(i)
-        if (ability) then
+        if (newAbility) then
             local newCooldown = newAbility:GetCooldown(newAbility:GetLevel())
             if (newCooldown < abilityCooldown) then
                 abilityCooldown = newCooldown

@@ -518,6 +518,10 @@ if (IsServer()) then
             holydmg = args.holydmg,
             puredmg = args.puredmg,
             fromsummon = args.fromsummon,
+            fromtalent = args.fromtalent,
+            dot = args.dot,
+            single = args.single,
+            aoe = args.aoe,
             crit = 1.0
         }
         local damageCanceled = false
