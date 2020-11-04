@@ -49,6 +49,8 @@ function Precache(context)
     -- talent 23 (sun & moon)
     PrecacheResource("particle", "particles/units/heroes/hero_mirana/mirana_moonlight_owner.vpcf", context)
     PrecacheResource("particle", "particles/talents/talent_23/sun.vpcf", context)
+    PrecacheResource("particle", "particles/talents/talent_30/buff.vpcf", context)
+    PrecacheResource("particle", "particles/talents/talent_30/buff_rope.vpcf", context)
 end
 
 -- Create the game mode when we activate

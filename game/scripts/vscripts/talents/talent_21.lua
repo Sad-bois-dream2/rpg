@@ -29,12 +29,12 @@ function modifier_talent_21:OnCreated()
     self:StartIntervalThink(0.1)
 end
 
-function modifier_talent_20:OnIntervalThink()
+function modifier_talent_21:OnIntervalThink()
     self:SetStackCount(1)
 end
 
-function modifier_talent_21:GetHealthBonus()
-    return TalentTree:GetHeroTalentLevel(self.hero, 21) * 500
+function modifier_talent_21:GetHealthPercentBonus()
+    return TalentTree:GetHeroTalentLevel(self.hero, 21) * 0.1
 end
 
 function modifier_talent_21:GetArmorBonus()
