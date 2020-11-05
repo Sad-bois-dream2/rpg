@@ -60,7 +60,7 @@ modifier_talent_48_effect = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -143,7 +143,7 @@ modifier_talent_48_cd = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false

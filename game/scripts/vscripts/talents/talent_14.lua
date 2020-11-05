@@ -72,7 +72,7 @@ modifier_talent_14_debuff = class({
         return false
     end,
     GetAttributes = function(self)
-        return MODIFIER_ATTRIBUTE_PERMANENT + MODIFIER_ATTRIBUTE_MULTIPLE
+        return MODIFIER_ATTRIBUTE_MULTIPLE
     end,
     GetTexture = function()
         return "file://{images}/custom_game/hud/talenttree/talent_14.png"

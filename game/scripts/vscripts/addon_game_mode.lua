@@ -58,6 +58,9 @@ function Precache(context)
     PrecacheResource("particle", "particles/talents/talent_42/rope.vpcf", context)
     -- 48
     PrecacheResource("particle", "particles/talents/talent_48/buff.vpcf", context)
+    -- 49
+    PrecacheResource("particle", "particles/talents/talent_49/debuff.vpcf", context)
+    PrecacheResource("particle", "particles/talents/talent_49/status_fx/status_effect_talent_49_poison_weapon.vpcf", context)
 end
 
 -- Create the game mode when we activate

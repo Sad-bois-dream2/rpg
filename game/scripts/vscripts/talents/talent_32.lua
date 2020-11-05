@@ -72,7 +72,7 @@ modifier_talent_32_effect = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
@@ -112,7 +112,7 @@ modifier_talent_32_cd = class({
         return false
     end,
     RemoveOnDeath = function(self)
-        return false
+        return true
     end,
     AllowIllusionDuplicate = function(self)
         return false
