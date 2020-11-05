@@ -951,10 +951,12 @@
 		"DOTA_Tooltip_modifier_talent_49_dot"	"Poison Weapon"
 		"DOTA_Tooltip_modifier_talent_49_dot_Description"	"Suffer from <font color='#238842'>Nature</font> damage."
 		"DOTA_TalentTree_Talent_50"		"Overwhelm"
-		"DOTA_TalentTree_Talent_50_Description"	"Gain bonus damage amplify based on the movespeed difference between you and target, each point of difference increase damage output by <font color='#96afff'><b>0.1% / 0.2% / 0.3%</b></font>, passively increase your movespeed by <font color='#96afff'><b>8% / 16% / 24%</b></font>."
+		"DOTA_TalentTree_Talent_50_Description"	"Grants you <font color='#96afff'><b>8% / 16% / 24%</b></font> movespeed and provide bonus damage amplify based on the movespeed difference between you and target, each point of difference increase damage output by <font color='#96afff'><b>0.1% / 0.2% / 0.3%</b></font>."
 		"DOTA_TalentTree_Talent_51"		"Flow of Combat"
-		"DOTA_TalentTree_Talent_51_Description"	"Each time you gain a buff, you will gain a stack of flow of combat, each stack increase your spell damage and attack damage by <font color='#96afff'><b>1%</b></font>, lasts <font color='#96afff'><b>2 / 3 / 4</b></font> seconds, each stack has independent duration."
-		
+		"DOTA_TalentTree_Talent_51_Description"	"Every time you gain a buff you will also gain a stack of Flow of Combat that increase spell damage by 1% and attack damage by 1% for <font color='#96afff'><b>2 / 3 / 4</b></font> seconds. Each stack has independent duration."
+		"DOTA_Tooltip_modifier_talent_51_effect"	"Flow of Combat"
+		"DOTA_Tooltip_modifier_talent_51_effect_Description"	"Spell damage increased by %dMODIFIER_PROPERTY_TOOLTIP%%% and attack damage increased by %dMODIFIER_PROPERTY_TOOLTIP%%%."
+
         // Countless tooltips
 		"DOTA_Tooltip_Attributes"		"Attributes"
 		"DOTA_Tooltip_Strength"		"Strength"
