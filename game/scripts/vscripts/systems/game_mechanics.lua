@@ -629,19 +629,19 @@ if (IsServer()) then
         if (IsHolyDamage == true) then
             totalAmplification = totalAmplification + Units:GetHolyDamage(damageTable.attacker) - 1
         end
-        if(args.fromsummon == true) then
+        if (args.fromsummon == true) then
             totalAmplification = totalAmplification + Units:GetSummonDamage(damageTable.attacker) - 1
         end
-        if(args.dot == true) then
+        if (args.dot == true) then
             totalAmplification = totalAmplification + Units:GetDOTDamage(damageTable.attacker) - 1
         end
-        if(args.single == true) then
+        if (args.single == true) then
             totalAmplification = totalAmplification + Units:GetSingleDamage(damageTable.attacker) - 1
         end
-        if(args.aoe == true) then
+        if (args.aoe == true) then
             totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
         end
-        if(args.ability) then
+        if (args.ability) then
             totalAmplification = totalAmplification + Units:GetSpellDamage(damageTable.attacker, args.ability) - 1
         end
         local unitAdditionalConditionalDamage = 0
@@ -661,7 +661,7 @@ if (IsServer()) then
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
         -- final damage
-        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification)
+        damageTable.damage = damageTable.damage * totalReduction
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
         if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc
@@ -684,7 +684,9 @@ if (IsServer()) then
             end
             if (damageCanceled == false) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
+                    totalAmplification = totalAmplification + Units:GetCriticalDamage(damageTable.attacker)
+                    damageTable.damage = damageTable.damage * totalAmplification
+                    damageTable.damage = damageTable.damage * damageTable.crit
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
                         if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                             break
@@ -692,6 +694,8 @@ if (IsServer()) then
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
                     PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                else
+                    damageTable.damage = damageTable.damage * totalAmplification
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
