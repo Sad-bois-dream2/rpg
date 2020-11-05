@@ -31,7 +31,6 @@
 	<Panel class="TalentPanel" onactivate="OnTalentClick()" onmouseover="ShowTalentTooltip()" onmouseout="HideTalentTooltip()">
 		<Panel class="TalentImageAndLevel" >
 			<Image class="TalentImage" id="TalentImage" src="file://{images}/spellicons/drow_ranger_wave_of_silence.png"/>
-			<DOTAAbilityImage class="TalentImage" id="TalentSkillImage" abilityname="phantom_ranger_void_disciple" />
 			<Panel class="TalentLevelContainer">
 				<Label class="TalentLevel" id="TalentLevel" text="0 / 4" />
 			</Panel>
