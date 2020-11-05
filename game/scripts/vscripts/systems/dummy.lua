@@ -55,6 +55,7 @@ function modifier_dps_dummy:OnPostTakeDamage(damageTable)
         if(damageTable.victim.isready and playerId == damageTable.victim.owner) then
             timer = 1
         end
+        print(damageTable.fromtalent)
         local event = {
             player_id = playerId,
             damage = damageTable.damage,
@@ -71,7 +72,8 @@ function modifier_dps_dummy:OnPostTakeDamage(damageTable)
             infernodmg = damageTable.infernodmg,
             holydmg = damageTable.holydmg,
             fromsummon = damageTable.fromsummon,
-            timer = timer
+            timer = timer,
+            fromtalent = damageTable.fromtalent
         }
         table.insert(damageTable.victim.damageInstances, event)
         CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerId), "rpg_dummy_damage", event)

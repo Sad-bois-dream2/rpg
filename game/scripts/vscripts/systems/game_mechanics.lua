@@ -518,6 +518,10 @@ if (IsServer()) then
             holydmg = args.holydmg,
             puredmg = args.puredmg,
             fromsummon = args.fromsummon,
+            fromtalent = args.fromtalent,
+            dot = args.dot,
+            single = args.single,
+            aoe = args.aoe,
             crit = 1.0
         }
         local damageCanceled = false
@@ -625,36 +629,39 @@ if (IsServer()) then
         if (IsHolyDamage == true) then
             totalAmplification = totalAmplification + Units:GetHolyDamage(damageTable.attacker) - 1
         end
-        if(args.fromsummon == true) then
+        if (args.fromsummon == true) then
             totalAmplification = totalAmplification + Units:GetSummonDamage(damageTable.attacker) - 1
         end
-        if(args.dot == true) then
+        if (args.dot == true) then
             totalAmplification = totalAmplification + Units:GetDOTDamage(damageTable.attacker) - 1
         end
-        if(args.single == true) then
+        if (args.single == true) then
             totalAmplification = totalAmplification + Units:GetSingleDamage(damageTable.attacker) - 1
         end
-        if(args.aoe == true) then
+        if (args.aoe == true) then
             totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
         end
-        if(args.ability) then
+        if (args.ability or args.fromtalent) then
             totalAmplification = totalAmplification + Units:GetSpellDamage(damageTable.attacker, args.ability) - 1
         end
         local unitAdditionalConditionalDamage = 0
         local unitModifiers = damageTable.victim:FindAllModifiers()
-        table.sort(unitModifiers, function(a, b)
-            return (a:GetCreationTime() > b:GetCreationTime())
-        end)
         for i = 1, #unitModifiers do
             if (unitModifiers[i].GetAdditionalConditionalDamage) then
-                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + (tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable)) or 0)
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
+            end
+        end
+        local unitModifiers = damageTable.attacker:FindAllModifiers()
+        for i = 1, #unitModifiers do
+            if (unitModifiers[i].GetAdditionalConditionalDamage) then
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
             end
         end
         totalAmplification = totalAmplification + unitAdditionalConditionalDamage
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
         -- final damage
-        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification)
+        damageTable.damage = damageTable.damage * totalReduction
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
         if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc
@@ -677,14 +684,22 @@ if (IsServer()) then
             end
             if (damageCanceled == false) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
+                    totalAmplification = totalAmplification + Units:GetCriticalDamage(damageTable.attacker)
+                    damageTable.damage = damageTable.damage * totalAmplification
+                    damageTable.damage = damageTable.damage * damageTable.crit
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
                         if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                             break
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
-                    PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    if(args.ability or args.fromtalent) then
+                        PopupSpellCriticalDamage(damageTable.victim, damageTable.damage)
+                    else
+                        PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    end
+                else
+                    damageTable.damage = damageTable.damage * totalAmplification
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
@@ -739,7 +754,7 @@ if (IsServer()) then
                     GameMode.CritHealEventHandlersTable[i](nil, args)
                 end
             end
-            args.target:Heal(args.heal, caster)
+            args.target:Heal(args.heal, args.caster)
             PopupHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealEventHandlersTable do
                 if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
@@ -909,6 +924,15 @@ if (IsServer()) then
             modifier.DecrementStackCount2 = modifier.DecrementStackCount
             modifier.DecrementStackCount = function(context)
                 context.DecrementStackCount2(context)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
+        if (not modifier.OnRefresh2) then
+            modifier.OnRefresh2 = modifier.OnRefresh
+            modifier.OnRefresh = function(context, table)
+                context.OnRefresh2(context, table)
                 if (IsServer()) then
                     Units:ForceStatsCalculation(context:GetParent())
                 end

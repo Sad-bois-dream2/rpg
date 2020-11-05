@@ -105,6 +105,9 @@ function BuildDamageSourceString(event) {
     if(event.fromsummon) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Summon");
     }
+    if(event.fromtalent) {
+        return $.Localize("#DOTA_Dummy_Damage_Source_Talent").replace("%TALENT%", $.Localize("#DOTA_TalentTree_Talent_" + event.fromtalent));
+    }
     if(!event.ability) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
     } else {

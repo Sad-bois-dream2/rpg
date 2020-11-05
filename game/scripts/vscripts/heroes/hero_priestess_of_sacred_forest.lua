@@ -1013,7 +1013,7 @@ function priestess_of_sacred_forest_sleep_dust:OnProjectileHit(target, location)
         modifierTable.max_stacks = self.sleepDamageBlock
         GameMode:ApplyStackingBuff(modifierTable)
         local healTable = {}
-        healTable.caster = caster
+        healTable.caster = self.caster
         healTable.target = target
         healTable.ability = self
         healTable.heal = Units:GetHeroIntellect(self.caster) * self.healing

@@ -32,5 +32,62 @@
                 <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Talent Description"/>
             </Panel>
         </Panel>
+
+        <Panel style="visibility: collapse;">
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_1.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_2.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_3.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_4.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_5.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_6.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_7.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_8.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_9.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_10.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_11.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_12.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_13.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_14.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_15.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_16.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_17.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_18.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_19.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_20.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_21.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_22.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_23.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_24.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_25.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_26.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_27.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_28.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_29.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_30.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_31.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_32.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_33.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_34.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_35.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_36.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_37.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_38.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_39.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_40.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_41.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_42.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_43.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_44.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_45.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_46.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_47.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_48.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_49.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_50.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_51.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_52.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_53.png"/>
+            <Image src="file://{images}/custom_game/hud/talenttree/talent_54.png"/>
+        </Panel>
     </Panel>
 </root>

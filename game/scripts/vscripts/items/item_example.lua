@@ -322,16 +322,18 @@ function modifier_inventory_item_example:GetBaseAttackTime()
     return 1.7
 end
 
-function modifier_inventory_item_example:GetHealingReceivedBonus()
-    return 0 -- finalHeal = heal + this
+-- flat bonus, 0.1 = 0.1
+function modifier_inventory_item_example:GetBaseAttackTimeBonus()
+    return 0
+end
+
+-- percent bonus 1.0 = 100%
+function modifier_inventory_item_example:GetBaseAttackTimePercentBonus()
+    return 0
 end
 
 function modifier_inventory_item_example:GetHealingReceivedPercentBonus()
     return 0 -- finalHeal = heal * (1 + this)
-end
-
-function modifier_inventory_item_example:GetHealingCausedBonus()
-    return 0 -- finalHeal = heal + this
 end
 
 function modifier_inventory_item_example:GetHealingCausedPercentBonus()

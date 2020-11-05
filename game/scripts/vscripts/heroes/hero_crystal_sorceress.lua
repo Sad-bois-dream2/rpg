@@ -311,11 +311,12 @@ function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.target = self:GetParent()
 end
 
 ---@param damageTable DAMAGE_TABLE
 function modifier_crystal_sorceress_deep_freeze_aura_debuff_stacks:GetAdditionalConditionalDamage(damageTable)
-    if (damageTable.frostdmg) then
+    if (damageTable.frostdmg and damageTable.victim == self.target) then
         return self:GetStackCount() * self.ability.bonusFrostDamagePerStack
     end
 end

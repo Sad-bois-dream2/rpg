@@ -30,7 +30,13 @@ modifier_castbar = class({
 })
 
 function modifier_castbar:GetModifierPercentageCasttime()
-    return math.min((Units:GetSpellHaste(self.hero) / Units:GetSpellHasteCap()) * 100, 90)
+    local baseCastTime = 2
+    local casterSpellHaste = math.min(Units:GetSpellHaste(self.hero), Units:GetSpellHasteCap(self.hero))
+    local desiredCastTime = baseCastTime
+    if (casterSpellHaste > 0) then
+        desiredCastTime = 1 / ((math.min(Units:GetSpellHaste(self.hero), Units:GetSpellHasteCap(self.hero)) * 0.01) / baseCastTime)
+    end
+    return (1 - (desiredCastTime / baseCastTime)) * 100
 end
 
 function modifier_castbar:GetCastTimeReductionRatio()
