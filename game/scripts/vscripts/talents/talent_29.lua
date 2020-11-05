@@ -59,14 +59,14 @@ function modifier_talent_29:OnAttackLanded(event)
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    local damage = TalentTree:GetHeroTalentLevel(self.hero, 29) * 0.1 * Units:GetAttackDamage(self.hero)
+    local damageTable = {}
+    damageTable.caster = self.hero
+    damageTable.target = nil
+    damageTable.damage = TalentTree:GetHeroTalentLevel(self.hero, 29) * 0.1 * Units:GetAttackDamage(self.hero)
+    damageTable.firedmg = true
+    damageTable.infernodmg = true
     for _, unit in pairs(units) do
-        local damageTable = {}
-        damageTable.caster = self.hero
         damageTable.target = unit
-        damageTable.damage = damage
-        damageTable.firedmg = true
-        damageTable.infernodmg = true
         GameMode:DamageUnit(damageTable)
     end
     local pidx = ParticleManager:CreateParticle("particles/talents/talent_29/explosion.vpcf", PATTACH_ABSORIGIN, self.hero)

@@ -30,17 +30,15 @@ end
 
 function modifier_talent_32:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_talent_32")
-    if (not modifier or damageTable.damage < 0) then
-        return
-    end
-    if (damageTable.victim:HasModifier("modifier_talent_32_cd")) then
+    if (not modifier or damageTable.victim:HasModifier("modifier_talent_32_cd") or damageTable.victim:HasModifier("modifier_talent_32_effect")) then
         return
     end
     local maxHealth = damageTable.victim:GetMaxHealth()
     local currentHealth = damageTable.victim:GetHealth()
     local threshold = 0.25
     local postPerc = (currentHealth - damageTable.damage) / maxHealth
-    if (postPerc < threshold) then
+    if (damageTable.damage > 0 and postPerc < threshold) then
+        damageTable.victim:Purge(false, true, false, true, true)
         damageTable.damage = 0
         local modifierTable = {}
         modifierTable.caster = damageTable.victim
@@ -54,10 +52,10 @@ function modifier_talent_32:OnTakeDamage(damageTable)
         modifierTable.target = damageTable.victim
         modifierTable.ability = nil
         modifierTable.modifier_name = "modifier_talent_32_cd"
-        modifierTable.duration = 40
+        modifierTable.duration = 100
         local appliedModifier = GameMode:ApplyDebuff(modifierTable)
         if (appliedModifier) then
-            appliedModifier:SetDuration(40, true)
+            appliedModifier:SetDuration(100, true)
         end
         return damageTable
     end

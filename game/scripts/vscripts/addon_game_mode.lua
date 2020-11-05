@@ -56,6 +56,8 @@ function Precache(context)
     PrecacheResource("particle", "particles/units/heroes/hero_ember_spirit/ember_spirit_flameguard.vpcf", context)
     -- 42
     PrecacheResource("particle", "particles/talents/talent_42/rope.vpcf", context)
+    -- 48
+    PrecacheResource("particle", "particles/talents/talent_48/buff.vpcf", context)
 end
 
 -- Create the game mode when we activate
