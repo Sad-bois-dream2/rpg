@@ -65,6 +65,7 @@ FOUNTAIN_CONSTANT_MANA_REGEN = -1       -- What should we use for the constant f
 FOUNTAIN_PERCENTAGE_MANA_REGEN = -1     -- What should we use for the percentage fountain mana regen?  Use -1 to keep the default dota behavior.
 FOUNTAIN_PERCENTAGE_HEALTH_REGEN = -1   -- What should we use for the percentage fountain health regen?  Use -1 to keep the default dota behavior.
 MAXIMUM_ATTACK_SPEED = 800              -- What should we use for the maximum attack speed? (desired max + 100)
+MAXIMUM_CAST_SPEED = 800                -- What should we use for the maximum cast speed? (desired max)
 MINIMUM_ATTACK_SPEED = 20               -- What should we use for the minimum attack speed?
 
 GAME_END_DELAY = -1                     -- How long should we wait after the game winner is set to display the victory banner and End Screen?  Use -1 to keep the default (about 10 seconds)

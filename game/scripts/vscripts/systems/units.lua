@@ -19,8 +19,6 @@ end
 ---@field public spellDamage number
 ---@field public spellHaste number
 ---@field public armor number
----@field public block number
----@field public magicBlock number
 ---@field public movespeedBonus number
 ---@field public castRangeBonus number
 ---@field public attackRangeBonus number
@@ -41,8 +39,8 @@ function Units:ForceStatsCalculation(unit)
     modifier:OnIntervalThink()
 end
 
-function Units:GetSpellHasteCap()
-    return 800
+function Units:GetSpellHasteCap(unit)
+    return MAXIMUM_CAST_SPEED
 end
 
 ---@param unit CDOTA_BaseNPC
@@ -121,8 +119,10 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitSpellDamageForAbility4 = 1
         local unitSpellDamageForAbility5 = 1
         local unitSpellDamageForAbility6 = 1
-        local unitBaseAttackTime = unit:GetBaseAttackTime()
         local unitModifiers = unit:FindAllModifiers()
+        local unitBaseAttackTime = unit.defaultBATforStats
+        local unitBaseAttackTimeBonus = 0
+        local unitBaseAttackTimePercentBonus = 0
         table.sort(unitModifiers, function(a, b)
             return (a:GetCreationTime() > b:GetCreationTime())
         end)
@@ -306,10 +306,16 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
                 unitCooldownReductionForAbility6 = unitCooldownReductionForAbility6 * (1 - tonumber(unitModifiers[i].GetSixthAbilityCooldownReductionBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetBaseAttackTime) then
-                local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]))
+                local newBaseAttackTime = tonumber(unitModifiers[i].GetBaseAttackTime(unitModifiers[i]) or unit.defaultBATforStats)
                 if (newBaseAttackTime and newBaseAttackTime < unitBaseAttackTime) then
                     unitBaseAttackTime = newBaseAttackTime
                 end
+            end
+            if (unitModifiers[i].GetBaseAttackTimeBonus) then
+                unitBaseAttackTimeBonus = unitBaseAttackTimeBonus + tonumber(unitModifiers[i].GetBaseAttackTimeBonus(unitModifiers[i]) or 0)
+            end
+            if (unitModifiers[i].GetBaseAttackTimePercentBonus) then
+                unitBaseAttackTimePercentBonus = unitBaseAttackTimePercentBonus + tonumber(unitModifiers[i].GetBaseAttackTimePercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetHealingReceivedPercentBonus) then
                 unitHealingReceivedPercent = unitHealingReceivedPercent + tonumber(unitModifiers[i].GetHealingReceivedPercentBonus(unitModifiers[i]) or 0)
@@ -351,9 +357,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local primaryAttribute = 0
         -- str, agi, int
         if (unit:IsRealHero()) then
-            statsTable.strGain = unit:GetStrengthGain()
-            statsTable.agiGain = unit:GetAgilityGain()
-            statsTable.intGain = unit:GetIntellectGain()
+            if(not statsTable.strGain) then
+                statsTable.strGain = unit:GetStrengthGain()
+                statsTable.agiGain = unit:GetAgilityGain()
+                statsTable.intGain = unit:GetIntellectGain()
+            end
             local heroLevel = unit:GetLevel()
             local heroBaseStr = unit:GetBaseStrength() + (heroLevel - 1) * statsTable.strGain
             local heroBaseAgi = unit:GetBaseAgility() + (heroLevel - 1) * statsTable.agiGain
@@ -381,7 +389,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
             statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
             statsTable.primaryAttributeIndex = primaryAttributeIndex
-            --old one primary attribute to base damage calculation is wrong
         else
             statsTable.str = 0
             statsTable.agi = 0
@@ -421,7 +428,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         --compared to AS dota vanilla has 600 AS + 100 initial = 700 total AS cap
         --but in our custom game it is 800 (tested) so lets cap it at 800 too for easier balance and late game scaling this mean 2s cast time cap at 0.25 cast time (1.7 BAT need nerf too)
         --everything /100 to not break old code
-        statsTable.spellHaste = math.min(Units:GetSpellHasteCap(), totalSpellHaste)
+        statsTable.spellHaste = totalSpellHaste
         -- attack range
         local baseAttackRange = unit:GetBaseAttackRange()
         statsTable.attackRangeBonus = math.floor(((baseAttackRange + unitBonusAttackRange) * unitBonusPercentAttackRange) - baseAttackRange)
@@ -469,7 +476,7 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             unitCooldownReductionForAbility6
         }
         -- bat
-        statsTable.bat = unitBaseAttackTime
+        statsTable.bat = (unitBaseAttackTime + unitBaseAttackTimeBonus) * unitBaseAttackTimePercentBonus
         unit:SetBaseAttackTime(unitBaseAttackTime)
         -- healing related bonuses
         statsTable.healingReceivedPercent = unitHealingReceivedPercent
@@ -639,48 +646,22 @@ function modifier_stats_system:OnAttackLanded(event)
 end
 
 function modifier_stats_system:OnCreated(event)
-    if IsServer() then
-        self.unit = self:GetParent()
-        self.unit.stats = {
-            str = 0,
-            agi = 0,
-            int = 0,
-            damageReduction = 0,
-            spellDamage = 0,
-            spellHaste = 0,
-            armor = 0,
-            block = 0,
-            magicBlock = 0,
-            elementsProtection = {
-                fire = 0,
-                frost = 0,
-                earth = 0,
-                void = 0,
-                holy = 0,
-                nature = 0,
-                inferno = 0
-            },
-            elementsDamage = {
-                fire = 0,
-                frost = 0,
-                earth = 0,
-                void = 0,
-                holy = 0,
-                nature = 0,
-                inferno = 0
-            }
-        }
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_aaspeed", { Duration = -1 })
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_aarange", { Duration = -1 })
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_castrange", { Duration = -1 })
-        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_movespeed", { Duration = -1 })
-        if (self.unit:IsRealHero()) then
-            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
-            self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
-        end
-        Units:ForceStatsCalculation(self.unit)
-        self:StartIntervalThink(1)
+    if not IsServer() then
+        return
     end
+    self.unit = self:GetParent()
+    self.unit.stats = {}
+    self.unit.defaultBATforStats = self.unit:GetBaseAttackTime()
+    self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_aaspeed", { Duration = -1 })
+    self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_aarange", { Duration = -1 })
+    self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_castrange", { Duration = -1 })
+    self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_movespeed", { Duration = -1 })
+    if (self.unit:IsRealHero()) then
+        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxhp", { Duration = -1 })
+        self.unit:AddNewModifier(self.unit, nil, "modifier_stats_system_maxmp", { Duration = -1 })
+    end
+    Units:ForceStatsCalculation(self.unit)
+    self:StartIntervalThink(1)
 end
 
 function modifier_stats_system:OnIntervalThink()
