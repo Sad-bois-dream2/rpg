@@ -641,7 +641,7 @@ if (IsServer()) then
         if (args.aoe == true) then
             totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
         end
-        if (args.ability) then
+        if (args.ability or args.fromtalent) then
             totalAmplification = totalAmplification + Units:GetSpellDamage(damageTable.attacker, args.ability) - 1
         end
         local unitAdditionalConditionalDamage = 0
@@ -693,7 +693,11 @@ if (IsServer()) then
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
-                    PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    if(args.ability or args.fromtalent) then
+                        PopupSpellCriticalDamage(damageTable.victim, damageTable.damage)
+                    else
+                        PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    end
                 else
                     damageTable.damage = damageTable.damage * totalAmplification
                 end
