@@ -28,9 +28,6 @@ function modifier_talent_40:OnCreated()
     self.hero = self:GetParent()
 end
 
-GameMode.PreDamageBeforeResistancesEventHandlersTable = {}
-GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_talent_40, 'OnTakeDamage'), true)
-
 function modifier_talent_40:OnTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_talent_40")
     if (not modifier or modifier.cd) then
