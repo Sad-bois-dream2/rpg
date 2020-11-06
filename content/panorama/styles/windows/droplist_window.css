@@ -1,21 +1,17 @@
 #DropContainer {
-    width: 200px;
+    width: 300px;
     height: 400px;
     horizontal-align: right;
     visibility: visible;
     flow-children: down;
     overflow: squish scroll;
     margin-top: 40px;
-    margin-right: 10px;
     padding-top: 10px;
-    opacity-mask: url("s2r://panorama/images/masks/softedge_vertical_vscroll_psd.vtex") 1.0;
 }
 
 .DropItemContainer {
     width: fill-parent-flow(1.0);
-    height: 60px;
-	border: 1px solid gray;
-	border-radius: 10px;
+    height: 70px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
@@ -23,39 +19,60 @@
 	flow-children: right;
 	horizontal-align: right;
 	margin-bottom: 5px;
-}
-
-.DropItemArrow {
-    horizontal-align: center;
-    vertical-align: center;
-    width: 40px;
-    margin-left: 10px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+	transition-property: box-shadow, brightness;
+	transition-duration: 0.15s;
+	transition-timing-function: ease-in-out;
 }
 
 .DropItemIcon {
     vertical-align: center;
     margin-left: 10px;
-	border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
     horizontal-align: center;
     width: 64px;
     height: 48px;
 }
 
-.DropItemHeroContainer {
-	flow-children: down;
-    vertical-align: center;
+.RightSide {
+    flow-children: down;
+    margin: 5px;
+}
+
+.ItemOwnerContainer, .ItemInfoContainer {
+	flow-children: right;
+    width: fill-parent-flow(1.0);
+}
+
+#ItemOwnerLabel {
+    color: white;
+	text-align: right;
+    text-overflow: shrink;
+	vertical-align: center;
     width: fill-parent-flow(1.0);
     padding-right: 5px;
-    padding-left: 5px;
+    font-size: 14px;
 }
 
-.DropItemHeroContainerIcon {
-    horizontal-align: center;
+#ItemOwnerIcon {
+    width: 28px;
+    height: 28px;
+    horizontal-align: right;
 }
 
-.DropItemHeroContainerLabel {
+.ItemTooltipRarityLabel, .ItemTooltipTypeLabel
+{
+	font-size: 14px;
+}
+
+.ItemTooltipNameLabel {
+	text-transform: uppercase;
+	horizontal-align: left;
+	vertical-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
     color: white;
-	text-align: center;
+    font-size: 16px;
     text-overflow: shrink;
-    horizontal-align: center;
 }

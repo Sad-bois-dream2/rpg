@@ -2,7 +2,7 @@ var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
 
 var itemPanel;
 var DELETE_TIMER_INTERVAL = 0.1;
-var DELETE_TIMER = 999999 + DELETE_TIMER_INTERVAL;
+var DELETE_TIMER = 15 + DELETE_TIMER_INTERVAL;
 var dontDelete = false;
 
 function OnClick() {

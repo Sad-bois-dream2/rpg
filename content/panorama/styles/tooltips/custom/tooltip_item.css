@@ -57,6 +57,7 @@
 {
 	width: fill-parent-flow(1.0);
 	flow-children: right;
+	margin-bottom: 5px;
 }
 
 .ItemTooltipStatsContainer
@@ -91,14 +92,10 @@
 {
 	width: fill-parent-flow(1.0);
 	overflow: clip squish;
-	height: 20px;
 	color: grey;
 	font-size: 16px;
 	font-family: defaultFont;
-	vertical-align: center;
-	horizontal-align: left;
 	text-align: left;
-	margin-top: 1px;
 }
 
 .ItemTooltipTypeLabel
@@ -107,10 +104,7 @@
 	color: grey;
 	font-size: 16px;
 	font-family: defaultFont;
-	vertical-align: center;
-	horizontal-align: right;
 	text-align: right;
-	margin-right: 2px;
 }
 
 .ItemTooltipLabel
