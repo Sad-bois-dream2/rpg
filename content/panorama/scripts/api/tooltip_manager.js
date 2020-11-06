@@ -58,7 +58,6 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
     } else {
         TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
     }
-	TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].text = description;
 	TooltipManager.itemTooltipContainer[TOOLTIP_QUALITY_LABEL].text = quality;
 	if(TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
 	    x -= TooltipManager.itemTooltipContainer[TOOLTIP_PANEL].actuallayoutwidth;
@@ -73,15 +72,24 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
 	for(var i = 0; i < stats.length; i++) {
 	    var statName = $.Localize("#DOTA_Tooltip_Ability_"+icon+"_"+stats[i].name);
 	    var statValue = stats[i].value;
+	    var statSign = "";
+	    if(statValue > 0) {
+	        statSign = "+";
+	    } else {
+	        statSign = "-";
+	    }
+	    statValue = statValue.toString().replace("-", "").replace("+", "").replace(",", ".").replace(/\s+/g,"");
 	    var IsPercent = (statName.charAt(0) == "%");
         if(IsPercent) {
             statName = statName.slice(1, statName.length);
             statValue += "%";
         }
-	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = statName + statValue;
+        description = description.replace("%"+stats[i].name+"%", statValue);
+	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    latestStatId++;
 	}
+	TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].text = description;
 	for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
 		TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "collapse";
 	}

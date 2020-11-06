@@ -1143,9 +1143,9 @@
         // Countless items
 
         "DOTA_Tooltip_Ability_item_two_handed_sword"      "Two-handed Sword"
-        "DOTA_Tooltip_Ability_item_two_handed_sword_Description"      "A common weapon for swordsmen and knights.<br><br><font color='#d92129'>TWO-HANDED MELEE ONLY</font><br>"
-        "DOTA_Tooltip_Ability_item_two_handed_sword_attack_damage"      "Attack Damage: "
-        "DOTA_Tooltip_Ability_item_two_handed_sword_move_speed_reduce"        "Move Speed: "
+        "DOTA_Tooltip_Ability_item_two_handed_sword_Description"      "A common weapon for swordsmen and knights."
+        "DOTA_Tooltip_Ability_item_two_handed_sword_attack_damage"      "<strong>Attack Damage</strong>"
+        "DOTA_Tooltip_Ability_item_two_handed_sword_move_speed_reduce"        "Move Speed"
         "DOTA_Tooltip_Ability_item_one_handed_sword"      "One-handed Sword"
         "DOTA_Tooltip_Ability_item_one_handed_sword_Description"      "Lightweight sword, widely used by squires.<br><br><font color='#d92129'>MELEE ONLY</font><br>"
         "DOTA_Tooltip_Ability_item_one_handed_sword_attack_damage"      "Attack Damage: "
