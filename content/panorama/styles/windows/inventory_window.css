@@ -177,7 +177,6 @@
 	horizontal-align: left;
 	margin-left: 10px;
 	margin-bottom: 5px;
-	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .InventoryAttributeValue 
@@ -185,7 +184,6 @@
 	vertical-align: center;
 	horizontal-align: right;
 	padding-right: 25px;
-	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .InventoryAttributeGrouplabel 
