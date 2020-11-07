@@ -6,6 +6,17 @@ function Difficulty:Init()
     Difficulty.confirmed = false
     Difficulty.PICK_TIME = 35 -- desired time + ~5
     Difficulty.value = 1
+    Difficulty.DIFFICULTY1 = 1
+    Difficulty.DIFFICULTY2 = 2
+    Difficulty.DIFFICULTY3 = 3
+    Difficulty.DIFFICULTY4 = 4
+    Difficulty.DIFFICULTY5 = 5
+    Difficulty.DIFFICULTY6 = 6
+    Difficulty.DIFFICULTY7 = 7
+    Difficulty.DIFFICULTY8 = 8
+    Difficulty.DIFFICULTY9 = 9
+    Difficulty.DIFFICULTY10 = 10
+    Difficulty.DIFFICULTY_MAX = 10
     Difficulty:InitPanaromaEvents()
 end
 

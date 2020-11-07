@@ -118,11 +118,11 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local dropChanceFactor = Enemies.dropChanceFactor
     local itemsTable = {}
     table.insert(itemsTable, Inventory.rarity.common, { tier = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100 })
-    --[[if (difficulty > Enemies.DIFFICULTY1) then
+    --[[if (difficulty > Difficulty.DIFFICULTY1) then
         table.insert(itemsTable, Inventory.rarity.uncommon, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uncommon), chance = 60 })
         print("Insert un")
     end
-    if (difficulty > Enemies.DIFFICULTY1_5) then
+    if (difficulty > Difficulty.DIFFICULTY1_5) then
         table.insert(itemsTable, Inventory.rarity.rare, { tier = Inventory:GetItemsByRarity(Inventory.rarity.rare), chance = 25 })
         itemsTable[Inventory.rarity.uncommon].chance = 80
     end --]]
@@ -136,7 +136,6 @@ function Enemies:BuildDropTable(enemy, difficulty)
             end
         end
     end
-    PrintTable(dropTable)
     return dropTable
 end
 
@@ -154,27 +153,6 @@ function Enemies:Init()
     Enemies.MAX_ABILITIES = 10
     Enemies.BOSS_ZONE_SIZE = 2500
     Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
-    Enemies.DIFFICULTY1 = 1
-    Enemies.DIFFICULTY1_5 = 1.5
-    Enemies.DIFFICULTY2 = 2
-    Enemies.DIFFICULTY2_5 = 2.5
-    Enemies.DIFFICULTY3 = 3
-    Enemies.DIFFICULTY3_5 = 3.5
-    Enemies.DIFFICULTY4 = 4
-    Enemies.DIFFICULTY4_5 = 4.5
-    Enemies.DIFFICULTY5 = 5
-    Enemies.DIFFICULTY5_5 = 5.5
-    Enemies.DIFFICULTY6 = 6
-    Enemies.DIFFICULTY6_5 = 6.5
-    Enemies.DIFFICULTY7 = 7
-    Enemies.DIFFICULTY7_5 = 7.5
-    Enemies.DIFFICULTY8 = 8
-    Enemies.DIFFICULTY8_5 = 8.5
-    Enemies.DIFFICULTY9 = 9
-    Enemies.DIFFICULTY9_5 = 9.5
-    Enemies.DIFFICULTY10 = 10
-    Enemies.DIFFICULTY10_5 = 10.5
-    Enemies.DIFFICULTY_MAX = 10.5
     Enemies.dropChanceFactor = 1
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
