@@ -462,7 +462,7 @@ function modifier_creep_scaling:OnCreated()
         Castbar:AddToUnit(self.creep)
     end
     self.damage = self.damage * math.pow(self.difficulty, 1 + 2 * (self.difficulty - 1) / 9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
-    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
+    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Difficulty.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
     Timers:CreateTimer(0, function()
@@ -481,7 +481,7 @@ function modifier_creep_scaling:OnIntervalThink()
     self.current_pos = self.creep:GetAbsOrigin()
     local displacement = self.spawn_pos - self.current_pos
     local distance = displacement:Length2D()
-    if distance > Enemies.BOSS_ZONE_SIZE then
+    if (distance > Enemies.BOSS_ZONE_SIZE) then
         local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_teleport.vpcf", PATTACH_ABSORIGIN, self.creep)
         ParticleManager:SetParticleControl(pidx, 0, self.creep:GetAbsOrigin())
         ParticleManager:DestroyParticle(pidx, false)
