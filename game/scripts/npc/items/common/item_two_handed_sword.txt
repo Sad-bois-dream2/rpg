@@ -1,0 +1,46 @@
+"DOTAAbilities"
+{
+	"item_two_handed_sword"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10000"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_claymore"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"ItemRarity"                    "common"
+		"ItemSlot"                      "mainhand"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_min"		"10"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_damage_max"		"20"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_reduce_min"		"-15"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"move_speed_reduce_max"		"-15"
+			}
+		}
+	}
+}
