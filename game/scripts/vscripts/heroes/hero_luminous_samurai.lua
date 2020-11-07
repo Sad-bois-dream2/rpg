@@ -1266,8 +1266,8 @@ end
 
 --------------------------------------------------------------------------------
 
-function modifier_luminous_samurai_judgment_of_light_jump:GetHolyDamageBonus()
-    return self.ability.buffHolyDmg
+function modifier_luminous_samurai_light_iai_giri_buff:GetHolyDamageBonus()
+    return self.ability.buffHolyDmg / 100
 end
 
 --------------------------------------------------------------------------------
@@ -1280,11 +1280,12 @@ function modifier_luminous_samurai_light_iai_giri_buff:OnTakeDamage(damageTable)
 
         local convertedDamage = damageTable.damage * modifier.ability.buffHolyConversion / 100
         damageTable.damage = damageTable.damage - convertedDamage
+        if (damageTable.crit) then convertedDamage = convertedDamage * damageTable.crit end
         GameMode:DamageUnit({
             caster = damageTable.attacker,
             target = damageTable.victim,
             ability = damageTable.ability, 
-            damage = convertedDamage,
+            damage = convertedDamage 
             holydmg = true
         }) 
         return damageTable
@@ -1380,7 +1381,9 @@ function luminous_samurai_light_iai_giri:OnUpgrade()
     self.buffDuration = self:GetSpecialValueFor("buff_duration")
     self.buffHolyConversion = self:GetSpecialValueFor("buff_holy_conversion")
     self.buffHolyDmg = self:GetSpecialValueFor("buff_holy_dmg")
-    self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_light_iai_giri", {})
+    if (not self.caster:HasModifier("modifier_luminous_samurai_light_iai_giri")) 
+        then self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_light_iai_giri", {}) 
+    end
 
 end
 

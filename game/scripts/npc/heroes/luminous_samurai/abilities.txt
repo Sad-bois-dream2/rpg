@@ -444,7 +444,7 @@
 			"14"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"buff_auto_holy_dmg"	"0 0 0 50"
+				"buff_holy_conversion"	"0 0 0 50"
 			}
 			"15"
 			{
