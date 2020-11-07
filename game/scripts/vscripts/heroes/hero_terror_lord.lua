@@ -1,6 +1,6 @@
 local LinkedModifiers = {}
--- terror_lord_malicious_flames modifiers
-modifier_terror_lord_malicious_flames = class({
+-- terror_lord_malicious_flames
+modifier_terror_lord_malicious_flames_dot = class({
     IsDebuff = function(self)
         return true
     end,
@@ -16,91 +16,84 @@ modifier_terror_lord_malicious_flames = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return terror_lord_malicious_flames:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
-        return "particles/units/terror_lord/malicious_flames/malicious_flames.vpcf"
+        return "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
     end
 })
 
-function modifier_terror_lord_malicious_flames:OnCreated()
+function modifier_terror_lord_malicious_flames_dot:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self:GetCaster()
-    self.target = self:GetParent()
-    self.damage = Units:GetAttackDamage(self.caster) * (self.ability:GetSpecialValueFor("damage") / 100)
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    self.damageTable = {
+        caster = self:GetCaster(),
+        target = self:GetParent(),
+        ability = self.ability,
+        damage = self.damage,
+        infernodmg = true,
+        dot = true
+    }
+    self:StartIntervalThink(self.ability.tick)
 end
 
-function modifier_terror_lord_malicious_flames:GetIgnoreAggroTarget()
-    return self.caster
-end
-
-function modifier_terror_lord_malicious_flames:OnIntervalThink()
+function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.target
-    damageTable.ability = self.ability
-    damageTable.damage = self.damage
-    damageTable.infernodmg = true
-    damageTable.dot = true
-    GameMode:DamageUnit(damageTable)
+    self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.damage
+    GameMode:DamageUnit(self.damageTable)
 end
 
-LinkedModifiers["modifier_terror_lord_malicious_flames"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_terror_lord_malicious_flames_dot"] = LUA_MODIFIER_MOTION_NONE
 
--- terror_lord_malicious_flames
 terror_lord_malicious_flames = class({
     GetAbilityTextureName = function(self)
         return "terror_lord_malicious_flames"
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("radius") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
+        end
+        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
     end
 })
 
-function terror_lord_malicious_flames:GetAOERadius()
-    return self:GetSpecialValueFor("radius")
+function terror_lord_malicious_flames:OnUpgrade()
+    self.tick = self:GetSpecialValueFor("tick")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.duration = self:GetSpecialValueFor("duration")
 end
 
-function terror_lord_malicious_flames:GetBehavior()
-    if (self:GetLevel() > 3) then
-        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
-    end
-    return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
-end
-
-function terror_lord_malicious_flames:OnSpellStart(unit, special_cast)
+function terror_lord_malicious_flames:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
-    local duration = self:GetSpecialValueFor("duration")
-    EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
-    local modifierTable = {}
-    if (self:GetLevel() > 3) then
+    local modifierTable = {
+        ability = self,
+        target = target,
+        caster = caster,
+        modifier_name = "modifier_terror_lord_malicious_flames_dot",
+        duration = self.duration
+    }
+    if (self.radius > 0) then
         local targetPosition = target:GetAbsOrigin()
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 targetPosition,
                 nil,
-                self:GetSpecialValueFor("radius"),
+                self.radius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
                 DOTA_UNIT_TARGET_ALL,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            modifierTable = {}
-            modifierTable.ability = self
             modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_terror_lord_malicious_flames"
-            modifierTable.duration = duration
             GameMode:ApplyDebuff(modifierTable)
         end
         local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
@@ -144,20 +137,12 @@ function terror_lord_malicious_flames:OnSpellStart(unit, special_cast)
             ParticleManager:DestroyParticle(pidx6, false)
             ParticleManager:ReleaseParticleIndex(pidx6)
         end)
-        return
-    end
-    modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_terror_lord_malicious_flames"
-    modifierTable.duration = duration
-    GameMode:ApplyDebuff(modifierTable)
-    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, modifierTable.target)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
+    else
+        GameMode:ApplyDebuff(modifierTable)
+        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
         ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+    end
+    EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
 end
 
 -- terror_lord_mighty_defiance modifiers
