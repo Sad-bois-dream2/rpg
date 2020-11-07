@@ -1,4 +1,5 @@
 var dropContainer;
+var ItemsDatabase = GameUI.CustomUIConfig().ItemsDatabase;
 
 function GetHEXPlayerColor(playerId) {
 	var playerColor = Players.GetPlayerColor(playerId).toString(16);
@@ -10,12 +11,15 @@ function OnItemDrop(event) {
 	itemDropPanel.BLoadLayout("file://{resources}/layout/custom_game/windows/droplist/droplist_item.xml", false, false);
 	var itemIcon = itemDropPanel.FindChildTraverse('DropItemIcon');
     itemIcon.itemname = event.item;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerIcon').heroname = event.hero;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerLabel').text = "<font color='" + GetHEXPlayerColor(event.player_id) + "'>" + Players.GetPlayerName(event.player_id) + "</font>";
+    itemDropPanel.FindChildTraverse('ItemOwnerIcon').heroname = event.hero;
+    itemDropPanel.FindChildTraverse('ItemOwnerLabel').text = $.Localize("DOTA_DropList_FoundByPlayer").replace("%PLAYER_NAME%", "<font color='" + GetHEXPlayerColor(event.player_id) + "'>" + Players.GetPlayerName(event.player_id) + "</font>");
+    itemDropPanel.FindChildTraverse('ItemNameLabel').text = $.Localize("#DOTA_Tooltip_Ability_"+event.item);
+	var itemDesiredSlot = ItemsDatabase.GetItemSlot(event.item);
+	var itemRarity = ItemsDatabase.GetItemRarity(event.item);
+    itemDropPanel.FindChildTraverse('ItemRarityLabel').text = ItemsDatabase.GetItemRarityName(itemRarity);
+    itemDropPanel.FindChildTraverse('ItemTypeLabel').text = ItemsDatabase.GetItemSlotName(itemDesiredSlot);
     itemDropPanel.Data().itemName = event.item;
-    $.Msg(event.stats);
     itemDropPanel.Data().itemStats = JSON.parse(event.stats);
-    $.Msg(itemDropPanel.Data().itemStats);
     dropContainer.MoveChildBefore(itemDropPanel, dropContainer.GetChild(0));
 }
 

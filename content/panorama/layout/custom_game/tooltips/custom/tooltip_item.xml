@@ -21,8 +21,8 @@
                 <Label id="ItemTooltipTypeLabel" html="true" class="ItemTooltipTypeLabel" text="Item type"/>
             </Panel>
             <Label id="ItemTooltipQualityLabel" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%"/>
-            <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description"/>
             <Panel id="ItemTooltipStatsContainer" class="ItemTooltipStatsContainer"/>
+            <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description"/>
         </Panel>
     </Panel>
 </root>

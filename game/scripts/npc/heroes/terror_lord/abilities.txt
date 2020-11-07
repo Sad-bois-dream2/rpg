@@ -24,7 +24,7 @@
         "AbilityCastPoint"				"0.6"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"35"
+		"AbilityCooldown"				"20 15 10 10"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -37,29 +37,39 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"damage"				"15 20 25 30"
+				"damage"				"40 50 60 70"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"radius"				"0 0 0 300"
+				"radius"				"0 500 500 500"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"duration"				"3"
+				"duration"				"5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
 				"tick"				"1"
 			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"spread_radius"				"0 0 250 250"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"cdr_flat_per_damage"				"0 0 0 1"
+			}
 		}
 		"precache"
 		{
 			"particle" "particles/units/terror_lord/malicious_flames/malicious_flames.vpcf"
-			"particle" "particles/units/terror_lord/malicious_flames/malicious_impact.vpcf"
-			"soundfile" "soundevents/game_sounds_heroes/game_sounds_ogre_magi.vsndevts"
+			"particle" "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
+			"soundfile" "sounds/weapons/hero/earthshaker/damage_summary.vsnd"
 		}
 	}
 	//=================================================================================================================

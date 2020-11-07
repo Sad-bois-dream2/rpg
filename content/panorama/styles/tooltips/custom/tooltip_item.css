@@ -33,7 +33,7 @@
 	letter-spacing: 1px;
 	color: white;
 	font-weight: bold;
-	font-family: platformfont;
+	font-family: defaultFont;
 	text-transform: uppercase;
 }
 
@@ -57,6 +57,7 @@
 {
 	width: fill-parent-flow(1.0);
 	flow-children: right;
+	margin-bottom: 5px;
 }
 
 .ItemTooltipStatsContainer
@@ -70,29 +71,31 @@
 {
 	width: fill-parent-flow(1.0);
 	text-align: left;
-	vertical-align: center;
-	horizontal-align: left;
-	overflow: clip squish;
-	height: 20px;
+	overflow: clip clip;
 	color: white;
 	font-size: 16px;
-	font-family: platformfont;
-	margin-bottom: 2px;
+	font-family: defaultFont;
+	letter-spacing: 0px;
+}
+
+.ItemTooltipStatsValue {
+}
+
+.ItemTooltipStatsText {
+}
+
+.ItemTooltipStatsSign {
+	letter-spacing: 0px;
 }
 
 .ItemTooltipRarityLabel
 {
 	width: fill-parent-flow(1.0);
 	overflow: clip squish;
-	height: 20px;
 	color: grey;
 	font-size: 16px;
-	font-family: platformfont;
-	vertical-align: center;
-	horizontal-align: left;
+	font-family: defaultFont;
 	text-align: left;
-	margin-top: 1px;
-    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .ItemTooltipTypeLabel
@@ -100,11 +103,8 @@
 	width: fill-parent-flow(1.0);
 	color: grey;
 	font-size: 16px;
-	font-family: platformfont;
-	vertical-align: center;
-	horizontal-align: right;
+	font-family: defaultFont;
 	text-align: right;
-	margin-right: 2px;
 }
 
 .ItemTooltipLabel
@@ -112,7 +112,7 @@
 	width: fill-parent-flow(1.0);
 	color: white;
 	font-size: 16px;
-	font-family: platformfont;
+	font-family: defaultFont;
 	horizontal-align: center;
 	vertical-align: center;
 	margin-top: 5px;
@@ -123,7 +123,7 @@
 	width: fill-parent-flow(1.0);
 	color: white;
 	font-size: 16px;
-	font-family: platformfont;
+	font-family: defaultFont;
 	horizontal-align: center;
 	vertical-align: center;
 	text-align: left;

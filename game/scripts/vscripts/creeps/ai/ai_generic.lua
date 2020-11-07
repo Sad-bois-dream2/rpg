@@ -34,7 +34,7 @@ function Think()
         for i = 0, abiltiesCount do
             local ability = thisEntity:GetAbilityByIndex(i)
             if (ability and ability:IsCooldownReady() and ability:IsFullyCastable()) then
-                local behavior = ability:GetBehavior()
+                local behavior = ability:GetBehaviorInt()
                 local isPassive = (bit.band(behavior, DOTA_ABILITY_BEHAVIOR_PASSIVE) == DOTA_ABILITY_BEHAVIOR_PASSIVE)
                 if (not isPassive) then
                     local isNoTarget = (bit.band(behavior, DOTA_ABILITY_BEHAVIOR_NO_TARGET) == DOTA_ABILITY_BEHAVIOR_NO_TARGET)
@@ -61,7 +61,7 @@ function Think()
         for i = 0, abiltiesCount do
             local ability = thisEntity:GetAbilityByIndex(i)
             if (ability and ability:IsCooldownReady()) then
-                local behavior = ability:GetBehavior()
+                local behavior = ability:GetBehaviorInt()
                 local isPassive = (bit.band(behavior, DOTA_ABILITY_BEHAVIOR_PASSIVE) == DOTA_ABILITY_BEHAVIOR_PASSIVE)
                 local abilityCooldown = ability:GetCooldown(ability:GetLevel())
                 if (abilityCooldown > 0 and not isPassive and ability ~= thisEntity.ai.castedAbility) then
