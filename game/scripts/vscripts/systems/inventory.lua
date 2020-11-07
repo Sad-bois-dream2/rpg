@@ -350,7 +350,7 @@ function Inventory:GetItemsByRarity(rarity)
     end
     for itemName, itemData in pairs(Inventory.itemsData) do
         if (itemData.rarity == rarity) then
-            table.insert(result, { name = itemName, slot = itemData.slot, rarity = itemData.rarity, stats = itemData.stats, difficulty = itemData.difficulty })
+            table.insert(result, { name = itemName, slot = itemData.slot, rarity = itemData.rarity, stats = itemData.stats})
         end
     end
     return result
@@ -359,23 +359,24 @@ end
 ---@param item string
 ---@param difficulty number
 ---@return number
-function Inventory:GenerateStatsForItem(item, difficulty)
+function Inventory:GenerateStatsForItem(item, difficultyWhereDropped, itemDifficulty)
     local result = {}
-    difficulty = tonumber(difficulty)
-    if (not item or not Inventory.itemsData[item] or not difficulty) then
+    difficultyWhereDropped = tonumber(difficultyWhereDropped)
+    if (not item or not Inventory.itemsData[item] or not difficultyWhereDropped) then
         DebugPrint("[INVENTORY] Unable to generate stats for " .. tostring(item) .. ". Wtf?")
         DebugPrint("item", item)
         DebugPrint("Inventory.itemsData[item]", Inventory.itemsData[item])
-        DebugPrint("difficulty", difficulty)
+        DebugPrint("difficulty", difficultyWhereDropped)
         return result
     end
     local itemStats = Inventory:GetPossibleItemStats(item)
     if (not itemStats) then
         return result
     end
-    local itemDifficulty = Inventory:GetItemDifficulty(item)
+
+    local itemDifficulty = tonumber(itemDifficulty)
     local minRoll = 0
-    if (difficulty > itemDifficulty or math.abs(difficulty - itemDifficulty) < 0.01) then
+    if (itemDifficulty and itemDifficulty > 0 and difficultyWhereDropped > itemDifficulty or math.abs(difficultyWhereDropped - itemDifficulty) < 0.01) then
         minRoll = 0.5
     end
     for statName, statValues in pairs(itemStats) do
@@ -557,8 +558,8 @@ end
 ---@param itemName string
 ---@param itemRarity number
 ---@param itemSlot number
-function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficulty)
-    if (itemName and itemSlot and itemRarity and itemDifficulty) then
+function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
+    if (itemName and itemSlot and itemRarity) then
         if (not type(itemName) == "string" or string.len(itemName) == 0) then
             DebugPrint("[INVENTORY] Item name can't be empty and must be string.")
             return
@@ -577,10 +578,6 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
             DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " with rarity " .. tostring(itemRarity) .. " (unknown rarity).")
             return
         end
-        if (itemDifficulty < 0) then
-            DebugPrint("[INVENTORY] Bad attempt to register item \"" .. tostring(itemName) .. "\" for slot " .. tostring(itemSlot) .. " with rarity " .. tostring(itemRarity) .. " (item difficulty can't be nil or negative).")
-            return
-        end
         local itemStats = {}
         if (Inventory.itemsKeyValues[itemName] and Inventory.itemsKeyValues[itemName]["AbilitySpecial"]) then
             local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], itemName)
@@ -593,22 +590,13 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot, itemDifficul
                 end
             end
         end
-        Inventory.itemsData[itemName] = { slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = itemDifficulty }
+        Inventory.itemsData[itemName] = { slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = 1 }
     else
-        DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)");
-        DebugPrint("itemName", itemName);
-        DebugPrint("itemRarity", itemRarity);
-        DebugPrint("itemSlot", itemSlot);
-        DebugPrint("itemDifficulty", itemDifficulty);
+        DebugPrint("[INVENTORY] Bad attempt to add item (something is nil)")
+        DebugPrint("itemName", itemName)
+        DebugPrint("itemRarity", itemRarity)
+        DebugPrint("itemSlot", itemSlot)
     end
-end
-
-function Inventory:GetItemDifficulty(item)
-    local result = 0
-    if (not item or not Inventory.itemsData[item]) then
-        return result
-    end
-    return Inventory.itemsData[item].difficulty
 end
 
 function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)

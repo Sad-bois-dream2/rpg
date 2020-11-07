@@ -97,7 +97,7 @@ end
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)
     local baseDropChance = 35
     local maxDropChance = 70
-    return math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / Enemies.DIFFICULTY_MAX)), maxDropChance)
+    return math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / Difficulty.DIFFICULTY_MAX)), maxDropChance)
 end
 
 function Enemies:BuildDropTable(enemy, difficulty)
@@ -117,7 +117,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local itemsPerDrop = 1
     local dropChanceFactor = Enemies.dropChanceFactor
     local itemsTable = {}
-    table.insert(itemsTable, Inventory.rarity.common, { tier = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100 })
+    table.insert(itemsTable, Inventory.rarity.common, { items = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100, itemsDifficulty = 1 })
     --[[if (difficulty > Difficulty.DIFFICULTY1) then
         table.insert(itemsTable, Inventory.rarity.uncommon, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uncommon), chance = 60 })
         print("Insert un")
@@ -132,7 +132,7 @@ function Enemies:BuildDropTable(enemy, difficulty)
                 break
             end
             if (itemsTable[rarity] and RollPercentage(itemsTable[rarity].chance)) then
-                table.insert(dropTable, itemsTable[rarity].tier[math.random(1, #itemsTable[rarity].tier)])
+                table.insert(dropTable, { item = itemsTable[rarity].items[math.random(1, #itemsTable[rarity].items)], difficulty = itemsTable[rarity].itemsDifficulty})
             end
         end
     end
@@ -177,13 +177,13 @@ function Enemies:GetItemDropProjectileIndexByRarity(rarity)
     return 0
 end
 
-function Enemies:LaunchItem(itemData)
+function Enemies:LaunchItem(itemData, difficultyWhereDropped)
     local pidx
     Timers:CreateTimer(itemData.delay, function()
         if (itemData.launched) then
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            local createdItem, createdItemEntity = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName, Inventory:GenerateStatsForItem(itemData.itemName, itemData.difficulty))
+            local createdItem, createdItemEntity = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName, Inventory:GenerateStatsForItem(itemData.itemName, difficultyWhereDropped, itemData.difficulty))
             CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(Inventory:GetItemEntityStats(createdItemEntity)) })
             EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
@@ -205,21 +205,22 @@ function Enemies:DropItems(enemy)
     end
     local difficulty = Difficulty:GetValue()
     local travelTime = 1.25
+    local delay = 0
     for _, hero in pairs(HeroList:GetAllHeroes()) do
-        local delay = 0
         local dropTable = Enemies:BuildDropTable(enemy, difficulty)
-        for _, item in pairs(dropTable) do
+        for _, itemEntry in pairs(dropTable) do
             local itemData = {}
             itemData.hero = hero
-            itemData.itemName = item.name
-            itemData.itemRarity = item.rarity
+            itemData.itemName = itemEntry.item.name
+            itemData.itemRarity = itemEntry.item.rarity
             itemData.launchPosition = enemy:GetAbsOrigin()
             itemData.travelTime = travelTime
             itemData.delay = delay
-            itemData.difficulty = difficulty
-            Enemies:LaunchItem(itemData)
+            itemData.itemDifficulty = itemEntry.difficulty
+            Enemies:LaunchItem(itemData, difficulty)
             delay = delay + 0.5
         end
+        delay = 0
     end
 end
 
