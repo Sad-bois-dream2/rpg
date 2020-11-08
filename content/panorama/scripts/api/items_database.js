@@ -166,6 +166,25 @@ ItemsDatabase.GetItemSlotName = function(slot) {
 	}
 }
 
+ItemsDatabase.GetItemSetName = function(itemname) {
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].item == itemname && ItemsDatabase.data[i].setName) {
+			    return ItemsDatabase.data[i].setName;
+		}
+	}
+	return "none";
+}
+
+ItemsDatabase.GetItemsInSet = function(setname) {
+    var itemsInSet = [];
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].setName && ItemsDatabase.data[i].setName == setname) {
+		    itemsInSet.push(ItemsDatabase.data[i].item)
+		}
+	}
+	return itemsInSet;
+}
+
 ItemsDatabase.GetItemRarity = function(itemname) {
 	for(var i = 0; i < ItemsDatabase.data.length; i++) {
 		if(ItemsDatabase.data[i].item == itemname) {

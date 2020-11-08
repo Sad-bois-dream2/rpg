@@ -327,6 +327,8 @@ function Inventory:SetupForHero(hero)
             hero.inventory.equipped_items[i].name = ""
         end
         Inventory:AddItem(hero, "item_two_handed_sword")
+        Inventory:AddItem(hero, "item_two_handed_sword_2")
+        Inventory:AddItem(hero, "item_two_handed_sword_3")
     end
 end
 
@@ -354,18 +356,27 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
             return
         end
         local itemStats = {}
-        if (Inventory.itemsKeyValues[itemName] and Inventory.itemsKeyValues[itemName]["AbilitySpecial"]) then
-            local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], itemName)
-            for _, stat in pairs(itemStatsNames) do
-                local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], stat, itemName)
-                if (statEntry) then
-                    itemStats[stat.name] = statEntry
-                else
-                    DebugPrint("[INVENTORY] Can't find min and max values for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
+        local itemSetName = "none"
+        if (Inventory.itemsKeyValues[itemName]) then
+            if(Inventory.itemsKeyValues[itemName]["AbilitySpecial"]) then
+                local itemStatsNames = Inventory:GetItemStatsFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], itemName)
+                for _, stat in pairs(itemStatsNames) do
+                    local statEntry = Inventory:FindStatValuesFromKeyValues(Inventory.itemsKeyValues[itemName]["AbilitySpecial"], stat, itemName)
+                    if (statEntry) then
+                        itemStats[stat.name] = statEntry
+                    else
+                        DebugPrint("[INVENTORY] Can't find min and max values for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
+                    end
                 end
+            end
+            if(Inventory.itemsKeyValues[itemName]["ItemSetName"]) then
+                itemSetName = Inventory.itemsKeyValues[itemName]["ItemSetName"]
             end
         end
         Inventory.itemsData[itemName] = { slot = itemSlot, rarity = itemRarity, stats = itemStats, difficulty = 1 }
+        if(itemSetName ~= "none") then
+            Inventory.itemsData[itemName].setName = itemSetName
+        end
     else
         DebugPrint("[INVENTORY] Bad attempt to register item (something is nil)")
         DebugPrint("itemName", itemName)
@@ -442,7 +453,7 @@ function Inventory:GenerateAndSendToPlayerInventoryItemsDataTable(player)
             itemsData = {}
             currentItem = 0
         end
-        table.insert(itemsData, { item = itemName, slot = data.slot, rarity = data.rarity, stats = data.stats })
+        table.insert(itemsData, { item = itemName, slot = data.slot, rarity = data.rarity, stats = data.stats, setName = data.setName })
         currentItem = currentItem + 1
     end
     if (#itemsData > 0) then
@@ -760,7 +771,7 @@ function Inventory:LoadItemsFromSaveData(playerHero, itemData)
     end
     for _, itemEntry in pairs(itemData.inventory) do
         if (itemEntry.name ~= "" and Inventory:IsItemNameValid(itemEntry.name) and itemEntry.slot ~= "unknown") then
-            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1)
+            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1, 1)
             for _, itemStatEntry in pairs(itemStats) do
                 for _, loadedItemStatEntry in pairs(itemEntry.stats) do
                     if (itemStatEntry.name == loadedItemStatEntry.name) then
@@ -778,7 +789,7 @@ function Inventory:LoadItemsFromSaveData(playerHero, itemData)
     end
     for _, itemEntry in pairs(itemData.equipped) do
         if (itemEntry.name ~= "" and Inventory:IsItemNameValid(itemEntry.name) and itemEntry.slot ~= "unknown") then
-            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1)
+            local itemStats = Inventory:GenerateStatsForItem(itemEntry.name, 1, 1)
             for _, itemStatEntry in pairs(itemStats) do
                 for _, loadedItemStatEntry in pairs(itemEntry.stats) do
                     if (itemStatEntry.name == loadedItemStatEntry.name) then

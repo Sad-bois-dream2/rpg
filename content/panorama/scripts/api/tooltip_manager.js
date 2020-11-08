@@ -12,6 +12,9 @@ var TOOLTIP_DESCRIPTION_LABEL = 5;
 var TOOLTIP_QUALITY_LABEL = 6;
 var TOOLTIP_STATS_CONTAINER = 7;
 var TOOLTIP_STATS_LABELS = 8;
+var TOOLTIP_SET_NAME_LABEL = 9;
+var TOOLTIP_SET_STATS_CONTAINER = 10;
+var TOOLTIP_SET_STATS_LABELS = 11;
 var initialStatsLabelsInTooltip = 10;
 
 TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
@@ -95,6 +98,22 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
 	for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
 		TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "collapse";
 	}
+	var itemSetName = ItemsDatabase.GetItemSetName(icon);
+	if(itemSetName != "none") {
+        var itemSetParts = ItemsDatabase.GetItemsInSet(itemSetName);
+	    var itemSetNameLabel = "<img class='SetIcon' src='s2r://panorama/images/hud/reborn/ult_ready_psd.vtex'>";
+	    itemSetNameLabel += " <span class='SetName'>" + $.Localize("#DOTA_Inventory_item_set").replace("%NAME%", $.Localize("#DOTA_Tooltip_" + itemSetName)) + "</span>";
+        itemSetNameLabel = itemSetNameLabel.replace("%CURRENTPARTS%", 0);
+        itemSetNameLabel = itemSetNameLabel.replace("%TOTALPARTS%", itemSetParts.length);
+        TooltipManager.itemTooltipContainer[TOOLTIP_SET_NAME_LABEL].text = itemSetNameLabel;
+        /*latestStatId = 0;
+        for(var i = 0; i < stats.length; i++) {
+            latestStatId++;
+        }
+        for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER].GetChildCount(); i++) {
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "collapse";
+        } */
+	}
 }
 
 function CreateItemTooltip() {
@@ -109,20 +128,26 @@ function CreateItemTooltip() {
         $("#ItemTooltipLabel"),
         $("#ItemTooltipQualityLabel"),
         $("#ItemTooltipStatsContainer"),
-        []];
+        [],
+        $("#ItemTooltipSetLabel"),
+        $("#ItemTooltipSetStatsContainer"),
+        []
+        ];
+        var TOOLTIP_SET_STATS_LABELS = 11;
         GameUI.CustomUIConfig().TooltipManager.itemTooltipContainer = itemTooltip;
         GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized = true;
         for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
-            CreateItemStatsLabel();
+            CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS]);
+            CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
         }
     }
 }
 
-function CreateItemStatsLabel() {
-    var statsLabel = $.CreatePanel("Label", TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER], "");
+function CreateItemStatsLabel(parent, container) {
+    var statsLabel = $.CreatePanel("Label", parent, "");
     statsLabel.html = true;
     statsLabel.style.visibility = "collapse";
-    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS].push(statsLabel);
+    container.push(statsLabel);
 }
 
 (function() {
