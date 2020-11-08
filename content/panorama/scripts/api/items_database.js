@@ -75,7 +75,52 @@ ItemsDatabase.GetItemRarityName = function(rarity) {
 		default:
 			return "Unknown";
 	}
+}
 
+ItemsDatabase.GetItemRarityColor = function(rarity) {
+	switch(rarity) {
+        case ITEM_RARITY_COMMON:
+			return "#b0c3d9";
+			break;
+        case ITEM_RARITY_UNCOMMON:
+			return "#5e98d9";
+			break;
+        case ITEM_RARITY_RARE:
+			return "#d32ce6";
+			break;
+        case ITEM_RARITY_UNIQUE_RARE:
+			return "#d32ce6";
+			break;
+        case ITEM_RARITY_LEGENDARY:
+			return "#d37818";
+			break;
+        case ITEM_RARITY_UNIQUE_LEGENDARY:
+			return "#d37818";
+			break;
+        case ITEM_RARITY_CURSED_LEGENDARY:
+			return "#a41818";
+			break;
+        case ITEM_RARITY_ANCIENT:
+			return "#0ec1e7";
+			break;
+        case ITEM_RARITY_UNIQUE_ANCIENT:
+			return "#0ec1e7";
+			break;
+        case ITEM_RARITY_CURSED_ANCIENT:
+			return "#a41818";
+			break;
+        case ITEM_RARITY_IMMORTAL:
+			return "#d5a336";
+			break;
+        case ITEM_RARITY_UNIQUE_IMMORTAL:
+			return "#d5a336";
+			break;
+        case ITEM_RARITY_CURSED_IMMORTAL:
+			return "#a41818";
+			break;
+		default:
+			return "#b0c3d9";
+	}
 }
 
 ItemsDatabase.GetItemSlotName = function(slot) {

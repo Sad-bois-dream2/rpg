@@ -20,7 +20,7 @@
 	width: 77px;
 	height: 57px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-    border: 1px solid #ffffff09;
+    border: 1px solid white;
     box-shadow: 0px 0px 16px #000000aa;
 }
 
@@ -50,7 +50,7 @@
 	text-transform: uppercase;
 	horizontal-align: left;
 	vertical-align: center;
-    text-shadow: 0px 0px 2px 4 #00000088;
+    text-shadow: 2px 2px 0px 1.5 #00000090;
 }
 
 .ItemTooltipInfoContainer
@@ -72,16 +72,23 @@
 	width: fill-parent-flow(1.0);
 	text-align: left;
 	overflow: clip clip;
-	color: white;
 	font-size: 16px;
 	font-family: defaultFont;
 	letter-spacing: 0px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+    color: white;
 }
 
 .ItemTooltipStatsValue {
+    color: white;
+    font-weight: bold;
+    font-family: monospaceNumbersFont;
+    text-shadow: 2px 2px 0px 1.0 #00000090;
 }
 
 .ItemTooltipStatsText {
+
 }
 
 .ItemTooltipStatsSign {
@@ -92,7 +99,7 @@
 {
 	width: fill-parent-flow(1.0);
 	overflow: clip squish;
-	color: grey;
+	color: white;
 	font-size: 16px;
 	font-family: defaultFont;
 	text-align: left;
@@ -101,7 +108,7 @@
 .ItemTooltipTypeLabel
 {
 	width: fill-parent-flow(1.0);
-	color: grey;
+	color: white;
 	font-size: 16px;
 	font-family: defaultFont;
 	text-align: right;
@@ -110,7 +117,7 @@
 .ItemTooltipLabel
 {
 	width: fill-parent-flow(1.0);
-	color: white;
+    color: white;
 	font-size: 16px;
 	font-family: defaultFont;
 	horizontal-align: center;
@@ -121,12 +128,20 @@
 .ItemTooltipQualityLabel
 {
 	width: fill-parent-flow(1.0);
-	color: white;
+    color: white;
 	font-size: 16px;
 	font-family: defaultFont;
 	horizontal-align: center;
 	vertical-align: center;
 	text-align: left;
+}
+
+.ItemTooltipQualityLabel .Value
+{
+    color: white;
+    font-weight: bold;
+    font-family: monospaceNumbersFont;
+    text-shadow: 2px 2px 0px 1.0 #00000090;
 }
 
 .ItemTooltipHeader

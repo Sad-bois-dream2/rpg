@@ -809,7 +809,7 @@
         "DOTA_Inventory_rarity_immortal"		"<font color='#d5a336'>Immortal</font>"
         "DOTA_Inventory_rarity_unique_immortal"		"<font color='#d5a336'>Unique Immortal</font>"
         "DOTA_Inventory_rarity_cursed_immortal"		"<font color='#a41818'>Cursed Immortal</font>"
-		"DOTA_Inventory_quality"		"Quality: %VALUE%%"
+		"DOTA_Inventory_quality"		"Quality: %VALUE%"
 		// Talent trees
 		"DOTA_TalentTree_Title"		"Talent tree"
 		"DOTA_TalentTree_Description"		"Manage your hero's talents here and create powerful builds.<br>Here you can Manage your hero talents and create any build that you want."

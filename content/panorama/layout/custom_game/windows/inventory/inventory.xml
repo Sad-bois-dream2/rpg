@@ -48,6 +48,7 @@
                                 <Label text="#DOTA_Inventory_slot_boots"/>
                             </Panel>
                         </Panel>
+
                         <Panel id="RightItemSlots" class="RightItemSlots">
                             <Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true"
                                    oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)"

@@ -19,11 +19,10 @@ TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
 	var itemNameLabel = $.Localize("#DOTA_Tooltip_Ability_"+itemName);
 	var itemDesiredSlot = ItemsDatabase.GetItemSlot(itemName);
 	var itemRarity = ItemsDatabase.GetItemRarity(itemName);
-	var itemRarityLabel = ItemsDatabase.GetItemRarityName(itemRarity);
 	var itemTypeLabel = ItemsDatabase.GetItemSlotName(itemDesiredSlot);
 	var itemDescriptionLabel = $.Localize("#DOTA_Tooltip_Ability_" + itemName + "_Description");
 	var itemQuality = ItemsDatabase.GetItemQuality(itemName, itemStats);
-	var itemQualityLabel = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", itemQuality);
+	var itemQualityLabel = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", "<span class='Value'>" + itemQuality + "%</span>");
 	var itemStatsCount = itemStats.length;
 	var missedLabels = itemStatsCount - TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount();
 	if(missedLabels > 0) {
@@ -34,7 +33,7 @@ TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
 	UpdateItemTooltip(
 	itemName,
 	itemNameLabel,
-	itemRarityLabel,
+	itemRarity,
 	itemTypeLabel,
 	itemDescriptionLabel,
 	itemQualityLabel,
@@ -49,9 +48,12 @@ TooltipManager.HideItemTooltip = function() {
 };
 
 function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats, x, y) {
+	var itemRarityColor = ItemsDatabase.GetItemRarityColor(rarity);
+	var itemRarityLabel = ItemsDatabase.GetItemRarityName(rarity);
     TooltipManager.itemTooltipContainer[TOOLTIP_IMAGE].itemname = icon;
 	TooltipManager.itemTooltipContainer[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
-	TooltipManager.itemTooltipContainer[TOOLTIP_RARITY_LABEL].text = rarity;
+	TooltipManager.itemTooltipContainer[TOOLTIP_NAME_LABEL].style.color = itemRarityColor;
+	TooltipManager.itemTooltipContainer[TOOLTIP_RARITY_LABEL].text = itemRarityLabel;
 	TooltipManager.itemTooltipContainer[TOOLTIP_TYPE_LABEL].text = type;
     if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
         TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
