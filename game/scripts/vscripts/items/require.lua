@@ -1,2 +1,2 @@
 local prefix = "items/"
-require(prefix.."item_two_handed_sword")
+require(prefix.."/common/item_two_handed_sword")

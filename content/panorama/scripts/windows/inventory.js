@@ -457,6 +457,17 @@ function OnUpdateInventorySlotRequest(event) {
 	}
 }
 
+var PlayerInventory = GameUI.CustomUIConfig().PlayerInventory;
+
+PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
+	for(var i = 0; i < inventoryEquippedSlots.length; i++) {
+		if(inventoryEquippedSlots[i][SLOT_ITEM_IMAGE].itemname == itemName && !inventoryEquippedSlots[i][SLOT_PANEL].BHasClass("empty")) {
+		    return true;
+		}
+	}
+	return false;
+};
+
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];
 	pageButtons = [$("#Page0Button"), $("#Page1Button"), $("#Page2Button")];

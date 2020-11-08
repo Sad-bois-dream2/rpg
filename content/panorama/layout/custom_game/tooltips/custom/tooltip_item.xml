@@ -23,8 +23,11 @@
             <Label id="ItemTooltipQualityLabel" class="ItemTooltipQualityLabel" html="true" text="Quality: 0%"/>
             <Panel id="ItemTooltipStatsContainer" class="ItemTooltipStatsContainer"/>
             <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Item description"/>
-            <Label id="ItemTooltipSetLabel" class="ItemTooltipSetLabel" html="true" text="Item set effects"/>
-            <Panel id="ItemTooltipSetStatsContainer" class="ItemTooltipStatsContainer"/>
+            <Panel id="ItemTooltipSetContainer">
+                <Label id="ItemTooltipSetNameLabel" class="ItemTooltipSetLabel" html="true" text="Item set effects"/>
+                <Panel id="ItemTooltipSetPartsContainer"/>
+                <Panel id="ItemTooltipSetStatsContainer"/>
+            </Panel>
         </Panel>
     </Panel>
 </root>

@@ -41,14 +41,14 @@
 		"ID"                            "10001"
 		"BaseClass"                     "item_datadriven"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"AbilityTextureName"            "item_helm_of_iron_will"
+		"AbilityTextureName"            "item_broadsword"
 		"ItemBaseLevel"                 "1"
 		"ItemPurchasable" 				"0"
 		"ItemSellable"					"0"
 		"ItemKillable"					"0"
 		"ItemDroppable" 				"0"
 		"ItemRarity"                    "ancient"
-		"ItemSlot"                      "mainhand"
+		"ItemSlot"                      "offhand"
         "ItemSetName"                   "modifier_set_swordsman_glory"
 		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
 		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
@@ -68,21 +68,21 @@
 			}
 		}
 	}
-	"item_two_handed_sword_3"
+	"item_helmet"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"                            "10002"
 		"BaseClass"                     "item_datadriven"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"AbilityTextureName"            "item_broadsword"
+		"AbilityTextureName"            "item_helm_of_iron_will"
 		"ItemBaseLevel"                 "1"
 		"ItemPurchasable" 				"0"
 		"ItemSellable"					"0"
 		"ItemKillable"					"0"
 		"ItemDroppable" 				"0"
 		"ItemRarity"                    "immortal"
-		"ItemSlot"                      "mainhand"
+		"ItemSlot"                      "helmet"
 		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
 		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
 		// Special

@@ -1,3 +1,5 @@
+LinkLuaModifier("modifier_inventory_item_two_handed_sword", "items/common/item_two_handed_sword", LUA_MODIFIER_MOTION_NONE)
+
 modifier_inventory_item_two_handed_sword = class({
     IsDebuff = function(self)
         return false
@@ -29,5 +31,3 @@ end
 function modifier_inventory_item_two_handed_sword:GetAttackDamageBonus()
     return self.data.attack_damage
 end
-
-LinkLuaModifier("modifier_inventory_item_two_handed_sword", "items/item", LUA_MODIFIER_MOTION_NONE)

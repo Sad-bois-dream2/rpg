@@ -328,7 +328,7 @@ function Inventory:SetupForHero(hero)
         end
         Inventory:AddItem(hero, "item_two_handed_sword")
         Inventory:AddItem(hero, "item_two_handed_sword_2")
-        Inventory:AddItem(hero, "item_two_handed_sword_3")
+        Inventory:AddItem(hero, "item_helmet")
     end
 end
 

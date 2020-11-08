@@ -1,6 +1,7 @@
 .ItemTooltip
 {
 	width: 300px;
+	height: fit-children;
 	border: 1px solid gray;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
@@ -20,7 +21,7 @@
 	width: 77px;
 	height: 57px;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-    border: 1px solid white;
+	border: 1px solid #ffffff08;
     box-shadow: 0px 0px 16px #000000aa;
 }
 
@@ -40,8 +41,8 @@
 .ItemTooltipDescription
 {
 	margin: 5px;
-	margin-top: -2px;
-	padding-top: 0px;
+	margin-top: 1px;
+	margin-bottom: 1px;
 	flow-children: down;
 	height: fit-children;
 }
@@ -78,6 +79,10 @@
 	padding-left: 2px;
 	padding-bottom: 2px;
     color: white;
+}
+
+.ItemTooltipStatsContainer Label.last {
+	padding-bottom: 0px;
 }
 
 .ItemTooltipStatsValue {
@@ -155,11 +160,40 @@
 	margin-bottom: 0px;
 }
 
+#ItemTooltipSetContainer
+{
+    flow-children: down;
+}
+
+#ItemTooltipSetPartsContainer
+{
+    flow-children: down;
+    margin-left: 7px;
+}
+
+#ItemTooltipSetPartsContainer Label
+{
+	width: fill-parent-flow(1.0);
+    color: dimgray;
+	font-size: 16px;
+	font-family: defaultFont;
+	margin-top: 2px;
+	text-align: left;
+}
+
+#ItemTooltipSetPartsContainer Label.Equipped
+{
+	width: fill-parent-flow(1.0);
+    color: white;
+	font-size: 16px;
+	font-family: defaultFont;
+	margin-top: 2px;
+	text-align: left;
+}
+
 .ItemTooltipSetLabel
 {
 	width: fill-parent-flow(1.0);
-	height: fit-children;
-	height: 16px;
     color: white;
 	font-size: 16px;
 	font-family: defaultFont;
@@ -178,4 +212,22 @@
 .ItemTooltipSetLabel .SetName
 {
 
+}
+
+#ItemTooltipSetStatsContainer
+{
+    flow-children: down;
+}
+
+#ItemTooltipSetStatsContainer Label {
+	width: fill-parent-flow(1.0);
+    color: dimgray;
+	font-size: 16px;
+	font-family: defaultFont;
+	margin-top: 2px;
+	text-align: left;
+}
+
+#ItemTooltipSetStatsContainer Label.Enabled {
+    color: white;
 }
