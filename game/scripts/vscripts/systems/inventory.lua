@@ -256,8 +256,8 @@ function Inventory:SetItemInSlot(hero, item, is_equipped, slot, stats)
     end
     if (is_equipped == true) then
         local itemNameInSlot = Inventory:GetItemInSlot(hero, true, slot)
+        local oldItemSetName = Inventory:GetItemSetNameForItem(itemNameInSlot)
         if (item ~= itemNameInSlot) then
-            local oldItemSetName = Inventory:GetItemSetNameForItem(hero.inventory.equipped_items[slot].name)
             local oldItemSetPartsCount = Inventory:GetPlayerHeroEquippedSetItems(hero, oldItemSetName) - 1
             if (hero.inventory.setModifiers[oldItemSetName] and oldItemSetPartsCount < 1) then
                 hero.inventory.setModifiers[oldItemSetName]:Destroy()
@@ -284,21 +284,27 @@ function Inventory:SetItemInSlot(hero, item, is_equipped, slot, stats)
             modifierTable.duration = -1
             hero.inventory.equipped_items[slot].modifier = GameMode:ApplyBuff(modifierTable)
         end
-        local itemSetName = Inventory:GetItemSetNameForItem(item)
-        if (itemSetName ~= "none") then
-            local itemSetPartsCount = Inventory:GetPlayerHeroEquippedSetItems(hero, itemSetName)
-            if (not hero.inventory.setModifiers[itemSetName]) then
+        if (oldItemSetName ~= "none") then
+            local oldItemSetPartsCount = Inventory:GetPlayerHeroEquippedSetItems(hero, oldItemSetName)
+            if (hero.inventory.setModifiers[oldItemSetName]) then
+                hero.inventory.setModifiers[oldItemSetName]:SetStackCount(oldItemSetPartsCount)
+            end
+        end
+        local newItemSetName = Inventory:GetItemSetNameForItem(item)
+        if (newItemSetName ~= "none") then
+            local itemSetPartsCount = Inventory:GetPlayerHeroEquippedSetItems(hero, newItemSetName)
+            if (not hero.inventory.setModifiers[newItemSetName]) then
                 local modifierTable = {
                     ability = nil,
                     target = hero,
                     caster = hero,
-                    modifier_name = itemSetName,
+                    modifier_name = newItemSetName,
                     duration = -1,
                 }
-                hero.inventory.setModifiers[itemSetName] = GameMode:ApplyBuff(modifierTable)
+                hero.inventory.setModifiers[newItemSetName] = GameMode:ApplyBuff(modifierTable)
             end
-            if (hero.inventory.setModifiers[itemSetName]) then
-                hero.inventory.setModifiers[itemSetName]:SetStackCount(itemSetPartsCount)
+            if (hero.inventory.setModifiers[newItemSetName]) then
+                hero.inventory.setModifiers[newItemSetName]:SetStackCount(itemSetPartsCount)
             end
         end
     else
