@@ -118,8 +118,9 @@ function modifier_npc_dota_hero_drow_ranger_talent_38:OnAbilityFullyCast(params)
 
             for _, phantom in pairs(activePhantoms) do
 
-                local emp_explosion_effect = ParticleManager:CreateParticle("particles/units/heroes/hero_invoker/invoker_emp_explode.vpcf",  PATTACH_ABSORIGIN, phantom)
-                ParticleManager:SetParticleControl(emp_explosion_effect, 1, Vector(self.talent38_radius, 0, 0))
+                local emp_explosion_effect = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf",  PATTACH_ABSORIGIN, phantom)
+                ParticleManager:SetParticleControl(emp_explosion_effect, 2, Vector(self.talent38_radius, 0, 0))
+                ParticleManager:ReleaseParticleIndex(emp_explosion_effect)
                 phantom:EmitSound("Hero_Invoker.EMP.Discharge")
                 local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), phantom:GetAbsOrigin(), nil, self.talent38_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
                 for _, enemy in pairs(enemies) do
