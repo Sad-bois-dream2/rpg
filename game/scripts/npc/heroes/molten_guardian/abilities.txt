@@ -280,22 +280,7 @@
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_armor_reduction"				"0 0 0 5"
-			}
-			"11"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_maxhp"				"0 0 0 5"
-			}
-			"12"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_cap"				"0 0 0 10"
-			}
-			"13"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_duration"				"0 0 0 5"
+				"volcanic_blow_block_chance_multiplier"				"0 0 0 2"
 			}
 		}
 		"precache"
