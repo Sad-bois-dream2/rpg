@@ -971,10 +971,6 @@ function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetAttackD
     return self.ability.damageBonus
 end
 
-function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedPercentBonus()
-    return self.ability.msBonus
-end
-
 function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetSpellDamageBonus()
     return self.ability.spellDamageBonus
 end
