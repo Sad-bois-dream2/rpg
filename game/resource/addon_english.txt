@@ -326,7 +326,7 @@
 		"DOTA_Tooltip_Ability_light_cardinal_consecration_max_hp_burn"		"%MAX HEALTH TO SELF DAMAGE: "
 		// Terror Lord (Pit Lord)
 		"DOTA_Tooltip_Ability_terror_lord_malicious_flames"		"Malicious Flames"
-		"DOTA_Tooltip_Ability_terror_lord_malicious_flames_Description"		"Terror Lord covers an enemy with malicious inferno flames, which drains its sanity dealing <font color='#1f5b07'>Inferno</font> damage every second.\nRank 2 - Affect all enemies in a <font color='white'><b>500</b></font> radius around the target.\nRank 3 - When you cause damage by this ability spread it effect to all enemies in <font color='white'><b>250</b></font> radius around target still not affected by this ability effect.\nRank 4 - Every time you cause damage by this ability reduce its cooldown by <font color='white'><b>1</b></font> second."
+		"DOTA_Tooltip_Ability_terror_lord_malicious_flames_Description"		"Terror Lord covers an enemy with malicious inferno flames, which drains its sanity dealing <font color='#1f5b07'>Inferno</font> damage every second.\nRank 2: Affect all enemies in a <font color='white'><b>500</b></font> radius around the target.\nRank 3: When you cause damage by this ability spread it effect to all enemies in <font color='white'><b>250</b></font> radius around target still not affected by this ability effect.\nRank 4: Every time you cause damage by this ability reduce its cooldown by <font color='white'><b>1</b></font> second."
         "DOTA_Tooltip_Ability_terror_lord_malicious_flames_damage"		"%STRENGTH TO DAMAGE: "
         "DOTA_Tooltip_Ability_terror_lord_malicious_flames_duration"		"DURATION: "
 		"DOTA_Tooltip_modifier_terror_lord_malicious_flames_dot"		"Malicious Flames"
