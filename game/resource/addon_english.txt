@@ -1126,9 +1126,14 @@
         // Countless items
 
         "DOTA_Tooltip_Ability_item_two_handed_sword"      "First Sword"
-        "DOTA_Tooltip_Ability_item_two_handed_sword_2"      "Second Sword"
         "DOTA_Tooltip_Ability_item_two_handed_sword_Description"      "A common weapon for swordsmen and knights."
         "DOTA_Tooltip_Ability_item_two_handed_sword_attack_damage"      "Attack Damage"
+        "DOTA_Tooltip_Ability_item_two_handed_sword_2"      "Second Sword"
+        "DOTA_Tooltip_Ability_item_two_handed_sword_2_Description"      "A common weapon for swordsmen and knights."
+        "DOTA_Tooltip_Ability_item_two_handed_sword_2_attack_damage"      "Attack Damage"
+        "DOTA_Tooltip_Ability_item_helmet"      "Helmet"
+        "DOTA_Tooltip_Ability_item_helmet_Description"      "A special helmet."
+        "DOTA_Tooltip_Ability_item_helmet_armor"      "Armor"
         "DOTA_Tooltip_modifier_set_swordsman_glory"       "Swordsman's Glory"
         "DOTA_Tooltip_modifier_set_swordsman_glory_items1"       "+10 Agility"
         "DOTA_Tooltip_modifier_set_swordsman_glory_items2"       "Effect: You collected all items of this set. Well played!"
