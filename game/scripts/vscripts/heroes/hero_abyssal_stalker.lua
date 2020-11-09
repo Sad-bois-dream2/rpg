@@ -795,10 +795,8 @@ function modifier_abyssal_stalker_void_dust_buff:OnDestroy()
                 false)
         local particle = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf", PATTACH_ABSORIGIN, caster)
         ParticleManager:SetParticleControl(particle, 2, Vector(self.ability.aoeDamageRadius, 0, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(particle, false)
-            ParticleManager:ReleaseParticleIndex(particle)
-        end)
+        ParticleManager:ReleaseParticleIndex(particle)
+        EmitSoundOn("Hero_Riki.Smoke_Screen", caster)
         local damage = self.ability.aoeDamage * Units:GetAttackDamage(caster)
         for _, unit in pairs(units) do
             local modifierTable = {}
@@ -1109,11 +1107,11 @@ modifier_abyssal_stalker_void_shadow = class({
     end
 })
 
-function modifier_abyssal_stalker_void_dust_buff:GetStatusEffectName()
+function modifier_abyssal_stalker_void_shadow:GetStatusEffectName()
     return "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
 end
 
-function modifier_abyssal_stalker_void_dust_buff:StatusEffectPriority()
+function modifier_abyssal_stalker_void_shadow:StatusEffectPriority()
     return 5
 end
 

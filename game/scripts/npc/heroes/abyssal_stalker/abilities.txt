@@ -164,6 +164,7 @@
             "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
             "particle"  "particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_riki.vsndevts"
 		}
 	}
 	//=================================================================================================================
