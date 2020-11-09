@@ -280,7 +280,12 @@
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"volcanic_blow_block_chance_multiplier"				"0 0 0 2"
+				"armor_stacks_to_proc_stun_damage"				"0 0 0 10"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"armor_stacks_proc_max_hp_to_damage"				"0 0 0 25"
 			}
 		}
 		"precache"

@@ -336,10 +336,36 @@ function modifier_molten_guardian_lava_skin_armor_stacks:OnCreated(kv)
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
 end
 
 function modifier_molten_guardian_lava_skin_armor_stacks:GetArmorPercentBonus()
     return self.ability.armorStacksReduction * self:GetStackCount()
+end
+
+function modifier_molten_guardian_lava_skin_armor_stacks:OnPostModifierApplied(modifierTable)
+    local modifier = modifierTable.target:FindModifierByName("modifier_molten_guardian_lava_skin_armor_stacks")
+    if (not modifier or not modifier.ability) then
+        return modifierTable
+    end
+    if (modifier:GetStackCount() < modifier.ability.armorStacksToProcStunDamage) then
+        return modifierTable
+    end
+    local receivedModifierState = nil
+    if(self.CheckState) then
+        receivedModifierState = self:CheckState()
+    end
+    if (receivedModifierState and receivedModifierState[MODIFIER_STATE_STUNNED] == true and modifier.ability.armorStacksProcMaxHpToDamage and modifier.ability.armorStacksProcMaxHpToDamage > 0) then
+        local damageTable = {}
+        damageTable.damage = modifierTable.caster:GetMaxHealth() * modifier.ability.armorStacksProcMaxHpToDamage
+        damageTable.caster = modifierTable.caster
+        damageTable.target = modifierTable.target
+        damageTable.ability = modifier.ability
+        damageTable.firedmg = true
+        damageTable.single = true
+        GameMode:DamageUnit(damageTable)
+        modifier:Destroy()
+    end
 end
 
 LinkedModifiers["modifier_molten_guardian_lava_skin_armor_stacks"] = LUA_MODIFIER_MOTION_NONE
@@ -391,10 +417,7 @@ function modifier_molten_guardian_lava_skin_toggle:OnIntervalThink()
         return
     end
     local pidx = ParticleManager:CreateParticle("particles/units/molten_guardian/lava_skin/lava_skin_proc.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+    ParticleManager:ReleaseParticleIndex(pidx)
     self.caster:EmitSound("Hero_EmberSpirit.FlameGuard.Loop")
     local damage = self.caster:GetMaxHealth() * self.ability.damage
     local enemies = FindUnitsInRadius(self.casterTeam,
@@ -438,13 +461,6 @@ molten_guardian_lava_skin = class({
     GetCastRange = function(self)
         return self:GetSpecialValueFor("damage_radius")
     end,
-    GetBehavior = function(self)
-        if (self:GetSpecialValueFor("melt_stacks_cap") > 0) then
-            return DOTA_ABILITY_BEHAVIOR_TOGGLE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
-        else
-            return DOTA_ABILITY_BEHAVIOR_TOGGLE + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
-        end
-    end,
     GetIntrinsicModifierName = function(self)
         return "modifier_molten_guardian_lava_skin"
     end
@@ -460,10 +476,11 @@ function molten_guardian_lava_skin:OnUpgrade()
     self.armorStacksDuration = self:GetSpecialValueFor("armor_stacks_duration")
     self.fireResBonus = self:GetSpecialValueFor("fire_res_bonus") / 100
     self.hpRegBonus = self:GetSpecialValueFor("hpreg_bonus") / 100
-    self.volcanicBlowBlockChanceMultiplier = self:GetSpecialValueFor("volcanic_blow_block_chance_multiplier")
+    self.armorStacksToProcStunDamage = self:GetSpecialValueFor("armor_stacks_to_proc_stun_damage")
+    self.armorStacksProcMaxHpToDamage = self:GetSpecialValueFor("armor_stacks_proc_max_hp_to_damage") / 100
 end
 
-function molten_guardian_lava_skin:OnToggle(unit, special_cast)
+function molten_guardian_lava_skin:OnToggle()
     if not IsServer() then
         return
     end
@@ -477,8 +494,7 @@ function molten_guardian_lava_skin:OnToggle(unit, special_cast)
         modifierTable.modifier_name = "modifier_molten_guardian_lava_skin_toggle"
         modifierTable.duration = -1
         caster.molten_guardian_lava_skin.modifier = GameMode:ApplyBuff(modifierTable)
-        self:EndCooldown()
-        self:StartCooldown(self:GetCooldown(self:GetLevel()))
+        self:UseResources(true, true, true)
     else
         if (caster.molten_guardian_lava_skin.modifier ~= nil) then
             caster.molten_guardian_lava_skin.modifier:Destroy()
@@ -568,26 +584,20 @@ end
 
 function modifier_molten_guardian_volcanic_blow_block:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_molten_guardian_volcanic_blow_block")
-    if (modifier and damageTable.physdmg and modifier.ability and modifier.ability.blockChance > 0) then
-        local blockChance = modifier.ability.blockChance
-        if (modifier.lavaSkinAbility.volcanicBlowBlockChanceMultiplier and modifier.lavaSkinAbility.volcanicBlowBlockChanceMultiplier > 0) then
-            blockChance = blockChance * self.lavaSkinAbility.volcanicBlowBlockChanceMultiplier
+    if (modifier and damageTable.physdmg and modifier.ability and modifier.ability.blockChance > 0 and RollPercentage(modifier.ability.blockChance)) then
+        if (modifier.ability.bonusMaxHpPerBlock > 0) then
+            local modifierTable = {}
+            modifierTable.ability = modifier.ability
+            modifierTable.caster = damageTable.victim
+            modifierTable.target = damageTable.victim
+            modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_buff"
+            modifierTable.duration = modifier.ability.bonusMaxHpDuration
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyStackingBuff(modifierTable)
         end
-        if (RollPercentage(blockChance)) then
-            if (modifier.ability.bonusMaxHpPerBlock > 0) then
-                local modifierTable = {}
-                modifierTable.ability = modifier.ability
-                modifierTable.caster = damageTable.victim
-                modifierTable.target = damageTable.victim
-                modifierTable.modifier_name = "modifier_molten_guardian_volcanic_blow_buff"
-                modifierTable.duration = modifier.ability.bonusMaxHpDuration
-                modifierTable.stacks = 1
-                modifierTable.max_stacks = 99999
-                GameMode:ApplyStackingBuff(modifierTable)
-            end
-            damageTable.damage = 0
-            return damageTable
-        end
+        damageTable.damage = 0
+        return damageTable
     end
 end
 
@@ -1740,6 +1750,7 @@ if (IsServer() and not GameMode.MOLTEN_GUARDIAN_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_shields_up_channel, 'OnTakeDamage'))
     GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_spear_debuff, 'OnPostTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_molten_guardian_molten_fortress_second_thinker_buff, 'OnTakeDamage'))
+    GameMode:RegisterPostApplyModifierEventHandler(Dynamic_Wrap(modifier_molten_guardian_lava_skin_armor_stacks, 'OnPostModifierApplied'))
     GameMode:RegisterMinimumAbilityCooldown('molten_guardian_molten_fortress', 45)
     GameMode.MOLTEN_GUARDIAN_INIT = true
 end
