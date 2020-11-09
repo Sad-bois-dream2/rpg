@@ -311,38 +311,46 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    local stunModifierTable = {
+        ability = self,
+        target = nil,
+        caster = caster,
+        modifier_name = "modifier_stunned",
+        duration = self.stunDuration,
+    }
+    local damageTable = {
+        damage = damage,
+        caster = caster,
+        ability = self,
+        target = nil,
+        infernodmg = true,
+        aoe = true
+    }
+    local stacksModifierTable = {
+        caster = caster,
+        target = caster,
+        ability = self,
+        modifier_name = "modifier_catastrophe_demolisher_flaming_blast_stack",
+        duration = self.strStackDuration,
+        max_stacks = self.strStackCap,
+        stacks = 0
+    }
     for _, enemy in pairs(units) do
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = enemy
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = self.stunDuration
-        GameMode:ApplyDebuff(modifierTable)
-        local damageTable = {}
-        damageTable.damage = damage
-        damageTable.caster = caster
-        damageTable.ability = self
+        if (self:GetAutoCastState()) then
+            damageTable.target = enemy
+            GameMode:ApplyDebuff(stunModifierTable)
+        end
         damageTable.target = enemy
-        damageTable.infernodmg = true
-        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local stacksPerEnemy = self.strStacksPerCreep
-        if Enemies:IsBoss(enemy) then
+        if (Enemies:IsBoss(enemy)) then
             stacksPerEnemy = self.strStacksPerBoss
         elseif Enemies:IsElite(enemy) then
             stacksPerEnemy = self.strStacksPerElite
         end
         stacksPerEnemy = stacksPerEnemy + self.strStackBonus
-        local modifierTable = {}
-        modifierTable.caster = caster
-        modifierTable.target = caster
-        modifierTable.ability = self
-        modifierTable.modifier_name = "modifier_catastrophe_demolisher_flaming_blast_stack"
-        modifierTable.duration = self.strStackDuration
-        modifierTable.max_stacks = self.strStackCap
-        modifierTable.stacks = stacksPerEnemy
-        GameMode:ApplyStackingBuff(modifierTable)
+        stacksModifierTable.stacks = stacksPerEnemy
+        GameMode:ApplyStackingBuff(stacksModifierTable)
     end
     local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(particle, 1, impactPosition)
