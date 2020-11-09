@@ -2,6 +2,7 @@
     <scripts>
         <include src="file://{resources}/scripts/playertables/playertables_base.js"/>
         <include src="file://{resources}/scripts/api/items_database.js"/>
+        <include src="file://{resources}/scripts/api/player_inventory.js"/>
         <include src="file://{resources}/scripts/api/tooltip_manager.js"/>
     </scripts>
     <script>

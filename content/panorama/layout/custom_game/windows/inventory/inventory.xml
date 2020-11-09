@@ -48,6 +48,7 @@
                                 <Label text="#DOTA_Inventory_slot_boots"/>
                             </Panel>
                         </Panel>
+
                         <Panel id="RightItemSlots" class="RightItemSlots">
                             <Panel id="InventoryEquippedSlot5" class="InventoryEquippedSlot empty" draggable="true"
                                    oncontextmenu="OnRightClickOnInventoryEquippedSlot(5)"
@@ -94,6 +95,7 @@
                                 <Label text="#DOTA_Inventory_slot_helmet"/>
                             </Panel>
                         </Panel>
+
                         <Panel id="MiddleItemSlotsFromBottom" class="MiddleItemSlots FromBottom">
                             <Panel class="LeftRings">
                                 <Panel id="InventoryEquippedSlot9" class="InventoryEquippedSlot empty" draggable="true"
@@ -115,6 +117,7 @@
                                                itemname="item_belt_of_strength"/>
                                 <Label text="#DOTA_Inventory_slot_belt"/>
                             </Panel>
+
                             <Panel class="RightRings">
                                 <Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true"
                                        oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)"

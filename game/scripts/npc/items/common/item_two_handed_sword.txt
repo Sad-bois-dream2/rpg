@@ -15,6 +15,7 @@
 		"ItemDroppable" 				"0"
 		"ItemRarity"                    "common"
 		"ItemSlot"                      "mainhand"
+		"ItemSetName"                   "modifier_set_swordsman_glory"
 		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
 		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
 		// Special
@@ -31,15 +32,72 @@
 				"var_type"			"FIELD_INTEGER"
 				"attack_damage_max"		"20"
 			}
-			"03"
+		}
+	}
+	"item_two_handed_sword_2"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10001"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_broadsword"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"ItemRarity"                    "ancient"
+		"ItemSlot"                      "offhand"
+        "ItemSetName"                   "modifier_set_swordsman_glory"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"move_speed_reduce_min"		"-15"
+				"attack_damage_min"		"10"
 			}
-			"04"
+			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"move_speed_reduce_max"		"-15"
+				"attack_damage_max"		"20"
+			}
+		}
+	}
+	"item_helmet"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"                            "10002"
+		"BaseClass"                     "item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"            "item_helm_of_iron_will"
+		"ItemBaseLevel"                 "1"
+		"ItemPurchasable" 				"0"
+		"ItemSellable"					"0"
+		"ItemKillable"					"0"
+		"ItemDroppable" 				"0"
+		"ItemRarity"                    "immortal"
+		"ItemSlot"                      "helmet"
+		"Model"							"models/heroes/monkey_king/transform_invisiblebox.vmdl"
+		"Effect"						"particles/items/drop/item_common.vpcf" // item_common, item_uncommon, item_rare, item_legendary, item_ancient, item_immortal
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_min"		"1"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"armor_max"		"5"
 			}
 		}
 	}

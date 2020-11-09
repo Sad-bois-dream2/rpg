@@ -394,28 +394,6 @@ function HideItemTooltip() {
     TooltipManager.HideItemTooltip();
 }
 
-function ShowItemDropTooltip(name, stats) {
-	var position = GameUI.GetCursorPosition();
-	var itemIcon = name;
-	var itemName = $.Localize("#DOTA_Tooltip_Ability_"+name);
-	var itemDesiredSlot = GetInventoryItemSlot(name);
-	var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(name));
-	var itemType = GetInventoryItemSlotName(itemDesiredSlot);
-	var itemDescription = $.Localize("#DOTA_Tooltip_Ability_" + name + "_Description");
-	var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(name, stats));
-	var itemStatsCount = stats.length;
-	var missedLabels = itemStatsCount - tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount();
-	if(missedLabels > 0) {
-	    for(var i = 0; i < missedLabels; i++) {
-	        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-            statsLabel.html = true;
-            statsLabel.style.visibility = "collapse";
-            statsLabels.push(statsLabel);
-	    }
-	}
-	CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, stats, position[0], position[1]);
-}
-
 function CreateInventorySlots() {
 	var inventoryPanel = $("#InventoryContainer");
 	var inventorySlot;
@@ -432,6 +410,9 @@ function CreateInventorySlots() {
 			inventorySlot.Data().OnDragStart = OnInventorySlotDragStart;
 			inventorySlot.Data().OnDragEnd = OnInventorySlotDragEnd;
 			inventorySlots.push([inventorySlot, inventorySlotItemImage, []]);
+			if(j == 0) {
+		        inventorySlot.SetHasClass("first", true);
+			}
 		}
 		inventorySlot.SetHasClass("last", true);
 	}
@@ -475,6 +456,17 @@ function OnUpdateInventorySlotRequest(event) {
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
 	}
 }
+
+var PlayerInventory = GameUI.CustomUIConfig().PlayerInventory;
+
+PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
+	for(var i = 0; i < inventoryEquippedSlots.length; i++) {
+		if(inventoryEquippedSlots[i][SLOT_ITEM_IMAGE].itemname == itemName && !inventoryEquippedSlots[i][SLOT_PANEL].BHasClass("empty")) {
+		    return true;
+		}
+	}
+	return false;
+};
 
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];

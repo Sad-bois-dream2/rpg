@@ -399,6 +399,24 @@ if (IsServer()) then
                             return true
                         end
                     end
+                    local modifierStateTable = {}
+                    if(isStun == true) then
+                        modifierStateTable[MODIFIER_STATE_STUNNED] = true
+                    end
+                    if(isHex == true) then
+                        modifierStateTable[MODIFIER_STATE_HEXED] = true
+                    end
+                    if (isSilence == true) then
+                        modifierStateTable[MODIFIER_STATE_SILENCED] = true
+                    end
+                    if (isRoot == true) then
+                        modifierStateTable[MODIFIER_STATE_ROOTED] = true
+                    end
+                    if(not modifier.CheckState) then
+                        modifier.CheckState = function(self)
+                            return modifierStateTable
+                        end
+                    end
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0

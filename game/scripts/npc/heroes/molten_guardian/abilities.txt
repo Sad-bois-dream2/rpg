@@ -280,22 +280,12 @@
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_armor_reduction"				"0 0 0 5"
+				"armor_stacks_to_proc_stun_damage"				"0 0 0 10"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_maxhp"				"0 0 0 5"
-			}
-			"12"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_cap"				"0 0 0 10"
-			}
-			"13"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"melt_stacks_duration"				"0 0 0 5"
+				"armor_stacks_proc_max_hp_to_damage"				"0 0 0 25"
 			}
 		}
 		"precache"

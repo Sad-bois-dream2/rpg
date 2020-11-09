@@ -75,7 +75,52 @@ ItemsDatabase.GetItemRarityName = function(rarity) {
 		default:
 			return "Unknown";
 	}
+}
 
+ItemsDatabase.GetItemRarityColor = function(rarity) {
+	switch(rarity) {
+        case ITEM_RARITY_COMMON:
+			return "#b0c3d9";
+			break;
+        case ITEM_RARITY_UNCOMMON:
+			return "#5e98d9";
+			break;
+        case ITEM_RARITY_RARE:
+			return "#d32ce6";
+			break;
+        case ITEM_RARITY_UNIQUE_RARE:
+			return "#d32ce6";
+			break;
+        case ITEM_RARITY_LEGENDARY:
+			return "#d37818";
+			break;
+        case ITEM_RARITY_UNIQUE_LEGENDARY:
+			return "#d37818";
+			break;
+        case ITEM_RARITY_CURSED_LEGENDARY:
+			return "#a41818";
+			break;
+        case ITEM_RARITY_ANCIENT:
+			return "#0ec1e7";
+			break;
+        case ITEM_RARITY_UNIQUE_ANCIENT:
+			return "#0ec1e7";
+			break;
+        case ITEM_RARITY_CURSED_ANCIENT:
+			return "#a41818";
+			break;
+        case ITEM_RARITY_IMMORTAL:
+			return "#d5a336";
+			break;
+        case ITEM_RARITY_UNIQUE_IMMORTAL:
+			return "#d5a336";
+			break;
+        case ITEM_RARITY_CURSED_IMMORTAL:
+			return "#a41818";
+			break;
+		default:
+			return "#b0c3d9";
+	}
 }
 
 ItemsDatabase.GetItemSlotName = function(slot) {
@@ -119,6 +164,25 @@ ItemsDatabase.GetItemSlotName = function(slot) {
 		default:
 			return "Unknown";
 	}
+}
+
+ItemsDatabase.GetItemSetName = function(itemname) {
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].item == itemname && ItemsDatabase.data[i].setName) {
+			    return ItemsDatabase.data[i].setName;
+		}
+	}
+	return "none";
+}
+
+ItemsDatabase.GetItemsInSet = function(setname) {
+    var itemsInSet = [];
+	for(var i = 0; i < ItemsDatabase.data.length; i++) {
+		if(ItemsDatabase.data[i].setName && ItemsDatabase.data[i].setName == setname) {
+		    itemsInSet.push(ItemsDatabase.data[i].item)
+		}
+	}
+	return itemsInSet;
 }
 
 ItemsDatabase.GetItemRarity = function(itemname) {
