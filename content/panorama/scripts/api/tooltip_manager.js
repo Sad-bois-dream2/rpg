@@ -19,6 +19,7 @@ var TOOLTIP_SET_STATS_LABELS = 11;
 var TOOLTIP_SET_CONTAINER = 12;
 var TOOLTIP_SET_PARTS_CONTAINER = 13;
 var TOOLTIP_SET_PARTS_LABELS = 14;
+var TOOLTIP_ITEM_ICON_BORDER = 15;
 var initialStatsLabelsInTooltip = 10;
 
 TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
@@ -58,6 +59,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
 	var itemRarityColor = ItemsDatabase.GetItemRarityColor(rarity);
 	var itemRarityLabel = ItemsDatabase.GetItemRarityName(rarity);
     TooltipManager.itemTooltipContainer[TOOLTIP_IMAGE].itemname = icon;
+    TooltipManager.itemTooltipContainer[TOOLTIP_ITEM_ICON_BORDER].style.border = "2px solid " + itemRarityColor;
 	TooltipManager.itemTooltipContainer[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
 	TooltipManager.itemTooltipContainer[TOOLTIP_NAME_LABEL].style.color = itemRarityColor;
 	TooltipManager.itemTooltipContainer[TOOLTIP_RARITY_LABEL].text = itemRarityLabel;
@@ -181,7 +183,8 @@ function CreateItemTooltip() {
         [],
         $("#ItemTooltipSetContainer"),
         $("#ItemTooltipSetPartsContainer"),
-        []
+        [],
+        $("#ItemTooltipImageBorder"),
         ];
         var TOOLTIP_SET_STATS_LABELS = 11;
         GameUI.CustomUIConfig().TooltipManager.itemTooltipContainer = itemTooltip;

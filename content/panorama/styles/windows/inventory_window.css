@@ -327,4 +327,10 @@
     width: fill-parent-flow(1.0);
     height: fill-parent-flow(1.0);
     border: 0px solid white;
+    border-brush: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) );
+}
+
+.InventorySlotDragged {
+    border: 1px solid white;
+    border-brush: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) );
 }

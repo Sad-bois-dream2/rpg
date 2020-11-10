@@ -46,7 +46,8 @@ function OnInventoryEquippedSlotDragStart( panelId, dragCallbacks ) {
     dragCallbacks.offsetX = 0; 
     dragCallbacks.offsetY = 0;
 	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
-    displayPanel.style.border = "1px solid " + ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.SetHasClass("InventorySlotDragged", true);
 } 
 
 function OnInventoryEquippedSlotDragEnd( panelId, draggedPanel ) {
@@ -89,7 +90,8 @@ function OnInventorySlotDragStart( panelId, dragCallbacks ) {
         inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", true);
     }
 	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
-    displayPanel.style.border = "1px solid " + ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.SetHasClass("InventorySlotDragged", true);
 } 
 
 function OnInventorySlotDragEnd( panelId, draggedPanel ) {
@@ -468,7 +470,7 @@ function OnUpdateInventorySlotRequest(event) {
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].itemname = IsItemExists ? event.item : inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].Data().defaultImage;
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
 		if(IsItemExists) {
-		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "1px";
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "2px";
 		    var itemRarity = ItemsDatabase.GetItemRarity(event.item);
 		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
 		} else {
