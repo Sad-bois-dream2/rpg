@@ -1,4 +1,5 @@
 local LinkedModifiers = {}
+
 -- terror_lord_malicious_flames
 modifier_terror_lord_malicious_flames_dot = class({
     IsDebuff = function(self)
@@ -34,6 +35,8 @@ function modifier_terror_lord_malicious_flames_dot:OnCreated()
         infernodmg = true,
         dot = true
     }
+    self.casterTeam = self.damageTable.caster:GetTeamNumber()
+    self:OnIntervalThink()
     self:StartIntervalThink(self.ability.tick)
 end
 
@@ -43,6 +46,36 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
     end
     self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.damage
     GameMode:DamageUnit(self.damageTable)
+    if (self.ability.spreadRadius > 0) then
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.damageTable.target:GetAbsOrigin(),
+                nil,
+                self.ability.spreadRadius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        for _, enemy in pairs(enemies) do
+            if (not enemy:HasModifier("modifier_terror_lord_malicious_flames_dot")) then
+                self.ability.modifierTable.target = enemy
+                GameMode:ApplyDebuff(self.ability.modifierTable)
+            end
+        end
+    end
+end
+
+function modifier_terror_lord_malicious_flames_dot:OnPostTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_terror_lord_malicious_flames_dot")
+    if (modifier and modifier.ability and modifier.ability.cdrFlatPerDamage and modifier.ability.cdrFlatPerDamage > 0) then
+        local cooldownTable = {
+            target = modifier.damageTable.caster,
+            ability = "terror_lord_malicious_flames",
+            reduction = modifier.ability.cdrFlatPerDamage,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
+    end
 end
 
 LinkedModifiers["modifier_terror_lord_malicious_flames_dot"] = LUA_MODIFIER_MOTION_NONE
@@ -56,16 +89,19 @@ terror_lord_malicious_flames = class({
     end,
     GetBehavior = function(self)
         if (self:GetSpecialValueFor("radius") > 0) then
-            return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
         end
         return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
     end
 })
 
 function terror_lord_malicious_flames:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
     self.tick = self:GetSpecialValueFor("tick")
     self.radius = self:GetSpecialValueFor("radius")
     self.duration = self:GetSpecialValueFor("duration")
+    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
+    self.cdrFlatPerDamage = self:GetSpecialValueFor("cdr_flat_per_damage")
 end
 
 function terror_lord_malicious_flames:OnSpellStart()
@@ -74,15 +110,17 @@ function terror_lord_malicious_flames:OnSpellStart()
     end
     local caster = self:GetCaster()
     local target = self:GetCursorTarget()
-    local modifierTable = {
+    self.modifierTable = {
         ability = self,
         target = target,
         caster = caster,
         modifier_name = "modifier_terror_lord_malicious_flames_dot",
         duration = self.duration
     }
+    local targetPosition
+    local radius = self.radius
     if (self.radius > 0) then
-        local targetPosition = target:GetAbsOrigin()
+        targetPosition = self:GetCursorPosition()
         local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
                 targetPosition,
                 nil,
@@ -93,55 +131,19 @@ function terror_lord_malicious_flames:OnSpellStart()
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            modifierTable.target = enemy
-            GameMode:ApplyDebuff(modifierTable)
+            self.modifierTable.target = enemy
+            GameMode:ApplyDebuff(self.modifierTable)
         end
-        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
-        local pidx1 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx1, 0, targetPosition + Vector(180, 180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx1, false)
-            ParticleManager:ReleaseParticleIndex(pidx1)
-        end)
-        local pidx2 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx2, 0, targetPosition + Vector(180, 0, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx2, false)
-            ParticleManager:ReleaseParticleIndex(pidx2)
-        end)
-        local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx3, 0, targetPosition + Vector(-180, -180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx3, false)
-            ParticleManager:ReleaseParticleIndex(pidx3)
-        end)
-        local pidx4 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx4, 0, targetPosition + Vector(-180, 0, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx4, false)
-            ParticleManager:ReleaseParticleIndex(pidx4)
-        end)
-        local pidx5 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx5, 0, targetPosition + Vector(0, 180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx5, false)
-            ParticleManager:ReleaseParticleIndex(pidx5)
-        end)
-        local pidx6 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx6, 0, targetPosition + Vector(0, -180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx6, false)
-            ParticleManager:ReleaseParticleIndex(pidx6)
-        end)
     else
-        GameMode:ApplyDebuff(modifierTable)
-        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:ReleaseParticleIndex(pidx)
+        radius = 125
+        targetPosition = target:GetAbsOrigin()
+        GameMode:ApplyDebuff(self.modifierTable)
     end
+    local pfx = ParticleManager:CreateParticle("particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
+    ParticleManager:SetParticleControl(pfx, 0, targetPosition)
+    ParticleManager:SetParticleControl(pfx, 4, Vector(radius, 1, 1))
+    ParticleManager:SetParticleControl(pfx, 5, Vector(0, 0, 0))
+    ParticleManager:ReleaseParticleIndex(pfx)
     EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
 end
 
@@ -636,4 +638,9 @@ end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_terror_lord", MotionController)
+end
+
+if (IsServer() and not GameMode.TERROR_LORD_INIT) then
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_malicious_flames_dot, 'OnPostTakeDamage'))
+    GameMode.TERROR_LORD_INIT = true
 end

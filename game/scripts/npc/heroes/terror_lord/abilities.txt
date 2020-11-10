@@ -67,7 +67,7 @@
 		}
 		"precache"
 		{
-			"particle" "particles/units/terror_lord/malicious_flames/malicious_flames.vpcf"
+			"particle" "particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf"
 			"particle" "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
 			"soundfile" "sounds/weapons/hero/earthshaker/damage_summary.vsnd"
 		}
