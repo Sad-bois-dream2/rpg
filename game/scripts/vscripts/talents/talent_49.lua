@@ -130,7 +130,7 @@ function modifier_talent_49_dot:ApplyStack()
     local duration = self:GetDuration()
     local modifier = self
     Timers:CreateTimer(duration, function()
-        if (modifier) then
+        if (modifier and not modifier:IsNull()) then
             modifier:DecrementStackCount()
         end
     end)
