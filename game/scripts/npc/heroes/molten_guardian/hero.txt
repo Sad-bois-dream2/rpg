@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_mars"
     {
+	    "HeroIndex"		"129"
         "AbilityLayout"     "6"
         "Ability1"	"molten_guardian_shields_up"
         "Ability2"	"molten_guardian_scorching_clash"

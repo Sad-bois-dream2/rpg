@@ -305,16 +305,30 @@ function OnHeroStatsUpdateRequest(event) {
     }
 }
 
-function UpdateHeroModelAndIcon() {
+function OnHeroesTableData(event) {
+    var parsedData = JSON.parse(event.heroes);
+    UpdateHeroModelAndIcon(parsedData);
+}
+
+
+function UpdateHeroModelAndIcon(data) {
     if(currentHero > -1) {
         var heroModelContainer = $("#HeroModelContainer");
         var heroName = Entities.GetUnitName(currentHero);
+        var heroIndex = -1;
+        for(var i = 0; i < data.length; i++) {
+            if(data[i].Name == heroName) {
+                heroIndex = data[i].HeroIndex;
+            }
+        }
         $("#HeroIcon").heroname = heroName;
         heroModelContainer.BCreateChildren('<DOTAScenePanel renderdeferred="false" class="HeroModel OverviewHeroRender" unit="' + heroName + '" drawbackground="1" allowrotation="true" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>');
-        heroModelContainer.GetChild(0).style.visibility = "visible";
+        var scenePanel = heroModelContainer.GetChild(0);
+        scenePanel.style.visibility = "visible";
+        scenePanel.SetScenePanelToLocalHero(heroIndex);
 	} else {
         $.Schedule(1, function() {
-            UpdateHeroModelAndIcon();
+            UpdateHeroModelAndIcon(data);
         });
 	}
 }
@@ -509,7 +523,8 @@ function SetupAPI() {
 	GameEvents.Subscribe("rpg_inventory_close_window_from_server", OnInventoryWindowCloseRequest);
 	GameEvents.Subscribe("rpg_inventory_update_slot", OnUpdateInventorySlotRequest);
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
+    GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesTableData);
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes", {});
     AutoUpdateValues();
-    UpdateHeroModelAndIcon();
     SetupAPI();
 })();

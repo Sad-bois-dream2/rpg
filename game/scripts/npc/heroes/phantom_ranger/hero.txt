@@ -2,13 +2,14 @@
 {
 	"npc_dota_hero_drow_ranger"
 	{
+	    "HeroIndex"		"6"
 		"AbilityLayout" "6"
 		"Ability1"		"phantom_ranger_shadow_waves"
 		"Ability2"		"phantom_ranger_void_disciple"
 		"Ability3"		"phantom_ranger_phantom_of_vengeance"
 		"Ability4"		"phantom_ranger_hunters_focus"
 		"Ability5"		"phantom_ranger_soul_echo"
-		 "Ability6"		"phantom_ranger_phantom_harmonic"
+		"Ability6"		"phantom_ranger_phantom_harmonic"
 		"AbilityTalentStart"		"7"
 		"Ability7"	""
 		"Ability8"	""

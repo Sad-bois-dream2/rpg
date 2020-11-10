@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_enchantress"
     {
+	    "HeroIndex"		"58"
         "AbilityLayout"     "6"
         "Ability1"	"priestess_of_sacred_forest_herbaceous_essence_night"
         "Ability2"	"priestess_of_sacred_forest_thorny_protection_night"

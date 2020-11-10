@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_juggernaut"
     {
+	    "HeroIndex"		"8"
         "AbilityLayout"     "6"
         "Ability1"	"luminous_samurai_bankai"
         "Ability2"	"luminous_samurai_jhana"

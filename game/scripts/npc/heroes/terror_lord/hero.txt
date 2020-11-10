@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_abyssal_underlord"
     {
+	    "HeroIndex"		"108"
         "AbilityLayout"     "6"
         "Ability1"	"terror_lord_malicious_flames"
         "Ability2"	"terror_lord_mighty_defiance"

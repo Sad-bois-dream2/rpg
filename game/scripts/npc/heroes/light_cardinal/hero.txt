@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_silencer"
     {
+	    "HeroIndex"		"75"
         "AbilityLayout"     "6"
         "Ability1"	"light_cardinal_piety"
         "Ability2"	"light_cardinal_purification"
