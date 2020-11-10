@@ -14,7 +14,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
@@ -42,27 +42,42 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"radius"				"0 500 500 500"
+				"duration"				"5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"duration"				"5"
+				"tick"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"tick"				"1"
+				"spread_radius"				"0 250 250 250"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"spread_radius"				"0 0 250 250"
+				"cdr_flat_per_damage"				"0 0 1 1"
 			}
 			"06"
 			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_armor_aggro"				"0 0 0 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_ele_armor_aggro"				"0 0 0 1"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"primal_buff_per_max_hp_aggro"				"0 0 0 0.02"
+			}
+			"09"
+			{
 				"var_type"				"FIELD_INTEGER"
-				"cdr_flat_per_damage"				"0 0 0 1"
+				"radius"				"500"
 			}
 		}
 		"precache"

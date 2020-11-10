@@ -1,6 +1,50 @@
 local LinkedModifiers = {}
 
 -- terror_lord_malicious_flames
+modifier_terror_lord_malicious_flames = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+})
+
+function modifier_terror_lord_malicious_flames:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_terror_lord_malicious_flames:GetAggroCausedBonus()
+    local totalResistances = 0
+    totalResistances = totalResistances + Units:GetFireProtection(self.caster)
+    totalResistances = totalResistances + Units:GetFrostProtection(self.caster)
+    totalResistances = totalResistances + Units:GetEarthProtection(self.caster)
+    totalResistances = totalResistances + Units:GetVoidProtection(self.caster)
+    totalResistances = totalResistances + Units:GetHolyProtection(self.caster)
+    totalResistances = totalResistances + Units:GetNatureProtection(self.caster)
+    totalResistances = totalResistances + Units:GetInfernoProtection(self.caster)
+    totalResistances = totalResistances - 7
+    return (totalResistances * (self.ability.primalBuffPerEleArmorAggro or 0)) + (Units:GetArmor(self.caster) * (self.ability.primalBuffPerArmorAggro or 0)) + (self.caster:GetMaxHealth() * (self.ability.primalBuffPerMaxHpAggro or 0))
+end
+
+LinkedModifiers["modifier_terror_lord_malicious_flames"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_terror_lord_malicious_flames_dot = class({
     IsDebuff = function(self)
         return true
@@ -84,12 +128,9 @@ terror_lord_malicious_flames = class({
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
     end,
-    GetBehavior = function(self)
-        if (self:GetSpecialValueFor("radius") > 0) then
-            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
-        end
-        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
-    end
+    GetIntrinsicModifierName = function(self)
+        return "modifier_terror_lord_malicious_flames"
+    end,
 })
 
 function terror_lord_malicious_flames:OnUpgrade()
@@ -99,6 +140,9 @@ function terror_lord_malicious_flames:OnUpgrade()
     self.duration = self:GetSpecialValueFor("duration")
     self.spreadRadius = self:GetSpecialValueFor("spread_radius")
     self.cdrFlatPerDamage = self:GetSpecialValueFor("cdr_flat_per_damage")
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
 end
 
 function terror_lord_malicious_flames:OnSpellStart()
@@ -106,39 +150,30 @@ function terror_lord_malicious_flames:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
     self.modifierTable = {
         ability = self,
-        target = target,
+        target = nil,
         caster = caster,
         modifier_name = "modifier_terror_lord_malicious_flames_dot",
         duration = self.duration
     }
-    local targetPosition
-    local radius = self.radius
-    if (self.radius > 0) then
-        targetPosition = self:GetCursorPosition()
-        local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
-                targetPosition,
-                nil,
-                self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
-                DOTA_UNIT_TARGET_FLAG_NONE,
-                FIND_ANY_ORDER,
-                false)
-        for _, enemy in pairs(enemies) do
-            self.modifierTable.target = enemy
-            GameMode:ApplyDebuff(self.modifierTable)
-        end
-    else
-        radius = 125
-        targetPosition = target:GetAbsOrigin()
+    local targetPosition = self:GetCursorPosition()
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            targetPosition,
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        self.modifierTable.target = enemy
         GameMode:ApplyDebuff(self.modifierTable)
     end
     local pfx = ParticleManager:CreateParticle("particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
     ParticleManager:SetParticleControl(pfx, 0, targetPosition)
-    ParticleManager:SetParticleControl(pfx, 4, Vector(radius, 1, 1))
+    ParticleManager:SetParticleControl(pfx, 4, Vector(self.radius, 1, 1))
     ParticleManager:SetParticleControl(pfx, 5, Vector(0, 0, 0))
     ParticleManager:ReleaseParticleIndex(pfx)
     EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
