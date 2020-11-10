@@ -210,14 +210,14 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
+		"ScriptFile"					"heroes/hero_terror_lord"
 		"AbilityTextureName"			"terror_lord_ruthless_predator"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
-        "AbilityCastRange"  "1200"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
@@ -237,32 +237,62 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ms_slow"				"-10 -20 -30 -40"
+				"regeneration_reduction"				"15 30 45 60"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"regeneration_debuff"				"20 30 40 50"
+				"min_stacks"				"0 1 1 1"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"regeneration_buff"				"1"
+				"stacks_per_normal"				"1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"regeneration_cap_buff"				"15"
+				"stacks_per_elite"				"5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"1200"
+				"stacks_per_boss"				"10"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"bonus_health_regeneration_per_enemy"				"10 15 20 25"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_mana_regeneration_per_enemy"				"10 15 20 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"1200"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"min_stacks_active"				"0 0 0 10"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"ability_cooldown"				"0 0 0 30"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"0 0 0 7"
 			}
 		}
 	}

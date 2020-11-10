@@ -81,9 +81,6 @@ end
 LinkedModifiers["modifier_terror_lord_malicious_flames_dot"] = LUA_MODIFIER_MOTION_NONE
 
 terror_lord_malicious_flames = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_malicious_flames"
-    end,
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
     end,
@@ -147,7 +144,7 @@ function terror_lord_malicious_flames:OnSpellStart()
     EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
 end
 
--- terror_lord_mighty_defiance modifiers
+-- terror_lord_mighty_defiance
 modifier_terror_lord_mighty_defiance = class({
     IsDebuff = function(self)
         return false
@@ -633,6 +630,42 @@ end
 
 function terror_lord_horror_genesis:IsRequireCastbar()
     return true
+end
+
+
+-- terror_lord_ruthless_predator
+terror_lord_ruthless_predator = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+        return DOTA_ABILITY_BEHAVIOR_AURA + DOTA_ABILITY_BEHAVIOR_PASSIVE
+    end
+})
+
+function terror_lord_ruthless_predator:OnUpgrade()
+    self.regenerationReduction = self:GetSpecialValueFor("regeneration_reduction") / 100
+    self.minStacks = self:GetSpecialValueFor("min_stacks")
+    self.stacksPerNormal = self:GetSpecialValueFor("stacks_per_normal")
+    self.stacksPerElite = self:GetSpecialValueFor("stacks_per_elite")
+    self.stacksPerBoss = self:GetSpecialValueFor("stacks_per_boss")
+    self.bonusHealthRegenerationPernemy = self:GetSpecialValueFor("bonus_health_regeneration_per_enemy") / 100
+    self.bonusManaRegenerationPernemy = self:GetSpecialValueFor("bonus_mana_regeneration_per_enemy") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.minStacksActive = self:GetSpecialValueFor("min_stacks_active")
+    self.abilityCooldown = self:GetSpecialValueFor("ability_cooldown")
+    self.duration = self:GetSpecialValueFor("duration")
+end
+
+function terror_lord_ruthless_predator:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+
 end
 
 -- Internal stuff
