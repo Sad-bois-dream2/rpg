@@ -41,5 +41,6 @@
 	</script>
 	<Panel class="InventorySlot" onmouseover="ShowItemTooltip()" onmouseout="HideItemTooltip()" showtooltip="false" oncontextmenu="OnRightClickOnSlot()" draggable="true">
 		<DOTAItemImage showtooltip="false" hittest="false" id="ItemImage" itemname="" scaling="stretch-to-fit-preserve-aspect"/>
+		<Panel id="ItemBorder" class="ItemBorder"/>
 	</Panel>
 </root>

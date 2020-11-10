@@ -5,7 +5,7 @@ var INVENTORY_SLOTS_COUNT = INVENTORY_SLOTS_PER_ROW * INVENTORY_SLOT_ROWS;
 var INVENTORY_SLOT_LAST = 11;
 var inventorySlots = [];
 var inventoryEquippedSlots = [];
-var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2;
+var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2, SLOT_ITEM_BORDER = 3;
 var ELEMENTS_DEFENSIVE = "D", ELEMENTS_OFFENSIVE = "O";
 var defensiveElePanels = [], offensiveElePanels = [];
 var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
@@ -23,6 +23,7 @@ var ELEMENTS = [
 
 var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
 var ItemsDatabase = GameUI.CustomUIConfig().ItemsDatabase;
+var PlayerInventory = GameUI.CustomUIConfig().PlayerInventory;
 
 function SetupDragAndDropForInventoryEquippedSlots() {
 	for(var i = 0; i < inventoryEquippedSlots.length; i++) {
@@ -36,14 +37,16 @@ function OnInventoryEquippedSlotDragStart( panelId, dragCallbacks ) {
 	if(inventoryEquippedSlots[slotId][SLOT_PANEL].BHasClass("empty")) {
 		return true;
 	}
+	HideItemTooltip();
     var displayPanel = $.CreatePanel( "DOTAItemImage", $.GetContextPanel(), "");
 	displayPanel.SetHasClass("InventorySlot", true);
 	displayPanel.style.width = inventorySlots[0][SLOT_PANEL].actuallayoutwidth + "px";
-	HideItemTooltip();
 	displayPanel.itemname = inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname;
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
     dragCallbacks.offsetY = 0;
+	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
+    displayPanel.style.border = "1px solid " + ItemsDatabase.GetItemRarityColor(itemRarity);
 } 
 
 function OnInventoryEquippedSlotDragEnd( panelId, draggedPanel ) {
@@ -85,6 +88,8 @@ function OnInventorySlotDragStart( panelId, dragCallbacks ) {
     if(desiredInventorySlot > -1) {
         inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", true);
     }
+	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
+    displayPanel.style.border = "1px solid " + ItemsDatabase.GetItemRarityColor(itemRarity);
 } 
 
 function OnInventorySlotDragEnd( panelId, draggedPanel ) {
@@ -403,13 +408,14 @@ function CreateInventorySlots() {
 		for(var j = 0; j < INVENTORY_SLOTS_PER_ROW; j++) {
 			inventorySlot = $.CreatePanel("Panel", inventoryRow, "InventorySlot" + (j+(INVENTORY_SLOTS_PER_ROW * i)));
 			inventorySlot.BLoadLayout("file://{resources}/layout/custom_game/windows/inventory/inventory_slot.xml", false, false);
-			var inventorySlotItemImage = inventorySlot.GetChild(0);
+			var inventorySlotItemImage = inventorySlot.FindChildTraverse('ItemImage');
+			var inventorySlotItemBorder = inventorySlot.FindChildTraverse('ItemBorder');
 			inventorySlot.Data().ShowItemTooltip = ShowItemTooltip;
 			inventorySlot.Data().HideItemTooltip = HideItemTooltip;
 			inventorySlot.Data().OnRightClickOnInventorySlot = OnRightClickOnInventorySlot;
 			inventorySlot.Data().OnDragStart = OnInventorySlotDragStart;
 			inventorySlot.Data().OnDragEnd = OnInventorySlotDragEnd;
-			inventorySlots.push([inventorySlot, inventorySlotItemImage, []]);
+			inventorySlots.push([inventorySlot, inventorySlotItemImage, [], inventorySlotItemBorder]);
 			if(j == 0) {
 		        inventorySlot.SetHasClass("first", true);
 			}
@@ -446,27 +452,41 @@ function OnInventoryButtonClicked() {
 
 function OnUpdateInventorySlotRequest(event) {
 	HideItemTooltip();
+	var IsItemExists = (event.item !== "");
 	if(!event.equipped) {
 		inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname = event.item;
 		inventorySlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
+		if(IsItemExists) {
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "1px";
+		    var itemRarity = ItemsDatabase.GetItemRarity(event.item);
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+		} else {
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "0px";
+		}
 	} else {
-		var IsItemExists = (event.item !== "");
 		inventoryEquippedSlots[event.slot][SLOT_PANEL].SetHasClass("empty", !IsItemExists);
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].itemname = IsItemExists ? event.item : inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].Data().defaultImage;
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
+		if(IsItemExists) {
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "1px";
+		    var itemRarity = ItemsDatabase.GetItemRarity(event.item);
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+		} else {
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "0px";
+		}
 	}
 }
 
-var PlayerInventory = GameUI.CustomUIConfig().PlayerInventory;
-
-PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
-	for(var i = 0; i < inventoryEquippedSlots.length; i++) {
-		if(inventoryEquippedSlots[i][SLOT_ITEM_IMAGE].itemname == itemName && !inventoryEquippedSlots[i][SLOT_PANEL].BHasClass("empty")) {
-		    return true;
-		}
-	}
-	return false;
-};
+function SetupAPI() {
+    PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
+        for(var i = 0; i < inventoryEquippedSlots.length; i++) {
+            if(inventoryEquippedSlots[i][SLOT_ITEM_IMAGE].itemname == itemName && !inventoryEquippedSlots[i][SLOT_PANEL].BHasClass("empty")) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
 
 (function () {
 	pagePanels = [$("#Page0"), $("#Page1"), $("#Page2")];
@@ -474,8 +494,9 @@ PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
 	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
 		var inventorySlotPanel = $("#InventoryEquippedSlot"+i);
 		var inventorySlotImage = $("#InventoryEquippedSlotImage"+i);
+		var inventorySlotBorder = $("#InventoryEquippedSlotBorder"+i);
 		inventorySlotImage.Data().defaultImage = inventorySlotImage.itemname;
-		inventoryEquippedSlots.push([inventorySlotPanel, inventorySlotImage, []]);
+		inventoryEquippedSlots.push([inventorySlotPanel, inventorySlotImage, [], inventorySlotBorder]);
 	}
 	OnSwitchPageButtonClick(0);
 	CreateInventorySlots();
@@ -488,4 +509,5 @@ PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
     AutoUpdateValues();
     UpdateHeroModelAndIcon();
+    SetupAPI();
 })();

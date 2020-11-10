@@ -322,3 +322,9 @@
 	background-repeat: no-repeat;
     background-size: 100%;
 }
+
+.ItemBorder {
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
+    border: 0px solid white;
+}

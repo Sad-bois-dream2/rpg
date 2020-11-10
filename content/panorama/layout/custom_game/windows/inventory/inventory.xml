@@ -20,6 +20,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage0"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_claymore"/>
+                                <Panel id="InventoryEquippedSlotBorder0" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_mainhand"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot1" class="InventoryEquippedSlot empty" draggable="true"
@@ -28,6 +29,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage1"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_chainmail"/>
+                                <Panel id="InventoryEquippedSlotBorder1" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_body"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot2" class="InventoryEquippedSlot empty" draggable="true"
@@ -37,6 +39,7 @@
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage2"
                                                scaling="stretch-to-fit-x-preserve-aspect"
                                                itemname="item_inventory_legs_background"/>
+                                <Panel id="InventoryEquippedSlotBorder2" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_legs"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot3" class="InventoryEquippedSlot empty" draggable="true"
@@ -45,6 +48,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage3"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_boots"/>
+                                <Panel id="InventoryEquippedSlotBorder3" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_boots"/>
                             </Panel>
                         </Panel>
@@ -57,6 +61,7 @@
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage5"
                                                scaling="stretch-to-fit-x-preserve-aspect"
                                                itemname="item_poor_mans_shield"/>
+                                <Panel id="InventoryEquippedSlotBorder5" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_offhand"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot6" class="InventoryEquippedSlot empty" draggable="true"
@@ -65,6 +70,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage6"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_cloak"/>
+                                <Panel id="InventoryEquippedSlotBorder6" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_cape"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot7" class="InventoryEquippedSlot empty" draggable="true"
@@ -73,6 +79,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage7"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_shivas_guard"/>
+                                <Panel id="InventoryEquippedSlotBorder7" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_shoulder"/>
                             </Panel>
                             <Panel id="InventoryEquippedSlot8" class="InventoryEquippedSlot empty" draggable="true"
@@ -81,6 +88,7 @@
                                    showtooltip="false">
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage8"
                                                scaling="stretch-to-fit-x-preserve-aspect" itemname="item_gloves"/>
+                                <Panel id="InventoryEquippedSlotBorder8" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_gloves"/>
                             </Panel>
                         </Panel>
@@ -92,6 +100,7 @@
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage4"
                                                scaling="stretch-to-fit-x-preserve-aspect"
                                                itemname="item_helm_of_iron_will"/>
+                                <Panel id="InventoryEquippedSlotBorder4" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_helmet"/>
                             </Panel>
                         </Panel>
@@ -105,6 +114,7 @@
                                     <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage9"
                                                    scaling="stretch-to-fit-x-preserve-aspect"
                                                    itemname="item_ring_of_protection"/>
+                                    <Panel id="InventoryEquippedSlotBorder9" class="ItemBorder"/>
                                     <Label text="#DOTA_Inventory_slot_ring"/>
                                 </Panel>
                             </Panel>
@@ -115,6 +125,7 @@
                                 <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage10"
                                                scaling="stretch-to-fit-x-preserve-aspect"
                                                itemname="item_belt_of_strength"/>
+                                <Panel id="InventoryEquippedSlotBorder10" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_belt"/>
                             </Panel>
 
@@ -126,6 +137,7 @@
                                     <DOTAItemImage showtooltip="false" hittest="false" id="InventoryEquippedSlotImage11"
                                                    scaling="stretch-to-fit-x-preserve-aspect"
                                                    itemname="item_shadow_amulet"/>
+                                    <Panel id="InventoryEquippedSlotBorder11" class="ItemBorder"/>
                                     <Label text="#DOTA_Inventory_slot_amulet"/>
                                 </Panel>
                             </Panel>
