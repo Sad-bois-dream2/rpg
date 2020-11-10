@@ -133,13 +133,13 @@
                     </Panel>
                     <Panel class="HeroStats" style="padding-top: 30px;">
                         <Panel class="SwitchPageButtons">
-                            <Panel id="Page0Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(0)">
+                            <Panel id="Page0Button" class="WindowButton" onactivate="OnSwitchPageButtonClick(0)">
                                 <Label text="I"/>
                             </Panel>
-                            <Panel id="Page1Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(1)">
+                            <Panel id="Page1Button" class="WindowButton" onactivate="OnSwitchPageButtonClick(1)">
                                 <Label text="II"/>
                             </Panel>
-                            <Panel id="Page2Button" class="InventoryButton" onactivate="OnSwitchPageButtonClick(2)">
+                            <Panel id="Page2Button" class="WindowButton" onactivate="OnSwitchPageButtonClick(2)">
                                 <Label text="III"/>
                             </Panel>
                         </Panel>
