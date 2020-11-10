@@ -37,27 +37,27 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"damage"				"40 50 60 70"
+				"damage"				"105 110 115 120"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"duration"				"5"
+				"dot_damage"				"40 50 60 70"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"tick"				"1"
+				"duration"				"5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"spread_radius"				"0 250 250 250"
+				"tick"				"1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"cdr_flat_per_damage"				"0 0 1 1"
+				"spread_radius"				"0 250 250 250"
 			}
 			"06"
 			{
@@ -79,12 +79,23 @@
 				"var_type"				"FIELD_INTEGER"
 				"radius"				"500"
 			}
+			"10"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"additional_waves"				"0 0 5 5"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"additional_waves_tick"				"0 0 1 1"
+			}
 		}
 		"precache"
 		{
 			"particle" "particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf"
 			"particle" "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
-			"soundfile" "sounds/weapons/hero/earthshaker/damage_summary.vsnd"
+			"soundfile" "sounds/weapons/hero/underlord/firestorm01.vsnd"
+			"soundfile" "sounds/weapons/hero/underlord/firestorm02.vsnd"
 		}
 	}
 	//=================================================================================================================

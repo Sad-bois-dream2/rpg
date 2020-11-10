@@ -1,6 +1,49 @@
 local LinkedModifiers = {}
 
 -- terror_lord_malicious_flames
+modifier_terror_lord_malicious_flames_thinker = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+})
+
+function modifier_terror_lord_malicious_flames_thinker:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self:StartIntervalThink(self.ability.additionalWavesTick)
+end
+
+function modifier_terror_lord_malicious_flames_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.caster:SetCursorPosition(self.position)
+    self.ability:OnSpellStart(true)
+end
+
+function modifier_terror_lord_malicious_flames_thinker:OnDestroy()
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_terror_lord_malicious_flames_thinker"] = LUA_MODIFIER_MOTION_NONE
+
 modifier_terror_lord_malicious_flames = class({
     IsDebuff = function(self)
         return false
@@ -27,7 +70,7 @@ function modifier_terror_lord_malicious_flames:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self.ability:GetCaster()
+    self.caster = self:GetParent()
 end
 
 function modifier_terror_lord_malicious_flames:GetAggroCausedBonus()
@@ -88,7 +131,7 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
     if (not IsServer()) then
         return
     end
-    self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.damage
+    self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.dotDamage
     GameMode:DamageUnit(self.damageTable)
     if (self.ability.spreadRadius > 0) then
         local enemies = FindUnitsInRadius(self.casterTeam,
@@ -109,19 +152,6 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
     end
 end
 
-function modifier_terror_lord_malicious_flames_dot:OnPostTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_terror_lord_malicious_flames_dot")
-    if (modifier and modifier.ability and modifier.ability.cdrFlatPerDamage and modifier.ability.cdrFlatPerDamage > 0) then
-        local cooldownTable = {
-            target = modifier.damageTable.caster,
-            ability = "terror_lord_malicious_flames",
-            reduction = modifier.ability.cdrFlatPerDamage,
-            isflat = true
-        }
-        GameMode:ReduceAbilityCooldown(cooldownTable)
-    end
-end
-
 LinkedModifiers["modifier_terror_lord_malicious_flames_dot"] = LUA_MODIFIER_MOTION_NONE
 
 terror_lord_malicious_flames = class({
@@ -133,23 +163,12 @@ terror_lord_malicious_flames = class({
     end,
 })
 
-function terror_lord_malicious_flames:OnUpgrade()
-    self.damage = self:GetSpecialValueFor("damage") / 100
-    self.tick = self:GetSpecialValueFor("tick")
-    self.radius = self:GetSpecialValueFor("radius")
-    self.duration = self:GetSpecialValueFor("duration")
-    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
-    self.cdrFlatPerDamage = self:GetSpecialValueFor("cdr_flat_per_damage")
-    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
-    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
-    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
-end
-
-function terror_lord_malicious_flames:OnSpellStart()
+function terror_lord_malicious_flames:OnSpellStart(secondCast)
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
+    local casterTeam = caster:GetTeamNumber()
     self.modifierTable = {
         ability = self,
         target = nil,
@@ -157,8 +176,16 @@ function terror_lord_malicious_flames:OnSpellStart()
         modifier_name = "modifier_terror_lord_malicious_flames_dot",
         duration = self.duration
     }
+    local damageTable = {
+        caster = caster,
+        target = nil,
+        ability = self,
+        damage = self.damage * Units:GetHeroStrength(caster),
+        infernodmg = true,
+        aoe = true
+    }
     local targetPosition = self:GetCursorPosition()
-    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+    local enemies = FindUnitsInRadius(casterTeam,
             targetPosition,
             nil,
             self.radius,
@@ -169,14 +196,44 @@ function terror_lord_malicious_flames:OnSpellStart()
             false)
     for _, enemy in pairs(enemies) do
         self.modifierTable.target = enemy
+        damageTable.target = enemy
         GameMode:ApplyDebuff(self.modifierTable)
+        GameMode:DamageFilter(damageTable)
     end
     local pfx = ParticleManager:CreateParticle("particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
     ParticleManager:SetParticleControl(pfx, 0, targetPosition)
     ParticleManager:SetParticleControl(pfx, 4, Vector(self.radius, 1, 1))
     ParticleManager:SetParticleControl(pfx, 5, Vector(0, 0, 0))
     ParticleManager:ReleaseParticleIndex(pfx)
-    EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
+    EmitSoundOnLocationWithCaster(targetPosition, "Hero_AbyssalUnderlord.Firestorm", caster)
+    if (self.additionalWaves > 0 and not secondCast) then
+        CreateModifierThinker(
+                caster,
+                self,
+                "modifier_terror_lord_malicious_flames_thinker",
+                {
+                    duration = self.additionalWaves * self.additionalWavesTick,
+                },
+                targetPosition,
+                casterTeam,
+                false
+        )
+    end
+end
+
+function terror_lord_malicious_flames:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.tick = self:GetSpecialValueFor("tick")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
+    self.cdrFlatPerDamage = self:GetSpecialValueFor("cdr_flat_per_damage")
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
+    self.additionalWaves = self:GetSpecialValueFor("additional_waves")
+    self.additionalWavesTick = self:GetSpecialValueFor("additional_waves_tick")
 end
 
 -- terror_lord_mighty_defiance
@@ -665,6 +722,40 @@ end
 
 
 -- terror_lord_ruthless_predator
+modifier_terror_lord_ruthless_predator = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+})
+
+function modifier_terror_lord_ruthless_predator:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_aura.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true)
+    self:AddParticle(pidx, true, false, 1, true, false)
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator"] = LUA_MODIFIER_MOTION_NONE
+
 terror_lord_ruthless_predator = class({
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
@@ -711,6 +802,5 @@ for LinkedModifier, MotionController in pairs(LinkedModifiers) do
 end
 
 if (IsServer() and not GameMode.TERROR_LORD_INIT) then
-    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_malicious_flames_dot, 'OnPostTakeDamage'))
     GameMode.TERROR_LORD_INIT = true
 end
