@@ -903,7 +903,7 @@
         "DOTA_Tooltip_modifier_talent_33_effect"	"Mark the Prey"
         "DOTA_Tooltip_modifier_talent_33_effect_Description"	"Critical strike damage increased."
 		"DOTA_TalentTree_Talent_37"		"Flamewaker"
-		"DOTA_TalentTree_Talent_37_Description"		"Grants you <font color='#96afff'><b>15% / 30% / 45%</b></font> AOE damage and after you casting your 3rd ability you will cover yourself with flame for 12 seconds that dealing <font color='#96afff'><b>30% / 60% / 90%</b></font> of your strength as <font color='#d92129'>Fire</font> damage every second to all enemies in 350 radius around you and causing their attack to has 20% chance to miss for 2 seconds."
+		"DOTA_TalentTree_Talent_37_Description"		"Grants you <font color='#96afff'><b>15% / 30% / 45%</b></font> AOE damage and after you casting your 3rd ability you will cover yourself with flame for 12 seconds that dealing <font color='#96afff'><b>30% / 60% / 90%</b></font> of your strength as <font color='#d92129'>Fire</font> damage every second to all enemies in 350 radius around you and causing their auto attack to has 20% chance to miss for 2 seconds."
         "DOTA_Tooltip_modifier_talent_37_effect"	"Flamewaker"
         "DOTA_Tooltip_modifier_talent_37_effect_Description"	"Burn enemies around."
         "DOTA_Tooltip_modifier_talent_37_effect_debuff"	"Flamewaker"

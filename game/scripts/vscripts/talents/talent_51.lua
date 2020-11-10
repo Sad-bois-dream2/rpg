@@ -31,10 +31,10 @@ end
 
 function modifier_talent_51:OnModifierApplied(modifierTable)
     local modifier = modifierTable.target:FindModifierByName("modifier_talent_51")
-    if (not modifier) then
+    if (not modifier or self:GetName() == "modifier_talent_51_effect") then
         return
     end
-    if (self.IsDebuff and self:IsDebuff() == false) then
+    if (self.IsHidden and self:IsHidden() == false and self.IsDebuff and self:IsDebuff() == false) then
         local modifiers = {}
         modifiers.caster = modifierTable.target
         modifiers.target = modifierTable.target
@@ -42,11 +42,11 @@ function modifier_talent_51:OnModifierApplied(modifierTable)
         modifiers.modifier_name = "modifier_talent_51_effect"
         modifiers.stacks = 1
         modifiers.max_stacks = 99999
-        modifiers.duration = TalentTree:GetHeroTalentLevel(target, 51) + 1
+        modifiers.duration = TalentTree:GetHeroTalentLevel(modifierTable.target, 51) + 1
         local addedModifier = GameMode:ApplyStackingBuff(modifiers)
         local duration = addedModifier:GetDuration()
         Timers:CreateTimer(duration, function()
-            if (addedModifier) then
+            if (addedModifier and not addedModifier:IsNull()) then
                 addedModifier:DecrementStackCount()
             end
         end)
@@ -76,6 +76,9 @@ modifier_talent_51_effect = class({
         return {
             MODIFIER_PROPERTY_TOOLTIP
         }
+    end,
+    GetTexture = function()
+        return "file://{images}/custom_game/hud/talenttree/talent_51.png"
     end
 })
 

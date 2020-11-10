@@ -56,7 +56,7 @@ function modifier_talent_39:OnPostTakeDamage(damageTable)
         local addedModifier = GameMode:ApplyStackingDebuff(modifierTable)
         local duration = addedModifier:GetDuration()
         Timers:CreateTimer(duration, function()
-            if (addedModifier) then
+            if (addedModifier and not addedModifier:IsNull()) then
                 addedModifier:DecrementStackCount()
             end
         end)
