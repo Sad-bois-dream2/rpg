@@ -216,7 +216,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -237,62 +237,57 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"regeneration_reduction"				"15 30 45 60"
+				"damage"				"25 30 35 40"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"min_stacks"				"0 1 1 1"
+				"min_stacks"				"0 0 1 1"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_per_normal"				"1"
+				"stacks_per_normal"				"0 1 1 1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_per_elite"				"5"
+				"stacks_per_elite"				"0 5 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_per_boss"				"10"
+				"stacks_per_boss"				"0 10 10 10"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_health_regeneration_per_enemy"				"10 15 20 25"
+				"bonus_health_regeneration_per_enemy"				"0 10 10 10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_mana_regeneration_per_enemy"				"10 15 20 25"
+				"bonus_health_regeneration_max"				"0 100 100 100"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"1200"
+				"radius"				"800"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"tick"				"1"
 			}
-			"10"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"min_stacks_active"				"0 0 0 10"
-			}
 			"11"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"ability_cooldown"				"0 0 0 30"
+				"active_cooldown"				"0 0 0 30"
 			}
 			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"0 0 0 7"
+				"active_duration"				"0 0 0 7"
 			}
 		}
 	}

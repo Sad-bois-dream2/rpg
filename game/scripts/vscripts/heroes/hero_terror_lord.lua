@@ -594,11 +594,7 @@ end
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
 -- terror_lord_horror_genesis
-terror_lord_horror_genesis = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_horror_genesis"
-    end
-})
+terror_lord_horror_genesis = class({})
 
 function terror_lord_horror_genesis:OnSpellStart(unit, special_cast)
     if (not IsServer()) then
@@ -643,6 +639,12 @@ terror_lord_ruthless_predator = class({
             return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
         end
         return DOTA_ABILITY_BEHAVIOR_AURA + DOTA_ABILITY_BEHAVIOR_PASSIVE
+    end,
+    GetIntrinsicModifierName = function()
+        return "modifier_terror_lord_ruthless_predator"
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("active_cooldown")
     end
 })
 
