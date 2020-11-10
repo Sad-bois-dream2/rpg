@@ -951,11 +951,11 @@ end
 
 function modifier_fallen_druid_crown_of_death_crit_dot:OnCriticalDamage(damageTable)
     local ability = damageTable.attacker:FindAbilityByName("fallen_druid_crown_of_death")
-    if (ability and ability.critsDotDuration > 0 and not ability.critsDotProcCooldown) then
+    if (ability and ability.critsDotDuration and ability.critsDotDuration > 0 and not ability.critsDotProcCooldown) then
         local modifierTable = {}
         modifierTable.ability = ability
-        modifierTable.target = damageTable.attacker
-        modifierTable.caster = damageTable.victim
+        modifierTable.target = damageTable.victim
+        modifierTable.caster = damageTable.attacker
         modifierTable.modifier_name = "modifier_fallen_druid_crown_of_death_crit_dot"
         modifierTable.duration = ability.critsDotDuration
         modifierTable.modifier_params = { damage = damageTable.damage }

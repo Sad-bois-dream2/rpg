@@ -109,8 +109,8 @@
 	width: fit-children;
 	height: fit-children;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 	vertical-align: center;
 	margin-right: 10px;
 	padding-right: 10px;
@@ -127,8 +127,13 @@
 }
 
 .WindowButton:hover {
-	opacity: 0.5;
+	border: 1px solid #ffffff2f;
 }
+
+.WindowButton:hover Label {
+    opacity: 0.3;
+}
+
 .WindowTextBox
 {
     flow-children: right;
@@ -151,8 +156,8 @@
 	width: fill-parent-flow(1.0);
 	height: fit-children;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 	vertical-align: center;
 	margin-right: 10px;
 	padding-right: 10px;

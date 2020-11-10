@@ -51,6 +51,11 @@ function HeroSelection:BuildHeroEntry(heroName, kv)
         heroEntry.Roles.Support = kv[heroName].Roles.Support or 0
         heroEntry.Roles.Utility = kv[heroName].Roles.Utility or 0
     end
+    if (kv[heroName].HeroIndex) then
+        heroEntry.HeroIndex = kv[heroName].HeroIndex
+    else
+        heroEntry.HeroIndex = -1
+    end
     heroEntry.Attribute = kv[heroName].AttributePrimary or heroEntry.Attribute
     if (kv[heroName]["HeroSelectionAbilities"]) then
         for index = 1, 6 do

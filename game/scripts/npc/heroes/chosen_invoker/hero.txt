@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_invoker"
     {
+	    "HeroIndex"		"74"
         "AbilityLayout"     "6"
         "Ability1"	"chosen_invoker_purification_brilliance"
         "Ability2"	"chosen_invoker_flare_array"

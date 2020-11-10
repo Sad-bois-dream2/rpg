@@ -2,6 +2,7 @@
 {
 	"npc_dota_hero_skeleton_king"
 	{
+	    "HeroIndex"		"42"
 		"AbilityLayout" "6"
 		"Ability1"		"catastrophe_demolisher_curse_of_doom"
 		"Ability2"		"catastrophe_demolisher_flaming_blast"

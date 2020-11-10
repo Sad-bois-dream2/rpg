@@ -2,6 +2,7 @@
 {
   "npc_dota_hero_dark_willow"
   {
+	"HeroIndex"		"119"
     "AbilityLayout"     "6"
 	"Ability1"	"fallen_druid_wisp_companion"
 	"Ability2"	"fallen_druid_flashbang"

@@ -16,14 +16,18 @@
 .SaveSlot {
     width: fill-parent-flow(1.0);
     height: 70px;
-    border: 1px solid gray;
-    border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
     horizontal-align: center;
     margin-bottom: 5px;
 }
 
+.SaveSlot:hover #SaveSlotNameLabel, .SaveSlot:hover #SaveSlotLevelLabel {
+    opacity: 0.3;
+}
+
 .SaveSlot:hover {
-    opacity: 0.6;
+	border: 1px solid #ffffff2f;
 }
 
 .SaveSlotLeftContent {
@@ -50,7 +54,8 @@
     vertical-align: center;
     width: 96px;
     height: 56px;
-    border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
     margin-left: 5px;
 }
 

@@ -29,8 +29,7 @@
                 </Panel>
                 <Label text="#DOTA_SaveLoad_SaveProgress"/>
             </Panel>
-            <Image class="WindowCloseIcon" src="file://{images}/custom_game/hud/close_button.png"
-                   scaling="stretch-to-fit-preserve-aspect" onactivate="CloseWindow()"/>
+            <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
         </Panel>
     </Panel>
 </root>

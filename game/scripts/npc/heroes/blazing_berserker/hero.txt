@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_axe"
     {
+	    "HeroIndex"		"2"
         "AbilityLayout"     "6"
         "Ability1"	"blazing_berserker_molten_strike"
         "Ability2"	"blazing_berserker_incinerating_souls"

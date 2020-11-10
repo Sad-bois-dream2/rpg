@@ -7,9 +7,10 @@
     </scripts>
     <Panel style="visibility: collapse;" class="ItemTooltip" hittest="false" hittestchildren="false">
         <Panel id="ItemTooltipHeader" class="ItemTooltipHeader">
-            <Panel>
+            <Panel class="ItemTooltipImageContainer">
                 <DOTAItemImage id="ItemTooltipImage" class="ItemTooltipImage" showtooltip="false" hittest="false"
                                scaling="stretch-to-fit-preserve-aspect" itemname="item_third_eye"/>
+                <Panel id="ItemTooltipImageBorder"/>
             </Panel>
             <Panel class="ItemTooltipName">
                 <Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Item name"/>
