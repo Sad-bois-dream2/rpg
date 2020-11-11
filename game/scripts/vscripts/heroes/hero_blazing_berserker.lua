@@ -764,24 +764,29 @@ function blazing_berserker_fission:PerformSpin(showAnimation)
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    local damage = Units:GetHeroStrength(self.caster) * self.damage
+    local damageTable = {
+        damage = Units:GetHeroStrength(self.caster) * self.damage,
+        caster = self.caster,
+        target = nil,
+        ability = self,
+        firedmg = true,
+        aoe = true
+    }
+    local modifierTable = {
+        ability = self,
+        target = nil,
+        caster = self.caster,
+        modifier_name = "modifier_blazing_berserker_fission_dot",
+        duration = self.dotDuration,
+        stacks = 1,
+        max_stacks = 99999
+    }
     for _, enemy in pairs(enemies) do
-        local damageTable = {}
-        damageTable.damage = damage
-        damageTable.caster = self.caster
         damageTable.target = enemy
-        damageTable.ability = self
-        damageTable.firedmg = true
-        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         if (self.dotDuration > 0) then
-            local modifierTable = {}
-            modifierTable.ability = self
             modifierTable.target = enemy
-            modifierTable.caster = self.caster
-            modifierTable.modifier_name = "modifier_blazing_berserker_fission_dot"
-            modifierTable.duration = self.dotDuration
-            GameMode:ApplyDebuff(modifierTable)
+            GameMode:ApplyNPCBasedStackingDebuff(modifierTable)
         end
         if (self.aaProc > 0) then
             local attackDamageModifier = self.caster:AddNewModifier(self.caster, nil, "modifier_blazing_berserker_fission_aa_fix", {})
