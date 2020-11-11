@@ -26,14 +26,18 @@
 	transition-timing-function: ease-in-out;
 }
 
-.DropItemIcon {
+.ItemTooltipImageContainer {
+    width: 77px;
+    height: 57px;
+    margin-left: 5px;
     vertical-align: center;
-    margin-left: 10px;
-	border: 1px solid #ffffff09;
-	box-shadow: 0px 0px 6px #000000aa;
     horizontal-align: center;
-    width: 64px;
-    height: 48px;
+	box-shadow: 0px 0px 6px #000000aa;
+}
+
+.DropItemIcon {
+	width: fill-parent-flow(1.0);
+	height: fill-parent-flow(1.0);
 }
 
 .RightSide {
