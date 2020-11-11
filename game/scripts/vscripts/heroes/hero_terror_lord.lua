@@ -89,23 +89,26 @@ end
 LinkedModifiers["modifier_terror_lord_malicious_flames"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_terror_lord_malicious_flames_dot = class({
-    IsDebuff = function(self)
+    IsDebuff = function()
         return true
     end,
-    IsHidden = function(self)
+    IsHidden = function()
         return false
     end,
-    IsPurgable = function(self)
+    IsPurgable = function()
         return true
     end,
-    RemoveOnDeath = function(self)
+    RemoveOnDeath = function()
         return true
     end,
-    AllowIllusionDuplicate = function(self)
+    AllowIllusionDuplicate = function()
         return false
     end,
-    GetEffectName = function(self)
+    GetEffectName = function()
         return "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
+    end,
+    GetAttributes = function()
+        return MODIFIER_ATTRIBUTE_MULTIPLE
     end
 })
 
@@ -146,7 +149,7 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
         for _, enemy in pairs(enemies) do
             if (not enemy:HasModifier("modifier_terror_lord_malicious_flames_dot")) then
                 self.ability.modifierTable.target = enemy
-                GameMode:ApplyDebuff(self.ability.modifierTable)
+                GameMode:ApplyNPCBasedDebuff(self.ability.modifierTable)
             end
         end
     end
@@ -197,8 +200,8 @@ function terror_lord_malicious_flames:OnSpellStart(secondCast)
     for _, enemy in pairs(enemies) do
         self.modifierTable.target = enemy
         damageTable.target = enemy
-        GameMode:ApplyDebuff(self.modifierTable)
-        GameMode:DamageFilter(damageTable)
+        GameMode:ApplyNPCBasedDebuff(self.modifierTable)
+        GameMode:DamageUnit(damageTable)
     end
     local pfx = ParticleManager:CreateParticle("particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
     ParticleManager:SetParticleControl(pfx, 0, targetPosition)
@@ -722,7 +725,50 @@ end
 
 
 -- terror_lord_ruthless_predator
-modifier_terror_lord_ruthless_predator = class({
+modifier_terror_lord_ruthless_predator_aura = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_terror_lord_ruthless_predator_aura_buff"
+    end,
+    GetEffectName = function()
+        return "particles/units/terror_lord/ruthless_predator/ruthless_predator_aura.vpcf"
+    end
+})
+
+function modifier_terror_lord_ruthless_predator_aura:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_terror_lord_ruthless_predator_aura:GetAuraEntityReject(npc)
+    return npc:HasModifier("modifier_terror_lord_ruthless_predator_aura")
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_ruthless_predator_aura_buff = class({
     IsDebuff = function(self)
         return false
     end,
@@ -737,10 +783,47 @@ modifier_terror_lord_ruthless_predator = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
+    end
+})
+
+function modifier_terror_lord_ruthless_predator_aura_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ownerModifier = self:GetAbility():GetCaster():FindModifierByName("modifier_terror_lord_ruthless_predator")
+end
+
+function modifier_terror_lord_ruthless_predator_aura_buff:GetHealthRegenerationPercentBonus()
+    if (self.ownerModifier and self.ownerModifier.GetHealthRegenerationPercentBonus) then
+        return self.ownerModifier:GetHealthRegenerationPercentBonus()
+    end
+    return 0
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_ruthless_predator = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end
 })
 
 function modifier_terror_lord_ruthless_predator:OnCreated()
@@ -749,9 +832,71 @@ function modifier_terror_lord_ruthless_predator:OnCreated()
     end
     self.ability = self:GetAbility()
     self.caster = self:GetParent()
-    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_aura.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
-    ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetAbsOrigin(), true)
-    self:AddParticle(pidx, true, false, 1, true, false)
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.particlesTable = {}
+    self.ability:OnUpgrade()
+    self:OnRefresh()
+end
+
+function modifier_terror_lord_ruthless_predator:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_terror_lord_ruthless_predator:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInRadius(
+            self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damageTable = {
+        caster = self.caster,
+        target = nil,
+        ability = self.ability,
+        damage = Units:GetHeroStrength(self.caster) * self.ability.damage,
+        infernodmg = true,
+        aoe = true
+    }
+    local stacks = 0
+    for _, pidx in pairs(self.particlesTable) do
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end
+    self.particlesTable = {}
+    for _, enemy in pairs(enemies) do
+        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
+        ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
+        table.insert(self.particlesTable, pidx)
+        damageTable.target = enemy
+        GameMode:DamageUnit(damageTable)
+        if Enemies:IsBoss(enemy) then
+            stacks = stacks + self.ability.stacksPerBoss
+        elseif Enemies:IsElite(enemy) then
+            stacks = stacks + self.ability.stacksPerElite
+        else
+            stacks = stacks + self.ability.stacksPerNormal
+        end
+    end
+    self:SetStackCount(stacks + self.ability.minStacks)
+end
+
+function modifier_terror_lord_ruthless_predator:GetHealthRegenerationPercentBonus()
+    return math.min(self.ability.bonusHealthRegenerationPerEnemy * self:GetStackCount(), self.ability.bonusHealthRegenerationMax)
+end
+
+function modifier_terror_lord_ruthless_predator:OnTooltip()
+    local ability = self:GetAbility()
+    return math.min(ability:GetSpecialValueFor("bonus_health_regeneration_per_enemy") * self:GetStackCount(), ability:GetSpecialValueFor("bonus_health_regeneration_max"))
 end
 
 LinkedModifiers["modifier_terror_lord_ruthless_predator"] = LUA_MODIFIER_MOTION_NONE
@@ -761,7 +906,7 @@ terror_lord_ruthless_predator = class({
         return self:GetSpecialValueFor("radius")
     end,
     GetBehavior = function(self)
-        if (self:GetSpecialValueFor("duration") > 0) then
+        if (self:GetSpecialValueFor("active_duration") > 0) then
             return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
         end
         return DOTA_ABILITY_BEHAVIOR_AURA + DOTA_ABILITY_BEHAVIOR_PASSIVE
@@ -780,20 +925,28 @@ function terror_lord_ruthless_predator:OnUpgrade()
     self.stacksPerNormal = self:GetSpecialValueFor("stacks_per_normal")
     self.stacksPerElite = self:GetSpecialValueFor("stacks_per_elite")
     self.stacksPerBoss = self:GetSpecialValueFor("stacks_per_boss")
-    self.bonusHealthRegenerationPernemy = self:GetSpecialValueFor("bonus_health_regeneration_per_enemy") / 100
-    self.bonusManaRegenerationPernemy = self:GetSpecialValueFor("bonus_mana_regeneration_per_enemy") / 100
+    self.bonusHealthRegenerationPerEnemy = self:GetSpecialValueFor("bonus_health_regeneration_per_enemy") / 100
+    self.bonusHealthRegenerationMax = self:GetSpecialValueFor("bonus_health_regeneration_max") / 100
     self.radius = self:GetSpecialValueFor("radius")
     self.tick = self:GetSpecialValueFor("tick")
-    self.minStacksActive = self:GetSpecialValueFor("min_stacks_active")
-    self.abilityCooldown = self:GetSpecialValueFor("ability_cooldown")
-    self.duration = self:GetSpecialValueFor("duration")
+    self.activeDuration = self:GetSpecialValueFor("active_duration")
+    self.damage = self:GetSpecialValueFor("damage") / 100
 end
 
 function terror_lord_ruthless_predator:OnSpellStart()
     if (not IsServer()) then
         return
     end
-
+    local caster = self:GetCaster()
+    local modifierTable = {
+        ability = self,
+        target = caster,
+        caster = caster,
+        modifier_name = "modifier_terror_lord_ruthless_predator_aura",
+        duration = self.activeDuration
+    }
+    GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("Hero_AbyssalUnderlord.Firestorm.Start", caster)
 end
 
 -- Internal stuff
