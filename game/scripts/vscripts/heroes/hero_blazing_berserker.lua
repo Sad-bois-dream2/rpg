@@ -786,7 +786,13 @@ function blazing_berserker_fission:PerformSpin(showAnimation)
         GameMode:DamageUnit(damageTable)
         if (self.dotDuration > 0) then
             modifierTable.target = enemy
-            GameMode:ApplyNPCBasedStackingDebuff(modifierTable)
+            local appliedDOT = GameMode:ApplyNPCBasedStackingDebuff(modifierTable)
+            local duration = appliedDOT:GetDuration()
+            Timers:CreateTimer(duration, function()
+                if (appliedDOT and not appliedDOT:IsNull()) then
+                    appliedDOT:DecrementStackCount()
+                end
+            end)
         end
         if (self.aaProc > 0) then
             local attackDamageModifier = self.caster:AddNewModifier(self.caster, nil, "modifier_blazing_berserker_fission_aa_fix", {})
