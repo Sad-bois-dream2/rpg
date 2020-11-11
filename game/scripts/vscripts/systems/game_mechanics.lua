@@ -311,10 +311,10 @@ if (IsServer()) then
     ---@param fireEvent boolean
     ---@return CDOTA_Modifier_Lua
     function GameMode:ApplyNPCBasedBuff(args)
-        if (not args or not args.caster or not args.modifier_name) then
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
             return nil
         end
-        local findedModifier = args.caster:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
         if (findedModifier) then
             findedModifier:ForceRefresh()
         else
@@ -327,7 +327,7 @@ if (IsServer()) then
     ---@param args STACKING_MODIFIER_TABLE
     ---@return CDOTA_Modifier_Lua
     function GameMode:ApplyNPCBasedStackingBuff(args)
-        if (not args or not args.caster or not args.modifier_name) then
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
             return nil
         end
         args.stacks = tonumber(args.stacks)
@@ -335,7 +335,7 @@ if (IsServer()) then
         if (not args.stacks or not args.max_stacks) then
             return nil
         end
-        local findedModifier = args.caster:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
         if (findedModifier) then
             local stacks = findedModifier:GetStackCount() + args.stacks
             findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
@@ -497,10 +497,10 @@ if (IsServer()) then
     ---@param fireEvent boolean
     ---@return CDOTA_Modifier_Lua
     function GameMode:ApplyNPCBasedDebuff(args)
-        if (not args or not args.caster or not args.modifier_name) then
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
             return nil
         end
-        local findedModifier = args.caster:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
         if (findedModifier) then
             findedModifier:ForceRefresh()
         else
@@ -513,7 +513,7 @@ if (IsServer()) then
     ---@param args STACKING_MODIFIER_TABLE
     ---@return CDOTA_Modifier_Lua
     function GameMode:ApplyNPCBasedStackingDebuff(args)
-        if (not args or not args.caster or not args.modifier_name) then
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
             return nil
         end
         args.stacks = tonumber(args.stacks)
@@ -521,7 +521,7 @@ if (IsServer()) then
         if (not args.stacks or not args.max_stacks) then
             return nil
         end
-        local findedModifier = args.caster:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
         if (findedModifier) then
             local stacks = findedModifier:GetStackCount() + args.stacks
             findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
@@ -533,6 +533,17 @@ if (IsServer()) then
             return GameMode:ApplyStackingDebuff(args)
         end
         return nil
+    end
+
+    function GameMode:HasNPCBasedModifier(modifier, caster)
+        if (not modifier or not caster or not self.HasNPCBasedModifier) then
+            return false
+        end
+        local findedModifier = self:FindModifierByNameAndCaster(modifier, caster)
+        if (findedModifier) then
+            return true
+        end
+        return false
     end
 
     ---@class REDUCE_ABILITY_CD_TABLE
@@ -1247,16 +1258,16 @@ end
 
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
 
-function CDOTA_BaseNPC:HasNPCBasedModifier(modifier, caster)
-    if (not modifier or not caster) then
-        return false
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
     end
-    local findedModifier = caster:FindModifierByNameAndCaster(modifier, caster)
-    if (findedModifier) then
-        return true
+    local unit = EntIndexToHScript(keys.entindex)
+    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit.HasNPCBasedModifier and not isUnitThinker) then
+        unit.HasNPCBasedModifier = GameMode.HasNPCBasedModifier
     end
-    return false
-end
+end, nil)
 
 ListenToGameEvent("npc_spawned", function(keys)
     if (not IsServer()) then
