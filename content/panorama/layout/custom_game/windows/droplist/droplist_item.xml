@@ -6,10 +6,14 @@
     <scripts>
         <include src="file://{resources}/scripts/windows/droplist_item.js"/>
     </scripts>
-    <Panel class="DropItemContainer" onmouseactivate="OnClick()" onmouseover="ShowItemTooltip()"
-           onmouseout="HideItemTooltip()" hittest="true" hittestchilldren="false">
-        <DOTAItemImage id="DropItemIcon" hittest="true" class="DropItemIcon" showtooltip="false"
-                       itemname="item_two_handed_sword" scaling="stretch-to-fit-preserve-aspect"/>
+    <Panel class="DropItemContainer" onmouseactivate="OnClick()" hittest="true" hittestchilldren="false"
+           onmouseover="ShowItemTooltip()"
+           onmouseout="HideItemTooltip()">
+        <Panel class="ItemTooltipImageContainer">
+            <DOTAItemImage id="DropItemIcon" hittest="true" class="DropItemIcon" showtooltip="false"
+                           itemname="item_two_handed_sword" scaling="stretch-to-fit-preserve-aspect"/>
+            <Panel id="ItemTooltipImageBorder" hittest="true" hittestchilldren="false"/>
+        </Panel>
         <Panel class="RightSide">
             <Label id="ItemNameLabel" class="ItemTooltipNameLabel" html="true" text="Item Name"/>
             <Panel class="ItemInfoContainer">

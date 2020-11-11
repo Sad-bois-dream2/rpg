@@ -31,28 +31,17 @@ end
 
 function modifier_talent_14:OnPostTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_talent_14")
-    if (modifier) then
-        local armorReductionModifiers = damageTable.victim:FindAllModifiersByName("modifier_talent_14_debuff")
-        local armorReductionPlayerModifier = nil
-        for _, armorModifier in pairs(armorReductionModifiers) do
-            if (armorModifier:GetCaster() == damageTable.attacker) then
-                armorReductionPlayerModifier = armorModifier
-                break
-            end
-        end
-        if (armorReductionPlayerModifier) then
-            armorReductionPlayerModifier:ForceRefresh()
-        else
-            local modifierTable = {}
-            modifierTable.caster = damageTable.attacker
-            modifierTable.target = damageTable.victim
-            modifierTable.ability = nil
-            modifierTable.duration = 3
-            modifierTable.modifier_name = "modifier_talent_14_debuff"
-            GameMode:ApplyDebuff(modifierTable)
-        end
+    if (not modifier) then
+        return damageTable
     end
-    return damageTable
+    local modifierTable = {
+        caster = damageTable.attacker,
+        target = damageTable.victim,
+        ability = nil,
+        duration = 3,
+        modifier_name = "modifier_talent_14_debuff"
+    }
+    GameMode:ApplyNPCBasedDebuff(modifierTable)
 end
 
 modifier_talent_14_debuff = class({

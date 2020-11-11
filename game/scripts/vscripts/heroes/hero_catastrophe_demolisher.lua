@@ -90,7 +90,7 @@ function modifier_catastrophe_demolisher_curse_of_doom_aura:OnCreated()
     self.caster = self.ability:GetCaster()
 end
 
-function modifier_catastrophe_demolisher_curse_of_doom_aura:GetAggroCausedBonus()
+function modifier_catastrophe_demolisher_curse_of_doom_aura:GetAggroCausedPercentBonus()
     local totalResistances = 0
     totalResistances = totalResistances + Units:GetFireProtection(self.caster)
     totalResistances = totalResistances + Units:GetFrostProtection(self.caster)

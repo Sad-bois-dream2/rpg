@@ -55,7 +55,6 @@ function modifier_dps_dummy:OnPostTakeDamage(damageTable)
         if(damageTable.victim.isready and playerId == damageTable.victim.owner) then
             timer = 1
         end
-        print(damageTable.fromtalent)
         local event = {
             player_id = playerId,
             damage = damageTable.damage,

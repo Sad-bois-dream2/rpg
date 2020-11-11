@@ -366,7 +366,7 @@ function modifier_inventory_item_example:GetCriticalChanceBonus()
 end
 
 -- increase all aggro caused of owner, 1.0 = 100%
-function modifier_inventory_item_example:GetAggroCausedBonus()
+function modifier_inventory_item_example:GetAggroCausedPercentBonus()
     return 0
 end
 

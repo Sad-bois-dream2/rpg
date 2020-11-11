@@ -306,6 +306,50 @@ if (IsServer()) then
         return nil
     end
 
+    --- Apply (or refresh if exists) npc based buff
+    ---@param args MODIFIER_TABLE
+    ---@param fireEvent boolean
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedBuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            findedModifier:ForceRefresh()
+        else
+            return GameMode:ApplyBuff(args)
+        end
+        return nil
+    end
+
+    --- Apply (or refresh if exists) npc based buff + increase his stacks count by args.stacks up to args.max_stacks
+    ---@param args STACKING_MODIFIER_TABLE
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedStackingBuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        args.stacks = tonumber(args.stacks)
+        args.max_stacks = tonumber(args.max_stacks)
+        if (not args.stacks or not args.max_stacks) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            local stacks = findedModifier:GetStackCount() + args.stacks
+            findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
+            for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
+            end
+            return findedModifier
+        else
+            return GameMode:ApplyStackingBuff(args)
+        end
+        return nil
+    end
+
     --- Apply (or refresh if exists) debuff
     ---@param args MODIFIER_TABLE
     ---@param fireEvent boolean
@@ -400,10 +444,10 @@ if (IsServer()) then
                         end
                     end
                     local modifierStateTable = {}
-                    if(isStun == true) then
+                    if (isStun == true) then
                         modifierStateTable[MODIFIER_STATE_STUNNED] = true
                     end
-                    if(isHex == true) then
+                    if (isHex == true) then
                         modifierStateTable[MODIFIER_STATE_HEXED] = true
                     end
                     if (isSilence == true) then
@@ -412,7 +456,7 @@ if (IsServer()) then
                     if (isRoot == true) then
                         modifierStateTable[MODIFIER_STATE_ROOTED] = true
                     end
-                    if(not modifier.CheckState) then
+                    if (not modifier.CheckState) then
                         modifier.CheckState = function(self)
                             return modifierStateTable
                         end
@@ -447,6 +491,61 @@ if (IsServer()) then
             end
         end
         return nil
+    end
+
+    --- Apply (or refresh if exists) npc based debuff
+    ---@param args MODIFIER_TABLE
+    ---@param fireEvent boolean
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedDebuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            findedModifier:ForceRefresh()
+        else
+            return GameMode:ApplyDebuff(args)
+        end
+        return nil
+    end
+
+    --- Apply (or refresh if exists) npc based debuff + increase his stacks count by args.stacks up to args.max_stacks
+    ---@param args STACKING_MODIFIER_TABLE
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedStackingDebuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        args.stacks = tonumber(args.stacks)
+        args.max_stacks = tonumber(args.max_stacks)
+        if (not args.stacks or not args.max_stacks) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            local stacks = findedModifier:GetStackCount() + args.stacks
+            findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
+            for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
+            end
+            return findedModifier
+        else
+            return GameMode:ApplyStackingDebuff(args)
+        end
+        return nil
+    end
+
+    function GameMode:HasNPCBasedModifier(modifier, caster)
+        if (not modifier or not caster or not self.HasNPCBasedModifier) then
+            return false
+        end
+        local findedModifier = self:FindModifierByNameAndCaster(modifier, caster)
+        if (findedModifier) then
+            return true
+        end
+        return false
     end
 
     ---@class REDUCE_ABILITY_CD_TABLE
@@ -711,7 +810,7 @@ if (IsServer()) then
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
-                    if(args.ability or args.fromtalent) then
+                    if (args.ability or args.fromtalent) then
                         PopupSpellCriticalDamage(damageTable.victim, damageTable.damage)
                     else
                         PopupCriticalDamage(damageTable.victim, damageTable.damage)
@@ -1160,6 +1259,17 @@ function modifier_out_of_combat_buff:OnIntervalThink()
 end
 
 LinkLuaModifier("modifier_out_of_combat_buff", "systems/game_mechanics", LUA_MODIFIER_MOTION_NONE)
+
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit.HasNPCBasedModifier and not isUnitThinker) then
+        unit.HasNPCBasedModifier = GameMode.HasNPCBasedModifier
+    end
+end, nil)
 
 ListenToGameEvent("npc_spawned", function(keys)
     if (not IsServer()) then

@@ -45,28 +45,22 @@ function modifier_talent_49:OnAttackLanded(kv)
         return
     end
     if (kv.attacker == self.hero and RollPercentage(TalentTree:GetHeroTalentLevel(self.hero, 49) * 15)) then
-        local poisonWeaponModifiers = kv.target:FindAllModifiersByName("modifier_talent_49_dot")
-        local poisonWeaponPlayerModifier = nil
-        for _, poisonWeaponModifier in pairs(poisonWeaponModifiers) do
-            if (poisonWeaponModifier:GetCaster() == self.hero) then
-                poisonWeaponPlayerModifier = poisonWeaponModifier
-                break
+        local modifierTable = {
+            caster = self.hero,
+            target = kv.target,
+            ability = nil,
+            modifier_name = "modifier_talent_49_dot",
+            duration = 3,
+            stacks = 1,
+            max_stacks = 99999
+        }
+        local modifier = GameMode:ApplyNPCBasedStackingDebuff(modifierTable)
+        local duration = modifier:GetDuration()
+        Timers:CreateTimer(duration, function()
+            if (modifier and not modifier:IsNull()) then
+                modifier:DecrementStackCount()
             end
-        end
-        if (poisonWeaponPlayerModifier) then
-            poisonWeaponPlayerModifier:ApplyStack()
-        else
-            local modifierTable = {}
-            modifierTable.caster = self.hero
-            modifierTable.target = kv.target
-            modifierTable.ability = nil
-            modifierTable.modifier_name = "modifier_talent_49_dot"
-            modifierTable.duration = 3
-            local addedModifier = GameMode:ApplyDebuff(modifierTable)
-            if (addedModifier) then
-                addedModifier:ApplyStack()
-            end
-        end
+        end)
     end
 end
 
@@ -119,21 +113,6 @@ function modifier_talent_49_dot:OnCreated()
         naturedmg = true,
     }
     self:StartIntervalThink(1)
-end
-
-function modifier_talent_49_dot:ApplyStack()
-    if not IsServer() then
-        return
-    end
-    self:SetStacksCount(self:GetStackCount() + 1)
-    self:ForceRefresh()
-    local duration = self:GetDuration()
-    local modifier = self
-    Timers:CreateTimer(duration, function()
-        if (modifier and not modifier:IsNull()) then
-            modifier:DecrementStackCount()
-        end
-    end)
 end
 
 function modifier_talent_49_dot:OnIntervalThink()

@@ -27,6 +27,7 @@ function Inventory:Init()
     self.slot.invalid = -1
     -- item types, changes here require changes in GetItemRarityName() in client side tooltip_manager.js
     self.rarity = {}
+    self.rarity.min = 0
     self.rarity.common = 0
     self.rarity.uncommon = 1
     self.rarity.rare = 2
@@ -105,8 +106,7 @@ end
 function Inventory:GetItemsByRarity(rarity)
     local result = {}
     rarity = tonumber(rarity)
-    if (not rarity or not not Inventory:IsRarityValid(rarity)) then
-        DebugPrint("[INVENTORY] Attempt to get items with unknown rarity (rarity=" .. tostring(rarity) .. ")")
+    if (not rarity or not Inventory:IsRarityValid(rarity)) then
         return result
     end
     for itemName, itemData in pairs(Inventory.itemsData) do
@@ -192,11 +192,13 @@ function Inventory:IsRarityValid(rarity)
     if (not rarity) then
         return false
     end
-    if (rarity < 0 or rarity > Inventory.rarity.max) then
+    if (rarity >= Inventory.rarity.min and rarity <= Inventory.rarity.max) then
+        return true
+    else
         DebugPrint("[INVENTORY] Attempt to get items with unknown rarity (rarity=" .. tostring(rarity) .. ")")
         return false
     end
-    return true
+    return false
 end
 
 ---@param slot number

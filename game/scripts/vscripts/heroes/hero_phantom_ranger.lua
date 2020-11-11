@@ -171,7 +171,7 @@ function phantom_ranger_phantom_of_vengeance:OnSpellStart(sourceUnit, target)
     if not self.caster:HasAbility("phantom_ranger_shadowstep") then
         local index
         local i = 7
-        while (not index and i < self.caster:GetAbilityCount()) do
+        while (not index and i < self.caster:GetAbilityCount() - 1) do
             if (not self.caster:GetAbilityByIndex(i)) then
                 index = i
             end

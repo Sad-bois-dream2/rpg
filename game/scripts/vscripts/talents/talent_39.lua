@@ -45,15 +45,16 @@ end
 function modifier_talent_39:OnPostTakeDamage(damageTable)
     local modifier = damageTable.attacker:FindModifierByName("modifier_talent_39")
     if (modifier and RollPercentage(40) and damageTable.ability and damageTable.ability == self.firstAbility) then
-        local modifierTable = {}
-        modifierTable.caster = damageTable.attacker
-        modifierTable.target = damageTable.victim
-        modifierTable.ability = nil
-        modifierTable.modifier_name = "modifier_talent_39_dot"
-        modifierTable.duration = 3
-        modifierTable.stacks = 1
-        modifierTable.max_stacks = 99999
-        local addedModifier = GameMode:ApplyStackingDebuff(modifierTable)
+        local modifierTable = {
+            caster = damageTable.attacker,
+            target = damageTable.victim,
+            ability = nil,
+            modifier_name = "modifier_talent_39_dot",
+            duration = 3,
+            stacks = 1,
+            max_stacks = 99999,
+        }
+        local addedModifier = GameMode:ApplyNPCBasedStackingBuff(modifierTable)
         local duration = addedModifier:GetDuration()
         Timers:CreateTimer(duration, function()
             if (addedModifier and not addedModifier:IsNull()) then

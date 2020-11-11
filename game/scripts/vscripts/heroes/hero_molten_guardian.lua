@@ -1296,7 +1296,7 @@ function modifier_molten_guardian_shields_up:OnCreated()
     self.caster = self.ability:GetCaster()
 end
 
-function modifier_molten_guardian_shields_up:GetAggroCausedBonus()
+function modifier_molten_guardian_shields_up:GetAggroCausedPercentBonus()
     local totalResistances = 0
     totalResistances = totalResistances + Units:GetFireProtection(self.caster)
     totalResistances = totalResistances + Units:GetFrostProtection(self.caster)

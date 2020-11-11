@@ -186,7 +186,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_41:OnAttackLanded(params)
     if (params.attacker and params.target and not params.target:IsNull() and (Enemies:IsElite(params.target) or Enemies:IsBoss(params.target)) and params.attacker == self.caster) then
 
         local talent41_level = 3 --TalentTree:GetHeroTalentLevel(self.caster, 41)
-        for i = 0, self.caster:GetAbilityCount() do
+        for i = 0, self.caster:GetAbilityCount()-1 do
 
             local ability = self.caster:GetAbilityByIndex(i)
             if (ability) then
