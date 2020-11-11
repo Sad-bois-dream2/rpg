@@ -117,8 +117,10 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local itemsPerDrop = 1
     local dropChanceFactor = Enemies.dropChanceFactor
     local itemsTable = {}
-    table.insert(itemsTable, Inventory.rarity.common, { items = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100, itemsDifficulty = 1 })
-    --[[if (difficulty > Difficulty.DIFFICULTY1) then
+    local commonItems = Inventory:GetItemsByRarity(Inventory.rarity.common)
+    if(GetTableSize(commonItems) > 0) then
+        table.insert(itemsTable, Inventory.rarity.common, { items = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100, itemsDifficulty = 1 })
+    end --[[if (difficulty > Difficulty.DIFFICULTY1) then
         table.insert(itemsTable, Inventory.rarity.uncommon, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uncommon), chance = 60 })
         print("Insert un")
     end
