@@ -906,7 +906,7 @@
 		"DOTA_TalentTree_Talent_38"		"Inspirational"
 		"DOTA_TalentTree_Talent_38_Description"		"You will share <font color='#96afff'><b>10% / 20% / 30%</b></font> of healing received with all allies in 500 radius around you. Can't proc itself."
 		"DOTA_TalentTree_Talent_39"		"Fatal Bleed"
-		"DOTA_TalentTree_Talent_39_Description"		"Grants you <font color='#96afff'><b>10% / 20% / 30%</b></font> DOT damage and when you deal damage with your 1st ability you has 40% chance to apply a bleed to target, dealing <font color='#96afff'><b>15% / 30% / 45%</b></font> of your strength per stack as <font color='#656666'>Physical</font> damage for 3 seconds. Each stack has independent duration."
+		"DOTA_TalentTree_Talent_39_Description"		"Grants you <font color='#96afff'><b>10% / 20% / 30%</b></font> DOT damage and when you deal damage with your 1st ability you has 40% chance to apply a bleed to target, dealing <font color='#96afff'><b>15% / 30% / 45%</b></font> of your strength per stack as <font color='#656666'>Physical</font> damage for 3 seconds. Each stack has independent duration. Stacks with other players."
         "DOTA_Tooltip_modifier_talent_39_dot"	"Fatal Bleed"
         "DOTA_Tooltip_modifier_talent_39_dot_Description"	"Suffer from <font color='#656666'>Physical</font> damage."
 		"DOTA_TalentTree_Talent_40"		"Echo Strike"
