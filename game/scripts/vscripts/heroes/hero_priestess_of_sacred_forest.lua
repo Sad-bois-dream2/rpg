@@ -2204,10 +2204,15 @@ modifier_priestess_of_sacred_forest_sleep_dust_night_crit = class({
 })
 
 function modifier_priestess_of_sacred_forest_sleep_dust_night_crit:OnTakeDamage(damageTable)
-    local modifier = damageTable.victim:FindModifierByName("modifier_priestess_of_sacred_forest_sleep_dust_night_crit")
-    if (modifier and modifier.ability and modifier.ability.nextInstanceCrit and damageTable.damage > 0 and modifier.ability.caster == damageTable.attacker and damageTable.ability and damageTable.ability:GetAbilityName() ~= "priestess_of_sacred_forest_sleep_dust_night") then
+    local modifier = damageTable.victim:FindModifierByNameAndCaster("modifier_priestess_of_sacred_forest_sleep_dust_night_crit", damageTable.attacker)
+    if (modifier and modifier.ability and modifier.ability.nextInstanceCrit and damageTable.damage > 0 and damageTable.ability and damageTable.ability:GetAbilityName() ~= "priestess_of_sacred_forest_sleep_dust_night") then
         damageTable.crit = modifier.ability.nextInstanceCrit
-        modifier:Destroy()
+        local stacks = modifier:GetStackCount() - 1
+        if (stacks < 1) then
+            modifier:Destroy()
+        else
+            modifier:SetStackCount(stacks)
+        end
         return damageTable
     end
 end
@@ -2338,7 +2343,9 @@ function priestess_of_sacred_forest_sleep_dust_night:OnProjectileHit(target, loc
             modifierTable.target = target
             modifierTable.modifier_name = "modifier_priestess_of_sacred_forest_sleep_dust_night_crit"
             modifierTable.duration = -1
-            GameMode:ApplyDebuff(modifierTable)
+            modifierTable.stacks = 1
+            modifierTable.max_stacks = 99999
+            GameMode:ApplyNPCBasedStackingDebuff(modifierTable)
         end
         table.insert(self.damagedEnemies, target)
     end
