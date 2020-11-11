@@ -339,6 +339,7 @@ if (IsServer()) then
         if (findedModifier) then
             local stacks = findedModifier:GetStackCount() + args.stacks
             findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
             for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
                 GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
             end
@@ -525,6 +526,7 @@ if (IsServer()) then
         if (findedModifier) then
             local stacks = findedModifier:GetStackCount() + args.stacks
             findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
             for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
                 GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
             end
