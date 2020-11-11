@@ -73,7 +73,7 @@ function modifier_terror_lord_malicious_flames:OnCreated()
     self.caster = self:GetParent()
 end
 
-function modifier_terror_lord_malicious_flames:GetAggroCausedBonus()
+function modifier_terror_lord_malicious_flames:GetAggroCausedPercentBonus()
     local totalResistances = 0
     totalResistances = totalResistances + Units:GetFireProtection(self.caster)
     totalResistances = totalResistances + Units:GetFrostProtection(self.caster)

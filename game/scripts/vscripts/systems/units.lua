@@ -338,8 +338,8 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetCriticalChanceBonus) then
                 unitCriticalChance = unitCriticalChance + tonumber(unitModifiers[i].GetCriticalChanceBonus(unitModifiers[i]) or 0)
             end
-            if (unitModifiers[i].GetAggroCausedBonus) then
-                unitAggroCaused = unitAggroCaused + tonumber(unitModifiers[i].GetAggroCausedBonus(unitModifiers[i]) or 0)
+            if (unitModifiers[i].GetAggroCausedPercentBonus) then
+                unitAggroCaused = unitAggroCaused + tonumber(unitModifiers[i].GetAggroCausedPercentBonus(unitModifiers[i]) or 0)
             end
             if (unitModifiers[i].GetSummonDamageBonus) then
                 unitSummonDamage = unitSummonDamage + tonumber(unitModifiers[i].GetSummonDamageBonus(unitModifiers[i]) or 0)
