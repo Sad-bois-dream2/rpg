@@ -25,6 +25,7 @@ function OnItemDrop(event) {
     itemDropPanel.Data().itemName = event.item;
     itemDropPanel.Data().itemStats = JSON.parse(event.stats);
     dropContainer.MoveChildBefore(itemDropPanel, dropContainer.GetChild(0));
+    itemDropPanel.SetHasClass("show", true);
 }
 
 (function () {
