@@ -526,6 +526,14 @@
     flow-children: down;
     horizontal-align: center;
     vertical-align: bottom;
+	transform: translatey(100%);
+	transition-property: transform;
+	transition-duration: 2s;
+	transition-delay: 0s;
+}
+
+.ActionPanelContainer.loaded {
+	transform: translatey(0%);
 }
 
 #ModifierListContainer {
@@ -548,6 +556,14 @@
     horizontal-align: center;
     z-index: 20;
     height: 250px;
+	transform: translatey(100%);
+	transition-property: transform;
+	transition-duration: 2s;
+	transition-delay: 0s;
+}
+
+.HeroPanelContainer.Abilities.loaded {
+	transform: translatey(0%);
 }
 
 .HeroPanelLeftContainer {

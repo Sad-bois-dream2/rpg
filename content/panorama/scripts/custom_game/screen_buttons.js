@@ -18,6 +18,10 @@ function OnInventoryButtonClicked() {
     Game.EmitSound("General.SelectAction");
 }
 
+function OnInventoryWindowCloseRequest() {
+    inventoryWindowOpened = false;
+}
+
 function OnTalentTreeButtonClicked() {
     if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
         return
@@ -26,13 +30,17 @@ function OnTalentTreeButtonClicked() {
 	$.DispatchEvent("DOTAHideTitleTextTooltip", $.GetContextPanel());
 	if(talentTreeWindowOpened == false) {
         CloseAllWindows(localPlayer);
-        GameEvents.SendCustomGameEventToServer("rpg_talenttree_open_window", { "player_id" : localPlayer});
+        GameEvents.SendCustomGameEventToServer("rpg_talent_tree_open_window", { "player_id" : localPlayer});
         talentTreeWindowOpened = true;
     } else {
-        GameEvents.SendCustomGameEventToServer("rpg_talenttree_close_window", { "player_id" : localPlayer});
+        GameEvents.SendCustomGameEventToServer("rpg_talent_tree_close_window", { "player_id" : localPlayer});
         talentTreeWindowOpened = false;
     }
     Game.EmitSound("General.SelectAction");
+}
+
+function OnTalentTreeWindowCloseRequest() {
+    talentTreeWindowOpened = false;
 }
 
 function FixButtonPanelPosition() {
@@ -50,5 +58,7 @@ function CloseAllWindows(localPlayer) {
 
 (function() {
 	buttonsPanel = $("#ButtonsRoot");
+	GameEvents.Subscribe("rpg_talent_tree_close_window_from_server", OnTalentTreeWindowCloseRequest);
+	GameEvents.Subscribe("rpg_inventory_close_window_from_server", OnInventoryWindowCloseRequest);
 	FixButtonPanelPosition();
 })();

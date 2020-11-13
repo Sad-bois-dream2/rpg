@@ -407,12 +407,17 @@ function AutoUpdateValues() {
 var latestStoredManaPercent = 100, latestStoredMana = 0, latestStoredMaxMana = 0;
 var latestStats;
 
+var actionBarContainer = $("#ActionBarContainer");
+var actionBarHeroAbilitiesContainer = $("#HeroAbilitiesContainer");
+
 function OnHeroStatsUpdateRequest(event) {
     var selectedUnit = Players.GetLocalPlayerPortraitUnit();
     var localPlayerId = Entities.GetPlayerOwnerID(selectedUnit);
 	var parsedData = JSON.parse(event.data);
     var recievedPlayerId = parsedData.player_id;
     if (localPlayerId == recievedPlayerId) {
+        actionBarContainer.SetHasClass("loaded", true);
+        actionBarHeroAbilitiesContainer.SetHasClass("loaded", true);
         latestStats = parsedData.statsTable;
     }
 }

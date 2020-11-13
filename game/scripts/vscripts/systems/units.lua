@@ -373,21 +373,21 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (primaryAttributeIndex == 0) then
                 statsTable.str = statsTable.str + unitBonusPrimary
                 unitBonusPercentStr = unitBonusPercentStr + unitBonusPercentPrimary
+                statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
                 primaryAttribute = statsTable.str
             end
             if (primaryAttributeIndex == 1) then
                 statsTable.agi = statsTable.agi + unitBonusPrimary
                 unitBonusPercentAgi = unitBonusPercentAgi + unitBonusPercentPrimary
+                statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
                 primaryAttribute = statsTable.agi
             end
             if (primaryAttributeIndex == 2) then
                 statsTable.int = statsTable.int + unitBonusPrimary
                 unitBonusPercentInt = unitBonusPercentInt + unitBonusPercentPrimary
+                statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
                 primaryAttribute = statsTable.int
             end
-            statsTable.str = math.floor(statsTable.str * unitBonusPercentStr)
-            statsTable.agi = math.floor(statsTable.agi * unitBonusPercentAgi)
-            statsTable.int = math.floor(statsTable.int * unitBonusPercentInt)
             statsTable.primaryAttributeIndex = primaryAttributeIndex
         else
             statsTable.str = 0
@@ -399,9 +399,8 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             statsTable.primaryAttributeIndex = 0
         end
         -- attack damage
-        local heroBaseDamage = 0
         local attackDamagePerPrimary = 1
-        local totalAttackDamage = (heroBaseDamage + (primaryAttribute * attackDamagePerPrimary) + unitBonusAttackDamage) * unitBonusPercentAttackDamage
+        local totalAttackDamage = ((primaryAttribute * attackDamagePerPrimary) + unitBonusAttackDamage) * unitBonusPercentAttackDamage
         unit:SetBaseDamageMax(totalAttackDamage)
         unit:SetBaseDamageMin(totalAttackDamage)
         -- attack speed

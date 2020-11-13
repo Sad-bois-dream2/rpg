@@ -1,11 +1,18 @@
 .TalentTreeWindow
 {
-	margin-top: 0px;
 	visibility: collapse;
+	width: fit-children;
+	height: fit-children;
+	padding-left: 5px;
 }
 
 .TalentTree {
-	flow-children: down;
+	flow-children: right;
+	vertical-align: top;
+	horizontal-align: center;
+	margin: 10px;
+	margin-top: 20px;
+	margin-bottom: 100px;
 }
 
 .TalentPanel
@@ -20,6 +27,7 @@
 	height: 100%;
 	visibility: collapse;
 	margin-left: -8px;
+	margin-top: -8px;
 }
 
 .TalentLevelContainer {
@@ -76,55 +84,21 @@
 .TalentsRow 
 {
 	flow-children: right;
-	padding-left: 40px;
+	width: fit-children;
+	height: fit-children;
 }
 
 .TalentsColumn
 {
-	flow-children: right;
-	width: fill-parent-flow (1.0);
-	height: 64px;
-	margin-top: 30px;
+	flow-children: down;
+	width: fit-children;
+	height: fit-children;
+	margin-right: 20px;
 }
 
-.TreeBranchPanel 
+.TalentsColumn.last
 {
-	width: 225px;
-	height: 64px;
-	border: 1px solid grey;
-	border-radius: 5px;
-	flow-children: right;
-	margin-right: 135px;
-}
-
-.TreeBranchImagePanel
-{
-	width: 64px;
-	height: 64px;
-}
-
-.TreeBranchLabel
-{
-	width: 100%;
-	height: 20px;
-	text-align: center;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: white;
-	font-size: 16px;
-	font-family: platformfont;
-	text-overflow: shrink;
-	vertical-align: center;
-	horizontal-align: center;
-}
-
-.TreeHeaderRow
-{
-    width: 100%;
-    height: fit-children;
-    padding-left: 120px;
-    padding-top: 20px;
-    flow-children: right;
+	margin-right: 0px;
 }
 
 .TotalTalentPointsLabel
@@ -133,10 +107,10 @@
 	vertical-align: bottom;
 	font-size: 20px;
 	color: white;
-	margin-bottom: 33px;
 	text-transform: uppercase;
 	font-family: defaultFont;
 	text-shadow: 0px 0px 2px 4 #00000088;
+	margin-bottom: 25px;
 }
 
 .TalentTreeHelp
@@ -145,7 +119,13 @@
 	vertical-align: bottom;
 	font-size: 16px;
 	color: white;
-	margin-bottom: 10px;
 	font-family: defaultFont;
 	text-shadow: 0px 0px 2px 4 #00000088;
+	margin-bottom: 5px;
+}
+
+.TalentTreeResetButton {
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 60px;
 }
