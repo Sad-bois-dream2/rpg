@@ -171,7 +171,7 @@
                 </Panel>
             </Panel>
         </Panel>
-        <Panel class="HeroPanelContainer Abilities" hittest="false" hittestchildren="true">
+        <Panel id="HeroAbilitiesContainer" class="HeroPanelContainer Abilities" hittest="false" hittestchildren="true">
             <Panel class="HeroPanelLeftContainer" hittest="false">
                 <Panel class="HeroPortraitContainer" hittest="false">
                 </Panel>
@@ -182,7 +182,7 @@
                 </Panel>
             </Panel>
         </Panel>
-        <Panel class="ActionPanelContainer">
+        <Panel id="ActionBarContainer" class="ActionPanelContainer">
             <Panel id="ModifierListContainer">
             </Panel>
             <Panel class="HeroPanelContainer">
