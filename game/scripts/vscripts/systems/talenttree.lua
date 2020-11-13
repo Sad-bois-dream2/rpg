@@ -30,7 +30,7 @@ function TalentTree:Init()
     for talentId, talentData in pairs(data.Talents) do
         local convertedId = tonumber(talentId)
         if (convertedId < 1) then
-            print("[TalentTree] Talent id must be greater than 0. Skipped.")
+            DebugPrint("[TalentTree] Talent id must be greater than 0. Skipped.")
         else
             if (TalentTree:IsValidTalent(convertedId, talentData) == true) then
                 self.talentsData[convertedId] = talentData
@@ -40,6 +40,18 @@ function TalentTree:Init()
     for key, requirementsData in pairs(data.Requirements) do
         if (TalentTree:IsValidRequirement(key, requirementsData) == true) then
             self.talentsRequirements[key] = requirementsData
+        end
+    end
+    for _, talentData in pairs(self.talentsData) do
+        local requirementsFinded = false
+        for _, requirementsData in pairs(self.talentsRequirements) do
+            if(requirementsData.Row == talentData.Row and requirementsData.Column == talentData.Column) then
+                requirementsFinded = true
+            end
+        end
+        if(requirementsFinded == false) then
+            DebugPrint("[TalentTree] Can't find requirements data for row "..talentData.Row.." and column "..talentData.Column..". This will lead to problems so talent tree loading abandoned.")
+            return
         end
     end
     TalentTree:InitPanaromaEvents()
