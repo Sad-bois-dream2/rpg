@@ -10,8 +10,7 @@
     </scripts>
     <Panel class="Root" hittest="false">
         <Panel id="MainWindow" class="Window TalentTreeWindow" style="width: 900px; height: 640px;">
-            <Panel id="TalentTree" class="TalentTree">
-            </Panel>
+            <Panel id="TalentTree" class="TalentTree"/>
             <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
             <Label id="TotalTalentPointsLabel" html="true" class="TotalTalentPointsLabel" text="#DOTA_TalentTree_Total_Talent_Points"/>
             <Label id="TalentTreeHelp" html="true" class="TalentTreeHelp" text="#DOTA_TalentTree_Help"/>

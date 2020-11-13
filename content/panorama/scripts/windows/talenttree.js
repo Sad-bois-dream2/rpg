@@ -49,7 +49,7 @@ function CreateTalentPanel(row, column, talentId) {
     if (TALENTS_LAYOUT[column]) {
         if (TALENTS_LAYOUT[column][row]) {
             var talentPanel = $.CreatePanel("Panel", TALENTS_LAYOUT[column][row], "HeroTalent" + talentId);
-            talentPanel.BLoadLayout("file://{resources}/layout/custom_game/talent_tree/talent.xml", false, false);
+            talentPanel.BLoadLayout("file://{resources}/layout/custom_game/windows/talenttree/talenttree_talent.xml", false, false);
             talentPanel.hittest = true;
             talentPanel.hittestchildren = false;
 			talentPanel.Data().ShowTalentTooltip = ShowTalentTooltip;
@@ -66,12 +66,11 @@ function CreateTalentPanel(row, column, talentId) {
 			talentsData[talentId].panel.levelLabel = talentPanel.FindChildTraverse("TalentLevel");
         } else {
             TALENTS_LAYOUT[column][row] = CreateTalentRow(row, column);
-            TALENTS_LAYOUT[column].MoveChildAfter(TALENTS_LAYOUT[column][row], TALENTS_LAYOUT[column].GetChild(0));
             CreateTalentPanel(row, column, talentId);
         }
     } else {
         var talentColumnPanel = $.CreatePanel("Panel", TALENTS_CONTAINER, "");
-        talentColumnPanel.SetHasClass("TalentTreeColumn", true);
+        talentColumnPanel.SetHasClass("TalentsColumn", true);
         TALENTS_LAYOUT[column] = talentColumnPanel;
         talentColumnPanel.hittest = false;
         talentColumnPanel.hittestchildren = true;
@@ -82,7 +81,7 @@ function CreateTalentPanel(row, column, talentId) {
 function CreateTalentRow(row, column) {
     if (TALENTS_LAYOUT[column]) {
         var talentRowPanel = $.CreatePanel("Panel", TALENTS_LAYOUT[column], "");
-        talentRowPanel.SetHasClass("TalentTreeRow", true);
+        talentRowPanel.SetHasClass("TalentsRow", true);
         return talentRowPanel
     }
 }
