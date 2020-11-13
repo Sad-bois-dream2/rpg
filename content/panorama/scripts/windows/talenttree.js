@@ -129,6 +129,11 @@ function OnTalentTreeWindowCloseRequest(event) {
     TALENTS_WINDOW.style.visibility = "collapse";
 }
 
+function OnTalentTreeResetButtonClick() {
+    GameEvents.SendCustomGameEventToServer( "rpg_talent_tree_reset_talents", {});
+    Game.EmitSound("General.SelectAction");
+}
+
 (function() {
 	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipLabel")];
     TALENTS_WINDOW = $("#MainWindow")

@@ -2,24 +2,6 @@ if TalentTree == nil then
     _G.TalentTree = class({})
 end
 
--- for test only, remove later pls
-if (IsServer() and IsInToolsMode()) then
-    ListenToGameEvent("player_chat", function(event)
-        if (event.text == "-reset") then
-            local player = PlayerResource:GetPlayer(event.playerid)
-            local hero = player:GetAssignedHero()
-            local event1 = {
-                PlayerID = event.playerid
-            }
-            TalentTree:OnTalentTreeResetRequest(event1)
-        end
-    end, nil)
-end
-
-if (not _G.TalentTree) then
-    _G.TalentTree = class({})
-end
-
 function TalentTree:Init()
     if (not IsServer() or TalentTree.initialized) then
         return

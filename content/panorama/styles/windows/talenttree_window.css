@@ -12,7 +12,7 @@
 	horizontal-align: center;
 	margin: 10px;
 	margin-top: 20px;
-	margin-bottom: 50px;
+	margin-bottom: 100px;
 }
 
 .TalentPanel
@@ -122,4 +122,10 @@
 	font-family: defaultFont;
 	text-shadow: 0px 0px 2px 4 #00000088;
 	margin-bottom: 5px;
+}
+
+.TalentTreeResetButton {
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 60px;
 }

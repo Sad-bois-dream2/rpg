@@ -14,6 +14,9 @@
             <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
             <Label id="TotalTalentPointsLabel" html="true" class="TotalTalentPointsLabel" text="#DOTA_TalentTree_Total_Talent_Points"/>
             <Label id="TalentTreeHelp" html="true" class="TalentTreeHelp" text="#DOTA_TalentTree_Help"/>
+            <Panel class="WindowButton TalentTreeResetButton" onactivate="OnTalentTreeResetButtonClick()">
+                <Label text="#DOTA_TalentTree_Reset_Talents"/>
+            </Panel>
         </Panel>
         <Panel id="ItemTooltip" class="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
             <Panel class="ItemTooltipHeader">
