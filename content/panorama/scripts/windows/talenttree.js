@@ -116,11 +116,9 @@ function UpdateTalentTooltip(icon, name, description, x, y) {
 	tooltip[TOOLTIP_PANEL].style.visibility = "visible";
 }
 
-function OnTalentClick(talentId, disabled) {
-    if(disabled == false) {
-        GameEvents.SendCustomGameEventToServer( "rpg_talent_tree_level_up_talent", {"id": talentId});
-        Game.EmitSound("General.SelectAction");
-    }
+function OnTalentClick(talentId) {
+    GameEvents.SendCustomGameEventToServer( "rpg_talent_tree_level_up_talent", {"id": talentId});
+    Game.EmitSound("General.SelectAction");
 }
 
 function OnTalentTreeWindowOpenRequest(event) {

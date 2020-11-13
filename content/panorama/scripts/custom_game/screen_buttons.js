@@ -18,6 +18,10 @@ function OnInventoryButtonClicked() {
     Game.EmitSound("General.SelectAction");
 }
 
+function OnInventoryWindowCloseRequest() {
+    inventoryWindowOpened = false;
+}
+
 function OnTalentTreeButtonClicked() {
     if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
         return
@@ -35,6 +39,10 @@ function OnTalentTreeButtonClicked() {
     Game.EmitSound("General.SelectAction");
 }
 
+function OnTalentTreeWindowCloseRequest() {
+    talentTreeWindowOpened = false;
+}
+
 function FixButtonPanelPosition() {
     buttonsPanel.SetHasClass("OnLeftSide", Game.IsHUDFlipped());
     $.Schedule(0.1, function() {
@@ -50,5 +58,7 @@ function CloseAllWindows(localPlayer) {
 
 (function() {
 	buttonsPanel = $("#ButtonsRoot");
+	GameEvents.Subscribe("rpg_talent_tree_close_window_from_server", OnTalentTreeWindowCloseRequest);
+	GameEvents.Subscribe("rpg_inventory_close_window_from_server", OnInventoryWindowCloseRequest);
 	FixButtonPanelPosition();
 })();
