@@ -9,7 +9,7 @@
         <include src="file://{resources}/scripts/windows/talenttree.js"/>
     </scripts>
     <Panel class="Root" hittest="false">
-        <Panel id="MainWindow" class="Window TalentTreeWindow" style="width: 900px; height: 640px;">
+        <Panel id="MainWindow" class="Window TalentTreeWindow">
             <Panel id="TalentTree" class="TalentTree"/>
             <TextButton class="WindowCloseIcon" text="X" onactivate="CloseWindow()" />
             <Label id="TotalTalentPointsLabel" html="true" class="TotalTalentPointsLabel" text="#DOTA_TalentTree_Total_Talent_Points"/>
@@ -31,7 +31,6 @@
                 <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Talent Description"/>
             </Panel>
         </Panel>
-
         <Panel style="visibility: collapse;">
             <Image src="file://{images}/custom_game/hud/talenttree/talent_1.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/talent_2.png"/>

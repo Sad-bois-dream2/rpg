@@ -8,7 +8,10 @@ if (IsServer() and IsInToolsMode()) then
         if (event.text == "-reset") then
             local player = PlayerResource:GetPlayer(event.playerid)
             local hero = player:GetAssignedHero()
-            TalentTree:Reset(hero)
+            local event1 = {
+                PlayerID = event.playerid
+            }
+            TalentTree:OnTalentTreeResetRequest(event1)
         end
     end, nil)
 end
@@ -25,19 +28,19 @@ function TalentTree:Init()
     self.talentsData = {}
     self.talentsRequirements = {}
     if (not data) then
-        print("[TalentTree] Error loading scripts/npc/npc_talents_custom.txt.")
+        DebugPrint("[TalentTree] Error loading scripts/npc/npc_talents_custom.txt.")
         return
     end
     if (not data.Talents) then
-        print("[TalentTree] Can't find talents data.")
+        DebugPrint("[TalentTree] Can't find talents data.")
         return
     end
     if (not data.Requirements) then
-        print("[TalentTree] Can't find talents requirements data.")
+        DebugPrint("[TalentTree] Can't find talents requirements data.")
         return
     end
     if (not data.Settings) then
-        print("[TalentTree] Can't load settings. Using default values.")
+        DebugPrint("[TalentTree] Can't load settings. Using default values.")
         self.maxTalentsPerRequest = 10
     else
         self.maxTalentsPerRequest = tonumber(data.Settings.MaxTalentsPerRequest) or 10
@@ -67,17 +70,17 @@ function TalentTree:IsValidRequirement(id, requirementsData)
     end
     requirementsData.Row = tonumber(requirementsData.Row)
     if (not requirementsData.Row) then
-        print("[TalentTree] Can't find row for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find row for requirement "..tostring(id)..". Skipped.")
         return false
     end
     requirementsData.Column = tonumber(requirementsData.Column)
     if (not requirementsData.Column) then
-        print("[TalentTree] Can't find column for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find column for requirement "..tostring(id)..". Skipped.")
         return false
     end
     requirementsData.RequiredPoints = tonumber(requirementsData.RequiredPoints)
     if (not requirementsData.RequiredPoints) then
-        print("[TalentTree] Can't find required points for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find required points for requirement "..tostring(id)..". Skipped.")
         return false
     end
     return true
@@ -88,31 +91,31 @@ function TalentTree:IsValidTalent(talentId, talentData)
         return false
     end
     if (not talentData.Icon) then
-        print("[TalentTree] Can't find icon for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find icon for talent "..tostring(talentId)..". Skipped.")
         return false
     end
     if (not talentData.Modifier) then
-        print("[TalentTree] Can't find modifier for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find modifier for talent "..tostring(talentId)..". Skipped.")
         return false
     end
     if (not talentData.MaxLevel) then
-        print("[TalentTree] Can't find max level for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find max level for talent "..tostring(talentId)..". Skipped.")
         return false
     end
     if (not talentData.Row) then
-        print("[TalentTree] Can't find row for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find row for talent "..tostring(talentId)..". Skipped.")
         return false
     end
     if (talentData.Row < 1) then
-        print("[TalentTree] Row for talent "..tostring(talentId).." must be greater than 0. Skipped.")
+        DebugPrint("[TalentTree] Row for talent "..tostring(talentId).." must be greater than 0. Skipped.")
         return false
     end
     if (not talentData.Column) then
-        print("[TalentTree] Can't find column for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find column for talent "..tostring(talentId)..". Skipped.")
         return false
     end
     if (talentData.Column < 1) then
-        print("[TalentTree] Column for talent "..tostring(talentId).." must be greater than 0. Skipped.")
+        DebugPrint("[TalentTree] Column for talent "..tostring(talentId).." must be greater than 0. Skipped.")
         return false
     end
     return true
@@ -429,7 +432,6 @@ function TalentTree:OnTalentTreeStateRequest(event)
 end
 
 function TalentTree:OnTalentTreeWindowOpenRequest(event)
-    PrintTable(event)
     if (event and event.PlayerID) then
         local player = PlayerResource:GetPlayer(event.PlayerID)
         if player then
