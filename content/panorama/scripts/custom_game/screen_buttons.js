@@ -26,10 +26,10 @@ function OnTalentTreeButtonClicked() {
 	$.DispatchEvent("DOTAHideTitleTextTooltip", $.GetContextPanel());
 	if(talentTreeWindowOpened == false) {
         CloseAllWindows(localPlayer);
-        GameEvents.SendCustomGameEventToServer("rpg_talenttree_open_window", { "player_id" : localPlayer});
+        GameEvents.SendCustomGameEventToServer("rpg_talent_tree_open_window", { "player_id" : localPlayer});
         talentTreeWindowOpened = true;
     } else {
-        GameEvents.SendCustomGameEventToServer("rpg_talenttree_close_window", { "player_id" : localPlayer});
+        GameEvents.SendCustomGameEventToServer("rpg_talent_tree_close_window", { "player_id" : localPlayer});
         talentTreeWindowOpened = false;
     }
     Game.EmitSound("General.SelectAction");

@@ -1,18 +1,15 @@
-var talents = [];
-var tooltip = [];
-var hero = -1;
-var totalPointsLabel;
-
 var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3;
 var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME = 2, TOOLTIP_DESCRIPTION = 3;
-
 var TALENTS_CONTAINER, TALENTS_WINDOW;
+
 var TALENTS_LAYOUT = {
     "lastColumn": -1
 };
 var talentsData = {
     "talentsCount": 0,
 };
+
+var tooltip = [];
 
 function OnTalentTreeData(event) {
     var parsedTalents = JSON.parse(event.talents);
@@ -78,38 +75,25 @@ function CreateTalentPanel(row, column, talentId) {
         TALENTS_LAYOUT[column] = talentColumnPanel;
         talentColumnPanel.hittest = false;
         talentColumnPanel.hittestchildren = true;
-        var titleRow = CreateTalentRow(row, column, true);
-        var titleLabel = $.CreatePanel("Label", titleRow, "");
-        titleLabel.SetHasClass("TitleLabel", true);
-        titleLabel.text = $.Localize("#talent_tree_column_" + column + "_title");
-        titleRow.hittest = false;
-        titleRow.hittestchildren = true;
         CreateTalentPanel(row, column, talentId);
     }
 }
 
-function CreateTalentRow(row, column, isTitleRow) {
+function CreateTalentRow(row, column) {
     if (TALENTS_LAYOUT[column]) {
         var talentRowPanel = $.CreatePanel("Panel", TALENTS_LAYOUT[column], "");
         talentRowPanel.SetHasClass("TalentTreeRow", true);
-        if(isTitleRow == null) {
-            TALENTS_LAYOUT[column][row] = talentRowPanel;
-        }
         return talentRowPanel
     }
 }
 
 function ShowTalentTooltip(id) {
-    var IsHeroLoaded = (hero > -1);
     var cursorPosition = GameUI.GetCursorPosition();
-    if(IsHeroLoaded) {
-        var talentName, talentDescription;
-        var talentImage = talents[id-1][TALENT_PANEL].Data().talentImage;
-        talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
-        talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
-        UpdateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
-    }
-
+    var talentName, talentDescription;
+    var talentImage = talents[id-1][TALENT_PANEL].Data().talentImage;
+    talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
+    talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
+    UpdateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
 }
 
 function HideTalentTooltip(id) {
@@ -139,17 +123,18 @@ function OnTalentClick(talentId, disabled) {
 }
 
 function OnTalentTreeWindowOpenRequest(event) {
-
+    $.Msg("Get")
+    TALENTS_WINDOW.style.visibility = "visible";
 }
 
 function OnTalentTreeWindowCloseRequest(event) {
-
+    TALENTS_WINDOW.style.visibility = "collapse";
 }
 
 (function() {
 	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipLabel")];
-    TALENTS_WINDOW = $("#TalentsWindowContainer")
-    TALENTS_CONTAINER = $("#TalentTreeColumnsContainer");
+    TALENTS_WINDOW = $("#MainWindow")
+    TALENTS_CONTAINER = $("#TalentTree");
     TALENTS_LAYOUT["TalentPointsLabel"] = $("#TotalTalentPointsLabel");
     GameEvents.Subscribe("rpg_talent_tree_get_talents_from_server", OnTalentTreeData);
     GameEvents.Subscribe("rpg_talent_tree_get_state_from_server", OnTalentTreeState);
