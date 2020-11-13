@@ -451,5 +451,4 @@ end
 
 if (IsServer() and not TalentTree.initialized) then
     TalentTree:Init()
-    TalentTree.initialized = true
 end

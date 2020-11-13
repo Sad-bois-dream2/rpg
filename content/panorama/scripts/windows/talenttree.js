@@ -19,10 +19,11 @@ function OnTalentTreeData(event) {
     BuildTalentTree(parsedTalents);
     talentsData.talentsCount += parsedTalents.length;
     if(talentsData.talentsCount >= event.count) {
-	    GameEvents.SendCustomGameEventToServer( "talent_tree_get_state", {});
+	    GameEvents.SendCustomGameEventToServer( "rpg_talent_tree_get_state", {});
 	    TALENTS_LAYOUT[TALENTS_LAYOUT["lastColumn"]].SetHasClass("last", true);
     }
 }
+
 
 function OnTalentTreeState(event) {
     var talentPoints = event.points;
@@ -31,10 +32,12 @@ function OnTalentTreeState(event) {
         var talentId = parsedStateData[i].id;
         var talentColumn = talentsData[talentId].Column;
         var talentRow = talentsData[talentId].Row;
+        var isTalentMissLevels = (parsedStateData[i].level < parsedStateData[i].maxlevel)
         talentsData[talentId].panel.SetHasClass("disabled", parsedStateData[i].disabled);
+        talentsData[talentId].panel.SetHasClass("lvlup", isTalentMissLevels && parsedStateData[i].disabled == false);
         talentsData[talentId].panel.levelLabel.text = parsedStateData[i].level + " / " + parsedStateData[i].maxlevel;
     }
-    TALENTS_LAYOUT["TalentPointsLabel"].text = $.Localize("talent_tree_current_talent_points").replace("%POINTS%", talentPoints);
+    TALENTS_LAYOUT["TalentPointsLabel"].text = $.Localize("DOTA_TalentTree_Total_Talent_Points").replace("%value%", talentPoints);
 }
 
 function BuildTalentTree(parsedTalents) {
@@ -88,10 +91,9 @@ function CreateTalentRow(row, column) {
 
 function ShowTalentTooltip(id) {
     var cursorPosition = GameUI.GetCursorPosition();
-    var talentName, talentDescription;
-    var talentImage = talents[id-1][TALENT_PANEL].Data().talentImage;
-    talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
-    talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
+    var talentImage = talentsData[id].Icon
+    var talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
+    var talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
     UpdateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
 }
 
@@ -122,7 +124,6 @@ function OnTalentClick(talentId, disabled) {
 }
 
 function OnTalentTreeWindowOpenRequest(event) {
-    $.Msg("Get")
     TALENTS_WINDOW.style.visibility = "visible";
 }
 
