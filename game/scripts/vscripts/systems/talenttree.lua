@@ -70,17 +70,17 @@ function TalentTree:IsValidRequirement(id, requirementsData)
     end
     requirementsData.Row = tonumber(requirementsData.Row)
     if (not requirementsData.Row) then
-        DebugPrint("[TalentTree] Can't find row for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find row for requirement " .. tostring(id) .. ". Skipped.")
         return false
     end
     requirementsData.Column = tonumber(requirementsData.Column)
     if (not requirementsData.Column) then
-        DebugPrint("[TalentTree] Can't find column for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find column for requirement " .. tostring(id) .. ". Skipped.")
         return false
     end
     requirementsData.RequiredPoints = tonumber(requirementsData.RequiredPoints)
     if (not requirementsData.RequiredPoints) then
-        DebugPrint("[TalentTree] Can't find required points for requirement "..tostring(id)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find required points for requirement " .. tostring(id) .. ". Skipped.")
         return false
     end
     return true
@@ -91,31 +91,31 @@ function TalentTree:IsValidTalent(talentId, talentData)
         return false
     end
     if (not talentData.Icon) then
-        DebugPrint("[TalentTree] Can't find icon for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find icon for talent " .. tostring(talentId) .. ". Skipped.")
         return false
     end
     if (not talentData.Modifier) then
-        DebugPrint("[TalentTree] Can't find modifier for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find modifier for talent " .. tostring(talentId) .. ". Skipped.")
         return false
     end
     if (not talentData.MaxLevel) then
-        DebugPrint("[TalentTree] Can't find max level for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find max level for talent " .. tostring(talentId) .. ". Skipped.")
         return false
     end
     if (not talentData.Row) then
-        DebugPrint("[TalentTree] Can't find row for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find row for talent " .. tostring(talentId) .. ". Skipped.")
         return false
     end
     if (talentData.Row < 1) then
-        DebugPrint("[TalentTree] Row for talent "..tostring(talentId).." must be greater than 0. Skipped.")
+        DebugPrint("[TalentTree] Row for talent " .. tostring(talentId) .. " must be greater than 0. Skipped.")
         return false
     end
     if (not talentData.Column) then
-        DebugPrint("[TalentTree] Can't find column for talent "..tostring(talentId)..". Skipped.")
+        DebugPrint("[TalentTree] Can't find column for talent " .. tostring(talentId) .. ". Skipped.")
         return false
     end
     if (talentData.Column < 1) then
-        DebugPrint("[TalentTree] Column for talent "..tostring(talentId).." must be greater than 0. Skipped.")
+        DebugPrint("[TalentTree] Column for talent " .. tostring(talentId) .. " must be greater than 0. Skipped.")
         return false
     end
     return true
@@ -143,6 +143,7 @@ function TalentTree:SetupForHero(hero)
         hero.talents.level[i] = 0
     end
     hero.talents.currentPoints = 0
+    TalentTree:AddTalentPointsToHero(hero, 90)
 end
 
 function TalentTree:GetHeroCurrentTalentPoints(hero)
@@ -216,7 +217,14 @@ function TalentTree:SetHeroTalentLevel(hero, talentId, level)
             end
         else
             if (not hero.talents.modifiers[talentId]) then
-                hero.talents.modifiers[talentId] = hero:AddNewModifier(hero, nil, TalentTree.talentsData[talentId].Modifier, { duration = -1 })
+                local modifierTable = {
+                    ability = nil,
+                    target = hero,
+                    caster = hero,
+                    modifier_name = TalentTree.talentsData[talentId].Modifier,
+                    duration = -1
+                }
+                hero.talents.modifiers[talentId] = GameMode:ApplyBuff(modifierTable)
             end
             if (hero.talents.modifiers[talentId]) then
                 hero.talents.modifiers[talentId]:SetStackCount(level)
@@ -264,22 +272,7 @@ function TalentTree:IsHeroCanLevelUpTalent(hero, talentId)
     if (TalentTree:GetHeroCurrentTalentPoints(hero) == 0) then
         return false
     end
-    local row = TalentTree:GetTalentRow(talentId)
-    local column = TalentTree:GetTalentColumn(talentId)
-    local heroLevel = hero:GetLevel()
-    for _, requirementsData in pairs(TalentTree.talentsRequirements) do
-        if (requirementsData.Column == column and requirementsData.Row == row and heroLevel < requirementsData.HeroLevel) then
-            return false
-        end
-    end
-    local canLevelUp = true
-    for i = 1, TalentTree:GetLatestTalentID() do
-        if (TalentTree:GetTalentColumn(i) == column and TalentTree:GetTalentRow(i) == row and TalentTree:GetHeroTalentLevel(hero, i) > 0 and i ~= talentId) then
-            canLevelUp = false
-            break
-        end
-    end
-    return canLevelUp
+    return true
 end
 
 function TalentTree:LoadTalentsFromSaveData(playerHero, talentData)
