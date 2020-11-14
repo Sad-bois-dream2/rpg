@@ -351,6 +351,8 @@
 		"DOTA_Tooltip_Ability_terror_lord_destructive_stomp_radius"		"RADIUS: "
 		"DOTA_Tooltip_Ability_terror_lord_destructive_stomp_duration"		"DURATION: "
 		"DOTA_Tooltip_Ability_terror_lord_destructive_stomp_stun_duration"		"STUN DURATION: "
+		"DOTA_Tooltip_modifier_terror_lord_destructive_stomp_thinker_debuff"		"Destructive Stomp"
+		"DOTA_Tooltip_modifier_terror_lord_destructive_stomp_thinker_debuff_Description"		"Slowed."
 		"DOTA_Tooltip_Ability_terror_lord_ruthless_predator"		"Ruthless Predator"
 		"DOTA_Tooltip_Ability_terror_lord_ruthless_predator_Description"		"Terror Lord sapping health of enemies that come too close to him dealing <font color='#1f5b07'>Inferno</font> damage to them every second (if autocast turned on).\nRank 2: Each enemy affected by this ability will also increase your health regeneration by <font color='white'><b>10%</b></font>, up to <font color='white'><b>100%</b></font>. Elite enemies and bosses count as <font color='white'><b>5</b></font> and <font color='white'><b>10</b></font> respectively.\nRank 3: This ability will always provide effect as if at least <font color='white'><b>5</b></font> enemies around you.\nRank 4: You can activate this ability to share this regeneration bonus with allies around for <font color='white'><b>10</b></font> seconds."
         "DOTA_Tooltip_Ability_terror_lord_ruthless_predator_damage"		"%STRENGTH TO DAMAGE: "

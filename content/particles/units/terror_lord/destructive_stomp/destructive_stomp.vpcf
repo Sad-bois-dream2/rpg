@@ -37,6 +37,13 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 5.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
 			]
 		},
 	]
@@ -54,7 +61,7 @@
 			m_bDisableChild = true
 		},
 		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_dust.vpcf"
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_dust.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_shock.vpcf"

@@ -400,75 +400,123 @@ modifier_terror_lord_destructive_stomp_thinker = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_ENEMY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_terror_lord_destructive_stomp_thinker_debuff"
+    end,
+    GetAuraDuration = function(self)
+        return 0
+    end,
 })
 
-function modifier_terror_lord_destructive_stomp_thinker:OnCreated(keys)
-    if not IsServer() then
+function modifier_terror_lord_destructive_stomp_thinker:GetAuraRadius()
+    if (self.ability.dotSlow > 0) then
+        return self.ability.radius
+    end
+    return 0
+end
+
+function modifier_terror_lord_destructive_stomp_thinker:OnCreated()
+    if (not IsServer()) then
         return
     end
-    self.caster = self:GetCaster()
     self.ability = self:GetAbility()
-    self.radius = self.ability:GetSpecialValueFor("radius")
-    self.damage = self.ability:GetSpecialValueFor("damage") / 100
-    self.parent = self:GetParent()
-    self.position = self.parent:GetAbsOrigin()
-    local tick = self.ability:GetSpecialValueFor("tick")
-    local stunDuration = self.ability:GetSpecialValueFor("stun_duration")
-    self:StartIntervalThink(tick)
-    local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
+    self.caster = self.ability:GetCaster()
+    self.casterPos = self.caster:GetAbsOrigin()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self.damageTable = {
+        caster = self.caster,
+        target = nil,
+        ability = self.ability,
+        damage = self.ability.dotDamage * Units:GetHeroStrength(self.caster),
+        infernodmg = true,
+        aoe = true,
+        dot = true
+    }
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.dotTick)
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp_flames.vpcf", PATTACH_ABSORIGIN, self.thinker)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
+    ParticleManager:SetParticleControl(pidx, 2, Vector(70, 186, 70))
+    ParticleManager:SetParticleControl(pidx, 4, Vector(self.ability.dotDuration, 0, 0))
+    self:AddParticle(pidx, true, false, 1, true, false)
+end
+
+function modifier_terror_lord_destructive_stomp_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInRadius(self.casterTeam,
             self.position,
             nil,
-            self.radius,
+            self.ability.radius,
             DOTA_UNIT_TARGET_TEAM_ENEMY,
             DOTA_UNIT_TARGET_ALL,
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
     for _, enemy in pairs(enemies) do
-        local modifierTable = {}
-        modifierTable.ability = self.ability
-        modifierTable.target = enemy
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = stunDuration
-        GameMode:ApplyDebuff(modifierTable)
+        self.damageTable.target = enemy
+        GameMode:DamageUnit(self.damageTable)
     end
 end
 
 function modifier_terror_lord_destructive_stomp_thinker:OnDestroy()
-    if not IsServer() then
+    if (not IsServer()) then
         return
     end
-    UTIL_Remove(self.parent)
-end
-
-function modifier_terror_lord_destructive_stomp_thinker:OnIntervalThink()
-    if not IsServer() then
-        return
-    end
-    local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            self.position,
-            nil,
-            self.radius,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, enemy in pairs(enemies) do
-        local damageTable = {}
-        damageTable.caster = self.caster
-        damageTable.target = enemy
-        damageTable.ability = self.ability
-        damageTable.damage = self.damage * Units:GetHeroPrimaryAttribute(self.caster)
-        damageTable.infernodmg = true
-        damageTable.aoe = true
-        GameMode:DamageUnit(damageTable)
-    end
+    UTIL_Remove(self.thinker)
 end
 
 LinkedModifiers["modifier_terror_lord_destructive_stomp_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_destructive_stomp_thinker_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_terror_lord_destructive_stomp_thinker_debuff:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_terror_lord_destructive_stomp_thinker_debuff:GetMoveSpeedPercentBonus()
+    return self.ability.dotSlow or 0
+end
+
+LinkedModifiers["modifier_terror_lord_destructive_stomp_thinker_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_terror_lord_destructive_stomp = class({
     IsDebuff = function(self)
@@ -519,11 +567,45 @@ function terror_lord_destructive_stomp:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
+    local casterPos = caster:GetAbsOrigin()
+    local casterTeam = caster:GetTeamNumber()
+    local damageTable = {
+        caster = self.caster,
+        target = nil,
+        ability = self.ability,
+        damage = Units:GetHeroStrength(caster) * self.damage,
+        infernodmg = true,
+        aoe = true
+    }
+    local stunModifier = {
+        ability = self,
+        caster = caster,
+        target = nil,
+        modifier_name = "modifier_stunned",
+        duration = self.stunDuration
+    }
+    local isAutocastEnabled = self:GetAutoCastState()
+    local enemies = FindUnitsInRadius(casterTeam,
+            casterPos,
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        damageTable.target = enemy
+        GameMode:DamageUnit(damageTable)
+        if (isAutocastEnabled) then
+            GameMode:ApplyDebuff(stunModifier)
+        end
+    end
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 0, 0))
     ParticleManager:SetParticleControl(pidx, 2, Vector(70, 186, 70))
-    ParticleManager:ReleaseParticleIndex(pidx)
-    if(self.dotDuration > 0) then
+    ParticleManager:SetParticleControl(pidx, 4, Vector(5, 0, 0))
+    if (self.dotDuration > 0) then
         CreateModifierThinker(
                 caster,
                 self,
@@ -531,11 +613,13 @@ function terror_lord_destructive_stomp:OnSpellStart()
                 {
                     duration = self.dotDuration
                 },
-                caster:GetAbsOrigin(),
-                caster:GetTeamNumber(),
+                casterPos,
+                casterTeam,
                 false
         )
+        ParticleManager:SetParticleControl(pidx, 4, Vector(0, 0, 0))
     end
+    ParticleManager:ReleaseParticleIndex(pidx)
     EmitSoundOn("Hero_Centaur.HoofStomp", caster)
 end
 
@@ -544,7 +628,7 @@ function terror_lord_destructive_stomp:OnUpgrade()
     self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
     self.dotTick = self:GetSpecialValueFor("dot_tick")
     self.dotDuration = self:GetSpecialValueFor("dot_duration")
-    self.dotSlow = self:GetSpecialValueFor("dot_slow") / 100
+    self.dotSlow = self:GetSpecialValueFor("dot_slow") / -100
     self.radius = self:GetSpecialValueFor("radius")
     self.stunDuration = self:GetSpecialValueFor("stun_duration")
     self.bonusStrength = self:GetSpecialValueFor("bonus_strength") / 100
