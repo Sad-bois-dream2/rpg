@@ -383,7 +383,8 @@ function terror_lord_mighty_defiance:OnSpellStart(unit, special_cast)
     modifierTable.duration = self:GetSpecialValueFor("duration")
     GameMode:ApplyBuff(modifierTable)
 end
--- terror_lord_destructive_stomp modifiers
+
+-- terror_lord_destructive_stomp
 modifier_terror_lord_destructive_stomp_thinker = class({
     IsDebuff = function(self)
         return false
@@ -469,37 +470,84 @@ end
 
 LinkedModifiers["modifier_terror_lord_destructive_stomp_thinker"] = LUA_MODIFIER_MOTION_NONE
 
--- terror_lord_destructive_stomp
-terror_lord_destructive_stomp = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_destructive_stomp"
+modifier_terror_lord_destructive_stomp = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
     end
 })
 
-function terror_lord_destructive_stomp:OnSpellStart(unit, special_cast)
+function modifier_terror_lord_destructive_stomp:OnCreated()
+    if not IsServer() then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.ability:OnUpgrade()
+end
+
+function modifier_terror_lord_destructive_stomp:GetStrengthPercentBonus()
+    return self.ability.bonusStrength or 0
+end
+
+LinkedModifiers["modifier_terror_lord_destructive_stomp"] = LUA_MODIFIER_MOTION_NONE
+
+terror_lord_destructive_stomp = class({
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_terror_lord_destructive_stomp"
+    end
+})
+
+function terror_lord_destructive_stomp:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    local duration = self:GetSpecialValueFor("duration")
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(pidx, 2, Vector(0, 255, 0))
-    Timers:CreateTimer(duration, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
-    CreateModifierThinker(
-            caster,
-            self,
-            "modifier_terror_lord_destructive_stomp_thinker",
-            {
-                duration = duration
-            },
-            caster:GetAbsOrigin(),
-            caster:GetTeamNumber(),
-            false
-    )
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 0, 0))
+    ParticleManager:SetParticleControl(pidx, 2, Vector(70, 186, 70))
+    ParticleManager:ReleaseParticleIndex(pidx)
+    if(self.dotDuration > 0) then
+        CreateModifierThinker(
+                caster,
+                self,
+                "modifier_terror_lord_destructive_stomp_thinker",
+                {
+                    duration = self.dotDuration
+                },
+                caster:GetAbsOrigin(),
+                caster:GetTeamNumber(),
+                false
+        )
+    end
     EmitSoundOn("Hero_Centaur.HoofStomp", caster)
+end
+
+function terror_lord_destructive_stomp:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
+    self.dotDuration = self:GetSpecialValueFor("dot_duration")
+    self.dotSlow = self:GetSpecialValueFor("dot_slow") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.stunDuration = self:GetSpecialValueFor("stun_duration")
+    self.bonusStrength = self:GetSpecialValueFor("bonus_strength") / 100
 end
 
 -- terror_lord_horror_genesis modifiers
@@ -878,7 +926,7 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
         local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
         ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
         table.insert(self.particlesTable, pidx)
-        if(isAutocastEnabled) then
+        if (isAutocastEnabled) then
             damageTable.target = enemy
             GameMode:DamageUnit(damageTable)
         end

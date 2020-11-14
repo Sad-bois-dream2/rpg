@@ -179,7 +179,7 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-        "AbilityCastRange"  "500"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_TELEPORT_END"
@@ -211,30 +211,36 @@
 				"var_type"				"FIELD_FLOAT"
 				"dot_tick"				"0 1 1 1"
 			}
-			"03"
+			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"dot_duration"				"0 8 8 8"
 			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
-			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"1 2 3 4"
+				"dot_slow"				"0 0 30 30"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"1 2 3 4"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
 				"radius"				"500"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_strength"				"0 0 0 25"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf"
+			"particle"  "particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf"
+			"particle"  "particles/units/terror_lord/destructive_stomp/destructive_stomp_flames.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_centaur.vsndevts"
 		}
 	}
