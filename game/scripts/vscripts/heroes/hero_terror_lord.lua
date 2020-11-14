@@ -425,7 +425,7 @@ modifier_terror_lord_destructive_stomp_thinker = class({
 })
 
 function modifier_terror_lord_destructive_stomp_thinker:GetAuraRadius()
-    if (self.ability.dotSlow > 0) then
+    if (self.ability.dotSlow ~= 0) then
         return self.ability.radius
     end
     return 0
