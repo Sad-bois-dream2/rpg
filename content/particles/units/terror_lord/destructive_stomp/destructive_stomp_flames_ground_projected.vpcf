@@ -1,6 +1,8 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf31:version{593cd181-a1d6-4c6f-9a8c-0534e8d44db0} -->
 {
 	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 3
 	m_nBehaviorVersion = 10
 	m_controlPointConfigurations = 
 	[
@@ -14,47 +16,58 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
-				{
-					m_iControlPoint = 1
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 500.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 2
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 70.0, 186.0, 70.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 4
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 5.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 62
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
 			]
 		},
 	]
-	m_PreEmissionOperators = 
+	m_Emitters = 
 	[
 		{
-			_class = "C_OP_StopAfterCPDuration"
-			m_flDuration = 
+			_class = "C_OP_ContinuousEmitter"
+			m_flEmitRate = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
+		},
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 2.0
+			m_fLifetimeMax = 2.5
+		},
+		{
+			_class = "C_INIT_CreateWithinSphere"
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_RandomScalar"
+			m_flMin = 1.0
+			m_flMax = 1.2
+			m_nFieldOutput = "13"
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_SetFloat"
+			m_InputValue = 
 			{
 				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 4.0
-				m_nControlPoint = 4
+				m_flLiteralValue = 0.0
+				m_nControlPoint = 1
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
 				m_nVectorComponent = 0
@@ -95,24 +108,39 @@
 				}
 			}
 		},
+		{
+			_class = "C_OP_Decay"
+		},
+		{
+			_class = "C_OP_FadeInSimple"
+		},
+		{
+			_class = "C_OP_FadeOutSimple"
+		},
+		{
+			_class = "C_OP_SpinUpdate"
+		},
+		{
+			_class = "C_OP_LerpScalar"
+			m_nFieldOutput = "13"
+			m_flOutput = 0.25
+		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+			m_flDecayTime = 0.2
+		},
+		{
+			_class = "C_OP_LerpEndCapScalar"
+			m_flOutput = 0.0
+			m_flLerpTime = 0.2
+			m_nFieldOutput = "7"
+		},
 	]
-	m_Children = 
+	m_Renderers = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_ground.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_ground_projected.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_dust.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_cracks.vpcf"
-			m_bDisableChild = true
+			_class = "C_OP_RenderProjected"
+			m_hProjectedMaterial = resource:"materials/particle/projected_corrode.vmat"
 		},
 	]
 }

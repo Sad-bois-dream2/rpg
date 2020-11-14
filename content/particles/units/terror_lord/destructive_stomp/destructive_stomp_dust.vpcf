@@ -158,7 +158,7 @@
 					m_vDomainMaxs = [ 0.0, 0.0 ]
 				}
 			}
-			m_nOutputField = 1
+			m_nOutputField = "1"
 		},
 		{
 			_class = "C_OP_Decay"
@@ -178,6 +178,7 @@
 		{
 			_class = "C_OP_FadeOutSimple"
 			m_flFadeOutTime = 1.0
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
