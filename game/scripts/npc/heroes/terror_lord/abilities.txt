@@ -176,7 +176,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
         "AbilityCastRange"  "500"
@@ -186,7 +186,7 @@
         "AbilityCastPoint"				"0.6"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"35"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -199,27 +199,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
+				"damage"				"110 120 130 140"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"500"
+				"dot_damage"				"0 50 50 50"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"dot_tick"				"0 1 1 1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"				"0 8 8 8"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"0.5 1 1.5 2"
+				"duration"				"5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"stun_duration"				"1 2 3 4"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"500"
 			}
 		}
 		"precache"
@@ -242,7 +252,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------

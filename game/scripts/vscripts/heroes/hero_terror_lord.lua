@@ -873,12 +873,15 @@ function modifier_terror_lord_ruthless_predator:OnIntervalThink()
         ParticleManager:ReleaseParticleIndex(pidx)
     end
     self.particlesTable = {}
+    local isAutocastEnabled = self.ability:GetAutoCastState()
     for _, enemy in pairs(enemies) do
         local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
         ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
         table.insert(self.particlesTable, pidx)
-        damageTable.target = enemy
-        GameMode:DamageUnit(damageTable)
+        if(isAutocastEnabled) then
+            damageTable.target = enemy
+            GameMode:DamageUnit(damageTable)
+        end
         if Enemies:IsBoss(enemy) then
             stacks = stacks + self.ability.stacksPerBoss
         elseif Enemies:IsElite(enemy) then
@@ -907,9 +910,9 @@ terror_lord_ruthless_predator = class({
     end,
     GetBehavior = function(self)
         if (self:GetSpecialValueFor("active_duration") > 0) then
-            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
         end
-        return DOTA_ABILITY_BEHAVIOR_AURA + DOTA_ABILITY_BEHAVIOR_PASSIVE
+        return self.BaseClass.GetBehavior(self)
     end,
     GetIntrinsicModifierName = function()
         return "modifier_terror_lord_ruthless_predator"
