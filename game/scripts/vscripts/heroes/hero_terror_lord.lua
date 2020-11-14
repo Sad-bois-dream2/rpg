@@ -634,7 +634,7 @@ function terror_lord_destructive_stomp:OnUpgrade()
     self.bonusStrength = self:GetSpecialValueFor("bonus_strength") / 100
 end
 
--- terror_lord_horror_genesis modifiers
+-- terror_lord_horror_genesis
 modifier_terror_lord_horror_genesis_thinker = class({
     IsHidden = function(self)
         return true
@@ -643,7 +643,7 @@ modifier_terror_lord_horror_genesis_thinker = class({
         return false
     end,
     GetAuraRadius = function(self)
-        return self.ability.radius or 0
+        return self.ability.radius
     end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
@@ -667,40 +667,25 @@ function modifier_terror_lord_horror_genesis_thinker:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.hero = self.ability:GetCaster()
     self.thinker = self:GetParent()
-    self.thinker.hero_ability = self.ability
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
-end
-
-function modifier_terror_lord_horror_genesis_thinker:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
-    local distance = (self.hero:GetAbsOrigin() - self.thinker:GetAbsOrigin()):Length()
-    if (distance > self.ability.radius) then
-        if (self.aura_modifier) then
-            self.aura_modifier:Destroy()
-        end
-    else
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/horror_genesis/horror_genesis.vpcf", PATTACH_ABSORIGIN, self.thinker)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 22, 1))
+    ParticleManager:SetParticleControl(pidx, 2, Vector(self.ability.duration, 0, 0))
+    self:AddParticle(pidx, true, false, 1, true, false)
+    if (self.ability.bonusPrimaryPct > 0) then
         local modifierTable = {}
         modifierTable.ability = self.ability
-        modifierTable.target = self.hero
-        modifierTable.caster = self.hero
-        modifierTable.modifier_name = "modifier_terror_lord_horror_genesis_thinker_buff"
+        modifierTable.caster = self.thinker
+        modifierTable.target = self.thinker
+        modifierTable.modifier_name = "modifier_terror_lord_horror_genesis_thinker_ally_aura"
         modifierTable.duration = -1
-        self.aura_modifier = GameMode:ApplyBuff(modifierTable)
+        GameMode:ApplyBuff(modifierTable)
     end
 end
 
 function modifier_terror_lord_horror_genesis_thinker:OnDestroy()
     if (not IsServer()) then
         return
-    end
-    local modifier = self.hero:FindModifierByName("modifier_terror_lord_horror_genesis_thinker_buff")
-    if (modifier) then
-        modifier:Destroy()
     end
     UTIL_Remove(self.thinker)
 end
@@ -723,9 +708,6 @@ modifier_terror_lord_horror_genesis_thinker_debuff = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return terror_lord_horror_genesis:GetAbilityTextureName()
-    end,
     GetEffectName = function(self)
         return "particles/units/terror_lord/horror_genesis/horror_genesis_debuff.vpcf"
     end
@@ -735,55 +717,90 @@ function modifier_terror_lord_horror_genesis_thinker_debuff:OnCreated()
     if (not IsServer()) then
         return
     end
-    local auraOwner = self:GetAuraOwner()
-    self.ability = auraOwner.hero_ability
-    self.aa_reduction = self.ability:GetSpecialValueFor("aa_reduction") * -0.01
-    self.spelldmg_reduction = self.ability:GetSpecialValueFor("spelldmg_reduction") * -0.01
-    self.armor_reduction = self.ability:GetSpecialValueFor("armor_reduction") * -0.01
-    self.elementarmor_reduction = self.ability:GetSpecialValueFor("elementarmor_reduction") * -0.01
-end
-
-function modifier_terror_lord_horror_genesis_thinker_debuff:GetAttackDamagePercentBonus()
-    return self.aa_reduction or 0
-end
-
-function modifier_terror_lord_horror_genesis_thinker_debuff:GetSpellDamageBonus()
-    return self.spelldmg_reduction or 0
+    self.ability = self:GetAbility()
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetArmorPercentBonus()
-    return self.armor_reduction or 0
+    return self.ability.armorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetFireProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetFrostProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetEarthProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetVoidProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetHolyProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetNatureProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
 end
 
 function modifier_terror_lord_horror_genesis_thinker_debuff:GetInfernoProtectionBonus()
-    return self.elementarmor_reduction or 0
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_horror_genesis_thinker_debuff:GetMoveSpeedPercentBonus()
+    return self.ability.slow or 0
 end
 
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_debuff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_horror_genesis_thinker_ally_aura = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_terror_lord_horror_genesis_thinker_buff"
+    end
+})
+
+function modifier_terror_lord_horror_genesis_thinker_ally_aura:GetAuraEntityReject(npc)
+    if (self.ability.bonusPrimaryAlly > 0 or self.caster == npc) then
+        return false
+    end
+    return true
+end
+
+function modifier_terror_lord_horror_genesis_thinker_ally_aura:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_ally_aura"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_terror_lord_horror_genesis_thinker_buff = class({
     IsDebuff = function(self)
@@ -800,9 +817,6 @@ modifier_terror_lord_horror_genesis_thinker_buff = class({
     end,
     AllowIllusionDuplicate = function(self)
         return false
-    end,
-    GetTexture = function(self)
-        return terror_lord_horror_genesis:GetAbilityTextureName()
     end
 })
 
@@ -811,38 +825,31 @@ function modifier_terror_lord_horror_genesis_thinker_buff:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.primary_bonus = self.ability:GetSpecialValueFor("primary_bonus")
 end
 
-function modifier_terror_lord_horror_genesis_thinker_buff:GetPrimaryAttributeBonus()
-    return self.primary_bonus or 0
+function modifier_terror_lord_horror_genesis_thinker_buff:GetPrimaryAttributePercentBonus()
+    return self.ability.bonusPrimaryPct or 0
 end
 
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
--- terror_lord_horror_genesis
-terror_lord_horror_genesis = class({})
+terror_lord_horror_genesis = class({
+    GetCastRange = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
 
-function terror_lord_horror_genesis:OnSpellStart(unit, special_cast)
+function terror_lord_horror_genesis:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    local duration = self:GetSpecialValueFor("duration")
-    self.radius = self:GetSpecialValueFor("radius")
-    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/horror_genesis/horror_genesis.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 22, 1))
-    ParticleManager:SetParticleControl(pidx, 2, Vector(duration, 0, 0))
-    Timers:CreateTimer(duration, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
     CreateModifierThinker(
             caster,
             self,
             "modifier_terror_lord_horror_genesis_thinker",
             {
-                duration = duration
+                duration = self.duration
             },
             caster:GetAbsOrigin(),
             caster:GetTeamNumber(),
@@ -851,10 +858,15 @@ function terror_lord_horror_genesis:OnSpellStart(unit, special_cast)
     EmitSoundOn("Hero_AbyssalUnderlord.Firestorm.Cast", caster)
 end
 
-function terror_lord_horror_genesis:IsRequireCastbar()
-    return true
+function terror_lord_horror_genesis:OnUpgrade()
+    self.armorReduction = self:GetSpecialValueFor("armor_reduction") / -100
+    self.eleArmorReduction = self:GetSpecialValueFor("elearmor_reduction") / -100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.slow = self:GetSpecialValueFor("slow") / -100
+    self.bonusPrimaryPct = self:GetSpecialValueFor("bonus_primary_pct") / 100
+    self.bonusPrimaryAlly = self:GetSpecialValueFor("bonus_primary_ally")
 end
-
 
 -- terror_lord_ruthless_predator
 modifier_terror_lord_ruthless_predator_aura = class({

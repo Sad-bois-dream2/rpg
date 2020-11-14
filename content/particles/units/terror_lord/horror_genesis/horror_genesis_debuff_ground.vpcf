@@ -2,9 +2,8 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 1
-	m_BoundingBoxMin = [ -10.0, -10.0, -30.0 ]
-	m_BoundingBoxMax = [ 10.0, 10.0, 30.0 ]
+	m_nMaxParticles = 32
+	m_ConstantColor = [ 167, 205, 240, 100 ]
 	m_nBehaviorVersion = 10
 	m_controlPointConfigurations = 
 	[
@@ -32,10 +31,13 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/units/terror_lord/horror_genesis/horror_genesis_debuff_ground.vpcf"
+			m_ChildRef = resource:"particles/units/terror_lord/horror_genesis/horror_genesis_debuff_ground_runes.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/terror_lord/horror_genesis/horror_genesis_debuff_skeletons.vpcf"
+			m_ChildRef = resource:"particles/units/terror_lord/horror_genesis/horror_genesis_debuff_ground_pulse.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/horror_genesis/horror_genesis_debuff_ground_sparkle.vpcf"
 		},
 	]
 }

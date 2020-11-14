@@ -219,7 +219,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"dot_slow"				"0 0 30 30"
+				"dot_slow"				"0 0 15 15"
 			}
 			"06"
 			{
@@ -355,12 +355,11 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-        "AbilityCastRange"  "800"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastPoint"				"1.5"
-	    "AnimationPlaybackRate"  "0.8"
+        "AbilityCastPoint"				"0.5"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"60"
@@ -376,42 +375,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_reduction"				"10 15 20 25"
+				"armor_reduction"				"20 30 40 50"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spelldmg_reduction"				"10 15 20 25"
+				"elearmor_reduction"				"20 30 40 50"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_reduction"				"15 20 25 30"
+				"duration"				"6"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"elementarmor_reduction"				"15 20 25 30"
+				"radius"				"800"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primary_bonus"				"50 100 150 200"
+				"slow"				"0 40 40 40"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"800"
+				"bonus_primary_pct"				"0 0 50 50"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
-			}
-			"08"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"tick"				"0.1"
+				"bonus_primary_ally"				"0 0 0 1"
 			}
 		}
 		"precache"
