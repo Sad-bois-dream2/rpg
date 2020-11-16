@@ -1429,9 +1429,6 @@ modifier_luminous_samurai_breath_of_heaven = class({
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE }  
     end
 })
 
@@ -1467,23 +1464,102 @@ end
 
 --------------------------------------------------------------------------------
 
+-- function modifier_luminous_samurai_light_iai_giri:OnAttackLanded(params)
 
-function modifier_luminous_samurai_breath_of_heaven:GetModifierPreAttack_CriticalStrike(params)
+--     if not IsServer() then return end
+--     if (self.caster and params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then
 
-    if not IsServer() then return end
-    local jugg = params.attacker
-    if (self.ability and jugg == self.caster and (self:GetStackCount() >= self.ability.procAttacks - 1)) then
+--         GameMode:ApplyStackingBuff({ 
+--             caster = self.caster, 
+--             target = self.caster, 
+--             ability = self.ability, 
+--             modifier_name = "modifier_luminous_samurai_breath_of_heaven_stacks",
+--             stacks = 1, 
+--             max_stacks = 3, 
+--             duration = -1 
+--         })
 
-        jugg:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, 1 / jugg:GetSecondsPerAttack())
-        local crit_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_juggernaut/jugg_crit_blur.vpcf", PATTACH_ABSORIGIN_FOLLOW, jugg)
-        ParticleManager:SetParticleControl(crit_pfx, 0, jugg:GetAbsOrigin())
-        ParticleManager:ReleaseParticleIndex(crit_pfx)
-        jugg:EmitSound("Hero_Juggernaut.BladeDance")
-        return 0
+--     end
 
-    end
+-- end
 
-end
+--------------------------------------------------------------------------------
+
+-- modifier_luminous_samurai_breath_of_heaven_stacks = class({
+--     IsDebuff = function(self)
+--         return false
+--     end,
+--     IsHidden = function(self)
+--         return false
+--     end,
+--     IsPurgable = function(self)
+--         return false
+--     end,
+--     RemoveOnDeath = function(self)
+--         return false
+--     end,
+--     AllowIllusionDuplicate = function(self)
+--         return false
+--     end,
+--     GetAttributes = function(self)
+--         return MODIFIER_ATTRIBUTE_PERMANENT
+--     end,
+--     DeclareFunctions = function(self)
+--         return { MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE, MODIFIER_EVENT_ON_ATTACK_LANDED }  
+--     end
+-- })
+
+-- LinkedModifiers["modifier_luminous_samurai_breath_of_heaven_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+-- --------------------------------------------------------------------------------
+
+-- function modifier_luminous_samurai_breath_of_heaven_stacks:OnCreated()
+
+--     if not IsServer() then return end
+--     self.caster = self:GetParent()
+--     self.ability = self:GetAbility()
+
+-- end
+
+
+-- --------------------------------------------------------------------------------
+
+-- function modifier_luminous_samurai_breath_of_heaven_stacks:OnAttackLanded(params)
+
+--     if not IsServer() then return end
+--     local jugg = params.attacker
+--     local ability = jugg:FindAbilityByName("luminous_samurai_light_iai_giri")
+--     if (not ability) then return end
+--     local modifier = jugg:FindModifierByName("modifier_luminous_samurai_breath_of_heaven_stacks")
+--     if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks) and damageTable.damage > 0) then
+
+--         damageTable.crit = ability.procDamage / 100
+--         modifier:Destroy()
+--         return damageTable
+
+--     end
+
+-- end
+
+-- --------------------------------------------------------------------------------
+
+
+-- function modifier_luminous_samurai_breath_of_heaven_stacks:GetModifierPreAttack_CriticalStrike(params)
+
+--     if not IsServer() then return end
+--     local jugg = params.attacker
+--     if (self.ability and jugg == self.caster and (self:GetStackCount() == self.ability.procAttacks - 1)) then
+
+--         jugg:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, 1 / jugg:GetSecondsPerAttack())
+--         local crit_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_juggernaut/jugg_crit_blur.vpcf", PATTACH_ABSORIGIN_FOLLOW, jugg)
+--         ParticleManager:SetParticleControl(crit_pfx, 0, jugg:GetAbsOrigin())
+--         ParticleManager:ReleaseParticleIndex(crit_pfx)
+--         jugg:EmitSound("Hero_Juggernaut.BladeDance")
+--         return 0
+
+--     end
+
+-- end
 
 --------------------------------------------------------------------------------
 -- Breath of heaven
@@ -1502,31 +1578,37 @@ luminous_samurai_breath_of_heaven = class({
 function luminous_samurai_breath_of_heaven:OnSpellStart()
 
     if not IsServer() then return end
-    local stacks = self.seedModifier:GetStackCount()
-    if (stacks >= self.stackCost) then
+    --local stacks = self.seedModifier:GetStackCount()
+    --if (stacks >= self.stackCost) then
 
-        self.seedModifier:SetStackCount(stacks - self.stackCost)
+        --self.seedModifier:SetStackCount(stacks - self.stackCost)
+         GameMode:ApplyBuff({
+            caster = self.caster,
+            target = self.caster,
+            ability = self,
+            modifier_name = "modifier_luminous_samurai_breath_of_heaven",
+            duration = self.buffDuration
+        })
         local casterPosition = self.caster:GetAbsOrigin()
         EmitSoundOn("Hero_Juggernaut.OmniSlash", self.caster)
         local pidx = ParticleManager:CreateParticle("particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
         ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
-        local enemies = FindUnitsInRadius(self.caster:GetTeam(),
+        local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
                 casterPosition,
                 nil,
                 self.radius,
-                DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+                DOTA_UNIT_TARGET_HERO,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
 
-        for _, enemy in pairs(enemies) do
-            GameMode:DamageUnit({ 
+        for _, ally in pairs(allies) do
+            GameMode:HealUnit({ 
                 caster = self.caster, 
-                target = enemy, 
+                target = ally, 
                 ability = self, 
-                damage = self.activeDamage * Units:GetAttackDamage(self.caster) / 100, 
-                holydmg = true 
+                heal = self.activeHeal * Units:GetAttackDamage(self.caster) / 100 
             })
         end
         Timers:CreateTimer(1.0, function()
@@ -1536,7 +1618,7 @@ function luminous_samurai_breath_of_heaven:OnSpellStart()
 
     end
 
-end
+--end
 
 --------------------------------------------------------------------------------
 
@@ -1544,13 +1626,7 @@ function luminous_samurai_breath_of_heaven:OnUpgrade()
 
     if not IsServer() then return end
     self.caster = self:GetCaster()
-    self.seedModifier = self.seedModifier or self.caster:FindModifierByName(self:GetIntrinsicModifierName())
-    self.procHeal = self:GetSpecialValueFor("proc_heal")
-    self.procAttacks = self:GetSpecialValueFor("proc_attacks")
     self.activeHeal = self:GetSpecialValueFor("active_heal")
-    self.stackCost = self:GetSpecialValueFor("stack_cost")
-    self.maxStacks = self:GetSpecialValueFor("max_stacks")
-    self.stackCooldown = self:GetSpecialValueFor("stack_cd")
     self.radius = self:GetSpecialValueFor("active_radius")
 
 end
