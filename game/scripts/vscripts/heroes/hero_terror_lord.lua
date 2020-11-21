@@ -147,10 +147,8 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            if (enemy:HasNPCBasedModifier("modifier_terror_lord_malicious_flames_dot", self.ability.modifierTable.caster) == false) then
-                self.ability.modifierTable.target = enemy
-                GameMode:ApplyNPCBasedDebuff(self.ability.modifierTable)
-            end
+            self.ability.modifierTable.target = enemy
+            GameMode:ApplyNPCBasedDebuff(self.ability.modifierTable)
         end
     end
 end
@@ -454,7 +452,7 @@ function modifier_terror_lord_destructive_stomp_thinker:OnCreated()
     self:StartIntervalThink(self.ability.dotTick)
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp_flames.vpcf", PATTACH_ABSORIGIN, self.thinker)
     ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
-    ParticleManager:SetParticleControl(pidx, 2, Vector(70, 186, 70))
+    ParticleManager:SetParticleControl(pidx, 2, Vector(210, 255, 138))
     ParticleManager:SetParticleControl(pidx, 4, Vector(self.ability.dotDuration, 0, 0))
     self:AddParticle(pidx, true, false, 1, true, false)
 end
@@ -603,8 +601,6 @@ function terror_lord_destructive_stomp:OnSpellStart()
     end
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 0, 0))
-    ParticleManager:SetParticleControl(pidx, 2, Vector(70, 186, 70))
-    ParticleManager:SetParticleControl(pidx, 4, Vector(5, 0, 0))
     if (self.dotDuration > 0) then
         CreateModifierThinker(
                 caster,
