@@ -582,7 +582,6 @@ function terror_lord_destructive_stomp:OnSpellStart()
         modifier_name = "modifier_stunned",
         duration = self.stunDuration
     }
-    local isAutocastEnabled = self:GetAutoCastState()
     local enemies = FindUnitsInRadius(casterTeam,
             casterPos,
             nil,
@@ -592,11 +591,17 @@ function terror_lord_destructive_stomp:OnSpellStart()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
-    for _, enemy in pairs(enemies) do
-        damageTable.target = enemy
-        GameMode:DamageUnit(damageTable)
-        if (isAutocastEnabled) then
+    if (self:GetAutoCastState()) then
+        for _, enemy in pairs(enemies) do
+            damageTable.target = enemy
+            stunModifier.target = enemy
+            GameMode:DamageUnit(damageTable)
             GameMode:ApplyDebuff(stunModifier)
+        end
+    else
+        for _, enemy in pairs(enemies) do
+            damageTable.target = enemy
+            GameMode:DamageUnit(damageTable)
         end
     end
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf", PATTACH_ABSORIGIN, caster)
