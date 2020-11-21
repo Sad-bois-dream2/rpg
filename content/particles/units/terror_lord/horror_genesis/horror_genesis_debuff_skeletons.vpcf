@@ -124,6 +124,10 @@
 			_class = "C_OP_FadeInSimple"
 			m_flFadeInTime = 0.1
 		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+			m_flDecayTime = 0.25
+		},
 	]
 	m_ForceGenerators = 
 	[

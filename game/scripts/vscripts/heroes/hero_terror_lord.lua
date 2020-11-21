@@ -147,7 +147,7 @@ function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            if (not enemy:HasModifier("modifier_terror_lord_malicious_flames_dot")) then
+            if (enemy:HasNPCBasedModifier("modifier_terror_lord_malicious_flames_dot", self.ability.modifierTable.caster) == false) then
                 self.ability.modifierTable.target = enemy
                 GameMode:ApplyNPCBasedDebuff(self.ability.modifierTable)
             end
@@ -642,9 +642,6 @@ modifier_terror_lord_horror_genesis_thinker = class({
     IsAuraActiveOnDeath = function(self)
         return false
     end,
-    GetAuraRadius = function(self)
-        return self.ability.radius
-    end,
     GetAuraSearchFlags = function(self)
         return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
     end,
@@ -662,12 +659,20 @@ modifier_terror_lord_horror_genesis_thinker = class({
     end
 })
 
+function modifier_terror_lord_horror_genesis_thinker:GetAuraRadius()
+    if (self.ability.armorReduction < 0) then
+        return self.ability.radius
+    end
+    return 0
+end
+
 function modifier_terror_lord_horror_genesis_thinker:OnCreated()
     if (not IsServer()) then
         return
     end
     self.ability = self:GetAbility()
     self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/horror_genesis/horror_genesis.vpcf", PATTACH_ABSORIGIN, self.thinker)
     ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 22, 1))
     ParticleManager:SetParticleControl(pidx, 2, Vector(self.ability.duration, 0, 0))
@@ -680,6 +685,36 @@ function modifier_terror_lord_horror_genesis_thinker:OnCreated()
         modifierTable.modifier_name = "modifier_terror_lord_horror_genesis_thinker_ally_aura"
         modifierTable.duration = -1
         GameMode:ApplyBuff(modifierTable)
+    end
+    self.damageTable = {
+        damage = 0,
+        caster = self.ability:GetCaster(),
+        target = nil,
+        ability = self.ability,
+        infernodmg = true,
+        aoe = true
+    }
+    self.casterTeam = self.damageTable.caster:GetTeamNumber()
+    self:StartIntervalThink(self.ability.dotTick)
+end
+
+function modifier_terror_lord_horror_genesis_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.dotDamage
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.position,
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        self.damageTable.target = enemy
+        GameMode:DamageUnit(self.damageTable)
     end
 end
 
@@ -849,7 +884,7 @@ function terror_lord_horror_genesis:OnSpellStart()
             self,
             "modifier_terror_lord_horror_genesis_thinker",
             {
-                duration = self.duration
+                duration = self.duration + 0.01
             },
             caster:GetAbsOrigin(),
             caster:GetTeamNumber(),
@@ -859,6 +894,7 @@ function terror_lord_horror_genesis:OnSpellStart()
 end
 
 function terror_lord_horror_genesis:OnUpgrade()
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
     self.armorReduction = self:GetSpecialValueFor("armor_reduction") / -100
     self.eleArmorReduction = self:GetSpecialValueFor("elearmor_reduction") / -100
     self.duration = self:GetSpecialValueFor("duration")
@@ -866,6 +902,7 @@ function terror_lord_horror_genesis:OnUpgrade()
     self.slow = self:GetSpecialValueFor("slow") / -100
     self.bonusPrimaryPct = self:GetSpecialValueFor("bonus_primary_pct") / 100
     self.bonusPrimaryAlly = self:GetSpecialValueFor("bonus_primary_ally")
+    self.dotTick = self:GetSpecialValueFor("dot_tick")
 end
 
 -- terror_lord_ruthless_predator
