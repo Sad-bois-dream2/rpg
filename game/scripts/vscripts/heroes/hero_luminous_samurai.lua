@@ -1066,7 +1066,7 @@ function modifier_luminous_samurai_light_iai_giri:OnAttackLanded(params)
             ability = self.ability, 
             modifier_name = "modifier_luminous_samurai_light_iai_giri_stacks",
             stacks = 1, 
-            max_stacks = 3, 
+            max_stacks = self.ability.procAttacks, 
             duration = -1 
         })
 
@@ -1159,7 +1159,58 @@ function modifier_luminous_samurai_light_iai_giri_stacks:OnTakeDamage(damageTabl
     local modifier = jugg:FindModifierByName("modifier_luminous_samurai_light_iai_giri_stacks")
     if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks) and damageTable.damage > 0) then
 
-        damageTable.crit = ability.procDamage / 100
+        if (not jugg:HasModifier("modifier_luminous_samurai_breath_of_heaven")) then
+
+            damageTable.crit = ability.procDamage / 100
+
+        else
+            -- Breath of Heaven rank 1
+            damageTable.crit = 1.00000001
+            local breathAbility = jugg:FindAbilityByName("luminous_samurai_breath_of_heaven")
+            local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS, jugg:GetAbsOrigin(), nil, breathAbility.passiveHealSearchRadius, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+            local lowestHealthAlly 
+            local lowestPercentHP = 101
+            for i = 1, #allies do                    
+                local percentHP = allies[i]:GetHealth() / allies[i]:GetMaxHealth() * 100
+                if (percentHP < lowestPercentHP) then 
+                    lowestPercentHP = percentHP
+                    lowestHealthAlly = allies[i]
+                end
+            end
+
+            GameMode:HealUnit({ 
+                caster = jugg, 
+                target = lowestHealthAlly, 
+                ability = breathAbility, 
+                heal = (ability.procDamage / 100 - 1) * Units:GetAttackDamage(jugg)
+            })
+
+            -- Breath of Heaven rank 2 
+            GameMode:HealUnitMana({
+                caster = jugg,
+                target = jugg,
+                ability = breathAbility,
+                heal = breathAbility.manaRestore / 100 * jugg:GetMaxMana()
+            })
+
+            for i = 0, jugg:GetAbilityCount() do
+
+                local ability = jugg:GetAbilityByIndex(i)
+                if (ability) then
+
+                    local cooldownTable = {}
+                    cooldownTable.reduction = breathAbility.cooldownReduction
+                    cooldownTable.ability = ability:GetAbilityName()
+                    cooldownTable.isflat = true
+                    cooldownTable.target = jugg
+                    GameMode:ReduceAbilityCooldown(cooldownTable)
+
+                end
+
+            end
+
+        end
+
         modifier:Destroy()
         return damageTable
 
@@ -1285,7 +1336,7 @@ function modifier_luminous_samurai_light_iai_giri_buff:OnTakeDamage(damageTable)
             caster = damageTable.attacker,
             target = damageTable.victim,
             ability = damageTable.ability, 
-            damage = convertedDamage 
+            damage = convertedDamage, 
             holydmg = true
         }) 
         return damageTable
@@ -1445,121 +1496,90 @@ function modifier_luminous_samurai_breath_of_heaven:OnCreated()
 end
 
 --------------------------------------------------------------------------------
+-- Rank 3
 
--- function modifier_luminous_samurai_breath_of_heaven:OnTakeDamage(damageTable)
+function modifier_luminous_samurai_breath_of_heaven:GetHealingCausedPercent()
 
---     if not IsServer() then return end
---     local jugg = damageTable.attacker
---     local ability = jugg:FindAbilityByName("luminous_samurai_light_iai_giri")
---     if (not ability) then return end
---     local modifier = jugg:FindModifierByName("modifier_luminous_samurai_light_iai_giri")
---     if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks - 1) and damageTable.damage > 0) then
-
---         damageTable.crit = ability.procDamage / 100
---         return damageTable
-
---     end
-
--- end
+    return (Units:GetHolyDamage(self.caster) - 1) * self.ability.holyDamageToHealing / 100
+    
+end
 
 --------------------------------------------------------------------------------
 
--- function modifier_luminous_samurai_light_iai_giri:OnAttackLanded(params)
+function modifier_luminous_samurai_breath_of_heaven:OnCriticalStrike(damageTable)
 
---     if not IsServer() then return end
---     if (self.caster and params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then
+    if not IsServer() then return end
+    local jugg = damageTable.attacker
+    local ability = jugg:FindAbilityByName("luminous_samurai_breath_of_heaven")
+    --print ((Units:GetHolyDamage(jugg) - 1) * ability.holyDamageToHealing / 100)
+    if (ability:GetLevel() > 0) then
 
---         GameMode:ApplyStackingBuff({ 
---             caster = self.caster, 
---             target = self.caster, 
---             ability = self.ability, 
---             modifier_name = "modifier_luminous_samurai_breath_of_heaven_stacks",
---             stacks = 1, 
---             max_stacks = 3, 
---             duration = -1 
---         })
+        GameMode:ApplyStackingBuff({
+            caster = jugg,
+            target = jugg,
+            ability = ability,
+            modifier_name = "modifier_luminous_samurai_breath_of_heaven_shingan",
+            duration = ability.stackDuration,
+            stacks = 1,
+            max_stacks = ability.maxStacks
+        })
 
---     end
+    end
 
--- end
+end
 
 --------------------------------------------------------------------------------
 
--- modifier_luminous_samurai_breath_of_heaven_stacks = class({
---     IsDebuff = function(self)
---         return false
---     end,
---     IsHidden = function(self)
---         return false
---     end,
---     IsPurgable = function(self)
---         return false
---     end,
---     RemoveOnDeath = function(self)
---         return false
---     end,
---     AllowIllusionDuplicate = function(self)
---         return false
---     end,
---     GetAttributes = function(self)
---         return MODIFIER_ATTRIBUTE_PERMANENT
---     end,
---     DeclareFunctions = function(self)
---         return { MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE, MODIFIER_EVENT_ON_ATTACK_LANDED }  
---     end
--- })
+modifier_luminous_samurai_breath_of_heaven_shingan = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
 
--- LinkedModifiers["modifier_luminous_samurai_breath_of_heaven_stacks"] = LUA_MODIFIER_MOTION_NONE
+LinkedModifiers["modifier_luminous_samurai_breath_of_heaven_shingan"] = LUA_MODIFIER_MOTION_NONE
 
--- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
--- function modifier_luminous_samurai_breath_of_heaven_stacks:OnCreated()
+function modifier_luminous_samurai_breath_of_heaven_shingan:OnCreated()
 
---     if not IsServer() then return end
---     self.caster = self:GetParent()
---     self.ability = self:GetAbility()
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
 
--- end
+end
 
+--------------------------------------------------------------------------------
 
--- --------------------------------------------------------------------------------
+function modifier_luminous_samurai_breath_of_heaven_shingan:OnPreHeal(healTable)
 
--- function modifier_luminous_samurai_breath_of_heaven_stacks:OnAttackLanded(params)
+    if not IsServer() then return end
+    local jugg = healTable.caster
+    local modifier = jugg:FindModifierByName("modifier_luminous_samurai_breath_of_heaven_shingan")
+    if (modifier) then
 
---     if not IsServer() then return end
---     local jugg = params.attacker
---     local ability = jugg:FindAbilityByName("luminous_samurai_light_iai_giri")
---     if (not ability) then return end
---     local modifier = jugg:FindModifierByName("modifier_luminous_samurai_breath_of_heaven_stacks")
---     if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks) and damageTable.damage > 0) then
+        local ability = jugg:FindAbilityByName("luminous_samurai_breath_of_heaven")
+        healTable.crit = (ability.baseCritHeal + modifier:GetStackCount() * ability.critHealPerStack) / 100
+        modifier:Destroy()
+        return healTable
 
---         damageTable.crit = ability.procDamage / 100
---         modifier:Destroy()
---         return damageTable
+    end 
 
---     end
-
--- end
-
--- --------------------------------------------------------------------------------
-
-
--- function modifier_luminous_samurai_breath_of_heaven_stacks:GetModifierPreAttack_CriticalStrike(params)
-
---     if not IsServer() then return end
---     local jugg = params.attacker
---     if (self.ability and jugg == self.caster and (self:GetStackCount() == self.ability.procAttacks - 1)) then
-
---         jugg:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, 1 / jugg:GetSecondsPerAttack())
---         local crit_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_juggernaut/jugg_crit_blur.vpcf", PATTACH_ABSORIGIN_FOLLOW, jugg)
---         ParticleManager:SetParticleControl(crit_pfx, 0, jugg:GetAbsOrigin())
---         ParticleManager:ReleaseParticleIndex(crit_pfx)
---         jugg:EmitSound("Hero_Juggernaut.BladeDance")
---         return 0
-
---     end
-
--- end
+end
 
 --------------------------------------------------------------------------------
 -- Breath of heaven
@@ -1567,9 +1587,6 @@ end
 luminous_samurai_breath_of_heaven = class({
     GetAbilityTextureName = function(self)
         return "luminous_samurai_breath_of_heaven"
-    end,
-    GetIntrinsicModifierName = function(self)
-        return "modifier_luminous_samurai_seed"
     end
 })
 
@@ -1628,7 +1645,15 @@ function luminous_samurai_breath_of_heaven:OnUpgrade()
     self.caster = self:GetCaster()
     self.activeHeal = self:GetSpecialValueFor("active_heal")
     self.radius = self:GetSpecialValueFor("active_radius")
-
+    self.buffDuration = self:GetSpecialValueFor("duration")
+    self.passiveHealSearchRadius = self:GetSpecialValueFor("passive_heal_search_radius")
+    self.manaRestore = self:GetSpecialValueFor("mana_restore")
+    self.cooldownReduction = self:GetSpecialValueFor("cooldown_reduction")
+    self.holyDamageToHealing = self:GetSpecialValueFor("holy_dmg_to_healing")
+    self.maxStacks = self:GetSpecialValueFor("max_stacks")
+    self.stackDuration = self:GetSpecialValueFor("stack_duration")
+    self.baseCritHeal = self:GetSpecialValueFor("base_crit_heal")
+    self.critHealPerStack = self:GetSpecialValueFor("crit_heal_per_stack")
 end
 
 -- Internal stuff
@@ -1642,6 +1667,8 @@ if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri_debuff, 'OnTakeDamage'))
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri_buff, 'OnTakeDamage'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
+    GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_breath_of_heaven, 'OnCriticalStrike'))
+    GameMode:RegisterPreHealEventHandler(Dynamic_Wrap(modifier_luminous_samurai_breath_of_heaven_shingan, 'OnPreHeal'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
 
