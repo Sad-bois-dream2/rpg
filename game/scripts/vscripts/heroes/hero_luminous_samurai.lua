@@ -952,62 +952,6 @@ end
 
 --------------------------------------------------------------------------------
 
--- function modifier_luminous_samurai_seed:OnCriticalStrike(damageTable)
-
---     if not IsServer() then return end
---     local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_seed")
---     if (modifier and modifier.abilityName == "luminous_samurai_light_iai_giri" and modifier.ability:GetLevel() > 0 and not damageTable.attacker.modifier_luminous_samurai_seed_cd) then
-
---         local stacks = modifier:GetStackCount() + 1
---         modifier:SetStackCount(math.min(stacks, modifier.ability.maxStacks))
---         damageTable.attacker.modifier_luminous_samurai_seed_cd = true
---         Timers:CreateTimer(modifier.ability.stackCooldown, function()
---             damageTable.attacker.modifier_luminous_samurai_seed_cd = nil
---         end)
-
---     end
-
--- end
-
---------------------------------------------------------------------------------
-
--- function modifier_luminous_samurai_seed:OnAttackLanded(params)
-
---     if not IsServer() then return end
---     if (self.caster and params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then
-
---         local modifier = GameMode:ApplyStackingBuff({ caster = self.caster, target = self.caster, ability = self.ability, modifier_name = self.procName, stacks = 1, max_stacks = 3, duration = -1 })
---         if (modifier:GetStackCount() >= self.ability.procAttacks) then
---             modifier:Destroy()
---             if (self.abilityName == "luminous_samurai_breath_of_heaven") then 
-
---                 local allies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS, self.caster:GetAbsOrigin(), nil, self.ability.radius, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
---                 local lowestHealthAlly 
---                 local lowestPercentHP = 101
---                 for i = 1, #allies do
-                    
---                     local percentHP = allies[i]:GetHealth() / allies[i]:GetMaxHealth() * 100
---                     if (percentHP < lowestPercentHP) then 
-
---                         lowestPercentHP = percentHP
---                         lowestHealthAlly = allies[i]
-
---                     end
-
---                 end
-
---                 GameMode:HealUnit({ caster = self.caster, target = lowestHealthAlly, ability = self.ability, heal = Units:GetAttackDamage(self.caster) * self.ability.procHeal / 100 })
-
---             end
-
---         end
-
---     end
-
--- end
-
---------------------------------------------------------------------------------
-
 modifier_luminous_samurai_light_iai_giri = class({
     IsDebuff = function(self)
         return false
@@ -1066,7 +1010,7 @@ function modifier_luminous_samurai_light_iai_giri:OnAttackLanded(params)
             ability = self.ability, 
             modifier_name = "modifier_luminous_samurai_light_iai_giri_stacks",
             stacks = 1, 
-            max_stacks = self.ability.procAttacks, 
+            max_stacks = 99999, 
             duration = -1 
         })
 
@@ -1155,9 +1099,7 @@ function modifier_luminous_samurai_light_iai_giri_stacks:OnTakeDamage(damageTabl
     if not IsServer() then return end
     local jugg = damageTable.attacker
     local ability = jugg:FindAbilityByName("luminous_samurai_light_iai_giri")
-    if (not ability) then return end
-    local modifier = jugg:FindModifierByName("modifier_luminous_samurai_light_iai_giri_stacks")
-    if (modifier and damageTable.ability == nil and damageTable.physdmg and (modifier:GetStackCount() >= ability.procAttacks) and damageTable.damage > 0) then
+    if (ability and jugg.modifier_luminous_samurai_light_iai_giri_stacks_crit_ready == true and damageTable.ability == nil and damageTable.physdmg and damageTable.damage > 0) then
 
         if (not jugg:HasModifier("modifier_luminous_samurai_breath_of_heaven")) then
 
@@ -1211,7 +1153,7 @@ function modifier_luminous_samurai_light_iai_giri_stacks:OnTakeDamage(damageTabl
 
         end
 
-        modifier:Destroy()
+        jugg.modifier_luminous_samurai_light_iai_giri_stacks_crit_ready = nil
         return damageTable
 
     end
@@ -1233,6 +1175,21 @@ function modifier_luminous_samurai_light_iai_giri_stacks:GetModifierPreAttack_Cr
         ParticleManager:ReleaseParticleIndex(crit_pfx)
         jugg:EmitSound("Hero_Juggernaut.BladeDance")
         return 0
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_light_iai_giri_stacks:OnStackCountChanged()
+
+    if not IsServer() then return end
+    local stacks = self:GetStackCount()
+    if (stacks >= self.ability.procAttacks) then 
+
+        self:Destroy() 
+        self.caster.modifier_luminous_samurai_light_iai_giri_stacks_crit_ready = true
 
     end
 
@@ -1435,6 +1392,13 @@ function luminous_samurai_light_iai_giri:OnUpgrade()
     if (not self.caster:HasModifier("modifier_luminous_samurai_light_iai_giri")) 
         then self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_light_iai_giri", {}) 
     end
+    local modifier = self.caster:FindModifierByName("modifier_luminous_samurai_light_iai_giri_stacks")
+    if (modifier) then 
+
+        modifier:Destroy() 
+
+    end
+    self.caster.modifier_luminous_samurai_light_iai_giri_stacks_crit_ready = nil
 
 end
 
@@ -1511,7 +1475,6 @@ function modifier_luminous_samurai_breath_of_heaven:OnCriticalStrike(damageTable
     if not IsServer() then return end
     local jugg = damageTable.attacker
     local ability = jugg:FindAbilityByName("luminous_samurai_breath_of_heaven")
-    --print ((Units:GetHolyDamage(jugg) - 1) * ability.holyDamageToHealing / 100)
     if (ability:GetLevel() > 0) then
 
         GameMode:ApplyStackingBuff({
