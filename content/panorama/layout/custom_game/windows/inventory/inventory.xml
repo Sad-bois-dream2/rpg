@@ -128,7 +128,6 @@
                                 <Panel id="InventoryEquippedSlotBorder10" class="ItemBorder"/>
                                 <Label text="#DOTA_Inventory_slot_belt"/>
                             </Panel>
-
                             <Panel class="RightRings">
                                 <Panel id="InventoryEquippedSlot11" class="InventoryEquippedSlot empty" draggable="true"
                                        oncontextmenu="OnRightClickOnInventoryEquippedSlot(11)"

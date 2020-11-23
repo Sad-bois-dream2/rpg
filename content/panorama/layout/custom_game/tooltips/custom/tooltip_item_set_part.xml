@@ -1,0 +1,12 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/tooltips/custom/tooltip_item.css"/>
+    </styles>
+    <Panel style="visibility: collapse;" class="SetPartContainer" hittest="false" hittestchildren="false">
+        <Panel>
+            <DOTAItemImage id="SetPartIcon" itemname="" scaling="stretch"/>
+            <Panel id="ItemTooltipImageBorder"/>
+        </Panel>
+        <Label id="SetPartLabel" hrml="true" text=""/>
+    </Panel>
+</root>

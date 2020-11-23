@@ -20,6 +20,7 @@ var TOOLTIP_SET_CONTAINER = 12;
 var TOOLTIP_SET_PARTS_CONTAINER = 13;
 var TOOLTIP_SET_PARTS_LABELS = 14;
 var TOOLTIP_ITEM_ICON_BORDER = 15;
+var TOOLTIP_ITEM_DOTA_ITEM_IMAGE = 16;
 var initialStatsLabelsInTooltip = 10;
 
 TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
@@ -96,7 +97,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             statValue += "%";
         }
         description = description.replace("%"+stats[i].name+"%", statValue);
-	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
+        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='s2r://panorama/images/hud/reborn/icon_damage_psd.vtex'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].SetHasClass("last", false);
 	    latestStatId++;
@@ -116,13 +117,10 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
                 CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
             }
         }
-	    var itemSetNameLabel = "<img class='SetIcon' src='s2r://panorama/images/hud/reborn/ult_ready_psd.vtex'>";
-	    itemSetNameLabel += " <span class='SetName'>" + $.Localize("#DOTA_Inventory_item_set").replace("%NAME%", $.Localize("#DOTA_Tooltip_" + itemSetName)) + "</span>";
-        TooltipManager.itemTooltipContainer[TOOLTIP_SET_NAME_LABEL].text = itemSetNameLabel;
         missedLabels = itemSetTotalParts - TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER].GetChildCount();
         if(missedLabels > 0) {
             for(var i = 0; i < missedLabels; i++) {
-                CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS]);
+                CreateItemSetPartsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS]);
             }
         }
         var amountOfItemSetPartsEquipped = 0;
@@ -135,13 +133,23 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             } else {
                 TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].SetHasClass("Equipped", false);
             }
-            TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].text = setPartName;
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].itemIcon.itemname = itemSetParts[i];
+            var itemSetPartsRarity = ItemsDatabase.GetItemRarity(itemSetParts[i]);
+            var itemSetPartsRarityColor = ItemsDatabase.GetItemRarityColor(itemSetPartsRarity);
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].itemIconBorder.style.border = "1px solid " + itemSetPartsRarityColor;
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].itemLabel.text = setPartName;
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].style.visibility = "visible";
             latestStatId++;
         }
         for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER].GetChildCount(); i++) {
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS][i].style.visibility = "collapse";
         }
+	    var itemSetNameLabel = "<img class='SetIcon' src='s2r://panorama/images/hud/reborn/ult_ready_psd.vtex'>";
+	    var itemSetNameInnerLabel = $.Localize("#DOTA_Inventory_item_set").replace("%NAME%", $.Localize("#DOTA_Tooltip_" + itemSetName));
+	    itemSetNameInnerLabel = itemSetNameInnerLabel.replace("%CURRENTAMOUNTOFSETPARTS%", amountOfItemSetPartsEquipped);
+	    itemSetNameInnerLabel = itemSetNameInnerLabel.replace("%TOTALAMOUNTOFSETPARTS%", itemSetTotalParts);
+	    itemSetNameLabel += " <span class='SetName'>" + itemSetNameInnerLabel + "</span>";
+        TooltipManager.itemTooltipContainer[TOOLTIP_SET_NAME_LABEL].text = itemSetNameLabel;
         latestStatId = 0;
         var setStatLabel = $.Localize("#DOTA_Inventory_item_set_bonus");
         for(var i = 0; i < itemSetTotalParts; i++) {
@@ -151,7 +159,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
                 TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "collapse";
                 continue;
             }
-            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].text = setStatLabel.replace("%BONUS%", setStatBonusLabel).replace("%ITEMSCOUNT%", itemPartIndex);
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].text = setStatLabel.replace("%BONUS%", setStatBonusLabel).replace("%SETPARTSREQUIRED%", itemPartIndex);
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].SetHasClass("Enabled", itemPartIndex <= amountOfItemSetPartsEquipped);
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "visible";
             latestStatId++;
@@ -185,14 +193,14 @@ function CreateItemTooltip() {
         $("#ItemTooltipSetPartsContainer"),
         [],
         $("#ItemTooltipImageBorder"),
+        $("#ItemTooltipDOTAItemImage")
         ];
-        var TOOLTIP_SET_STATS_LABELS = 11;
         GameUI.CustomUIConfig().TooltipManager.itemTooltipContainer = itemTooltip;
         GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized = true;
         for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
             CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS]);
             CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
-            CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS]);
+            CreateItemSetPartsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS]);
         }
     }
 }
@@ -203,6 +211,17 @@ function CreateItemStatsLabel(parent, container) {
     statsLabel.style.visibility = "collapse";
     container.push(statsLabel);
 }
+
+function CreateItemSetPartsLabel(parent, container) {
+    var setPartLabel = $.CreatePanel("Panel", parent, "");
+    setPartLabel.BLoadLayout("file://{resources}/layout/custom_game/tooltips/custom/tooltip_item_set_part.xml", false, false);
+    setPartLabel.style.visibility = "collapse";
+    setPartLabel.itemIcon = setPartLabel.FindChildTraverse("SetPartIcon");
+    setPartLabel.itemIconBorder = setPartLabel.FindChildTraverse("ItemTooltipImageBorder");
+    setPartLabel.itemLabel = setPartLabel.FindChildTraverse("SetPartLabel");
+    container.push(setPartLabel);
+}
+
 
 (function() {
     GameUI.CustomUIConfig().TooltipManager = TooltipManager;

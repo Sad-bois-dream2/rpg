@@ -782,8 +782,8 @@
         "DOTA_Inventory_rarity_unique_immortal"		"<font color='#d5a336'>Unique Immortal</font>"
         "DOTA_Inventory_rarity_cursed_immortal"		"<font color='#a41818'>Cursed Immortal</font>"
 		"DOTA_Inventory_quality"		"Quality: %VALUE%"
-		"DOTA_Inventory_item_set"		"%NAME%"
-        "DOTA_Inventory_item_set_bonus"		"(%ITEMSCOUNT%) Set:<br>%BONUS%"
+		"DOTA_Inventory_item_set"		"%NAME% ( %CURRENTAMOUNTOFSETPARTS% / %TOTALAMOUNTOFSETPARTS% )"
+        "DOTA_Inventory_item_set_bonus"		"(%SETPARTSREQUIRED%) Set:<br>%BONUS%"
 		// Talent trees
 		"DOTA_TalentTree_Title"		"Talent tree"
 		"DOTA_TalentTree_Description"		"Manage your hero's talents here and create powerful builds.<br>Here you can Manage your hero talents and create any build that you want."

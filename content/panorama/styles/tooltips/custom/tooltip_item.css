@@ -181,26 +181,47 @@
 #ItemTooltipSetPartsContainer
 {
     flow-children: down;
-    margin-left: 7px;
+    margin-left: 10px;
 }
 
-#ItemTooltipSetPartsContainer Label
+.SetPartContainer
+{
+    flow-children: right;
+    margin-bottom: 5px;
+}
+
+.SetPartContainer DOTAItemImage
+{
+    width: 32px;
+    height: 24px;
+	brightness: 1;
+	saturation: 0;
+	wash-color: grey;
+}
+
+.SetPartContainer.Equipped DOTAItemImage
+{
+    saturation: 1;
+    wash-color: #00000000;
+}
+
+.SetPartContainer Label
 {
 	width: fill-parent-flow(1.0);
     color: dimgray;
 	font-size: 16px;
 	font-family: defaultFont;
-	margin-top: 2px;
 	text-align: left;
+	vertical-align: center;
+	margin-left: 5px;
 }
 
-#ItemTooltipSetPartsContainer Label.Equipped
+.SetPartContainer.Equipped Label
 {
 	width: fill-parent-flow(1.0);
     color: white;
 	font-size: 16px;
 	font-family: defaultFont;
-	margin-top: 2px;
 	text-align: left;
 }
 
@@ -212,8 +233,9 @@
 	font-family: defaultFont;
 	horizontal-align: center;
 	vertical-align: center;
-	margin-top: 2px;
 	text-shadow: 2px 2px 0px 1.0 #00000090;
+	margin-top: 5px;
+	margin-bottom: 3px;
 }
 
 .ItemTooltipSetLabel .SetIcon
@@ -243,4 +265,13 @@
 
 #ItemTooltipSetStatsContainer Label.Enabled {
     color: white;
+}
+
+.ItemStatIcon
+{
+    width: 16px;
+    height: 16px;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 5px;
 }
