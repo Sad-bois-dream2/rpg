@@ -97,7 +97,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             statValue += "%";
         }
         description = description.replace("%"+stats[i].name+"%", statValue);
-        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='s2r://panorama/images/hud/reborn/icon_damage_psd.vtex'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
+        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='s2r://panorama/images/hud/reborn/icon_damage_psd.vtex'><img class='ItemStatIcon' src='file://{images}/custom_game/hud/stats/health.png'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].SetHasClass("last", false);
 	    latestStatId++;

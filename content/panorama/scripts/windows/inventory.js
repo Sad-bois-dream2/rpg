@@ -12,13 +12,13 @@ var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
 var pagePanels = [], pageButtons = [];
 var currentHero = -1;
 var ELEMENTS = [
-	["Fire", "file://{images}/custom_game/hud/fire_element.png"],
-	["Frost", "file://{images}/custom_game/hud/frost_element.png"],
-	["Earth", "file://{images}/custom_game/hud/earth_element.png"],
-	["Nature", "file://{images}/custom_game/hud/nature_element.png"],
-	["Void", "file://{images}/custom_game/hud/void_element.png"],
-	["Inferno", "file://{resources}/images/custom_game/hud/inferno_element.png"],
-	["Holy", "file://{images}/custom_game/hud/holy_element.png"]
+	["Fire", "file://{images}/custom_game/hud/stats/fire_element.png"],
+	["Frost", "file://{images}/custom_game/hud/stats/frost_element.png"],
+	["Earth", "file://{images}/custom_game/hud/stats/earth_element.png"],
+	["Nature", "file://{images}/custom_game/hud/stats/nature_element.png"],
+	["Void", "file://{images}/custom_game/hud/stats/void_element.png"],
+	["Inferno", "file://{images}/custom_game/hud/stats/inferno_element.png"],
+	["Holy", "file://{images}/custom_game/hud/stats/holy_element.png"]
 ];
 
 var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
