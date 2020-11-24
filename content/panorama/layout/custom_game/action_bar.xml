@@ -52,31 +52,31 @@
                     </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
-                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/fire_element.png"/>
                             <Label id="StatsTooltipFireAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/frost_element.png"/>
                             <Label id="StatsTooltipFrostAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/earth_element.png"/>
                             <Label id="StatsTooltipEarthAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/nature_element.png"/>
                             <Label id="StatsTooltipNatureAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/void_element.png"/>
                             <Label id="StatsTooltipVoidAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/inferno_element.png"/>
                             <Label id="StatsTooltipInfernoAmpLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/holy_element.png"/>
                             <Label id="StatsTooltipHolyAmpLabel" class="ItemTooltipLabel" text="-1"/>
                         </Panel>
                     </Panel>
@@ -111,31 +111,31 @@
                     </Panel>
                     <Panel class="HeroStatsElementsContainer">
                         <Panel class="TooltipElementLabelContainer first">
-                            <Image src="file://{images}/custom_game/hud/fire_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/fire_element.png"/>
                             <Label id="StatsTooltipFireResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/frost_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/frost_element.png"/>
                             <Label id="StatsTooltipFrostResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/earth_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/earth_element.png"/>
                             <Label id="StatsTooltipEarthResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/nature_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/nature_element.png"/>
                             <Label id="StatsTooltipNatureResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/void_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/void_element.png"/>
                             <Label id="StatsTooltipVoidResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{resources}/images/custom_game/hud/inferno_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/inferno_element.png"/>
                             <Label id="StatsTooltipInfernoResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                         <Panel class="TooltipElementLabelContainer">
-                            <Image src="file://{images}/custom_game/hud/holy_element.png"/>
+                            <Image src="file://{images}/custom_game/hud/stats/holy_element.png"/>
                             <Label id="StatsTooltipHolyResistanceLabel" class="ItemTooltipLabel" text="0%"/>
                         </Panel>
                     </Panel>
@@ -196,19 +196,19 @@
                     <Panel id="HeroStats" onmouseover="ShowStatsTooltip()" onmouseout="HideStatsTooltip()">
                         <Panel id="AttackDamage" class="AttrIconContainer">
                             <Label id="AttackDamageLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex" class="StatIcon"/>
+                            <Image src="file://{images}/custom_game/hud/stats/attack_damage.png" class="StatIcon"/>
                         </Panel>
                         <Panel id="Armor" class="AttrIconContainer">
                             <Label id="ArmorLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex" class="StatIcon"/>
+                            <Image src="file://{images}/custom_game/hud/stats/armor.png" class="StatIcon"/>
                         </Panel>
                         <Panel id="SpellArmor" class="AttrIconContainer">
                             <Label id="SpellArmorLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex" class="StatIcon"/>
+                            <Image src="file://{images}/custom_game/hud/stats/magic_resistance.png" class="StatIcon"/>
                         </Panel>
                         <Panel id="Movespeed" class="AttrIconContainer">
                             <Label id="MovespeedLabel" class="StatLabel" text="0" hittest="false"/>
-                            <Image src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex" class="StatIcon"/>
+                            <Image src="file://{images}/custom_game/hud/stats/move_speed.png" class="StatIcon"/>
                         </Panel>
                         <Panel id="Strength" class="AttrIconContainer">
                             <Label id="StrengthLabel" class="StatLabel" text="0" hittest="false"/>
