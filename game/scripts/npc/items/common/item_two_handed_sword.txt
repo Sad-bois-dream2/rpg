@@ -25,11 +25,13 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
+				"stat_type"         "ATTACK_DAMAGE"
 				"attack_damage_min"		"10"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
+                "stat_type"         "ATTACK_DAMAGE"
 				"attack_damage_max"		"20"
 			}
 		}
@@ -59,11 +61,13 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
+                "stat_type"         "ATTACK_DAMAGE"
 				"attack_damage_min"		"10"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
+                "stat_type"         "ATTACK_DAMAGE"
 				"attack_damage_max"		"20"
 			}
 		}
@@ -92,11 +96,13 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
+                "stat_type"         "ARMOR"
 				"armor_min"		"1"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
+                "stat_type"         "ARMOR"
 				"armor_max"		"5"
 			}
 		}

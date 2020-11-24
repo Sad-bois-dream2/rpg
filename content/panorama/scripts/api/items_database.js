@@ -123,6 +123,155 @@ ItemsDatabase.GetItemRarityColor = function(rarity) {
 	}
 }
 
+ItemsDatabase.GetItemStatIcon = function(stat) {
+switch(stat) {
+	case "HEALTH":
+		return "file://{images}/custom_game/hud/stats/health.png";
+		break;
+	case "HEALTH_PERCENT":
+		return "file://{images}/custom_game/hud/stats/health.png";
+		break;
+	case "HEALING_RECEIVED":
+		return "file://{images}/custom_game/hud/stats/healing_received.png";
+		break;
+	case "COOLDOWN_REDUCTION":
+		return "file://{images}/custom_game/hud/stats/mana.png";
+		break;
+	case "STATUS_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/status_resistance.png";
+		break;
+	case "CAST_SPEED":
+		return "file://{images}/custom_game/hud/stats/cast_speed.png";
+		break;
+	case "CAST_SPEED_PERCENT":
+		return "file://{images}/custom_game/hud/stats/cast_speed.png";
+		break;
+	case "THREAT":
+		return "file://{images}/custom_game/hud/stats/threat.png";
+		break;
+	case "MANA":
+		return "file://{images}/custom_game/hud/stats/mana.png";
+		break;
+	case "MANA_PERCENT":
+		return "file://{images}/custom_game/hud/stats/mana.png";
+		break;
+	case "DAMAGE_REDUCTION":
+		return "file://{images}/custom_game/hud/stats/damage_reduction.png";
+		break;
+	case "ATTACK_RANGE":
+		return "file://{images}/custom_game/hud/stats/attack_range.png";
+		break;
+	case "ATTACK_RANGE_PERCENT":
+		return "file://{images}/custom_game/hud/stats/attack_range.png";
+		break;
+	case "SPELL_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/spell_damage.png";
+		break;
+	case "HEALING_CAUSED":
+		return "file://{images}/custom_game/hud/stats/healing_caused.png";
+		break;
+	case "ARMOR":
+		return "file://{images}/custom_game/hud/stats/armor.png";
+		break;
+	case "ARMOR_PERCENT":
+		return "file://{images}/custom_game/hud/stats/armor.png";
+		break;
+	case "HEALTH_REGENERATION":
+		return "file://{images}/custom_game/hud/stats/health_regeneration.png";
+		break;
+	case "HEALTH_REGENERATION_PERCENT":
+		return "file://{images}/custom_game/hud/stats/health_regeneration.png";
+		break;
+	case "BASE_ATTACK_TIME":
+		return "file://{images}/custom_game/hud/stats/bat.png";
+		break;
+	case "BASE_ATTACK_TIME_PERCENT":
+		return "file://{images}/custom_game/hud/stats/bat.png";
+		break;
+	case "BASE_ATTACK_TIME_VALUE":
+		return "file://{images}/custom_game/hud/stats/bat.png";
+		break;
+	case "CRITICAL_STRIKE_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/critical_damage.png";
+		break;
+	case "EXPERIENCE":
+		return "file://{images}/custom_game/hud/stats/exp.png";
+		break;
+	case "CRITICAL_STRIKE_CHANCE":
+		return "file://{images}/custom_game/hud/stats/critical_chance.png";
+		break;
+	case "STATUS_AMPLIFICATION":
+		return "file://{images}/custom_game/hud/stats/status_amplification.png";
+		break;
+	case "ATTACK_SPEED":
+		return "file://{images}/custom_game/hud/stats/attack_speed.png";
+		break;
+	case "ATTACK_SPEED_PERCENT":
+		return "file://{images}/custom_game/hud/stats/attack_speed.png";
+		break;
+	case "ATTACK_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/attack_damage.png";
+		break;
+	case "ATTACK_DAMAGE_PERCENT":
+		return "file://{images}/custom_game/hud/stats/attack_damage.png";
+		break;
+	case "MOVE_SPEED":
+		return "file://{images}/custom_game/hud/stats/move_speed.png";
+		break;
+	case "MOVE_SPEED_PERCENT":
+		return "file://{images}/custom_game/hud/stats/move_speed.png";
+		break;
+	case "MANA_REGENERATION":
+		return "file://{images}/custom_game/hud/stats/mana_regeneration.png";
+		break;
+	case "MANA_REGENERATION_PERCENT":
+		return "file://{images}/custom_game/hud/stats/mana_regeneration.png";
+		break;
+    }
+	case "HOLY_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/holy_element.png";
+		break;
+	case "HOLY_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/holy_element.png";
+		break;
+	case "VOID_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/void_element.png";
+		break;
+	case "VOID_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/void_element.png";
+		break;
+	case "NATURE_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/nature_element.png";
+		break;
+	case "NATURE_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/nature_element.png";
+		break;
+	case "INFERNO_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/inferno_element.png";
+		break;
+	case "INFERNO_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/inferno_element.png";
+		break;
+	case "EARTH_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/earth_element.png";
+		break;
+	case "EARTH_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/earth_element.png";
+		break;
+	case "FIRE_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/fire_element.png";
+		break;
+	case "FIRE_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/fire_element.png";
+		break;
+	case "FROST_DAMAGE":
+		return "file://{images}/custom_game/hud/stats/frost_element.png";
+		break;
+	case "FROST_RESISTANCE":
+		return "file://{images}/custom_game/hud/stats/frost_element.png";
+		break;
+}
+
 ItemsDatabase.GetItemSlotName = function(slot) {
 	switch(slot) {
 		case SLOT_MAINHAND:

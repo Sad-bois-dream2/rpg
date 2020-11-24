@@ -14,39 +14,59 @@
                     <Label class="HeroStatsCategoryName" text="#DOTA_StatsTooltip_Attack"/>
                     <Panel class="HeroStatsLabelsContainer">
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_SpellDamage"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/spell_damage.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_SpellDamage"/>
+                            </Panel>
                             <Label id="StatsTooltipSpellDamage" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_SpellHaste"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/cast_speed.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_SpellHaste"/>
+                            </Panel>
                             <Label id="StatsTooltipSpellHaste" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_AttackRange"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/attack_range.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_AttackRange"/>
+                            </Panel>
                             <Label id="StatsTooltipAttackRange" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_AttackSpeed"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/attack_speed.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_AttackSpeed"/>
+                            </Panel>
                             <Label id="StatsTooltipAttackSpeed" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_BaseAttackTime"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/bat.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_BaseAttackTime"/>
+                            </Panel>
                             <Label id="StatsTooltipBaseAttackTime" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_DebuffAmplification"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/status_amplification.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_DebuffAmplification"/>
+                            </Panel>
                             <Label id="StatsTooltipDebuffAmplification" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_DebuffResistance"/>
-                            <Label id="StatsTooltipDebuffResistance" class="Value" text="0%"/>
-                        </Panel>
-                        <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_CriticalDamage"/>
+                           <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/critical_damage.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_CriticalDamage"/>
+                            </Panel>
                             <Label id="StatsTooltipCriticalDamage" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_CriticalChance"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/critical_chance.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_CriticalDamage"/>
+                            </Panel>
                             <Label id="StatsTooltipCriticalChance" class="Value" text="0%"/>
                         </Panel>
                     </Panel>
@@ -85,27 +105,45 @@
                     <Label class="HeroStatsCategoryName" text="#DOTA_StatsTooltip_Defense"/>
                     <Panel class="HeroStatsLabelsContainer">
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_DamageReduction"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/damage_reduction.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_DamageReduction"/>
+                            </Panel>
                             <Label id="StatsTooltipDamageReduction" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_AggroCaused"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/threat.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_AggroCaused"/>
+                            </Panel>
                             <Label id="StatsTooltipAggroCaused" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_BuffAmplification"/>
-                            <Label id="StatsTooltipBuffAmplification" class="Value" text="0%"/>
-                        </Panel>
-                        <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_CooldownReduction"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/cooldown_reduction.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_CooldownReduction"/>
+                            </Panel>
                             <Label id="StatsTooltipCooldownReduction" class="Value" text="0%"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_HealingReceived"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/status_resistance.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_DebuffResistance"/>
+                            </Panel>
+                            <Label id="StatsTooltipDebuffResistance" class="Value" text="0%"/>
+                        </Panel>
+                        <Panel class="HeroStatsLabel">
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/healing_received.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_HealingReceived"/>
+                            </Panel>
                             <Label id="StatsTooltipHealingReceived" class="Value" text="0% + 0"/>
                         </Panel>
                         <Panel class="HeroStatsLabel">
-                            <Label class="Title" text="#DOTA_Tooltip_HealingCaused"/>
+                            <Panel class="Container">
+                                <Image class="StatIcon" src="file://{images}/custom_game/hud/stats/healing_caused.png"/>
+                                <Label class="Title" text="#DOTA_Tooltip_HealingCaused"/>
+                            </Panel>
                             <Label id="StatsTooltipHealingCaused" class="Value" text="0% + 0"/>
                         </Panel>
                     </Panel>

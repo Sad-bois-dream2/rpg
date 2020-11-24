@@ -375,7 +375,6 @@ function UpdateValues() {
             criticalChanceLabel.text = (Math.round((latestStats.critChance-1) * 10000) / 100) + "%";
             damageReductionLabel.text = Math.round((1-latestStats.damageReduction) * 100) + "%";
             aggroCausedLabel.text = (Math.round((latestStats.aggroCaused-1) * 10000) / 100) + "%";
-            buffAmplificationLabel.text = (Math.round((latestStats.buffAmplification-1) * 10000) / 100) + "%";
             cooldownReductionLabel.text = (Math.round((1-latestStats.cdr) * 10000) / 100) + "%";
             healingReceivedLabel.text = (Math.round((latestStats.healingReceivedPercent-1) * 10000) / 100) + "%";
             healingCausedLabel.text = (Math.round((latestStats.healingCausedPercent-1) * 10000) / 100) + "%";
