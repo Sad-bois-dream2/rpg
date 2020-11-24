@@ -1010,7 +1010,7 @@
 		"DOTA_Tooltip_AttackRange"		"Attack Range"
 		"DOTA_Tooltip_AttackSpeed"		"Attack Speed"
 		"DOTA_Tooltip_DebuffAmplification"		"Status Amplification"
-        "DOTA_Tooltip_DebuffAmplification_Description"		"Increases the duration of all buffs/debuffs you caused."
+        "DOTA_Tooltip_DebuffAmplification_Description"		"Increases the duration of all buffs/debuffs you cause."
 		"DOTA_Tooltip_DebuffResistance"		"Status Resistance"
         "DOTA_Tooltip_DebuffResistance_Description"		"Decreases the duration of all debuffs that affect you."
 		"DOTA_Tooltip_CriticalDamage"		"Bonus Critical Strike Damage"
