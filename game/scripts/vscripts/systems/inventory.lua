@@ -80,7 +80,7 @@ function Inventory:AddItem(hero, item, itemStats, canDropOnGround)
                 return i, Inventory:GetItemInSlot(hero, false, i)
             end
         end
-        if (canDropOnGround) then
+        if (canDropOnGround == true) then
             local itemOnGround = Inventory:CreateItemOnGround(hero, hero:GetAbsOrigin(), item, itemStats)
             return Inventory.slot.invalid, itemOnGround
         else
@@ -144,7 +144,7 @@ function Inventory:GenerateStatsForItem(item, difficultyWhereDropped, itemDiffic
     end
     for statName, statValues in pairs(itemStats) do
         local value = Inventory:PerformRoll(statValues.min, statValues.max, minRoll)
-        table.insert(result, { name = statName, value = value })
+        table.insert(result, { name = statName, value = value, type = statValues.type})
     end
     return result
 end
@@ -403,7 +403,7 @@ function Inventory:RegisterItemSlot(itemName, itemRarity, itemSlot)
                     if (statEntry) then
                         itemStats[stat.name] = statEntry
                     else
-                        DebugPrint("[INVENTORY] Can't find min and max values for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
+                        DebugPrint("[INVENTORY] Can't find min or max values or stat_type for " .. tostring(stat.name) .. " in item " .. tostring(itemName) .. ". Ignoring.")
                     end
                 end
             end
@@ -427,6 +427,7 @@ function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)
     local result
     local min
     local max
+    local type
     for _, statEntry in pairs(statsTable) do
         for k, v in pairs(statEntry) do
             if (k == (tostring(stat.name) .. "_min")) then
@@ -434,6 +435,9 @@ function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)
             end
             if (k == (tostring(stat.name) .. "_max")) then
                 max = v
+            end
+            if(k == "stat_type") then
+                type = v
             end
         end
     end
@@ -443,7 +447,7 @@ function Inventory:FindStatValuesFromKeyValues(statsTable, stat, itemName)
             max = 0
             DebugPrint("[INVENTORY] Max value for stat " .. tostring(stat.name) .. " from item " .. tostring(itemName) .. " must be greater or equal min. Used 0 for both to fix that.")
         end
-        result = { min = min, max = max }
+        result = { min = min, max = max, type = type}
     end
     return result
 end
@@ -452,7 +456,7 @@ function Inventory:GetItemStatsFromKeyValues(statsTable, itemName)
     local result = {}
     for _, statEntry in pairs(statsTable) do
         local entrySize = GetTableSize(statEntry)
-        if (entrySize == 2) then
+        if (entrySize == 3) then
             local entry
             for k, v in pairs(statEntry) do
                 if (string.match(k, "_min")) then

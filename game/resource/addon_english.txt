@@ -783,7 +783,8 @@
         "DOTA_Inventory_rarity_cursed_immortal"		"<font color='#a41818'>Cursed Immortal</font>"
 		"DOTA_Inventory_quality"		"Quality: %VALUE%"
 		"DOTA_Inventory_item_set"		"%NAME% ( %CURRENTAMOUNTOFSETPARTS% / %TOTALAMOUNTOFSETPARTS% )"
-        "DOTA_Inventory_item_set_bonus"		"(%SETPARTSREQUIRED%) Set:<br>%BONUS%"
+        "DOTA_Inventory_item_set_bonus_title"		"(%SETPARTSREQUIRED%) Set:"
+        "DOTA_Inventory_item_set_bonus_value"		"%BONUS%"
 		// Talent trees
 		"DOTA_TalentTree_Title"		"Talent tree"
 		"DOTA_TalentTree_Description"		"Manage your hero's talents here and create powerful builds.<br>Here you can Manage your hero talents and create any build that you want."
@@ -1166,7 +1167,7 @@
         "DOTA_Tooltip_Ability_item_helmet_Description"      "A special helmet."
         "DOTA_Tooltip_Ability_item_helmet_armor"      "Armor"
         "DOTA_Tooltip_modifier_set_swordsman_glory"       "Swordsman's Glory"
-        "DOTA_Tooltip_modifier_set_swordsman_glory_items1"       "+10 Agility"
+        "DOTA_Tooltip_modifier_set_swordsman_glory_items1"       "+10 %AGILITY% Agility"
         "DOTA_Tooltip_modifier_set_swordsman_glory_items2"       "Effect: You collected all items of this set. Well played!"
         "DOTA_Tooltip_Ability_item_one_handed_sword"      "One-handed Sword"
         "DOTA_Tooltip_Ability_item_one_handed_sword_Description"      "Lightweight sword, widely used by squires.<br><br><font color='#d92129'>MELEE ONLY</font><br>"

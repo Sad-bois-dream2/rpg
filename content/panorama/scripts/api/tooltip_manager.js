@@ -23,6 +23,176 @@ var TOOLTIP_ITEM_ICON_BORDER = 15;
 var TOOLTIP_ITEM_DOTA_ITEM_IMAGE = 16;
 var initialStatsLabelsInTooltip = 10;
 
+TooltipManager.GetItemStatIcon = function(stat) {
+    $.Msg("Get " + stat);
+    switch(stat) {
+        case "HEALTH":
+            return "file://{images}/custom_game/hud/stats/health.png";
+            break;
+        case "HEALTH_PERCENT":
+            return "file://{images}/custom_game/hud/stats/health.png";
+            break;
+        case "HEALING_RECEIVED":
+            return "file://{images}/custom_game/hud/stats/healing_received.png";
+            break;
+        case "COOLDOWN_REDUCTION":
+            return "file://{images}/custom_game/hud/stats/mana.png";
+            break;
+        case "STATUS_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/status_resistance.png";
+            break;
+        case "CAST_SPEED":
+            return "file://{images}/custom_game/hud/stats/cast_speed.png";
+            break;
+        case "CAST_SPEED_PERCENT":
+            return "file://{images}/custom_game/hud/stats/cast_speed.png";
+            break;
+        case "THREAT":
+            return "file://{images}/custom_game/hud/stats/threat.png";
+            break;
+        case "MANA":
+            return "file://{images}/custom_game/hud/stats/mana.png";
+            break;
+        case "MANA_PERCENT":
+            return "file://{images}/custom_game/hud/stats/mana.png";
+            break;
+        case "DAMAGE_REDUCTION":
+            return "file://{images}/custom_game/hud/stats/damage_reduction.png";
+            break;
+        case "ATTACK_RANGE":
+            return "file://{images}/custom_game/hud/stats/attack_range.png";
+            break;
+        case "ATTACK_RANGE_PERCENT":
+            return "file://{images}/custom_game/hud/stats/attack_range.png";
+            break;
+        case "SPELL_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/spell_damage.png";
+            break;
+        case "HEALING_CAUSED":
+            return "file://{images}/custom_game/hud/stats/healing_caused.png";
+            break;
+        case "ARMOR":
+            return "file://{images}/custom_game/hud/stats/armor.png";
+            break;
+        case "ARMOR_PERCENT":
+            return "file://{images}/custom_game/hud/stats/armor.png";
+            break;
+        case "HEALTH_REGENERATION":
+            return "file://{images}/custom_game/hud/stats/health_regeneration.png";
+            break;
+        case "HEALTH_REGENERATION_PERCENT":
+            return "file://{images}/custom_game/hud/stats/health_regeneration.png";
+            break;
+        case "BASE_ATTACK_TIME":
+            return "file://{images}/custom_game/hud/stats/bat.png";
+            break;
+        case "BASE_ATTACK_TIME_PERCENT":
+            return "file://{images}/custom_game/hud/stats/bat.png";
+            break;
+        case "BASE_ATTACK_TIME_VALUE":
+            return "file://{images}/custom_game/hud/stats/bat.png";
+            break;
+        case "CRITICAL_STRIKE_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/critical_damage.png";
+            break;
+        case "EXPERIENCE":
+            return "file://{images}/custom_game/hud/stats/exp.png";
+            break;
+        case "CRITICAL_STRIKE_CHANCE":
+            return "file://{images}/custom_game/hud/stats/critical_chance.png";
+            break;
+        case "STATUS_AMPLIFICATION":
+            return "file://{images}/custom_game/hud/stats/status_amplification.png";
+            break;
+        case "ATTACK_SPEED":
+            return "file://{images}/custom_game/hud/stats/attack_speed.png";
+            break;
+        case "ATTACK_SPEED_PERCENT":
+            return "file://{images}/custom_game/hud/stats/attack_speed.png";
+            break;
+        case "ATTACK_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/attack_damage.png";
+            break;
+        case "ATTACK_DAMAGE_PERCENT":
+            return "file://{images}/custom_game/hud/stats/attack_damage.png";
+            break;
+        case "MOVE_SPEED":
+            return "file://{images}/custom_game/hud/stats/move_speed.png";
+            break;
+        case "MOVE_SPEED_PERCENT":
+            return "file://{images}/custom_game/hud/stats/move_speed.png";
+            break;
+        case "MANA_REGENERATION":
+            return "file://{images}/custom_game/hud/stats/mana_regeneration.png";
+            break;
+        case "MANA_REGENERATION_PERCENT":
+            return "file://{images}/custom_game/hud/stats/mana_regeneration.png";
+            break;
+        case "HOLY_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/holy_element.png";
+            break;
+        case "HOLY_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/holy_element.png";
+            break;
+        case "VOID_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/void_element.png";
+            break;
+        case "VOID_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/void_element.png";
+            break;
+        case "NATURE_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/nature_element.png";
+            break;
+        case "NATURE_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/nature_element.png";
+            break;
+        case "INFERNO_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/inferno_element.png";
+            break;
+        case "INFERNO_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/inferno_element.png";
+            break;
+        case "EARTH_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/earth_element.png";
+            break;
+        case "EARTH_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/earth_element.png";
+            break;
+        case "FIRE_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/fire_element.png";
+            break;
+        case "FIRE_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/fire_element.png";
+            break;
+        case "FROST_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/frost_element.png";
+            break;
+        case "FROST_RESISTANCE":
+            return "file://{images}/custom_game/hud/stats/frost_element.png";
+            break;
+        case "STRENGTH":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex";
+            break;
+        case "STRENGTH_PERCENT":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex";
+            break;
+        case "AGILITY":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex";
+            break;
+        case "AGILITY_PERCENT":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex";
+            break;
+        case "INTELLECT":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex";
+            break;
+        case "INTELLECT_PERCENT":
+            return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex";
+            break;
+        default:
+            return "none";
+	}
+}
+
 TooltipManager.ShowItemTooltip = function(itemName, itemStats) {
 	var position = GameUI.GetCursorPosition();
 	var itemNameLabel = $.Localize("#DOTA_Tooltip_Ability_"+itemName);
@@ -97,7 +267,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             statValue += "%";
         }
         description = description.replace("%"+stats[i].name+"%", statValue);
-        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='s2r://panorama/images/hud/reborn/icon_damage_psd.vtex'><img class='ItemStatIcon' src='file://{images}/custom_game/hud/stats/health.png'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
+        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='" + TooltipManager.GetItemStatIcon(stats[i].type) + "'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].SetHasClass("last", false);
 	    latestStatId++;
@@ -114,7 +284,7 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
         var missedLabels = itemSetTotalParts - TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER].GetChildCount();
         if(missedLabels > 0) {
             for(var i = 0; i < missedLabels; i++) {
-                CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
+                CreateItemSetStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
             }
         }
         missedLabels = itemSetTotalParts - TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER].GetChildCount();
@@ -151,21 +321,32 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
 	    itemSetNameLabel += " <span class='SetName'>" + itemSetNameInnerLabel + "</span>";
         TooltipManager.itemTooltipContainer[TOOLTIP_SET_NAME_LABEL].text = itemSetNameLabel;
         latestStatId = 0;
-        var setStatLabel = $.Localize("#DOTA_Inventory_item_set_bonus");
+        var setStatLabel = $.Localize("#DOTA_Inventory_item_set_bonus_title");
+        var setStatBonusLabel = $.Localize("#DOTA_Inventory_item_set_bonus_value");
         for(var i = 0; i < itemSetTotalParts; i++) {
             var itemPartIndex = i + 1;
-            var setStatBonusLabel = $.Localize("#DOTA_Tooltip_" + itemSetName + "_items" + itemPartIndex);
             if(setStatBonusLabel.includes("DOTA_Tooltip")) {
                 TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "collapse";
+                TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].bonusLabel.style.visibility = "collapse";
                 continue;
             }
-            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].text = setStatLabel.replace("%BONUS%", setStatBonusLabel).replace("%SETPARTSREQUIRED%", itemPartIndex);
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].text = setStatLabel.replace("%SETPARTSREQUIRED%", itemPartIndex);
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].SetHasClass("Enabled", itemPartIndex <= amountOfItemSetPartsEquipped);
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "visible";
+            var bonusLabelText = setStatBonusLabel.replace("%BONUS%", $.Localize("#DOTA_Tooltip_" + itemSetName + "_items" + itemPartIndex));
+            var re = /\%.*?\%/ig;
+            var match;
+            while ((match = re.exec(bonusLabelText)) != null) {
+              bonusLabelText = bonusLabelText.replace(match[0], "<img class='ItemStatIcon' src='" + TooltipManager.GetItemStatIcon(match[0].replace("%", "").replace("%", "")) + "'>");
+            }
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].bonusLabel.text = bonusLabelText;
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].bonusLabel.SetHasClass("Enabled", itemPartIndex <= amountOfItemSetPartsEquipped);
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].bonusLabel.style.visibility = "visible";
             latestStatId++;
         }
-        for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER].GetChildCount(); i++) {
+        for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS].length; i++) {
             TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].style.visibility = "collapse";
+            TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS][i].bonusLabel.style.visibility = "collapse";
         }
  	    TooltipManager.itemTooltipContainer[TOOLTIP_SET_CONTAINER].style.visibility = "visible";
 	} else {
@@ -199,7 +380,7 @@ function CreateItemTooltip() {
         GameUI.CustomUIConfig().TooltipManager.itemTooltipInitialized = true;
         for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
             CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS]);
-            CreateItemStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
+            CreateItemSetStatsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_STATS_LABELS]);
             CreateItemSetPartsLabel(TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_CONTAINER], TooltipManager.itemTooltipContainer[TOOLTIP_SET_PARTS_LABELS]);
         }
     }
@@ -222,6 +403,17 @@ function CreateItemSetPartsLabel(parent, container) {
     container.push(setPartLabel);
 }
 
+function CreateItemSetStatsLabel(parent, container) {
+    var setStatLabel = $.CreatePanel("Label", parent, "");
+    setStatLabel.style.visibility = "collapse";
+    setStatLabel.html = true;
+    var setStatBonusLabel = $.CreatePanel("Label", parent, "");
+    setStatBonusLabel.style.visibility = "collapse";
+    setStatBonusLabel.html = true;
+    setStatBonusLabel.SetHasClass("Bonus", true);
+    setStatLabel.bonusLabel = setStatBonusLabel;
+    container.push(setStatLabel);
+}
 
 (function() {
     GameUI.CustomUIConfig().TooltipManager = TooltipManager;

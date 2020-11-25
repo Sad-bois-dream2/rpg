@@ -267,11 +267,26 @@
     color: white;
 }
 
+#ItemTooltipSetStatsContainer Label.Bonus {
+    margin-left: 10px;
+}
+
+#ItemTooltipSetStatsContainer Label Image {
+	saturation: 0;
+	wash-color: grey;
+}
+
+#ItemTooltipSetStatsContainer Label.Enabled Image {
+	saturation: 1;
+	wash-color: #00000000;
+}
+
 .ItemStatIcon
 {
     width: 16px;
     height: 16px;
     margin: 0px;
     padding: 0px;
+    vertical-align: center;
     margin-bottom: 5px;
 }
