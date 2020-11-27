@@ -94,13 +94,13 @@ function UpdateItemTooltip(icon, name, rarity, type, description, quality, stats
             statValue += "%";
         }
         description = description.replace("%"+stats[i].name+"%", statValue);
-        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> <span class='ItemTooltipStatsValue'>" + statValue + "</span> <img class='ItemStatIcon' src='" + TooltipManager.GetItemStatIcon(stats[i].type) + "'>" + "<span class='ItemTooltipStatsText'> " + statName + "</span>";
+        TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].text = "<span class='ItemTooltipStatsSign'>" + statSign + "</span> " + "<img class='ItemStatIcon' src='" + TooltipManager.GetItemStatIcon(stats[i].type) + "'>" + " <span class='ItemTooltipStatsValue'>" + statValue + "</span> <span class='ItemTooltipStatsText'> " + statName + "</span>";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "visible";
 	    TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].SetHasClass("last", false);
 	    latestStatId++;
 	}
 	TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][latestStatId - 1].SetHasClass("last", true);
-	TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].text = description;
+	TooltipManager.itemTooltipContainer[TOOLTIP_DESCRIPTION_LABEL].text = TooltipManager.FindAndFixPercents(description);
 	for(var i = latestStatId; i < TooltipManager.itemTooltipContainer[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
 		TooltipManager.itemTooltipContainer[TOOLTIP_STATS_LABELS][i].style.visibility = "collapse";
 	}

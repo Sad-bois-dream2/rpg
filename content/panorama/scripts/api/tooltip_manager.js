@@ -100,6 +100,10 @@ TooltipManager.GetItemStatIcon = function(stat) {
             return "file://{images}/custom_game/hud/stats/frost_element.png";
         case "FROST_RESISTANCE":
             return "file://{images}/custom_game/hud/stats/frost_element.png";
+        case "MAGIC_RESISTANCE":
+             return "file://{images}/custom_game/hud/stats/magic_resistance.png";
+        case "PHYSICAL_DAMAGE":
+            return "file://{images}/custom_game/hud/stats/attack_damage.png";
         case "STRENGTH":
             return "s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex";
         case "STRENGTH_PERCENT":
@@ -128,6 +132,10 @@ TooltipManager.FindAndReplaceStatIconsMarkers = function(label) {
         }
     }
     return result;
+};
+
+TooltipManager.FindAndFixPercents = function(label) {
+    return label.replace(/%%/g, "%");
 };
 
 // Added from tooltip_talent.js ._.

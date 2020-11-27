@@ -17,7 +17,9 @@ TooltipManager.HideTalentTooltip = function() {
 function UpdateTalentTooltip(icon, name, description, x, y) {
     TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_IMAGE].SetImage(icon);
     TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_NAME_LABEL].text = name.toUpperCase();
-    TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_DESCRIPTION_LABEL].text = TooltipManager.FindAndReplaceStatIconsMarkers(description);
+    var talentDescription = TooltipManager.FindAndReplaceStatIconsMarkers(description);
+    talentDescription = TooltipManager.FindAndFixPercents(talentDescription);
+    TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_DESCRIPTION_LABEL].text = talentDescription;
     if (TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
         x -= TooltipManager.talentTooltipContainer[TOOLTIP_TALENT_PANEL].actuallayoutwidth;
     }
