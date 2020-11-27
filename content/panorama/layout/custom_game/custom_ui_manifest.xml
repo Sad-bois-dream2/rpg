@@ -56,5 +56,6 @@
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/saveload/saveload.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/windows/droplist/droplist.xml"/>
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/tooltips/custom/tooltip_item.xml"/>
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/tooltips/custom/tooltip_talent.xml"/>
     </Panel>
 </root>
