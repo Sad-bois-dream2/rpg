@@ -52,8 +52,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 22
-			m_nAlphaMax = 50
+			m_nAlphaMin = 10
+			m_nAlphaMax = 25
 		},
 		{
 			_class = "C_INIT_InheritFromParentParticles"
