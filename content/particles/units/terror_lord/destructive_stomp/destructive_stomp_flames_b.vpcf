@@ -2,12 +2,12 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 7
+	m_nMaxParticles = 5
 	m_flConstantRadius = 200.0
 	m_ConstantColor = [ 0, 100, 0, 155 ]
 	m_nBehaviorVersion = 10
 	m_nFirstMultipleOverride_BackwardCompat = 1
-	m_nInitialParticles = 7
+	m_nInitialParticles = 5
 	m_controlPointConfigurations = 
 	[
 		{
@@ -142,7 +142,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 7.0
+				m_flLiteralValue = 5.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
@@ -213,7 +213,7 @@
 				m_flNoiseImgPreviewScale = 1.0
 				m_bNoiseImgPreviewLive = true
 				m_nInputMode = "PF_INPUT_MODE_CLAMPED"
-				m_flMultFactor = 0.5
+				m_flMultFactor = 0.4
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
@@ -327,12 +327,6 @@
 	]
 	m_Children = 
 	[
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_flame.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_flame.vpcf"
-		},
 		{
 			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_flame.vpcf"
 		},

@@ -130,5 +130,11 @@
 		{
 			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_b.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_projected.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_projected_dark.vpcf"
+		},
 	]
 }
