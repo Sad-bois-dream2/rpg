@@ -29,5 +29,5 @@ function modifier_talent_6:OnCreated()
 end
 
 function modifier_talent_6:GetMoveSpeedBonus()
-    return TalentTree:GetHeroTalentLevel(self.hero, 6) * 5
+    return TalentTree:GetHeroTalentLevel(self.hero, 6) * 10
 end
