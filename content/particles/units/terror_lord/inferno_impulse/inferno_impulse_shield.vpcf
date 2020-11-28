@@ -16,7 +16,7 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_vecOffset = [ 0.0, 0.0, 53.662231 ]
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
@@ -34,14 +34,7 @@
 	[
 		{
 			m_ChildRef = resource:"particles/units/terror_lord/inferno_impulse/inferno_impulse_shield_sphere.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/inferno_impulse/inferno_impulse_shield_rope_b.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/inferno_impulse/inferno_impulse_shield_rope_a.vpcf"
-			m_bDisableChild = true
+			m_flDelay = 0.1
 		},
 	]
 }

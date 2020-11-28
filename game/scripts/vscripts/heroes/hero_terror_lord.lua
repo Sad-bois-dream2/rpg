@@ -1134,6 +1134,164 @@ function terror_lord_ruthless_predator:OnSpellStart()
     EmitSoundOn("Hero_AbyssalUnderlord.Firestorm.Start", caster)
 end
 
+-- terror_lord_inferno_impulse
+modifier_terror_lord_inferno_impulse_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end
+})
+
+function modifier_terror_lord_inferno_impulse_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterPosition = self.caster:GetAbsOrigin()
+    self.casterTeam = self.caster:GetTeamNumber()
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse_shield.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+    ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.casterPosition, true)
+    self:AddParticle(pidx, true, false, 1, true, false)
+    pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf", PATTACH_ABSORIGIN, self.caster)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.casterPosition,
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local modifierTable = {
+        caster = self.caster,
+        target = nil,
+        ability = self.ability,
+        modifier_name = "modifier_terror_lord_inferno_impulse_debuff",
+        duration = self.armorDuration
+    }
+    for _, enemy in pairs(enemies) do
+        modifierTable.target = enemy
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    local capacity = self.ability.shield * self.caster:GetMaxHealth()
+    if (self.ability.shieldBonusPerEnemy > 0) then
+        capacity = capacity * (1 + (#enemies * self.ability.shieldBonusPerEnemy))
+    end
+    self:SetStackCount(capacity)
+end
+
+function modifier_terror_lord_inferno_impulse_buff:OnDestroy()
+    if (self.ability.damage > 0) then
+        local casterPosition = self.caster:GetAbsOrigin()
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                casterPosition,
+                nil,
+                self.ability.radius,
+                DOTA_UNIT_TARGET_TEAM_ENEMY,
+                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_FLAG_NONE,
+                FIND_ANY_ORDER,
+                false)
+        local damageTable = {
+            caster = self.caster,
+            target = nil,
+            ability = self.ability,
+            damage = Units:GetHeroStrength(self.caster) * self.ability.damage,
+            infernodmg = true,
+            aoe = true
+        }
+        for _, enemy in pairs(enemies) do
+            damageTable.target = enemy
+            local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse_damage_rope.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
+            ParticleManager:SetParticleControlEnt(pidx, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", casterPosition, true)
+            ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
+            ParticleManager:ReleaseParticleIndex(pidx)
+            GameMode:DamageUnit(damageTable)
+        end
+    end
+end
+
+function modifier_terror_lord_inferno_impulse_buff:OnTooltip()
+    return self:GetStackCount()
+end
+
+LinkedModifiers["modifier_terror_lord_inferno_impulse_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_inferno_impulse_debuff = class({
+    IsDebuff = function(self)
+        return true
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_terror_lord_inferno_impulse_debuff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetArmorPercentBonus()
+    return self.ability.armorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetFireProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetFrostProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetEarthProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetVoidProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetHolyProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetNatureProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+function modifier_terror_lord_inferno_impulse_debuff:GetInfernoProtectionBonus()
+    return self.ability.eleArmorReduction or 0
+end
+
+LinkedModifiers["modifier_terror_lord_inferno_impulse_debuff"] = LUA_MODIFIER_MOTION_NONE
+
 terror_lord_inferno_impulse = class({
     GetAOERadius = function(self)
         return self:GetSpecialValueFor("radius")
@@ -1141,12 +1299,31 @@ terror_lord_inferno_impulse = class({
 })
 
 function terror_lord_inferno_impulse:OnSpellStart()
-    if(not IsServer()) then
+    if (not IsServer()) then
         return
     end
-    self:GetCaster():StartGesture(ACT_DOTA_CAST_ABILITY_2)
-    ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf", PATTACH_ABSORIGIN, self:GetCaster())
+    local caster = self:GetCaster()
+    local modifierTable = {
+        caster = caster,
+        target = caster,
+        ability = self,
+        modifier_name = "modifier_terror_lord_inferno_impulse_buff",
+        duration = self.shieldDuration
+    }
+    GameMode:ApplyBuff(modifierTable)
 end
+
+function terror_lord_inferno_impulse:OnUpgrade()
+    self.shield = self:GetSpecialValueFor("shield") / 100
+    self.shieldDuration = self:GetSpecialValueFor("shield_duration")
+    self.shieldBonusPerEnemy = self:GetSpecialValueFor("shield_bonus_per_enemy") / 100
+    self.armorReduction = self:GetSpecialValueFor("armor_reduction") / -100
+    self.eleArmorReduction = self:GetSpecialValueFor("ele_armor_reduction") / -100
+    self.armorDuration = self:GetSpecialValueFor("armor_duration")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.damage = self:GetSpecialValueFor("damage") / 100
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_terror_lord", MotionController)
