@@ -1207,6 +1207,23 @@ function modifier_terror_lord_inferno_impulse_buff:OnTooltip()
     return self:GetStackCount()
 end
 
+function modifier_terror_lord_inferno_impulse_buff:OnTakeDamage(damageTable)
+    local modifier = damageTable.victim:FindModifierByName("modifier_terror_lord_inferno_impulse_buff")
+    if (not (modifier and damageTable.damage > 0)) then
+        return damageTable
+    end
+    local shieldCapacity = modifier:GetStackCount()
+    local shieldAfterBlock = shieldCapacity - damageTable.damage
+    if (shieldAfterBlock > 0) then
+        modifier:SetStackCount(shieldAfterBlock)
+        damageTable.damage = 0
+    else
+        damageTable.damage = damageTable.damage - shieldCapacity
+        modifier:Destroy()
+    end
+    return damageTable
+end
+
 LinkedModifiers["modifier_terror_lord_inferno_impulse_buff"] = LUA_MODIFIER_MOTION_NONE
 
 modifier_terror_lord_inferno_impulse_debuff = class({
@@ -1336,4 +1353,5 @@ end
 
 if (IsServer() and not GameMode.TERROR_LORD_INIT) then
     GameMode.TERROR_LORD_INIT = true
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_inferno_impulse_buff, 'OnTakeDamage'))
 end
