@@ -283,9 +283,6 @@
 
 .ItemStatIcon
 {
-    width: 16px;
-    height: 16px;
-    margin: 0px;
-    padding: 0px;
-    margin-bottom: 5px;
+    max-width: 16px;
+    max-height: 16px;
 }

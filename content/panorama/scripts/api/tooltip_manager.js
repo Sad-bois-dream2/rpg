@@ -128,7 +128,7 @@ TooltipManager.FindAndReplaceStatIconsMarkers = function(label) {
     while ((match = re.exec(result)) != null) {
         var statIcon = TooltipManager.GetItemStatIcon(match[0].replace("%", "").replace("%", ""));
         if(statIcon != "none") {
-            result = result.replace(match[0], "<img class='ItemStatIcon' src='" + statIcon + "'>");
+            result = result.replace(match[0], "<img class='ItemStatIcon' src='" + statIcon + "' scaling='stretch-to-cover-preserve-aspect'>");
         }
     }
     return result;
