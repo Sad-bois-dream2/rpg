@@ -548,7 +548,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
+		"ScriptFile"					"heroes/hero_terror_lord"
 		"AbilityTextureName"			"terror_lord_inferno_impulse"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
@@ -576,27 +576,32 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"absorb"				"7 8 9 10"
+				"shield"				"7 8 9 10"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"absorb_bonus"				"2 3 4 5"
+				"shield_duration"				"10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"shield_bonus_per_enemy"				"0 5 5 5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"600"
+				"armor"				"5 10 15 20"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor"				"5 10 15 20"
+				"armor_duration"				"5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_duration"				"5"
+				"radius"				"600"
 			}
 		}
 		"precache"

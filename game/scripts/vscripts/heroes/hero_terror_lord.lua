@@ -1134,6 +1134,19 @@ function terror_lord_ruthless_predator:OnSpellStart()
     EmitSoundOn("Hero_AbyssalUnderlord.Firestorm.Start", caster)
 end
 
+terror_lord_inferno_impulse = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end
+})
+
+function terror_lord_inferno_impulse:OnSpellStart()
+    if(not IsServer()) then
+        return
+    end
+    self:GetCaster():StartGesture(ACT_DOTA_CAST_ABILITY_2)
+    ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf", PATTACH_ABSORIGIN, self:GetCaster())
+end
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_terror_lord", MotionController)
