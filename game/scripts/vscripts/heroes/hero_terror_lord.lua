@@ -1167,36 +1167,12 @@ function modifier_terror_lord_inferno_impulse_buff:OnCreated()
     local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse_shield.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.caster)
     ParticleManager:SetParticleControlEnt(pidx, 1, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.casterPosition, true)
     self:AddParticle(pidx, true, false, 1, true, false)
-    pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf", PATTACH_ABSORIGIN, self.caster)
-    ParticleManager:SetParticleControl(pidx, 1, Vector(self.ability.radius, 0, 0))
-    local enemies = FindUnitsInRadius(self.casterTeam,
-            self.casterPosition,
-            nil,
-            self.ability.radius,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    local modifierTable = {
-        caster = self.caster,
-        target = nil,
-        ability = self.ability,
-        modifier_name = "modifier_terror_lord_inferno_impulse_debuff",
-        duration = self.armorDuration
-    }
-    for _, enemy in pairs(enemies) do
-        modifierTable.target = enemy
-        GameMode:ApplyDebuff(modifierTable)
-    end
-    local capacity = self.ability.shield * self.caster:GetMaxHealth()
-    if (self.ability.shieldBonusPerEnemy > 0) then
-        capacity = capacity * (1 + (#enemies * self.ability.shieldBonusPerEnemy))
-    end
-    self:SetStackCount(capacity)
 end
 
 function modifier_terror_lord_inferno_impulse_buff:OnDestroy()
+    if (not IsServer()) then
+        return
+    end
     if (self.ability.damage > 0) then
         local casterPosition = self.caster:GetAbsOrigin()
         local enemies = FindUnitsInRadius(self.casterTeam,
@@ -1310,7 +1286,36 @@ function terror_lord_inferno_impulse:OnSpellStart()
         modifier_name = "modifier_terror_lord_inferno_impulse_buff",
         duration = self.shieldDuration
     }
-    GameMode:ApplyBuff(modifierTable)
+    local shieldModifier = GameMode:ApplyBuff(modifierTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(pidx, 1, Vector(self.radius, 0, 0))
+    local enemies = FindUnitsInRadius(caster:GetTeamNumber(),
+            caster:GetAbsOrigin(),
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local modifierTable = {
+        caster = caster,
+        target = nil,
+        ability = self,
+        modifier_name = "modifier_terror_lord_inferno_impulse_debuff",
+        duration = self.armorDuration
+    }
+    for _, enemy in pairs(enemies) do
+        modifierTable.target = enemy
+        GameMode:ApplyDebuff(modifierTable)
+    end
+    local capacity = self.shield * caster:GetMaxHealth()
+    if (self.shieldBonusPerEnemy > 0) then
+        capacity = capacity * (1 + (#enemies * self.shieldBonusPerEnemy))
+    end
+    if (shieldModifier) then
+        shieldModifier:SetStackCount(capacity)
+    end
 end
 
 function terror_lord_inferno_impulse:OnUpgrade()

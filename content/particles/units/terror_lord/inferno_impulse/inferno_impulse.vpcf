@@ -48,6 +48,7 @@
 		{
 			m_ChildRef = resource:"particles/units/terror_lord/inferno_impulse/inferno_impulse_warp.vpcf"
 			m_flDelay = 0.6
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/units/terror_lord/inferno_impulse/inferno_impulse_ring.vpcf"
