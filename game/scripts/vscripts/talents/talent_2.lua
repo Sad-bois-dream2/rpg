@@ -28,6 +28,6 @@ function modifier_talent_2:OnCreated()
     self.hero = self:GetParent()
 end
 
-function modifier_talent_2:GetDebuffResistanceBonus()
+function modifier_talent_2:GetStatusResistanceBonus()
     return TalentTree:GetHeroTalentLevel(self.hero, 2) * 0.05
 end

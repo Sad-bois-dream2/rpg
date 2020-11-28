@@ -1228,16 +1228,7 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetBuffAmplification(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.buffAmplification or 1
-    end
-    return 1
-end
-
----@param unit CDOTA_BaseNPC
----@return number
-function Units:GetDebuffAmplification(unit)
+function Units:GetStatusAmplification(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.debuffAmplification or 1
     end
@@ -1246,7 +1237,7 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetDebuffResistance(unit)
+function Units:GetStatusResistance(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.debuffResistance or 1
     end

@@ -340,18 +340,13 @@ function modifier_inventory_item_example:GetHealingCausedPercentBonus()
     return 0 -- finalHeal = heal * (1 + this)
 end
 
--- increase duration all of debuffs caused by entity, 1.0 = 100%
-function modifier_inventory_item_example:GetDebuffAmplificationBonus()
+-- increase duration all of buffs/debuffs caused by entity, 1.0 = 100%
+function modifier_inventory_item_example:GetStatusAmplificationBonus()
     return 0
 end
 
--- decrease duration all of debuffs that entity get, 1.0 = 100% , stacking multiplicatively
-function modifier_inventory_item_example:GetDebuffResistanceBonus()
-    return 0
-end
-
--- increase duration all of buffs caused by entity, 1.0 = 100%
-function modifier_inventory_item_example:GetBuffAmplificationBonus()
+-- decrease duration all of buffs/debuffs that entity get, 1.0 = 100% , stacking multiplicatively
+function modifier_inventory_item_example:GetStatusResistanceBonus()
     return 0
 end
 
