@@ -1209,7 +1209,7 @@ end
 
 function modifier_terror_lord_inferno_impulse_buff:OnTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_terror_lord_inferno_impulse_buff")
-    if (not (modifier and damageTable.damage > 0)) then
+    if (not modifier) then
         return damageTable
     end
     local shieldCapacity = modifier:GetStackCount()
