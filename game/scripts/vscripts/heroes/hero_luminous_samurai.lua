@@ -1241,7 +1241,7 @@ modifier_luminous_samurai_seed = class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     GetTexture = function(self)
-        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_juggernaut/luminous_samurai_seed.png"
+        return "raw://resource/flash3/images/spellicons/luminous_samurai_seed.png"
     end,
     DeclareFunctions = function(self)
         return { MODIFIER_EVENT_ON_ATTACK_LANDED }

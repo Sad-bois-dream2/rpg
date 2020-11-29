@@ -1455,7 +1455,7 @@ end
 --         return false
 --     end,
 --     GetTexture = function(self)
---         return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_black_arrow_bane.png"
+--         return "raw://resource/flash3/images/spellicons/phantom_ranger_black_arrow_bane.png"
 --     end,
 --     DeclareFunctions = function(self)
 --         return { MODIFIER_PROPERTY_TOOLTIP }
