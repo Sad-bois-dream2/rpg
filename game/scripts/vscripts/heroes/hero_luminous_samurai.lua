@@ -1036,7 +1036,7 @@ modifier_luminous_samurai_blade_dance_immune = class({
         return false
     end,
     IsHidden = function(self)
-        return false
+        return true
     end,
     IsPurgable = function(self)
         return false
