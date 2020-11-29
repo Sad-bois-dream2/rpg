@@ -28,7 +28,7 @@ function Aggro:OnCreepSpawn(creep)
     if IsClient() then
         return
     end
-    if (creep ~= nil) then
+    if (creep ~= nil and creep:GetTeamNumber() == DOTA_TEAM_BADGUYS) then
         creep:AddNewModifier(creep, nil, "modifier_aggro_system", { Duration = -1 })
     end
 end
@@ -55,7 +55,7 @@ function Aggro:Add(source, unit, aggro)
     aggro = tonumber(aggro)
     if (source ~= nil and not source:IsNull() and unit ~= nil and not unit:IsNull() and unit.aggro ~= nil and aggro ~= nil) then
         local entIndex = source:GetEntityIndex()
-        unit.aggro.enemies[entIndex] = (unit.aggro.enemies[entIndex] or 0) + aggro
+        unit.aggro.enemies[entIndex] = (unit.aggro.enemies[entIndex] or 0) + aggro * Units:GetAggroCaused(source)
     end
 end
 

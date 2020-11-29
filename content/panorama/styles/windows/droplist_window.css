@@ -1,0 +1,89 @@
+#DropContainer {
+    width: 300px;
+    height: 400px;
+    horizontal-align: right;
+    visibility: visible;
+    flow-children: down;
+    overflow: squish scroll;
+    margin-top: 40px;
+    padding-top: 10px;
+}
+
+.DropItemContainer {
+    width: fill-parent-flow(1.0);
+    height: 70px;
+	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	flow-children: right;
+	horizontal-align: right;
+	margin-bottom: 5px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+	opacity: 0.0;
+	transform: translatex(100%);
+	transition-property: transform, opacity;
+	transition-duration: 0.5s;
+	transition-delay: 0s;
+}
+
+.DropItemContainer.show {
+	transform: translatex(0%);
+	opacity: 1.0;
+}
+
+.ItemTooltipImageContainer {
+    width: 77px;
+    height: 57px;
+    margin-left: 5px;
+    vertical-align: center;
+    horizontal-align: center;
+	box-shadow: 0px 0px 6px #000000aa;
+}
+
+.DropItemIcon {
+	width: fill-parent-flow(1.0);
+	height: fill-parent-flow(1.0);
+}
+
+.RightSide {
+    flow-children: down;
+    margin: 5px;
+}
+
+.ItemOwnerContainer, .ItemInfoContainer {
+	flow-children: right;
+    width: fill-parent-flow(1.0);
+}
+
+#ItemOwnerLabel {
+    color: white;
+	text-align: right;
+    text-overflow: shrink;
+	vertical-align: center;
+    width: fill-parent-flow(1.0);
+    padding-right: 5px;
+    font-size: 14px;
+}
+
+#ItemOwnerIcon {
+    width: 28px;
+    height: 28px;
+    horizontal-align: right;
+}
+
+.ItemTooltipRarityLabel, .ItemTooltipTypeLabel
+{
+	font-size: 14px;
+}
+
+.ItemTooltipNameLabel {
+	text-transform: uppercase;
+	horizontal-align: left;
+	vertical-align: center;
+    text-shadow: 0px 0px 2px 4 #00000088;
+    color: white;
+    font-size: 16px;
+    text-overflow: shrink;
+}

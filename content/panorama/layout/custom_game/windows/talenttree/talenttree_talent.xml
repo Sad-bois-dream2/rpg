@@ -3,35 +3,30 @@
 		<include src="file://{resources}/styles/windows/talenttree_window.css" />
 	</styles>
 	<script>
-		function GetTalentId(context) {
-			return parseInt(context.id.replace("HeroTalent", ""));
-		}
-		
+		var context = $.GetContextPanel();
+		var id = parseInt(context.id.replace("HeroTalent", ""));
+
 		function ShowTalentTooltip() {
-			var context = $.GetContextPanel();
-			var id = GetTalentId(context);
-			context.Data().ShowTalentTooltip(id, context.BHasClass("is_skill"));
+			context.Data().ShowTalentTooltip(id);
 		}
 		
 		function HideTalentTooltip() {
-			var context = $.GetContextPanel();
-			var id = GetTalentId(context);
-			context.Data().HideTalentTooltip(id, context.BHasClass("is_skill"));
+			context.Data().HideTalentTooltip(id);
 		}
 		
 		function OnTalentClick() {
-			var context = $.GetContextPanel();
 			if(!context.BHasClass("disabled") && context.BHasClass("lvlup")) {
-				var id = GetTalentId(context);
 				context.Data().OnTalentClick(id);
+				Game.EmitSound("General.SelectAction");
 			}
 		}
 	</script>
-	<Panel class="TalentPanel" onactivate="OnTalentClick()" onmouseover="ShowTalentTooltip()" onmouseout="HideTalentTooltip()">
+	<Panel class="TalentPanel disabled" onactivate="OnTalentClick()" onmouseover="ShowTalentTooltip()" onmouseout="HideTalentTooltip()">
 		<Panel class="TalentImageAndLevel" >
 			<Image class="TalentImage" id="TalentImage" src="file://{images}/spellicons/drow_ranger_wave_of_silence.png"/>
-			<DOTAAbilityImage class="TalentImage" id="TalentSkillImage" abilityname="phantom_ranger_void_disciple" />
-			<Label class="TalentLevel" id="TalentLevel" text="0 / 4" />
+			<Panel class="TalentLevelContainer">
+				<Label class="TalentLevel" id="TalentLevel" text="0 / 4" />
+			</Panel>
 		</Panel>
 		<DOTAScenePanel class="TalentLevelAnimation" map="scenes/hud/autocasting" renderdeferred="false" rendershadows="false" camera="camera_1" hittest="false" particleonly="true"/>
 	</Panel>

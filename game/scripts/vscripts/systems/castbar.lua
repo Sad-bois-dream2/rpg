@@ -28,11 +28,19 @@ modifier_castbar = class({
         }
     end,
 })
---Units:GetSpellHaste(self.hero) = statsTable.spellHaste =  (1 + flat) * totalpercent with 8 cap value
--- if u get 50 flat(0.5 for calcution) and 50% increase this make Units:GetSpellHaste = 2.25  this make (1/2.25 - 1) *-100 = 55.56 so your cast time will be 44.44% of
--- so you shit out spell 1/0.444 = at  2.25 rate match the 50 flat then add 50% (1.5*1.5)
-function modifier_castbar:GetModifierPercentageCasttime() -- decrease cast time for a percentage
-    return  ((1/Units:GetSpellHaste(self.hero)) - 1) * -100
+
+function modifier_castbar:GetModifierPercentageCasttime()
+    local baseCastTime = 2
+    local casterSpellHaste = math.min(Units:GetSpellHaste(self.hero), Units:GetSpellHasteCap(self.hero))
+    local desiredCastTime = baseCastTime
+    if (casterSpellHaste > 0) then
+        desiredCastTime = 1 / ((math.min(Units:GetSpellHaste(self.hero), Units:GetSpellHasteCap(self.hero)) * 0.01) / baseCastTime)
+    end
+    return (1 - (desiredCastTime / baseCastTime)) * 100
+end
+
+function modifier_castbar:GetCastTimeReductionRatio()
+    return (1 - (modifier_castbar.GetModifierPercentageCasttime(self) / 100))
 end
 
 function modifier_castbar:OnAbilityStart(keys)
@@ -48,7 +56,7 @@ function modifier_castbar:OnAbilityStart(keys)
         if (IsChannelAbility) then
             castTime = channelTime
         else
-            castTime = ability:GetCastPoint() * 1/Units:GetSpellHaste(self.hero)
+            castTime = ability:GetCastPoint() * self:GetCastTimeReductionRatio()
         end
         local event = {
             casttime = castTime,

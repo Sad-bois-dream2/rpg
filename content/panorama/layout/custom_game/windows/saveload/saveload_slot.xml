@@ -18,7 +18,7 @@
     </script>
     <Panel class="SaveSlot" onactivate="OnClick()">
         <Panel class="SaveSlotLeftContent">
-            <DOTAHeroImage id="SaveSlotHeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_drow_ranger" heroimagestyle="landscape" scaling="stretch-to-fit-preserve-aspect"/>
+            <DOTAHeroImage id="SaveSlotHeroIcon" class="SaveSlotHeroIcon" heroname="npc_dota_hero_drow_ranger" heroimagestyle="landscape" scaling="stretch-to-cover-preserve-aspect"/>
             <Panel class="SaveSlotLeftContentText">
                 <Label id="SaveSlotNameLabel" text="Hero Name" />
                 <Label id="SaveSlotLevelLabel" text="Level 1" />

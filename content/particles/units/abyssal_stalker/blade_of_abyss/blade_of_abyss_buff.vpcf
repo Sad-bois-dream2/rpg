@@ -26,6 +26,13 @@
 					m_entityName = "self"
 				},
 			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/phantom_assassin/phantom_assassin.vmdl"
+				m_nModSpecificData = 137
+				m_sequenceName = "phantom_assassin_idle_alt1_anim"
+				m_hitboxSetName = "default"
+			}
 		},
 	]
 	m_nBehaviorVersion = 10

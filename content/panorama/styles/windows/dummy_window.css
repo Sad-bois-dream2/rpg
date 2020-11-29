@@ -12,8 +12,9 @@
     height: 500px;
     max-height: 500px;
     background-color: black;
-    border-radius: 5px;
     flow-children: down;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
 }
 
 #DamageLog

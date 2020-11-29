@@ -2,13 +2,14 @@
 {
     "npc_dota_hero_abyssal_underlord"
     {
+	    "HeroIndex"		"108"
         "AbilityLayout"     "6"
         "Ability1"	"terror_lord_malicious_flames"
-        "Ability2"	"terror_lord_mighty_defiance"
+        "Ability2"	"terror_lord_inferno_impulse"
         "Ability3"	"terror_lord_destructive_stomp"
-        "Ability4"	"terror_lord_horror_genesis"
-        "Ability5"	"empty5"
-        "Ability6"	"antimage_blink"
+        "Ability4"	"terror_lord_immolation"
+        "Ability5"	"terror_lord_ruthless_predator"
+        "Ability6"	"terror_lord_horror_genesis"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""
@@ -23,8 +24,15 @@
         "Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.560000"
+        "AttackAcquisitionRange"		"600"
+        "AttackRange"		"150"
+        "MovementSpeed"		"315"
+        "MovementTurnRate"		"0.500000"
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -45,6 +53,13 @@
             "DPS"   "3"
             "Support"   "0"
             "Utility"   "1"
+        }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"abyssal_underlord_abys_levelup_06"
+            "2"	"abyssal_underlord_abys_spawn_06"
+            "3" "abyssal_underlord_abys_battlebegins_02"
+            "4" "abyssal_underlord_abys_battlebegins_01"
         }
     }
 }

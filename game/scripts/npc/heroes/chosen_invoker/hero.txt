@@ -2,6 +2,7 @@
 {
     "npc_dota_hero_invoker"
     {
+	    "HeroIndex"		"74"
         "AbilityLayout"     "6"
         "Ability1"	"chosen_invoker_purification_brilliance"
         "Ability2"	"chosen_invoker_flare_array"
@@ -23,8 +24,15 @@
         "Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.400000"
+        "AttackAcquisitionRange"		"800"
+        "AttackRange"		"600"
+        "MovementSpeed"		"280"
+        "MovementTurnRate"		"0.500000"
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -45,6 +53,13 @@
             "DPS"   "5"
             "Support"   "0"
             "Utility"   "0"
+        }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"invoker_invo_move_09"
+            "2"	"invoker_invo_ability_invoke_15"
+            "3" "invoker_invo_purch_01"
+            "4" "invoker_invo_respawn_07"
         }
     }
 }

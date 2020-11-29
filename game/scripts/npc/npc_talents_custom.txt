@@ -1,0 +1,553 @@
+"TalentTree"
+{
+    "Talents"
+    {
+        "1"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_1.png"
+            "Modifier"	"modifier_talent_1"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"1"
+        }
+        "2"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_2.png"
+            "Modifier"	"modifier_talent_2"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"1"
+        }
+        "3"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_3.png"
+            "Modifier"	"modifier_talent_3"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"1"
+        }
+        "4"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_4.png"
+            "Modifier"	"modifier_talent_4"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"2"
+        }
+        "5"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_5.png"
+            "Modifier"	"modifier_talent_5"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"2"
+        }
+        "6"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_6.png"
+            "Modifier"	"modifier_talent_6"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"2"
+        }
+        "7"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_7.png"
+            "Modifier"	"modifier_talent_7"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"3"
+        }
+        "8"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_8.png"
+            "Modifier"	"modifier_talent_8"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"3"
+        }
+        "9"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_9.png"
+            "Modifier"	"modifier_talent_9"
+            "MaxLevel"	"3"
+            "Row"	"1"
+            "Column"	"3"
+        }
+        "10"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_10.png"
+            "Modifier"	"modifier_talent_10"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"1"
+        }
+        "11"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_11.png"
+            "Modifier"	"modifier_talent_11"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"1"
+        }
+        "12"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_12.png"
+            "Modifier"	"modifier_talent_12"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"1"
+        }
+        "13"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_13.png"
+            "Modifier"	"modifier_talent_13"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"2"
+        }
+        "14"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_14.png"
+            "Modifier"	"modifier_talent_14"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"2"
+        }
+        "15"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_15.png"
+            "Modifier"	"modifier_talent_15"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"2"
+        }
+        "16"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_16.png"
+            "Modifier"	"modifier_talent_16"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"3"
+        }
+        "17"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_17.png"
+            "Modifier"	"modifier_talent_17"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"3"
+        }
+        "18"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_18.png"
+            "Modifier"	"modifier_talent_18"
+            "MaxLevel"	"3"
+            "Row"	"2"
+            "Column"	"3"
+        }
+        "19"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_19.png"
+            "Modifier"	"modifier_talent_19"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"1"
+        }
+        "20"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_20.png"
+            "Modifier"	"modifier_talent_20"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"1"
+        }
+        "21"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_21.png"
+            "Modifier"	"modifier_talent_21"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"1"
+        }
+        "22"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_22.png"
+            "Modifier"	"modifier_talent_22"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"2"
+        }
+        "23"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_23.png"
+            "Modifier"	"modifier_talent_23"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"2"
+        }
+        "24"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_24.png"
+            "Modifier"	"modifier_talent_24"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"2"
+        }
+        "25"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_25.png"
+            "Modifier"	"modifier_talent_25"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"3"
+        }
+        "26"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_26.png"
+            "Modifier"	"modifier_talent_26"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"3"
+        }
+        "27"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_27.png"
+            "Modifier"	"modifier_talent_27"
+            "MaxLevel"	"3"
+            "Row"	"3"
+            "Column"	"3"
+        }
+        "28"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_28.png"
+            "Modifier"	"modifier_talent_28"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"1"
+        }
+        "29"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_29.png"
+            "Modifier"	"modifier_talent_29"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"1"
+        }
+        "30"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_30.png"
+            "Modifier"	"modifier_talent_30"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"1"
+        }
+        "31"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_31.png"
+            "Modifier"	"modifier_talent_31"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"2"
+        }
+        "32"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_32.png"
+            "Modifier"	"modifier_talent_32"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"2"
+        }
+        "33"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_33.png"
+            "Modifier"	"modifier_talent_33"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"2"
+        }
+        "34"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_34.png"
+            "Modifier"	"modifier_talent_34"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"3"
+        }
+        "35"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_35.png"
+            "Modifier"	"modifier_talent_35"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"3"
+        }
+        "36"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_36.png"
+            "Modifier"	"modifier_talent_36"
+            "MaxLevel"	"3"
+            "Row"	"4"
+            "Column"	"3"
+        }
+        "37"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_37.png"
+            "Modifier"	"modifier_talent_37"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"1"
+        }
+        "38"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_38.png"
+            "Modifier"	"modifier_talent_38"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"1"
+        }
+        "39"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_39.png"
+            "Modifier"	"modifier_talent_39"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"1"
+        }
+        "40"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_40.png"
+            "Modifier"	"modifier_talent_40"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"2"
+        }
+        "41"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_41.png"
+            "Modifier"	"modifier_talent_41"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"2"
+        }
+        "42"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_42.png"
+            "Modifier"	"modifier_talent_42"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"2"
+        }
+        "43"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_43.png"
+            "Modifier"	"modifier_talent_43"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"3"
+        }
+        "44"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_44.png"
+            "Modifier"	"modifier_talent_44"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"3"
+        }
+        "45"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_45.png"
+            "Modifier"	"modifier_talent_45"
+            "MaxLevel"	"3"
+            "Row"	"5"
+            "Column"	"3"
+        }
+        "46"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_46.png"
+            "Modifier"	"modifier_talent_46"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"1"
+        }
+        "47"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_47.png"
+            "Modifier"	"modifier_talent_47"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"1"
+        }
+        "48"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_48.png"
+            "Modifier"	"modifier_talent_48"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"1"
+        }
+        "49"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_49.png"
+            "Modifier"	"modifier_talent_49"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"2"
+        }
+        "50"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_50.png"
+            "Modifier"	"modifier_talent_50"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"2"
+        }
+        "51"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_51.png"
+            "Modifier"	"modifier_talent_51"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"2"
+        }
+        "52"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_52.png"
+            "Modifier"	"modifier_talent_52"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"3"
+        }
+        "53"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_53.png"
+            "Modifier"	"modifier_talent_53"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"3"
+        }
+        "54"
+        {
+            "Icon"	"file://{images}/custom_game/hud/talenttree/talent_54.png"
+            "Modifier"	"modifier_talent_54"
+            "MaxLevel"	"3"
+            "Row"	"6"
+            "Column"	"3"
+        }
+    }
+    "Requirements"
+    {
+        "1"
+        {
+            "Row"	"1"
+            "Column"	"1"
+            "RequiredPoints"	"0"
+        }
+        "2"
+        {
+            "Row"	"1"
+            "Column"	"2"
+            "RequiredPoints"	"0"
+        }
+        "3"
+        {
+            "Row"	"1"
+            "Column"	"3"
+            "RequiredPoints"	"0"
+        }
+        "4"
+        {
+            "Row"	"2"
+            "Column"	"1"
+            "RequiredPoints"	"3"
+        }
+        "5"
+        {
+            "Row"	"2"
+            "Column"	"2"
+            "RequiredPoints"	"3"
+        }
+        "6"
+        {
+            "Row"	"2"
+            "Column"	"3"
+            "RequiredPoints"	"3"
+        }
+        "7"
+        {
+            "Row"	"3"
+            "Column"	"1"
+            "RequiredPoints"	"6"
+        }
+        "8"
+        {
+            "Row"	"3"
+            "Column"	"2"
+            "RequiredPoints"	"6"
+        }
+        "9"
+        {
+            "Row"	"3"
+            "Column"	"3"
+            "RequiredPoints"	"6"
+        }
+        "10"
+        {
+            "Row"	"4"
+            "Column"	"1"
+            "RequiredPoints"	"9"
+        }
+        "11"
+        {
+            "Row"	"4"
+            "Column"	"2"
+            "RequiredPoints"	"9"
+        }
+        "12"
+        {
+            "Row"	"4"
+            "Column"	"3"
+            "RequiredPoints"	"9"
+        }
+        "13"
+        {
+            "Row"	"5"
+            "Column"	"1"
+            "RequiredPoints"	"12"
+        }
+        "14"
+        {
+            "Row"	"5"
+            "Column"	"2"
+            "RequiredPoints"	"12"
+        }
+        "15"
+        {
+            "Row"	"5"
+            "Column"	"3"
+            "RequiredPoints"	"12"
+        }
+        "16"
+        {
+            "Row"	"6"
+            "Column"	"1"
+            "RequiredPoints"	"15"
+        }
+        "17"
+        {
+            "Row"	"6"
+            "Column"	"2"
+            "RequiredPoints"	"15"
+        }
+        "18"
+        {
+            "Row"	"6"
+            "Column"	"3"
+            "RequiredPoints"	"15"
+        }
+    }
+    "Settings"
+    {
+        "MaxTalentsPerRequest"  "10"
+    }
+}

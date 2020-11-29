@@ -36,12 +36,37 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"backstab_damage"		"300 400 500 600"
+				"backstab_damage"		"300 375 450 525"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"3 4 5 6"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"silence_duration"			"0 0.5 0.5 0.5"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crit_duration"			"0 0 2 2"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crit_multiplier"			"0 0 0.5 0.5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_dust_proc_cdr_flat"			"0 0 0 3"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_dust_proc_cdr_flat_duration"			"0 0 0 10"
 			}
 		}
 		"precache"
@@ -84,17 +109,52 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"magic_res"				"15 20 25 30"
+				"magic_res"				"15 15 25 25"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"status_res"			"15 20 25 30"
+				"status_res"			"15 15 25 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aoe_damage_radius"				"0 400 400 400"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aoe_damage"				"0 100 100 1000"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aoe_miss_chance"				"0 100 100 100"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aoe_miss_duration"				"0 3 3 3"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"res_per_ms"			"0 0 0 0.06"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_reduction"			"0 20 20 20"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dmg_reduction_active"			"0 40 40 40"
 			}
 		}
 		"precache"
@@ -102,19 +162,21 @@
             "particle"  "particles/units/abyssal_stalker/void_dust/void_dust.vpcf"
             "particle"  "particles/units/abyssal_stalker/void_dust/void_dust_buff.vpcf"
             "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_riki.vsndevts"
 		}
 	}
 	//=================================================================================================================
-	// Abyssal Stalker: Dance of darkness 
+	// Abyssal Stalker: Blade of Darkness
 	//=================================================================================================================
-	"abyssal_stalker_dance_of_darkness"
+	"abyssal_stalker_blade_of_darkness"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"abyssal_stalker_dance_of_darkness"
+		"AbilityTextureName"			"abyssal_stalker_blade_of_darkness"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
@@ -122,7 +184,7 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30 25 20 20"
+		"AbilityCooldown"				"30 25 25 25"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -135,32 +197,67 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"chance"				"20 25 30 35"
+				"chance"				"20 30 30 30"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"chance_active"				"40 50 60 70"
+				"chance_active"			"40 60 60 60"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"agi_per_stack"			"5 5 10 10"
+				"aa_speed_per_stack"			"5 7.5 7.5 10"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"5 10 10 15"
+				"max_stacks"			"5 5 10 10"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_duration"				"5"
+				"stack_duration"		"5"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"3 4 5 6"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_aa_chance"			"0 0 25 25"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_aa_chance_cooldown"			"0 0 0 0.1"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_damage"			"0 20 20 20"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_tick"			"0 1 1 1"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_max_stacks"			"0 5 5 5"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dot_duration"			"0 5 5 5"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aa_speed_to_aa_dmg_per_stack"			"0 0 0 4"
 			}
 		}
 	}
@@ -198,17 +295,47 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"instance"				"2 3 4 5"
+				"damage"				"30 30 45 45"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"shadows"				"4 6 8 10"
+				"instance"				"3 5 5 5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"30 35 40 45"
+				"shadows"				"6 10 10 10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_dmg_per_stack"	"0 5 5 5"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aa_speed_per_stack"			"0 0 20 20"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_per_strike"		"0 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"		"0 5 5 5"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"	"0 6 6 6"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"proc_chance_per_stack"	"0 0 0 2"
 			}
 		}
 		"precache"
@@ -218,30 +345,30 @@
 		}
 	}
 	//=================================================================================================================
-	// Abyssal Stalker: Gaze of Abyss 
+	// Abyssal Stalker: Void Shadow
 	//=================================================================================================================
-	"abyssal_stalker_gaze_of_abyss"
+	"abyssal_stalker_void_shadow"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
 		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
-		"AbilityTextureName"			"phantom_assassin_blur"
+		"AbilityTextureName"			"abyssal_stalker_void_shadow"
         "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 	    "MaxLevel"               		"4"
 	    "RequiredLevel"          		"0"
 	    "LevelsBetweenUpgrades"  		"0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30"
+		"AbilityCooldown"				"60"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
+		"AbilityManaCost"				"40"
 
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
@@ -250,13 +377,130 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_crit_damage"			"20 30 40 50"
+				"duration"		"4 5 6 7"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_damage"				"8 10 12 15"
+				"attack_speed_multiplier"		"1 1 1 1"
 			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"attack_damage_multiplier"		"0 0 0.2 0.2"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_res_aura_radius"		"0 300 300 300"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"void_res_aura_reduction"		"0 20 20 20"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"shadow_rush_cdr_proc"		"0 0 0 1"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/void_shadow/void_shadow.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_dust/status_fx/status_effect_void_dust.vpcf"
+            "particle"  "particles/units/abyssal_stalker/void_shadow/void_shadow_buff.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Abyssal Stalker: Dagger Throw
+	//=================================================================================================================
+	"abyssal_stalker_dagger_throw"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_abyssal_stalker.lua"
+		"AbilityTextureName"			"abyssal_stalker_dagger_throw"
+        "AbilityType"           		"DOTA_ABILITY_TYPE_BASIC"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	    "MaxLevel"               		"4"
+	    "RequiredLevel"          		"0"
+	    "LevelsBetweenUpgrades"  		"0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "AbilityCastRange"  "900"
+		"AbilityCastPoint"				"0.25"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"150 200 250 300"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"silence_duration"				"1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aa_void_element"				"0 1 1 1"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"spelldmg_per_stack"				"0 0 5 5"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aadmg_per_stack"				"0 0 5 5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"				"0 0 10 10"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_duration"				"0 0 10 10"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_cd"				"0 0 2 2"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat_on_crit"				"0 0 0 2"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"dagger_speed"				"1000"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/units/abyssal_stalker/dagger_throw/dagger_throw_projectile.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
 		}
 	}
 }

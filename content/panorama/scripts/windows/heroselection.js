@@ -26,7 +26,6 @@ function OnHeroSelected(hero, notPlaySound) {
 	latestSelectedHero = hero;
     $("#SelectedHeroName").text = $.Localize("#" + hero);
     $("#SelectedHeroIcon").heroname = hero;
-    $("#HeroStats").style.visibility = "visible";
     ResetFilter();
 	UpdateSaveSlots(hero);
     UpdateHeroStats(hero);
@@ -183,8 +182,6 @@ function UpdateFilter() {
 
 function OnHeroSelectionScreenLoaded() {
     $("#Spinner").style.visibility = "collapse";
-    $("#AvailableHeroesContainer").style.visibility = "visible";
-    $("#HeroSlotsContainer").style.visibility = "visible";
     if(heroSlotsDataRecieved) {
         OnHeroSelected(latestSelectedHero, true);
         return;
@@ -198,7 +195,7 @@ function OnPickHeroButtonPressed(slot) {
         return;
     }
     var slotId = slot.id.replace('HeroSlot', '');
-    Game.EmitSound("HeroPicker.Selected");
+    Game.EmitSound(heroesData[latestSelectedHero].PickSounds[Math.floor(Math.random() * heroesData[latestSelectedHero].PickSounds.length)]);
 	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_hero_picked", {"hero" : latestSelectedHero, "slotNumber" : slotId});
 	HideUIAfterHeroPick();
 	ResetFilter();
@@ -266,6 +263,7 @@ function OnHeroesDataReceived(event) {
                 heroesData[heroes[i].Name]["Ability"+j] = "";
             }
         }
+        heroesData[heroes[i].Name].PickSounds = heroes[i].PickSounds;
     }
     latestSelectedHero = heroes[0].Name;
     heroSelected = true;
@@ -324,8 +322,11 @@ function OnHeroSlotsDataReceived(event) {
 }
 
 function CheckHeroSelectionScreenState() {
-    if(sceneLoaded && heroSlotsDataRecieved) {
+    if(heroSlotsDataRecieved) {
         OnHeroSelected(latestSelectedHero, true);
+        $("#AvailableHeroesContainer").style.visibility = "visible";
+        $("#HeroStats").style.visibility = "visible";
+        $("#HeroSlotsContainer").style.visibility = "visible";
         return;
     }
     $.Schedule(TIMEOUT_UPDATE_INTERVAL, CheckHeroSelectionScreenState);

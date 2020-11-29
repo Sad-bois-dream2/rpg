@@ -189,7 +189,7 @@ function SaveLoad:OnGetSlotsForHeroRequest(event, args)
                 for _, heroSlots in pairs(SaveLoad.playersData[entryId].heroes) do
                     for _, slotData in pairs(heroSlots.slots) do
                         if (slotData.hero == SaveLoad.heroes[HeroSelection.playerHeroes["player" .. playerId].hero]) then
-                            table.insert(data, { hero = slotData.hero, heroLevel = SaveLoad:GetHeroLevel(slotData.heroXP), items = json.encode(slotData.items.equipped), slotNumber = slotData.slotNumber, locked = slotData.locked, new = slotData.new })
+                            table.insert(data, { hero = slotData.hero, heroLevel = SaveLoad:GetHeroLevel(slotData.heroXP), slotNumber = slotData.slotNumber, locked = slotData.locked, new = slotData.new })
                         end
                     end
                 end
@@ -218,7 +218,7 @@ function SaveLoad:OnSaveHeroRequest(event, args)
     if (player.SaveLoadCooldown) then
         local cooldownLeft = math.floor(math.max(0, (player.SaveLoadCooldown - GameRules:GetGameTime())))
         Notifications:Bottom(event.PlayerID, { text = "#DOTA_SaveLoad_SaveCooldown", duration = 5, style = { color = "red" } })
-        Notifications:Bottom(event.PlayerID, { text = " "..tostring(cooldownLeft).." ", duration = 5, style = { color = "red" }, continue = true })
+        Notifications:Bottom(event.PlayerID, { text = " " .. tostring(cooldownLeft) .. " ", duration = 5, style = { color = "red" }, continue = true })
         Notifications:Bottom(event.PlayerID, { text = "#DOTA_SaveLoad_SaveCooldown1", duration = 5, style = { color = "red" }, continue = true })
         CustomGameEventManager:Send_ServerToPlayer(player, "rpg_saveload_remove_cooldown", {})
         return
@@ -339,8 +339,9 @@ function SaveLoad:SaveHeroForPlayerInSlot(playerId, slotId)
         return "error"
     end
     local playerID = playerId
+    local slotID = slotId
     local req = CreateHTTPRequestScriptVM("POST", SaveLoad.SAVE_URL)
-    local saveData = json.encode(SaveLoad:GenerateSaveDataForSlot(playerId, slotId))
+    local saveData = json.encode(SaveLoad:GenerateSaveDataForSlot(playerId, slotID))
     req:SetHTTPRequestGetOrPostParameter("data", saveData)
     req:SetHTTPRequestAbsoluteTimeoutMS(SaveLoad.TIMEOUT)
     req:Send(function(response)
@@ -355,6 +356,24 @@ function SaveLoad:SaveHeroForPlayerInSlot(playerId, slotId)
             Notifications:Bottom(playerID, { text = data.data, duration = 9, style = { color = "red" } })
         else
             Notifications:Bottom(playerID, { text = "#DOTA_SaveLoad_SaveSuccessful", duration = 5, style = { color = "lime" } })
+        end
+        local entryId = -1
+        local steamID = tostring(PlayerResource:GetSteamID(playerID))
+        for id, playerData in pairs(SaveLoad.playersData) do
+            if (playerData.steamID == steamID) then
+                entryId = id
+                break
+            end
+        end
+        if (entryId > -1) then
+            local playerHero = HeroList:GetHero(playerID)
+            if (playerHero) then
+                local heroId = SaveLoad.heroes[playerHero:GetUnitName()]
+                slotID = tostring(slotID)
+                if (SaveLoad.playersData[entryId].heroes[heroId] and SaveLoad.playersData[entryId].heroes[heroId].slots and SaveLoad.playersData[entryId].heroes[heroId].slots[slotID]) then
+                    SaveLoad.playersData[entryId].heroes[heroId].slots[slotID].heroXP = playerHero:GetCurrentXP()
+                end
+            end
         end
         CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerID), "rpg_saveload_save_hero_from_server", { data = json.encode(data) })
     end)
@@ -398,7 +417,7 @@ function SaveLoad:GenerateSaveDataForSlot(playerId, slotId)
         }
     end
     data.talents = {}
-    for i = 1, TalentTree.latest_talent_id do
+    for i = 1, TalentTree:GetLatestTalentID() do
         data.talents["talent" .. i] = TalentTree:GetHeroTalentLevel(playerHero, i)
     end
     return data

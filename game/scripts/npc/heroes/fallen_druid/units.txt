@@ -81,8 +81,8 @@
 		"AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
 		"AttackDamageMin"			"1"		// Damage range min.
 		"AttackDamageMax"			"1"		// Damage range max.
-	    "AttackRate"		"1.500000"
-	    "AttackAnimationPoint"		"0.30000"
+	    "AttackRate"		"1.700000"
+	    "AttackAnimationPoint"		"0.40000"
 	    "AttackAcquisitionRange"		"800"
 	    "AttackRange"		"1"
 		"ProjectileModel"			"particles/units/heroes/hero_dark_willow/dark_willow_base_attack.vpcf" // Particle system model for projectile.

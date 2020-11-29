@@ -1,17 +1,18 @@
-.TalentPanel .Root
+.TalentTreeWindow
 {
-	width: 100%;
-	height: 100%;
-}
-
-.TalentTreeWindow 
-{
-	margin-top: 0px;
 	visibility: collapse;
+	width: fit-children;
+	height: fit-children;
+	padding-left: 5px;
 }
 
 .TalentTree {
-	flow-children: down;
+	flow-children: right;
+	vertical-align: top;
+	horizontal-align: center;
+	margin: 10px;
+	margin-top: 20px;
+	margin-bottom: 100px;
 }
 
 .TalentPanel
@@ -20,44 +21,47 @@
 	height: 80px;
 }
 
-.HeroSpecificTalentPanel
-{
-	margin-left: 45px;
-}
 .TalentLevelAnimation
 {
 	width: 100%;
 	height: 100%;
 	visibility: collapse;
 	margin-left: -8px;
+	margin-top: -8px;
+}
+
+.TalentLevelContainer {
+	horizontal-align: center;
+	width: fill-parent-flow (1.0);
+	height: fill-parent-flow (1.0);
+	margin-top: 45px;
+	background-color: #000000a0;
 }
 
 .TalentLevel {
-	horizontal-align: center;
 	width: fill-parent-flow (1.0);
+	height: fill-parent-flow (1.0);
 	text-align: center;
 	font-size: 16px;
 	color: white;
 	font-weight: bold;
 	font-family: platformfont;
 	text-transform: uppercase;
-	width: 100%;
-	height: 100%;
-	margin-top: 45px;
-	background-color: black;
-	opacity: 0.8;
+	opacity: 1;
+	text-shadow: 0px 0px 10px 4 #00000088;
 }
 
 .TalentImageAndLevel {
 	width: 64px;
 	height: 64px;
-	border: 1px solid grey;
-	border-radius: 5px;
+    box-shadow: 0px 0px 10px #000000aa;
+    border: 1px solid #ffffff09;
+    border-bottom: 1px none #ffffff01;
 }
 
 .TalentImageAndLevel:hover 
 {
-	border: 1px solid white;
+	border: 1px solid #ffffff2f;
 }
 
 .TalentPanel.lvlup .TalentLevelAnimation
@@ -72,73 +76,29 @@
 	wash-color: grey;
 }
 
-.TalentPanel.is_skill .TalentImageAndLevel #TalentImage
-{
-    visibility: collapse;
-}
-
 .TalentPanel .TalentImageAndLevel #TalentSkillImage
 {
     visibility: collapse;
 }
 
-.TalentPanel.is_skill .TalentImageAndLevel #TalentSkillImage
-{
-    visibility: visible;
-}
-
 .TalentsRow 
 {
 	flow-children: right;
-	padding-left: 120px;
+	width: fit-children;
+	height: fit-children;
 }
 
 .TalentsColumn
 {
-	flow-children: right;
-	width: fill-parent-flow (1.0);
-	height: 64px;
-	margin-top: 30px;
+	flow-children: down;
+	width: fit-children;
+	height: fit-children;
+	margin-right: 20px;
 }
 
-.TreeBranchPanel 
+.TalentsColumn.last
 {
-	width: 225px;
-	height: 64px;
-	border: 1px solid grey;
-	border-radius: 5px;
-	flow-children: right;
-	margin-right: 135px;
-}
-
-.TreeBranchImagePanel
-{
-	width: 64px;
-	height: 64px;
-}
-
-.TreeBranchLabel
-{
-	width: 100%;
-	height: 20px;
-	text-align: center;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: white;
-	font-size: 16px;
-	font-family: platformfont;
-	text-overflow: shrink;
-	vertical-align: center;
-	horizontal-align: center;
-}
-
-.TreeHeaderRow
-{
-    width: 100%;
-    height: fit-children;
-    padding-left: 120px;
-    padding-top: 20px;
-    flow-children: right;
+	margin-right: 0px;
 }
 
 .TotalTalentPointsLabel
@@ -147,9 +107,10 @@
 	vertical-align: bottom;
 	font-size: 20px;
 	color: white;
-	margin-bottom: 40px;
 	text-transform: uppercase;
-	font-family: platformfont;
+	font-family: defaultFont;
+	text-shadow: 0px 0px 2px 4 #00000088;
+	margin-bottom: 25px;
 }
 
 .TalentTreeHelp
@@ -158,6 +119,13 @@
 	vertical-align: bottom;
 	font-size: 16px;
 	color: white;
-	margin-bottom: 10px;
-	font-family: platformfont;
+	font-family: defaultFont;
+	text-shadow: 0px 0px 2px 4 #00000088;
+	margin-bottom: 5px;
+}
+
+.TalentTreeResetButton {
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 60px;
 }

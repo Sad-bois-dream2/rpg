@@ -42,7 +42,7 @@ modifier_hero = class({
         return MODIFIER_ATTRIBUTE_PERMANENT
     end,
     DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ORDER, MODIFIER_EVENT_ON_DEATH }
+        return { MODIFIER_EVENT_ON_ORDER }
     end
 })
 
@@ -51,30 +51,6 @@ function modifier_hero:OnCreated()
         return
     end
     self.parent = self:GetParent()
-end
-
-function modifier_hero:OnDeath(keys)
-    if (not IsServer()) then
-        return
-    end
-    local hero = keys.unit
-    if (hero ~= self.parent) then
-        return
-    end
-    local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-            hero:GetAbsOrigin(),
-            nil,
-            Enemies.BOSS_ZONE_SIZE,
-            DOTA_UNIT_TARGET_TEAM_ENEMY,
-            DOTA_UNIT_TARGET_ALL,
-            DOTA_UNIT_TARGET_FLAG_NONE,
-            FIND_ANY_ORDER,
-            false)
-    for _, enemy in pairs(enemies) do
-        if (Enemies:IsBoss(enemy)) then
-            Enemies:OnBossHealing(enemy, hero)
-        end
-    end
 end
 
 function modifier_hero:OnOrder(event)

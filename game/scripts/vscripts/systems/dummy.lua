@@ -44,12 +44,16 @@ modifier_dps_dummy = class({
 function modifier_dps_dummy:OnPostTakeDamage(damageTable)
     local modifier = damageTable.victim:FindModifierByName("modifier_dps_dummy")
     local playerId = damageTable.attacker:GetPlayerOwnerID()
-    if (modifier and damageTable.victim.isready and playerId == damageTable.victim.owner) then
+    if (modifier) then
         local abilityDamage = false
         local abilityName = ""
         if (damageTable.ability) then
             abilityDamage = true
             abilityName = damageTable.ability:GetAbilityName()
+        end
+        local timer = 0
+        if(damageTable.victim.isready and playerId == damageTable.victim.owner) then
+            timer = 1
         end
         local event = {
             player_id = playerId,
@@ -67,6 +71,8 @@ function modifier_dps_dummy:OnPostTakeDamage(damageTable)
             infernodmg = damageTable.infernodmg,
             holydmg = damageTable.holydmg,
             fromsummon = damageTable.fromsummon,
+            timer = timer,
+            fromtalent = damageTable.fromtalent
         }
         table.insert(damageTable.victim.damageInstances, event)
         CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerId), "rpg_dummy_damage", event)
@@ -77,9 +83,9 @@ function modifier_dps_dummy:OnCreated()
     if (not IsServer()) then
         return
     end
-    self.damageInstances = {}
     self.parent = self:GetParent()
     self.parent.bonusStats = {}
+    self.parent.damageInstances = {}
     Timers:CreateTimer(0, function()
         local scaling = self.parent:FindModifierByName("modifier_creep_scaling")
         if (scaling) then

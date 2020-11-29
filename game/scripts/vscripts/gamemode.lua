@@ -121,7 +121,7 @@ end
 function GameMode:OnGameInProgress()
     Timers:CreateTimer(3.0, function()
         -- Trainer
-        CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_NEUTRALS, function(npc)
+        CreateUnitByNameAsync("npc_dummy_dps_unit", Vector(-13794.283203, 14577.936523, 384), true, nil, nil, DOTA_TEAM_BADGUYS, function(npc)
             npc:SetForwardVector(Vector(-0.977157, 0.212519, 0))
         end)
         -- Save NPC
@@ -204,7 +204,7 @@ function GameMode:OnSayChatMessageRequest(event, args)
         end
         event.args = json.encode(event.args)
         if (player and string.len(event.msg) > 0) then
-            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName() })
+            CustomGameEventManager:Send_ServerToAllClients("rpg_say_chat_message_from_server", { player_id = event.player_id, text = event.msg, args = event.args, hero = player:GetAssignedHero():GetUnitName(), steamID = PlayerResource:GetSteamAccountID(event.player_id) })
         end
     end
 end

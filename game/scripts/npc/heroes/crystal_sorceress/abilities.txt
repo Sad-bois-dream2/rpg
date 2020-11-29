@@ -38,22 +38,37 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"50 60 70 80"
+				"damage"				"100 110 120 130"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_damage"				"20 40 60 80"
+				"proc_damage"				"0 70 70 70"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_chance"				"5 10 15 20"
+				"proc_chance"				"0 40 40 40"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_aoe"				"300"
+				"proc_aoe"				"0 300 300 300"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_resistance_reduction"				"0 0 10 10"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_resistance_reduction_duration"				"0 0 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"freezing_destruction_cdr_flat"				"0 0 0 0.5"
 			}
 		}
 		"precache"
@@ -79,9 +94,6 @@
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastRange"  "800"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"5"
@@ -97,58 +109,47 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"slow_per_stack"				"1.5 2 2.5 3"
+				"bonus_frost_damage_per_stack"				"3 4 5 6"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_slow"				"15 20 25 30"
+				"max_mana_cost_per_second"				"5"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_per_stack"				"3 4 5 6"
+				"max_stacks"				"10"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_damage"				"30 40 50 60"
+				"radius"				"800"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"10"
+				"tick"				"1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_chance"				"25"
+				"frost_comet_cast_every"				"0 2 2 2"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"2"
+				"debuff_linger_duration"				"1 1 3 3"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_cd"				"30"
+				"max_mana_cost_multiplier_after_glacier_rush"				"0 0 0 0.5"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"mana"				"2 3 4 5"
-			}
-		
-			"10"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
-			}
-			"11"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"radius"				"800"
+				"max_mana_cost_multiplier_after_glacier_rush_duration"				"0 0 0 15"
 			}
 		}
 		"precache"
@@ -179,7 +180,6 @@
 		//-------------------------------------------------------------------------------------------------------------
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
 		"AbilityCastPoint"				"0.25"
-		"AbilityCastRange"				"900"
 
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
@@ -195,22 +195,22 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"100 110 120 130"
+				"damage"				"150 175 200 225"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_crit"				"6 8 10 12"
+				"bonus_crit_chance_per_stack"				"0 10 10 10"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"5"
+				"stacks_duration"				"15"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stacks_duration"				"15"
+				"max_stacks"				"10"
 			}
 			"05"
 			{
@@ -226,6 +226,21 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"width"				"200"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"movespeed_slow"				"0 0 30 30"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"movespeed_slow_duration"				"0 0 5 5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat_per_enemy_damaged"				"0 0 0 5"
 			}
 		}
 		"precache"
@@ -249,11 +264,12 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "900"
  		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
 		"AbilityCastPoint"				"2"
 
@@ -271,7 +287,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"75 100 125 150"
+				"damage"				"105 110 115 120"
 			}
 			"02"
 			{
@@ -281,17 +297,22 @@
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"crit_dmg"				"120 150 180 200"
+				"bonus_crit_dmg"				"0 100 100 100"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"2"
+				"stun_duration"				"0 0 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_aoe"				"350"
+				"radius"				"350"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_max_mana_regeneration"				"0 0 0 0.5"
 			}
 		}
 		"precache"
@@ -299,7 +320,203 @@
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_projectile.vpcf"
             "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_cast.vpcf"
             "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf"
+            "particle"  "particles/units/crystal_sorceress/freezing_destruction/freezing_destruction_aoe.vpcf"
             "soundfile" "soundevents/game_sounds_heroes/game_sounds_ancient_apparition.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Crystal Sorceress: Cold Embrace
+	//=================================================================================================================
+	"crystal_sorceress_cold_embrace"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"winter_wyvern_cold_embrace"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "900"
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
+		"AbilityCastPoint"				"0.25"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_damage_reduction"				"0 90 90 90"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_damage_reduction_duration"				"0 3 3 3"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed"				"0 0 800 800"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed_stacks"				"0 0 3 3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_cast_speed_duration"				"0 0 15 15"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cdr_flat_on_damage"				"0 0 0 1"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf"
+            "particle"  "particles/econ/items/drow/drow_ti9_immortal/status_effect_drow_ti9_frost_arrow.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_winter_wyvern.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Crystal Sorceress: Flash Freeze
+	//=================================================================================================================
+	"crystal_sorceress_flash_freeze"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_crystal_sorceress"
+		"AbilityTextureName"			"crystal_maiden_brilliance_aura"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
+		"AbilityCastPoint"				"0"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"frost_damage_per_stack"				"0.25 0.5 0.75 1"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_per_ability_damage"				"1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stacks_every_tick_in_combat"				"0 1 1 1"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stack_every_tick_in_combat_timer"				"0 1 1 1"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_stack_every_tick_in_combat_tick"				"0 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_for_enchance_proc"				"0 0 20 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_multiplier"				"0 0 0 2"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_proc_chance"				"0 0 0 40"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"				"100"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_frost_comet_chance"				"40"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_frost_comet_duration"				"10"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_glacier_rush_charges"				"2"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_glacier_rush_charges_duration"				"30"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_freezing_destruction_cast_speed"				"150"
+			}
+			"16"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enchanted_freezing_destruction_cast_speed_duration"				"15"
+			}
+		}
+		"precache"
+		{
+            "particle"  "particles/econ/items/drow/drow_ti9_immortal/drow_ti9_frost_arrow_debuff.vpcf"
+            "particle"  "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_e_cowlofice.vpcf"
 		}
 	}
 }

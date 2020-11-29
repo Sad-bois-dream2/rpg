@@ -2,14 +2,15 @@
 {
 	"npc_dota_hero_phantom_assassin"
 	{
+	    "HeroIndex"		"44"
 		"AbilityLayout" "6"
 		"override_hero" "npc_dota_hero_phantom_assassin"
 		"Ability1"		"abyssal_stalker_shadow_rush"
 		"Ability2"		"abyssal_stalker_void_dust"
-		"Ability3"		"abyssal_stalker_dance_of_darkness"
+		"Ability3"		"abyssal_stalker_blade_of_darkness"
 		"Ability4"		"abyssal_stalker_blade_of_abyss"
-		"Ability5"		"empty5"
-		"Ability6"		"antimage_blink"
+		"Ability5"		"abyssal_stalker_void_shadow"
+		"Ability6"		"abyssal_stalker_dagger_throw"
 		"AbilityTalentStart"		"7"
 		"Ability7"	""
 		"Ability8"	""
@@ -24,8 +25,16 @@
 		"Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.560000"
+        "AttackAcquisitionRange"		"600"
+        "AttackRange"		"150"
+        "MovementSpeed"		"315"
+        "MovementTurnRate"		"0.500000"
+        "BoundsHullName"		"DOTA_HULL_SIZE_HERO"
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -46,6 +55,13 @@
             "DPS"   "5"
             "Support"   "0"
             "Utility"   "0"
+        }
+        "HeroSelectionPickSounds"
+        {
+            "1"	"phantom_assassin_phass_move_09"
+            "2"	"phantom_assassin_phass_cast_04"
+            "3" "phantom_assassin_phass_respawn_04"
+            "4" "phantom_assassin_phass_respawn_06"
         }
 	}
 }

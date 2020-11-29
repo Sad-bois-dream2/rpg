@@ -46,6 +46,7 @@ function modifier_catastrophe_demolisher_curse_of_doom_dot:OnIntervalThink()
     damageTable.target = self.target
     damageTable.ability = self.ability
     damageTable.infernodmg = true
+    damageTable.dot = true
     GameMode:DamageUnit(damageTable)
 end
 
@@ -86,6 +87,20 @@ function modifier_catastrophe_demolisher_curse_of_doom_aura:OnCreated()
         return
     end
     self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+end
+
+function modifier_catastrophe_demolisher_curse_of_doom_aura:GetAggroCausedPercentBonus()
+    local totalResistances = 0
+    totalResistances = totalResistances + Units:GetFireProtection(self.caster)
+    totalResistances = totalResistances + Units:GetFrostProtection(self.caster)
+    totalResistances = totalResistances + Units:GetEarthProtection(self.caster)
+    totalResistances = totalResistances + Units:GetVoidProtection(self.caster)
+    totalResistances = totalResistances + Units:GetHolyProtection(self.caster)
+    totalResistances = totalResistances + Units:GetNatureProtection(self.caster)
+    totalResistances = totalResistances + Units:GetInfernoProtection(self.caster)
+    totalResistances = totalResistances - 7
+    return (totalResistances * (self.ability.primalBuffPerEleArmorAggro or 0)) + (Units:GetArmor(self.caster) * (self.ability.primalBuffPerArmorAggro or 0)) + (self.caster:GetMaxHealth() * (self.ability.primalBuffPerMaxHpAggro or 0))
 end
 
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura"] = LUA_MODIFIER_MOTION_NONE
@@ -121,15 +136,45 @@ end
 
 LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_aura_debuff"] = LUA_MODIFIER_MOTION_NONE
 
-catastrophe_demolisher_curse_of_doom = class({
-    GetIntrinsicModifierName = function(self)
-        return "modifier_catastrophe_demolisher_curse_of_doom_aura"
+modifier_catastrophe_demolisher_curse_of_doom_stacks = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
     end
 })
 
-function catastrophe_demolisher_curse_of_doom:GetAOERadius()
-    return self:GetSpecialValueFor("damage_aoe")
+function modifier_catastrophe_demolisher_curse_of_doom_stacks:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
 end
+
+function modifier_catastrophe_demolisher_curse_of_doom_stacks:GetStrengthPercentBonus()
+    return self.ability.stacksStr * self:GetStackCount()
+end
+
+LinkedModifiers["modifier_catastrophe_demolisher_curse_of_doom_stacks"] = LUA_MODIFIER_MOTION_NONE
+
+catastrophe_demolisher_curse_of_doom = class({
+    GetIntrinsicModifierName = function(self)
+        return "modifier_catastrophe_demolisher_curse_of_doom_aura"
+    end,
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("damage_aoe")
+    end
+})
 
 function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     if (not IsServer()) then
@@ -138,10 +183,12 @@ function catastrophe_demolisher_curse_of_doom:OnUpgrade()
     self.damage = self:GetSpecialValueFor("damage") / 100
     self.aoe = self:GetSpecialValueFor("damage_aoe")
     self.auraRadius = self:GetSpecialValueFor("aura_radius")
-    self.threat = self:GetSpecialValueFor("threat") / 100
     self.infernoRes = self:GetSpecialValueFor("inferno_res") / 100
     self.tick = self:GetSpecialValueFor("tick")
     self.duration = self:GetSpecialValueFor("duration")
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
 end
 
 function catastrophe_demolisher_curse_of_doom:OnSpellStart()
@@ -160,16 +207,8 @@ function catastrophe_demolisher_curse_of_doom:OnSpellStart()
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
-        if (self.threat > 0) then
-            local addedAggro = caster:GetMaxHealth() * self.threat
-            for _, enemy in pairs(enemies) do
-                self:ApplyDot(caster, enemy)
-                Aggro:Add(caster, enemy, addedAggro)
-            end
-        else
-            for _, enemy in pairs(enemies) do
-                self:ApplyDot(caster, enemy)
-            end
+        for _, enemy in pairs(enemies) do
+            self:ApplyDot(caster, enemy)
         end
         local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/curse_of_doom/curse_of_doom.vpcf", PATTACH_ABSORIGIN, target)
         Timers:CreateTimer(1, function()
@@ -272,37 +311,46 @@ function catastrophe_demolisher_flaming_blast:OnSpellStart()
             DOTA_UNIT_TARGET_FLAG_NONE,
             FIND_ANY_ORDER,
             false)
+    local stunModifierTable = {
+        ability = self,
+        target = nil,
+        caster = caster,
+        modifier_name = "modifier_stunned",
+        duration = self.stunDuration,
+    }
+    local damageTable = {
+        damage = damage,
+        caster = caster,
+        ability = self,
+        target = nil,
+        infernodmg = true,
+        aoe = true
+    }
+    local stacksModifierTable = {
+        caster = caster,
+        target = caster,
+        ability = self,
+        modifier_name = "modifier_catastrophe_demolisher_flaming_blast_stack",
+        duration = self.strStackDuration,
+        max_stacks = self.strStackCap,
+        stacks = 0
+    }
     for _, enemy in pairs(units) do
-        local modifierTable = {}
-        modifierTable.ability = self
-        modifierTable.target = enemy
-        modifierTable.caster = caster
-        modifierTable.modifier_name = "modifier_stunned"
-        modifierTable.duration = self.stunDuration
-        GameMode:ApplyDebuff(modifierTable)
-        local damageTable = {}
-        damageTable.damage = damage
-        damageTable.caster = caster
-        damageTable.ability = self
+        if (self:GetAutoCastState()) then
+            damageTable.target = enemy
+            GameMode:ApplyDebuff(stunModifierTable)
+        end
         damageTable.target = enemy
-        damageTable.infernodmg = true
         GameMode:DamageUnit(damageTable)
         local stacksPerEnemy = self.strStacksPerCreep
-        if Enemies:IsBoss(enemy) then
+        if (Enemies:IsBoss(enemy)) then
             stacksPerEnemy = self.strStacksPerBoss
         elseif Enemies:IsElite(enemy) then
             stacksPerEnemy = self.strStacksPerElite
         end
         stacksPerEnemy = stacksPerEnemy + self.strStackBonus
-        local modifierTable = {}
-        modifierTable.caster = caster
-        modifierTable.target = caster
-        modifierTable.ability = self
-        modifierTable.modifier_name = "modifier_catastrophe_demolisher_flaming_blast_stack"
-        modifierTable.duration = self.strStackDuration
-        modifierTable.max_stacks = self.strStackCap
-        modifierTable.stacks = stacksPerEnemy
-        GameMode:ApplyStackingBuff(modifierTable)
+        stacksModifierTable.stacks = stacksPerEnemy
+        GameMode:ApplyStackingBuff(stacksModifierTable)
     end
     local particle = ParticleManager:CreateParticle("particles/units/catastrophe_demolisher/flaming_blast/flaming_blast.vpcf", PATTACH_ABSORIGIN, caster)
     ParticleManager:SetParticleControl(particle, 1, impactPosition)
@@ -639,6 +687,7 @@ function modifier_catastrophe_demolisher_essence_devouer:OnIntervalThink()
         damageTable.ability = self
         damageTable.damage = damage
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
     self:SetStackCount(#enemies)
@@ -922,10 +971,6 @@ function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetAttackD
     return self.ability.damageBonus
 end
 
-function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetMoveSpeedPercentBonus()
-    return self.ability.msBonus
-end
-
 function modifier_catastrophe_demolisher_crimson_fanaticism_aura_buff:GetSpellDamageBonus()
     return self.ability.spellDamageBonus
 end
@@ -982,11 +1027,10 @@ modifier_catastrophe_demolisher_crimson_fanaticism_taunt = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
+    IsTaunt = function(self)
+        return true
+    end
 })
-
-function modifier_catastrophe_demolisher_crimson_fanaticism_taunt:IsTaunt()
-    return true
-end
 
 LinkedModifiers["modifier_catastrophe_demolisher_crimson_fanaticism_taunt"] = LUA_MODIFIER_MOTION_NONE
 
@@ -1068,7 +1112,7 @@ function catastrophe_demolisher_crimson_fanaticism:OnUpgrade()
     self.spellDamageBonus = self:GetSpecialValueFor("spell_damage_bonus") / 100
     self.msBonus = self:GetSpecialValueFor("ms_bonus") / 100
     self.asPerStack = self:GetSpecialValueFor("as_per_stack")
-    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack")
+    self.sphPerStack = self:GetSpecialValueFor("sph_per_stack") / 100
     self.stacksCap = self:GetSpecialValueFor("stacks_cap")
     self.stacksDuration = self:GetSpecialValueFor("stacks_duration")
     self.stacksNormalCount = self:GetSpecialValueFor("stacks_normal_count")
@@ -1132,6 +1176,7 @@ function modifier_catastrophe_demolisher_claymore_of_destruction_thinker:OnInter
         damageTable.target = enemy
         damageTable.ability = self.ability
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -1230,7 +1275,14 @@ LinkedModifiers["modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
 catastrophe_demolisher_claymore_of_destruction = class({
     GetIntrinsicModifierName = function(self)
         return "modifier_catastrophe_demolisher_claymore_of_destruction"
-    end
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("stun_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AUTOCAST
+        else
+            return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+    end,
 })
 
 function catastrophe_demolisher_claymore_of_destruction:OnUpgrade()
@@ -1292,6 +1344,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         damageTable.target = enemy
         damageTable.ability = self
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
         local modifierTable = {}
         modifierTable.ability = self
@@ -1300,7 +1353,7 @@ function catastrophe_demolisher_claymore_of_destruction:OnSpellStart()
         modifierTable.modifier_name = "modifier_catastrophe_demolisher_claymore_of_destruction_debuff"
         modifierTable.duration = self.armorReductionDuration
         GameMode:ApplyDebuff(modifierTable)
-        if (self.stunDuration > 0) then
+        if (self.stunDuration > 0 and self:GetAutoCastState()) then
             local modifierTable = {}
             modifierTable.ability = self
             modifierTable.target = enemy

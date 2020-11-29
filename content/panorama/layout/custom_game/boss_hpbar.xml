@@ -1,5 +1,6 @@
 <root>
     <styles>
+        <include src="file://{resources}/styles/windows/basic_window.css"/>
         <include src="file://{resources}/styles/custom_game/boss_hpbar.css"/>
     </styles>
     <scripts>
@@ -30,7 +31,7 @@
             </Panel>
             <DOTAAbilityImage id="BossZoneAbilityImage" onmouseover="BossZoneAbilityShowTooltip()" onmouseout="BossZoneAbilityHideTooltip()" abilityname="enemies_boss_skill" scaling="stretch-to-fit-preserve-aspect" />
             <Panel class="BossNamePanel">
-                <Label id="BossName" text="Fengu, The Mad Summoner"/>
+                <Label id="BossName" text="Boss Name"/>
             </Panel>
             <Panel class="BossHpBarPanel" onactivate="OnHPBarClick()">
                 <Panel id="BossHpBar" class="BossHpBar" style="width: 47%;">
@@ -53,8 +54,7 @@
                 <Panel id="BossBuffPanel" class="buff_list"/>
                 <Panel id="BossDebuffPanel" class="debuff_list"/>
             </Panel>
-            <Image class="CloseButton" src="file://{images}/custom_game/hud/close_button.png"
-                   scaling="stretch-to-fit-preserve-aspect" onactivate="ClosePanel()"/>
+            <TextButton class="WindowCloseIcon" text="X" onactivate="ClosePanel()" />
         </Panel>
     </Panel>
 </root>

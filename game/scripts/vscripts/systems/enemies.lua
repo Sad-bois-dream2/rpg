@@ -97,7 +97,7 @@ end
 function Enemies:GetEliteEnemyDropChance(enemy, difficulty)
     local baseDropChance = 35
     local maxDropChance = 70
-    return math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / Enemies.DIFFICULTY_MAX)), maxDropChance)
+    return math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / Difficulty.DIFFICULTY_MAX)), maxDropChance)
 end
 
 function Enemies:BuildDropTable(enemy, difficulty)
@@ -117,94 +117,24 @@ function Enemies:BuildDropTable(enemy, difficulty)
     local itemsPerDrop = 1
     local dropChanceFactor = Enemies.dropChanceFactor
     local itemsTable = {}
-    table.insert(itemsTable, Inventory.rarity.common, { tier = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100 })
-    if (difficulty > Enemies.DIFFICULTY1) then
+    local commonItems = Inventory:GetItemsByRarity(Inventory.rarity.common)
+    if(GetTableSize(commonItems) > 0) then
+        table.insert(itemsTable, Inventory.rarity.common, { items = Inventory:GetItemsByRarity(Inventory.rarity.common), chance = 100, itemsDifficulty = 1 })
+    end --[[if (difficulty > Difficulty.DIFFICULTY1) then
         table.insert(itemsTable, Inventory.rarity.uncommon, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uncommon), chance = 60 })
+        print("Insert un")
     end
-    if (difficulty > Enemies.DIFFICULTY1_5) then
+    if (difficulty > Difficulty.DIFFICULTY1_5) then
         table.insert(itemsTable, Inventory.rarity.rare, { tier = Inventory:GetItemsByRarity(Inventory.rarity.rare), chance = 25 })
         itemsTable[Inventory.rarity.uncommon].chance = 80
-    end
-    if (difficulty > Enemies.DIFFICULTY2) then
-        itemsTable[Inventory.rarity.rare].chance = 35
-    end
-    if (difficulty > Enemies.DIFFICULTY2_5) then
-        table.insert(itemsTable, Inventory.rarity.uniqueRare, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueRare), chance = 20 })
-    end
-    if (difficulty > Enemies.DIFFICULTY3) then
-        itemsTable[Inventory.rarity.uniqueRare].chance = 25
-    end
-    if (difficulty > Enemies.DIFFICULTY3_5) then
-        table.insert(itemsTable, Inventory.rarity.legendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.legendary), chance = 25 })
-    end
-    if (difficulty > Enemies.DIFFICULTY4) then
-        table.insert(itemsTable, Inventory.rarity.uniqueLegendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueLegendary), chance = 25 })
-    end
-    if (difficulty > Enemies.DIFFICULTY4_5) then
-        table.insert(itemsTable, Inventory.rarity.cursedLegendary, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedLegendary), chance = 35 })
-    end
-    if (difficulty > Enemies.DIFFICULTY5) then
-        table.insert(itemsTable, Inventory.rarity.ancient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.ancient), chance = 15 })
-    end
-    if (difficulty > Enemies.DIFFICULTY5_5) then
-        table.insert(itemsTable, Inventory.rarity.uniqueAncient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueAncient), chance = 10 })
-        table.insert(itemsTable, Inventory.rarity.cursedAncient, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedAncient), chance = 15 })
-        itemsTable[Inventory.rarity.common] = nil
-        itemsTable[Inventory.rarity.uncommon] = nil
-        itemsTable[Inventory.rarity.rare].chance = 100
-        dropChanceFactor = dropChanceFactor + 0.1
-    end
-    if (difficulty > Enemies.DIFFICULTY6) then
-        if (IsElite) then
-            itemsPerDrop = RandomInt(1, 2)
-        end
-    end
-    if (difficulty > Enemies.DIFFICULTY6_5) then
-        if (IsBoss) then
-            itemsPerDrop = 2
-        end
-    end
-    if (difficulty > Enemies.DIFFICULTY7) then
-        dropChanceFactor = dropChanceFactor + 0.2
-        if (IsBoss) then
-            dropChanceFactor = dropChanceFactor + 0.3
-        end
-    end
-    if (difficulty > Enemies.DIFFICULTY7_5) then
-        table.insert(itemsTable, Inventory.rarity.immortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.immortal), chance = 7 })
-    end
-    if (difficulty > Enemies.DIFFICULTY8) then
-        table.insert(itemsTable, Inventory.rarity.uniqueImmortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.uniqueImmortal), chance = 2 })
-    end
-    if (difficulty > Enemies.DIFFICULTY8_5) then
-        table.insert(itemsTable, Inventory.rarity.cursedImmortal, { tier = Inventory:GetItemsByRarity(Inventory.rarity.cursedImmortal), chance = 3 })
-    end
-    if (difficulty > Enemies.DIFFICULTY9) then
-        itemsTable[Inventory.rarity.rare] = nil
-        itemsTable[Inventory.rarity.uniqueRare] = nil
-        itemsTable[Inventory.rarity.legendary] = nil
-        itemsTable[Inventory.rarity.uniqueLegendary] = nil
-        itemsTable[Inventory.rarity.cursedLegendary] = nil
-        itemsTable[Inventory.rarity.ancient] = 100
-    end
-    if (difficulty > Enemies.DIFFICULTY9_5) then
-        itemsTable[Inventory.rarity.immortal].chance = itemsTable[Inventory.rarity.immortal].chance * 1.5
-        itemsTable[Inventory.rarity.uniqueImmortal].chance = itemsTable[Inventory.rarity.uniqueImmortal].chance * 1.5
-        itemsTable[Inventory.rarity.cursedImmortal].chance = itemsTable[Inventory.rarity.cursedImmortal].chance * 1.5
-    end
-    if (difficulty > Enemies.DIFFICULTY10) then
-        dropChanceFactor = dropChanceFactor + 0.25
-    end
-    for _, itemsTier in pairs(itemsTable) do
-        itemsTier.chance = math.min(itemsTier.chance * dropChanceFactor, 100)
-    end
-    for i = 1, itemsPerDrop do
+    end --]]
+    for _ = 1, itemsPerDrop do
         for rarity = #itemsTable, Inventory.rarity.common do
             if (GetTableSize(dropTable) >= itemsPerDrop) then
                 break
             end
             if (itemsTable[rarity] and RollPercentage(itemsTable[rarity].chance)) then
-                table.insert(dropTable, itemsTable[rarity].tier[math.random(1, #itemsTable[rarity].tier)])
+                table.insert(dropTable, { item = itemsTable[rarity].items[math.random(1, #itemsTable[rarity].items)], difficulty = itemsTable[rarity].itemsDifficulty})
             end
         end
     end
@@ -225,44 +155,10 @@ function Enemies:Init()
     Enemies.MAX_ABILITIES = 10
     Enemies.BOSS_ZONE_SIZE = 2500
     Enemies.data = LoadKeyValues("scripts/npc/npc_units_custom.txt")
-    Enemies.DIFFICULTY1 = 1
-    Enemies.DIFFICULTY1_5 = 1.5
-    Enemies.DIFFICULTY2 = 2
-    Enemies.DIFFICULTY2_5 = 2.5
-    Enemies.DIFFICULTY3 = 3
-    Enemies.DIFFICULTY3_5 = 3.5
-    Enemies.DIFFICULTY4 = 4
-    Enemies.DIFFICULTY4_5 = 4.5
-    Enemies.DIFFICULTY5 = 5
-    Enemies.DIFFICULTY5_5 = 5.5
-    Enemies.DIFFICULTY6 = 6
-    Enemies.DIFFICULTY6_5 = 6.5
-    Enemies.DIFFICULTY7 = 7
-    Enemies.DIFFICULTY7_5 = 7.5
-    Enemies.DIFFICULTY8 = 8
-    Enemies.DIFFICULTY8_5 = 8.5
-    Enemies.DIFFICULTY9 = 9
-    Enemies.DIFFICULTY9_5 = 9.5
-    Enemies.DIFFICULTY10 = 10
-    Enemies.DIFFICULTY10_5 = 10.5
-    Enemies.DIFFICULTY_MAX = 10.5
     Enemies.dropChanceFactor = 1
     Enemies:InitAbilites()
     Enemies:InitPanaromaEvents()
 end
-
---[[
-CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = "item_claymore_custom", hero = HeroList:GetHero(0):GetUnitName(), player_id = 0, stats = json.encode({
-    {
-        name = "attack_damage",
-        value = 4
-    },
-    {
-        name = "attack_speed",
-        value = 1
-    }
-})})
---]]
 
 function Enemies:GetItemDropProjectileIndexByRarity(rarity)
     if (rarity >= Inventory.rarity.immortal) then
@@ -283,14 +179,14 @@ function Enemies:GetItemDropProjectileIndexByRarity(rarity)
     return 0
 end
 
-function Enemies:LaunchItem(itemData)
+function Enemies:LaunchItem(itemData, difficultyWhereDropped)
     local pidx
     Timers:CreateTimer(itemData.delay, function()
         if (itemData.launched) then
             ParticleManager:DestroyParticle(pidx, false)
             ParticleManager:ReleaseParticleIndex(pidx)
-            local createdItem = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName)
-            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(createdItem.stats) })
+            local createdItem, createdItemEntity = Inventory:CreateItemOnGround(itemData.hero, itemData.landPosition, itemData.itemName, Inventory:GenerateStatsForItem(itemData.itemName, difficultyWhereDropped, itemData.difficulty))
+            CustomGameEventManager:Send_ServerToAllClients("rpg_enemy_item_dropped", { item = itemData.itemName, hero = itemData.hero:GetUnitName(), player_id = itemData.hero:GetPlayerOwnerID(), stats = json.encode(Inventory:GetItemEntityStats(createdItemEntity)) })
             EmitSoundOnLocationWithCaster(itemData.landPosition, "ui.trophy_new", itemData.hero)
         else
             itemData.landPosition = itemData.hero:GetAbsOrigin() + RandomVector(itemData.hero:GetPaddedCollisionRadius() + 50)
@@ -311,19 +207,22 @@ function Enemies:DropItems(enemy)
     end
     local difficulty = Difficulty:GetValue()
     local travelTime = 1.25
+    local delay = 0
     for _, hero in pairs(HeroList:GetAllHeroes()) do
-        local delay = 0
-        for _, item in pairs(Enemies:BuildDropTable(enemy, difficulty)) do
+        local dropTable = Enemies:BuildDropTable(enemy, difficulty)
+        for _, itemEntry in pairs(dropTable) do
             local itemData = {}
             itemData.hero = hero
-            itemData.itemName = item.name
-            itemData.itemRarity = item.rarity
+            itemData.itemName = itemEntry.item.name
+            itemData.itemRarity = itemEntry.item.rarity
             itemData.launchPosition = enemy:GetAbsOrigin()
             itemData.travelTime = travelTime
             itemData.delay = delay
-            Enemies:LaunchItem(itemData)
+            itemData.itemDifficulty = itemEntry.difficulty
+            Enemies:LaunchItem(itemData, difficulty)
             delay = delay + 0.5
         end
+        delay = 0
     end
 end
 
@@ -424,42 +323,6 @@ function Enemies:IsBoss(unit)
     return false
 end
 
-function Enemies:GetBossHealingPercentFor(unit)
-    if (not unit or unit:IsNull()) then
-        return 0
-    end
-    local modifier = unit:FindModifierByName("modifier_creep_scaling")
-    if (not modifier) then
-        return 0
-    end
-    local result = 0.1
-    local difficulty = Difficulty:GetValue()
-    if (difficulty > 4) then
-        result = 0.2
-    end
-    if (difficulty > 7) then
-        result = 0.3
-    end
-    return result
-end
-
-function Enemies:OnBossHealing(boss, hero)
-    if (not boss or boss:IsNull()) then
-        return
-    end
-    local healTable = {}
-    healTable.caster = boss
-    healTable.target = boss
-    healTable.ability = nil
-    healTable.heal = boss:GetMaxHealth() * Enemies:GetBossHealingPercentFor(boss)
-    GameMode:HealUnit(healTable)
-    local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, boss)
-    Timers:CreateTimer(2, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
-end
-
 function Enemies:OverwriteAbilityFunctions(ability)
     if (not ability or ability:IsNull()) then
         return
@@ -541,7 +404,7 @@ function modifier_creep_scaling:OnCreated()
         --pull boss back if they run too far 2500 range
         Timers:CreateTimer(5, function()
             self.spawn_pos = self.creep:GetAbsOrigin()
-            self:StartIntervalThink(2)
+            self:StartIntervalThink(1)
         end)
     else
         local eliteChance = math.floor(5 * (1 + (self.difficulty)))
@@ -601,7 +464,7 @@ function modifier_creep_scaling:OnCreated()
         Castbar:AddToUnit(self.creep)
     end
     self.damage = self.damage * math.pow(self.difficulty, 1 + 2 * (self.difficulty - 1) / 9) --x^(1 + 2 * (x-1)/9) more smooth than x^3 but same value at ml10
-    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Enemies.DIFFICULTY_MAX)), 150)
+    self.armor = math.min(self.armor + ((50 - self.armor) * (self.difficulty / Difficulty.DIFFICULTY_MAX)), 150)
     self.elementalArmor = math.min((self.armor * 0.06) / (1 + self.armor * 0.06), 0.9)
     self.baseHealth = (Enemies.data[self.name]["StatusHealth"] * self.difficulty * HeroList:GetHeroCount() * self.healthBonus) - Enemies.data[self.name]["StatusHealth"]
     Timers:CreateTimer(0, function()
@@ -620,12 +483,11 @@ function modifier_creep_scaling:OnIntervalThink()
     self.current_pos = self.creep:GetAbsOrigin()
     local displacement = self.spawn_pos - self.current_pos
     local distance = displacement:Length2D()
-    if distance > Enemies.BOSS_ZONE_SIZE then
+    if (distance > Enemies.BOSS_ZONE_SIZE) then
         local pidx = ParticleManager:CreateParticle("particles/units/boss/boss_teleport.vpcf", PATTACH_ABSORIGIN, self.creep)
-        Timers:CreateTimer(2, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
+        ParticleManager:SetParticleControl(pidx, 0, self.creep:GetAbsOrigin())
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
         FindClearSpaceForUnit(self.creep, self.spawn_pos, true)
         Aggro:Reset(self.creep)
         local healTable = {}
@@ -633,6 +495,15 @@ function modifier_creep_scaling:OnIntervalThink()
         healTable.target = self.creep
         healTable.ability = nil
         healTable.heal = self.creep:GetMaxHealth()
+        GameMode:HealUnit(healTable)
+    end
+    local aggroTarget = Aggro:GetUnitCurrentTarget(self.creep)
+    if (not aggroTarget) then
+        local healTable = {}
+        healTable.caster = self.creep
+        healTable.target = self.creep
+        healTable.ability = nil
+        healTable.heal = self.creep:GetMaxHealth() * 0.1
         GameMode:HealUnit(healTable)
     end
 end
@@ -916,7 +787,7 @@ function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
                 isModifierInteractWithBossZoneAbility = true
             end
         end
-        if (isModifierInteractWithBossZoneAbility == true) then
+        if (isModifierInteractWithBossZoneAbility == true and modifierTable.duration >= bossZoneAbility.minDurationForDebuffRes) then
             local modifier = {}
             modifier.ability = bossZoneAbility
             modifier.caster = modifierTable.target
@@ -1001,6 +872,7 @@ function enemies_boss_skill:OnUpgrade()
     self.spellhastePerStack = self:GetSpecialValueFor("castspeed")
     self.debuffResPerStack = self:GetSpecialValueFor("status_res") / 100
     self.debuffResDuration = self:GetSpecialValueFor("duration")
+    self.minDurationForDebuffRes = self:GetSpecialValueFor("min_duration_for_status_res")
 end
 
 -- Internal stuff
@@ -1010,7 +882,7 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
     local unit = EntIndexToHScript(keys.entindex)
     local IsLegitUnit = unit:IsCreature() and not (unit:GetUnitName() == "npc_dota_thinker")
-    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() ~= DOTA_TEAM_GOODGUYS) then
+    if (not unit:HasModifier("modifier_creep_scaling") and not Summons:IsSummmon(unit) and IsLegitUnit and unit:GetTeam() == DOTA_TEAM_BADGUYS) then
         unit:AddNewModifier(unit, nil, "modifier_creep_scaling", { Duration = -1 })
     end
 end, nil)

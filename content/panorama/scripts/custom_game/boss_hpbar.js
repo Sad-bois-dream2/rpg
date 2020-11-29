@@ -77,9 +77,15 @@ function OnMPBarClick() {
 	}
 }
 
+var lastBossName = "";
+
 function RenderBossModel(bossName) {
+    if(bossName == lastBossName) {
+        return;
+    }
     bossImage.RemoveAndDeleteChildren()
-    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='enemies' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "'/>");
+    bossImage.BCreateChildren("<DOTAScenePanel id='BossPortraitScenePanel' antialias='true' renderdeferred='false' class='OverviewHeroRender' map='portraits/" + bossName + "' particleonly='false' light='" + bossName +"_light' camera='" + bossName + "'/>");
+    lastBossName = bossName;
 }
 
 function UpdateSelection() {
@@ -395,6 +401,7 @@ function OnUpdateStatsRequest(event) {
 function ClosePanel() {
     latestSelectedCreep = null
     bossPanel.style.visibility = "collapse";
+    Game.EmitSound("General.SelectAction");
 }
 
 var bossZoneAbilityLevel = 1;

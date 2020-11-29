@@ -1,0 +1,30 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/tooltips/custom/tooltip_item.css"/>
+        <include src="file://{resources}/styles/windows/droplist_window.css"/>
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/windows/droplist_item.js"/>
+    </scripts>
+    <Panel class="DropItemContainer" onmouseactivate="OnClick()" hittest="true" hittestchilldren="false"
+           onmouseover="ShowItemTooltip()"
+           onmouseout="HideItemTooltip()">
+        <Panel class="ItemTooltipImageContainer">
+            <DOTAItemImage id="DropItemIcon" hittest="true" class="DropItemIcon" showtooltip="false"
+                           itemname="item_two_handed_sword" scaling="stretch-to-fit-preserve-aspect"/>
+            <Panel id="ItemTooltipImageBorder" hittest="true" hittestchilldren="false"/>
+        </Panel>
+        <Panel class="RightSide">
+            <Label id="ItemNameLabel" class="ItemTooltipNameLabel" html="true" text="Item Name"/>
+            <Panel class="ItemInfoContainer">
+                <Label id="ItemRarityLabel" class="ItemTooltipRarityLabel" html="true" text="Item Rarity"/>
+                <Label id="ItemTypeLabel" class="ItemTooltipTypeLabel" html="true" text="Item Type"/>
+            </Panel>
+            <Panel class="ItemOwnerContainer">
+                <Label id="ItemOwnerLabel" html="true" text="Player Name"/>
+                <DOTAHeroImage id="ItemOwnerIcon" heroname="npc_dota_hero_crystal_maiden"
+                               heroimagestyle="icon" scaling="stretch-to-fit-preserve-aspect"/>
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

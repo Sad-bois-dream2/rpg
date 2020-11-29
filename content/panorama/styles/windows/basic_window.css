@@ -7,8 +7,9 @@
 {
 	horizontal-align: center;
 	vertical-align: center;
-	border: 1px solid gray;
-	border-radius: 10px;
+    border: 1px solid #ffffff03;
+    border-bottom: 1px solid #ffffff01;
+    box-shadow: 0px 0px 16px #000000aa;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
@@ -36,21 +37,34 @@
 	background-size: 100% 100%;
 }
 
-.WindowCloseIcon {
-	width: 32px;
-	height: 32px;
-	border-radius: 100%;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
+.WindowCloseIcon
+{
+	horizontal-align: right;
+	min-width: 0px;
+	border: 0px;
+	background-color: none;
+	background-image: url("s2r://panorama/images/control_icons/x_close_grey_psd.vtex");
+	background-size: 20px 20px;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
-	background-size: 100% 100%;
-	horizontal-align: right;
-	vertical-align: top;
-	margin-top: 10px;
-	margin-right: 10px;
+	width: 20px;
+	height: 20px;
+	margin-right: 8px;
+	opacity: .2;
+	transition-property: opacity;
+	transition-duration: .2s;
+    margin-right: 4px;
+    margin-top: 2px;
 }
-.WindowCloseIcon:hover {
-	opacity: 0.5;
+
+.WindowCloseIcon:hover
+{
+	opacity: 1;
+}
+
+.WindowCloseIcon Label
+{
+	visibility: collapse;
 }
 
 .WindowTextBig
@@ -68,7 +82,7 @@
 	font-size: 16px;
 	letter-spacing: 1px;
 	color: white;
-	font-family: platformfont;
+	font-family: defaultFont;
 }
 
 .WindowName
@@ -95,8 +109,8 @@
 	width: fit-children;
 	height: fit-children;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 	vertical-align: center;
 	margin-right: 10px;
 	padding-right: 10px;
@@ -113,8 +127,13 @@
 }
 
 .WindowButton:hover {
-	opacity: 0.5;
+	border: 1px solid #ffffff2f;
 }
+
+.WindowButton:hover Label {
+    opacity: 0.3;
+}
+
 .WindowTextBox
 {
     flow-children: right;
@@ -137,8 +156,8 @@
 	width: fill-parent-flow(1.0);
 	height: fit-children;
 	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 	vertical-align: center;
 	margin-right: 10px;
 	padding-right: 10px;

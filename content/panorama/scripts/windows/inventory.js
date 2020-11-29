@@ -2,52 +2,15 @@
 var INVENTORY_SLOTS_PER_ROW = 14;
 var INVENTORY_SLOT_ROWS = 7;
 var INVENTORY_SLOTS_COUNT = INVENTORY_SLOTS_PER_ROW * INVENTORY_SLOT_ROWS;
+var INVENTORY_SLOT_LAST = 11;
 var inventorySlots = [];
 var inventoryEquippedSlots = [];
-var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2;
+var SLOT_PANEL = 0, SLOT_ITEM_IMAGE = 1, SLOT_ITEM_STATS = 2, SLOT_ITEM_BORDER = 3;
 var ELEMENTS_DEFENSIVE = "D", ELEMENTS_OFFENSIVE = "O";
 var defensiveElePanels = [], offensiveElePanels = [];
 var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
 var pagePanels = [], pageButtons = [];
-var tooltip = [];
-var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME_LABEL = 2, TOOLTIP_RARITY_LABEL = 3, TOOLTIP_TYPE_LABEL = 4, TOOLTIP_DESCRIPTION_LABEL = 5, TOOLTIP_QUALITY_LABEL = 6, TOOLTIP_STATS_CONTAINER = 7;
-var initialStatsLabelsInTooltip = 10;
-var statsLabels = [], statsLabelsForCompareWindowPanel1 = [], statsLabelsForCompareWindowPanel2 = [];
-var compareWindow = [];
-var COMPARE_PANEL = 0, COMPARE_PANEL1_IMAGE = 1, COMPARE_PANEL1_NAME_LABEL = 2, COMPARE_PANEL1_RARITY_LABEL = 3, COMPARE_PANEL1_TYPE_LABEL = 4, COMPARE_PANEL1_DESCRIPTION_LABEL = 5,
-COMPARE_PANEL2_IMAGE = 6, COMPARE_PANEL2_NAME_LABEL = 7, COMPARE_PANEL2_RARITY_LABEL = 8, COMPARE_PANEL2_TYPE_LABEL = 9, COMPARE_PANEL2_DESCRIPTION_LABEL = 10,
-COMPARE_PANEL1_QUALITY_LABEL = 11, COMPARE_PANEL1_STATS_CONTAINER = 12, COMPARE_PANEL2_QUALITY_LABEL = 13, COMPARE_PANEL2_STATS_CONTAINER = 14;
-var inventoryItemsData = [], currentHero = -1;
-var dropContainer;
-// adding slots here require change GetInventoryItemSlotName()
-var INVENTORY_SLOT_MAINHAND = 0
-var INVENTORY_SLOT_BODY = 1
-var INVENTORY_SLOT_LEGS = 2
-var INVENTORY_SLOT_BOOTS = 3
-var INVENTORY_SLOT_HELMET = 4
-var INVENTORY_SLOT_OFFHAND = 5
-var INVENTORY_SLOT_CAPE = 6
-var INVENTORY_SLOT_SHOULDER = 7
-var INVENTORY_SLOT_GLOVES = 8
-var INVENTORY_SLOT_RING = 9
-var INVENTORY_SLOT_BELT = 10
-var INVENTORY_SLOT_AMULET = 11
-var INVENTORY_SLOT_LAST = 11
-// adding rarity here require change GetInventoryItemRarityName()
-var INVENTORY_ITEM_RARITY_COMMON = 0;
-var INVENTORY_ITEM_RARITY_UNCOMMON = 1;
-var INVENTORY_ITEM_RARITY_RARE = 2;
-var INVENTORY_ITEM_RARITY_UNIQUE_RARE = 3;
-var INVENTORY_ITEM_RARITY_LEGENDARY = 4;
-var INVENTORY_ITEM_RARITY_UNIQUE_LEGENDARY = 5;
-var INVENTORY_ITEM_RARITY_CURSED_LEGENDARY = 6;
-var INVENTORY_ITEM_RARITY_ANCIENT = 7;
-var INVENTORY_ITEM_RARITY_UNIQUE_ANCIENT = 8;
-var INVENTORY_ITEM_RARITY_CURSED_ANCIENT = 9;
-var INVENTORY_ITEM_RARITY_IMMORTAL = 10;
-var INVENTORY_ITEM_RARITY_UNIQUE_IMMORTAL = 11;
-var INVENTORY_ITEM_RARITY_CURSED_IMMORTAL = 12;
-
+var currentHero = -1;
 var ELEMENTS = [
 	["Fire", "file://{images}/custom_game/hud/fire_element.png"],
 	["Frost", "file://{images}/custom_game/hud/frost_element.png"],
@@ -58,95 +21,9 @@ var ELEMENTS = [
 	["Holy", "file://{images}/custom_game/hud/holy_element.png"]
 ];
 
-function GetInventoryItemRarityName(rarity) {
-	switch(rarity) {
-        case INVENTORY_ITEM_RARITY_COMMON:
-			return "#DOTA_Inventory_rarity_common";
-			break;
-        case INVENTORY_ITEM_RARITY_UNCOMMON:
-			return "#DOTA_Inventory_rarity_uncommon";
-			break;
-        case INVENTORY_ITEM_RARITY_RARE:
-			return "#DOTA_Inventory_rarity_rare";
-			break;
-        case INVENTORY_ITEM_RARITY_UNIQUE_RARE:
-			return "#DOTA_Inventory_rarity_unique_rare";
-			break;
-        case INVENTORY_ITEM_RARITY_LEGENDARY:
-			return "#DOTA_Inventory_rarity_legendary";
-			break;
-        case INVENTORY_ITEM_RARITY_UNIQUE_LEGENDARY:
-			return "#DOTA_Inventory_rarity_unique_legendary";
-			break;
-        case INVENTORY_ITEM_RARITY_CURSED_LEGENDARY:
-			return "#DOTA_Inventory_rarity_cursed_legendary";
-			break;
-        case INVENTORY_ITEM_RARITY_ANCIENT:
-			return "#DOTA_Inventory_rarity_ancient";
-			break;
-        case INVENTORY_ITEM_RARITY_UNIQUE_ANCIENT:
-			return "#DOTA_Inventory_rarity_unique_ancient";
-			break;
-        case INVENTORY_ITEM_RARITY_CURSED_ANCIENT:
-			return "#DOTA_Inventory_rarity_cursed_ancient";
-			break;
-        case INVENTORY_ITEM_RARITY_IMMORTAL:
-			return "#DOTA_Inventory_rarity_immortal";
-			break;
-        case INVENTORY_ITEM_RARITY_UNIQUE_IMMORTAL:
-			return "#DOTA_Inventory_unique_immortal";
-			break;
-        case INVENTORY_ITEM_RARITY_CURSED_IMMORTAL:
-			return "#DOTA_Inventory_cursed_immortal";
-			break;
-		default:
-			return "Unknown";
-	}
-
-}
-
-function GetInventoryItemSlotName(slot) {
-	switch(slot) {
-		case INVENTORY_SLOT_MAINHAND:
-			return "#DOTA_Inventory_slot_mainhand";
-			break;
-		case INVENTORY_SLOT_BODY:
-			return "#DOTA_Inventory_slot_body";
-			break;
-		case INVENTORY_SLOT_LEGS:
-			return "#DOTA_Inventory_slot_legs";
-			break;
-		case INVENTORY_SLOT_BOOTS:
-			return "#DOTA_Inventory_slot_boots";
-			break;
-		case INVENTORY_SLOT_HELMET:
-			return "#DOTA_Inventory_slot_helmet";
-			break;
-		case INVENTORY_SLOT_OFFHAND:
-			return "#DOTA_Inventory_slot_offhand";
-			break;
-		case INVENTORY_SLOT_CAPE:
-			return "#DOTA_Inventory_slot_cape";
-			break;
-		case INVENTORY_SLOT_SHOULDER:
-			return "#DOTA_Inventory_slot_shoulder";
-			break;
-		case INVENTORY_SLOT_GLOVES:
-			return "#DOTA_Inventory_slot_gloves";
-			break;
-		case INVENTORY_SLOT_RING:
-			return "#DOTA_Inventory_slot_ring";
-			break;
-		case INVENTORY_SLOT_BELT:
-			return "#DOTA_Inventory_slot_belt";
-			break;
-		case INVENTORY_SLOT_AMULET:
-			return "#DOTA_Inventory_slot_amulet";
-			break;
-		default:
-			return "Unknown";
-	}
-}
+var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
+var ItemsDatabase = GameUI.CustomUIConfig().ItemsDatabase;
+var PlayerInventory = GameUI.CustomUIConfig().PlayerInventory;
 
 function SetupDragAndDropForInventoryEquippedSlots() {
 	for(var i = 0; i < inventoryEquippedSlots.length; i++) {
@@ -160,14 +37,17 @@ function OnInventoryEquippedSlotDragStart( panelId, dragCallbacks ) {
 	if(inventoryEquippedSlots[slotId][SLOT_PANEL].BHasClass("empty")) {
 		return true;
 	}
+	HideItemTooltip();
     var displayPanel = $.CreatePanel( "DOTAItemImage", $.GetContextPanel(), "");
 	displayPanel.SetHasClass("InventorySlot", true);
 	displayPanel.style.width = inventorySlots[0][SLOT_PANEL].actuallayoutwidth + "px";
-	HideItemTooltip();
 	displayPanel.itemname = inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname;
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
     dragCallbacks.offsetY = 0;
+	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
+    displayPanel.style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.SetHasClass("InventorySlotDragged", true);
 } 
 
 function OnInventoryEquippedSlotDragEnd( panelId, draggedPanel ) {
@@ -205,10 +85,13 @@ function OnInventorySlotDragStart( panelId, dragCallbacks ) {
     dragCallbacks.displayPanel = displayPanel;
     dragCallbacks.offsetX = 0; 
     dragCallbacks.offsetY = 0;
-    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
+    var desiredInventorySlot = ItemsDatabase.GetItemSlot(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
     if(desiredInventorySlot > -1) {
         inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", true);
     }
+	var itemRarity = ItemsDatabase.GetItemRarity(displayPanel.itemname);
+    displayPanel.style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+    displayPanel.SetHasClass("InventorySlotDragged", true);
 } 
 
 function OnInventorySlotDragEnd( panelId, draggedPanel ) {
@@ -233,7 +116,7 @@ function OnInventorySlotDragEnd( panelId, draggedPanel ) {
 			GameEvents.SendCustomGameEventToServer("rpg_inventory_drop_item_on_ground", {"data" : jsonEncodedData});
 		}
 	}
-    var desiredInventorySlot = GetInventoryItemSlot(inventorySlots[slotFromId][SLOT_ITEM_IMAGE].itemname);
+    var desiredInventorySlot = ItemsDatabase.GetItemSlot(inventorySlots[slotFromId][SLOT_ITEM_IMAGE].itemname);
     if(desiredInventorySlot > -1) {
         inventoryEquippedSlots[desiredInventorySlot][SLOT_PANEL].SetHasClass("Drag", false);
     }
@@ -256,7 +139,7 @@ function OnRightClickOnInventoryEquippedSlot(slotId) {
 function OnRightClickOnInventorySlot(slotId) {
 	var item = inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname;
 	if(item != "") {
-		var slotInId = GetInventoryItemSlot(item);
+		var slotInId = ItemsDatabase.GetItemSlot(item);
 		GameEvents.SendCustomGameEventToServer("rpg_inventory_start_item_replace_dialog", { "player_id" : Players.GetLocalPlayer(), "fromslot" : slotId, "inslot" : slotInId, "item": item});
 	} 
 }
@@ -363,6 +246,9 @@ function OnHeroStatsUpdateRequest(event) {
 		var debuffResistance = parsedData.statsTable.debuffResistance;
 		var criticalDamage = parsedData.statsTable.critDamage;
 		var criticalChance = parsedData.statsTable.critChance;
+		var aggroCaused = parsedData.statsTable.aggroCaused;
+		var healingCausedPercent = parsedData.statsTable.healingCausedPercent;
+		var healingReceivedPercent = parsedData.statsTable.healingReceivedPercent;
 		var elementsProtection = [
 		Math.round((1 - parsedData.statsTable.elementsProtection.fire) * 100),
 		Math.round((1 - parsedData.statsTable.elementsProtection.frost) * 100),
@@ -389,8 +275,7 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#AgilityLabel").text = agi;
 		$("#IntelligenceLabel").text = int;
 		$("#SpellDamageLabel").text = Math.round((spellDamage-1) * 100) + "%";
-		spellHaste = (spellHaste) * 100;
-		$("#SpellhasteLabel").text = Math.round(spellHaste);
+		$("#SpellHasteLabel").text = spellHaste;
 		var physProtection = 0;
 		if(armor >= 0){
 		    physProtection = ((armor * 0.06) / (1 + armor * 0.06));
@@ -399,43 +284,59 @@ function OnHeroStatsUpdateRequest(event) {
 		}
 		physProtection = Math.round(physProtection * 100);
 		$("#PhysArmorLabel").text = armor + " (" + physProtection + "%)";
-		$("#PhysBlockLabel").text = block;
-		$("#MagicBlockLabel").text = magicBlock;
 		var attackDelay = (currentHero > -1 ? Entities.GetSecondsPerAttack(currentHero) : "0");
 		attackDelay = Math.round(attackDelay * 100) / 100;
 		$("#AttackSpeedLabel").text = attackSpeed + " (" + attackDelay + ")";
 		damageReduction = 1 - damageReduction;
 		$("#DamageReductionLabel").text = Math.round(damageReduction * 100) + "%";
 		cooldownReduction = 1 - cooldownReduction;
-		if(cooldownReduction>=0.5){
-        		cooldownReduction=0.5;
-        }
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
-		debuffAmplification = debuffAmplification;
-		$("#DebuffAmplificationLabel").text = (Math.round(debuffAmplification * 10000) / 100) + "%";
-		debuffResistance = 1 - debuffResistance;
-		$("#DebuffResistanceLabel").text = (Math.round(debuffResistance * 10000) / 100) + "%";
-		buffAmplification = buffAmplification;
+		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification - 1) * 10000) / 100) + "%";
+		$("#DebuffResistanceLabel").text = (Math.round((1 -debuffResistance) * 10000) / 100) + "%";
+		buffAmplification = buffAmplification - 1;
 		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
 		$("#CriticalChanceLabel").text = (Math.round(criticalChance * 10000) / 100) + "%";
+		$("#AggroCausedLabel").text = (Math.round((aggroCaused - 1) * 10000) / 100) + "%";
+		$("#HealingReceivedLabel").text = (Math.round((healingReceivedPercent - 1) * 10000) / 100) + "%";
+		$("#HealingCausedLabel").text = (Math.round((healingCausedPercent - 1) * 10000) / 100) + "%";
     }
 }
 
-function UpdateHeroModelAndIcon() {
-    var heroModelContainer = $("#HeroModelContainer");
-	var heroName = Entities.GetUnitName(currentHero);
-	$("#HeroIcon").heroname = heroName;
-	heroModelContainer.BCreateChildren('<DOTAScenePanel renderdeferred="false" class="HeroModel OverviewHeroRender" unit="' + heroName + '" drawbackground="1" allowrotation="true" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>');
-	heroModelContainer.GetChild(0).style.visibility = "visible";
+function OnHeroesTableData(event) {
+    var parsedData = JSON.parse(event.heroes);
+    UpdateHeroModelAndIcon(parsedData);
+}
+
+
+function UpdateHeroModelAndIcon(data) {
+    if(currentHero > -1) {
+        var heroModelContainer = $("#HeroModelContainer");
+        var heroName = Entities.GetUnitName(currentHero);
+        var heroIndex = -1;
+        for(var i = 0; i < data.length; i++) {
+            if(data[i].Name == heroName) {
+                heroIndex = data[i].HeroIndex;
+            }
+        }
+        $("#HeroIcon").heroname = heroName;
+        heroModelContainer.BCreateChildren('<DOTAScenePanel renderdeferred="false" class="HeroModel OverviewHeroRender" unit="' + heroName + '" drawbackground="1" allowrotation="true" antialias="false" activity-modifier="PostGameIdle" particleonly="false"/>');
+        var scenePanel = heroModelContainer.GetChild(0);
+        scenePanel.style.visibility = "visible";
+        scenePanel.SetScenePanelToLocalHero(heroIndex);
+	} else {
+        $.Schedule(1, function() {
+            UpdateHeroModelAndIcon(data);
+        });
+	}
 }
 
 var dataRequestSended = false;
 
 function UpdateValues() {
-	if(inventoryItemsData.length == 0 && !dataRequestSended) {
+	if(!dataRequestSended) {
 		GameEvents.SendCustomGameEventToServer("rpg_inventory_require_items_and_rest_data", {"player_id" : Players.GetLocalPlayer()});
 		dataRequestSended = true;
 	}
@@ -491,290 +392,27 @@ function OnSwitchPageButtonClick(page) {
 	pageButtons[0].SetHasClass("is_pressed", IsPage0);
 	pageButtons[1].SetHasClass("is_pressed", IsPage1);
 	pageButtons[2].SetHasClass("is_pressed", IsPage2);
-}
-
-function HideItemTooltip(slotId) {
-	tooltip[TOOLTIP_PANEL].style.visibility = "collapse";
-}
-
-function OnStartItemReplaceDialogRequest(event) {
-	compareWindow[COMPARE_PANEL].Data().slotInQuestion = event.slot;
-	compareWindow[COMPARE_PANEL].style.visibility = "visible";	
-	var itemIcon = inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname;
-	var itemName = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname);
-	var itemDesiredSlot = GetInventoryItemSlot(inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname);
-	var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname));
-	var itemType = GetInventoryItemSlotName(itemDesiredSlot);
-	var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname + "_Description");
-	var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname, inventorySlots[event.slot][SLOT_ITEM_STATS]));
-	var itemStatsCount = inventorySlots[event.slot][SLOT_ITEM_STATS].length;
-	var missedLabels = itemStatsCount - compareWindow[COMPARE_PANEL1_STATS_CONTAINER].GetChildCount();
-	if(missedLabels > 0) {
-	    for(var i = 0; i < missedLabels; i++) {
-	        var statsLabel = $.CreatePanel("Label", compareWindow[COMPARE_PANEL1_STATS_CONTAINER], "");
-            statsLabelsForCompareWindowPanel1.html = true;
-            statsLabelsForCompareWindowPanel1.style.visibility = "collapse";
-            statsLabelsForCompareWindowPanel1.push(statsLabel);
-	    }
-	}
-	ModifyItemComparePanel(1, itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, inventorySlots[event.slot]);
-	itemIcon = inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname;
-	itemName = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname);
-	itemDesiredSlot = GetInventoryItemSlot(inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname);
-	itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname));
-	itemType = GetInventoryItemSlotName(itemDesiredSlot);
-	itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname + "_Description");
-	itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_IMAGE].itemname, inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_STATS]));
-	itemStatsCount = inventoryEquippedSlots[itemDesiredSlot][SLOT_ITEM_STATS].length;
-	missedLabels = itemStatsCount - compareWindow[COMPARE_PANEL2_STATS_CONTAINER].GetChildCount();
-	if(missedLabels > 0) {
-	    for(var i = 0; i < missedLabels; i++) {
-	        var statsLabel = $.CreatePanel("Label", compareWindow[COMPARE_PANEL2_STATS_CONTAINER], "");
-            statsLabelsForCompareWindowPanel2.html = true;
-            statsLabelsForCompareWindowPanel2.style.visibility = "collapse";
-            statsLabelsForCompareWindowPanel2.push(statsLabel);
-	    }
-	}
-	ModifyItemComparePanel(2, itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, inventoryEquippedSlots[itemDesiredSlot]);
-}
-
-function ModifyItemComparePanel(panelId, icon, name, rarity, type, description, quality, slot) {
-	if(panelId === 1) {
-		compareWindow[COMPARE_PANEL1_IMAGE].itemname = icon;
-		compareWindow[COMPARE_PANEL1_NAME_LABEL].text = name;
-		compareWindow[COMPARE_PANEL1_RARITY_LABEL].text = rarity;
-		compareWindow[COMPARE_PANEL1_TYPE_LABEL].text = type;
-		compareWindow[COMPARE_PANEL1_DESCRIPTION_LABEL].text = description;
-		if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
-            compareWindow[COMPARE_PANEL1_DESCRIPTION_LABEL].style.visibility = "collapse";
-        } else {
-            compareWindow[COMPARE_PANEL1_DESCRIPTION_LABEL].style.visibility = "visible";
-        }
-		compareWindow[COMPARE_PANEL1_QUALITY_LABEL].text = quality;
-		var latestStatId = 0;
-		for(var i = 0; i < slot[SLOT_ITEM_STATS].length; i++) {
-		    var statName = $.Localize("#DOTA_Tooltip_Ability_"+slot[SLOT_ITEM_IMAGE].itemname+"_"+slot[SLOT_ITEM_STATS][i].name);
-		    var statValue = slot[SLOT_ITEM_STATS][i].value;
-		    var preSymbol = "";
-		    if(statValue < 0) {
-		        preSymbol = "-";
-		    }
-		    var IsPercent = (statName.charAt(0) == "%");
-            if(IsPercent) {
-                statName = statName.slice(1, statName.length);
-                statValue *= 100;
-                statValue += "%";
-            }
-		    statsLabelsForCompareWindowPanel1[i].text = statName + preSymbol + statValue;
-		    statsLabelsForCompareWindowPanel1[i].style.visibility = "visible";
-		    latestStatId++;
-		}
-		for(var i = latestStatId; i < compareWindow[COMPARE_PANEL1_STATS_CONTAINER].GetChildCount(); i++) {
-		    statsLabelsForCompareWindowPanel1[i].style.visibility = "collapse";
-		}
-	}
-	if(panelId == 2) {
-		compareWindow[COMPARE_PANEL2_IMAGE].itemname = icon;
-		compareWindow[COMPARE_PANEL2_NAME_LABEL].text = name;
-		compareWindow[COMPARE_PANEL2_RARITY_LABEL].text = rarity;
-		compareWindow[COMPARE_PANEL2_TYPE_LABEL].text = type;
-		compareWindow[COMPARE_PANEL2_DESCRIPTION_LABEL].text = description;
-		if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
-            compareWindow[COMPARE_PANEL2_DESCRIPTION_LABEL].style.visibility = "collapse";
-        } else {
-            compareWindow[COMPARE_PANEL2_DESCRIPTION_LABEL].style.visibility = "visible";
-        }
-		compareWindow[COMPARE_PANEL2_QUALITY_LABEL].text = quality;
-		var latestStatId = 0;
-		for(var i = 0; i < slot[SLOT_ITEM_STATS].length; i++) {
-		    var statName = $.Localize("#DOTA_Tooltip_Ability_"+slot[SLOT_ITEM_IMAGE].itemname+"_"+slot[SLOT_ITEM_STATS][i].name);
-		    var statValue = slot[SLOT_ITEM_STATS][i].value;
-		    var preSymbol = "";
-		    if(statValue < 0) {
-		        preSymbol = "-";
-		    }
-		    var IsPercent = (statName.charAt(0) == "%");
-            if(IsPercent) {
-                statName = statName.slice(1, statName.length);
-                statValue *= 100;
-                statValue += "%";
-            }
-		    statsLabelsForCompareWindowPanel2[i].text = statName + preSymbol + statValue;
-		    statsLabelsForCompareWindowPanel2[i].style.visibility = "visible";
-		    latestStatId++;
-		}
-		for(var i = latestStatId; i < compareWindow[COMPARE_PANEL2_STATS_CONTAINER].GetChildCount(); i++) {
-		    statsLabelsForCompareWindowPanel2[i].style.visibility = "collapse";
-		}
-	}
-}
-
-function OnInventoryChangeEquippedItemClicked() {
-	var slot = compareWindow[COMPARE_PANEL].Data().slotInQuestion;
-	GameEvents.SendCustomGameEventToServer("rpg_inventory_equip_item", { "player_id" : Players.GetLocalPlayer(), "slot" : slot, "item": inventorySlots[slot][SLOT_ITEM_IMAGE].itemname});
-	compareWindow[COMPARE_PANEL].style.visibility = "collapse";	
-}
-
-function OnInventoryKeepBothClicked() {
-	compareWindow[COMPARE_PANEL].style.visibility = "collapse";	
-}
-
-function ShowEquippedItemTooltip(slotId) {
-	var position = GameUI.GetCursorPosition();
-	if(!inventoryEquippedSlots[slotId][SLOT_PANEL].BHasClass("empty")) {
-		var itemIcon = inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname;
-		var itemName = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname);
-		var itemDesiredSlot = GetInventoryItemSlot(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname);
-		var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname));
-		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
-		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
-		var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname, inventoryEquippedSlots[slotId][SLOT_ITEM_STATS]));
-		var itemStatsCount = inventoryEquippedSlots[slotId][SLOT_ITEM_STATS].length;
-		var missedLabels = itemStatsCount - tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount();
-		if(missedLabels > 0) {
-		    for(var i = 0; i < missedLabels; i++) {
-		        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-                statsLabel.html = true;
-                statsLabel.style.visibility = "collapse";
-                statsLabels.push(statsLabel);
-		    }
-		}
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, inventoryEquippedSlots[slotId][SLOT_ITEM_STATS], position[0], position[1]);
-	}
-}
-
-function ShowItemDropTooltip(name, stats) {
-	var position = GameUI.GetCursorPosition();
-	var itemIcon = name;
-	var itemName = $.Localize("#DOTA_Tooltip_Ability_"+name);
-	var itemDesiredSlot = GetInventoryItemSlot(name);
-	var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(name));
-	var itemType = GetInventoryItemSlotName(itemDesiredSlot);
-	var itemDescription = $.Localize("#DOTA_Tooltip_Ability_" + name + "_Description");
-	var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(name, stats));
-	var itemStatsCount = stats.length;
-	var missedLabels = itemStatsCount - tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount();
-	if(missedLabels > 0) {
-	    for(var i = 0; i < missedLabels; i++) {
-	        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-            statsLabel.html = true;
-            statsLabel.style.visibility = "collapse";
-            statsLabels.push(statsLabel);
-	    }
-	}
-	CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, stats, position[0], position[1]);
-}
-
-function GetMinMaxValueForItemStat(itemName, itemStat) {
-    var result = [];
-    for(var i = 0; i < inventoryItemsData.length; i++) {
-        if(inventoryItemsData[i].item == itemName && inventoryItemsData[i].stats[itemStat] != null) {
-            result[0] = inventoryItemsData[i].stats[itemStat].min;
-            result[1] = inventoryItemsData[i].stats[itemStat].max;
-            break;
-        }
-    }
-    return result
-}
-
-function CalculateItemStatRoll(value, min, max, itemName, itemStat) {
-	if(min == max) {
-		return 1;
-	}
-    if(min < 0 && max >= 0) {
-        return 1 - (value / min); // save roll = value / min, save load = save roll * min
-    }
-    if(min >= 0 && max > 0) {
-        return (value - min) / (max - min); // save roll = value / max, save load = save roll * max
-    }
-    if(min < 0 && max < 0) {
-        return 1 - ((value-max)/(min-max)); // save roll = value / max, save load = save roll * max
-    }
-    $.Msg("[INVENTORY] Unable to calculate roll value for " + itemName + " and stat " + itemStats[i].name + ". Used 0 to fix that. Value = " + value + ", min = " + min + ", max = " + max);
-    return 0;
-}
-
-function CalculateQualityOfItem(itemName, itemStats) {
-    var totalQuality = itemStats.length;
-    var currentQuality = 0;
-    for(var i = 0; i < itemStats.length; i++) {
-        var minMaxValues = GetMinMaxValueForItemStat(itemName, itemStats[i].name);
-        if(minMaxValues.length > 0) {
-            currentQuality += CalculateItemStatRoll(itemStats[i].value, minMaxValues[0], minMaxValues[1], itemName, itemStats[i].name);
-        } else {
-            totalQuality = totalQuality - 1;
-            $.Msg("[INVENTORY] There are error receiving min & max values for " + itemName + " and stat " + itemStats[i].name + ". Ignoring.");
-        }
-    }
-    if(totalQuality > 0) {
-        totalQuality = currentQuality / totalQuality;
-    } else {
-        totalQuality = 1;
-    }
-    return Math.round(totalQuality * 10000) / 100;
+    Game.EmitSound("General.SelectAction");
 }
 
 function ShowItemTooltip(slotId) {
-	var position = GameUI.GetCursorPosition();
-	if(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname !== "") {
-		var itemIcon = inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname;
-		var itemName = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
-		var itemDesiredSlot = GetInventoryItemSlot(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname);
-		var itemRarity = GetInventoryItemRarityName(GetInventoryItemRarity(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname));
-		var itemType = GetInventoryItemSlotName(itemDesiredSlot);
-		var itemDescription = $.Localize("#DOTA_Tooltip_Ability_"+inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname + "_Description");
-		var itemQuality = $.Localize("#DOTA_Inventory_quality").replace("%VALUE%", CalculateQualityOfItem(inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname, inventorySlots[slotId][SLOT_ITEM_STATS]));
-		var itemStatsCount = inventorySlots[slotId][SLOT_ITEM_STATS].length;
-		var missedLabels = itemStatsCount - tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount();
-		if(missedLabels > 0) {
-		    for(var i = 0; i < missedLabels; i++) {
-		        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-                statsLabel.html = true;
-                statsLabel.style.visibility = "collapse";
-                statsLabels.push(statsLabel);
-		    }
-		}
-		CreateItemTooltip(itemIcon, itemName, itemRarity, itemType, itemDescription, itemQuality, inventorySlots[slotId][SLOT_ITEM_STATS], position[0], position[1]);
+	var itemName = inventorySlots[slotId][SLOT_ITEM_IMAGE].itemname;
+	if(itemName !== "") {
+		var itemStats = inventorySlots[slotId][SLOT_ITEM_STATS];
+		 TooltipManager.ShowItemTooltip(itemName, itemStats);
 	}
 }
 
-function CreateItemTooltip(icon, name, rarity, type, description, quality, stats, x, y) {
-    tooltip[TOOLTIP_IMAGE].itemname = icon;
-	tooltip[TOOLTIP_NAME_LABEL].text = name.toUpperCase();
-	tooltip[TOOLTIP_RARITY_LABEL].text = rarity;
-	tooltip[TOOLTIP_TYPE_LABEL].text = type;
-    if(description.toLowerCase().includes("dota_tooltip") || description.length == 0) {
-        tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "collapse";
-    } else {
-        tooltip[TOOLTIP_DESCRIPTION_LABEL].style.visibility = "visible";
-    }
-	tooltip[TOOLTIP_DESCRIPTION_LABEL].text = description;
-	tooltip[TOOLTIP_QUALITY_LABEL].text = quality;
-	if(tooltip[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
-	    x -= tooltip[TOOLTIP_PANEL].actuallayoutwidth;
+function ShowEquippedItemTooltip(slotId) {
+	if(!inventoryEquippedSlots[slotId][SLOT_PANEL].BHasClass("empty")) {
+		var itemName = inventoryEquippedSlots[slotId][SLOT_ITEM_IMAGE].itemname;
+		var itemStats = inventoryEquippedSlots[slotId][SLOT_ITEM_STATS];
+		TooltipManager.ShowItemTooltip(itemName, itemStats);
 	}
-	if(tooltip[TOOLTIP_PANEL].actuallayoutheight + y > Game.GetScreenHeight()) {
-	    y -= tooltip[TOOLTIP_PANEL].actuallayoutheight;
-	}
-	tooltip[TOOLTIP_PANEL].style.marginLeft = x + "px";
-	tooltip[TOOLTIP_PANEL].style.marginTop = y + "px";
-	tooltip[TOOLTIP_PANEL].style.visibility = "visible";
-	var latestStatId = 0;
-	for(var i = 0; i < stats.length; i++) {
-	    var statName = $.Localize("#DOTA_Tooltip_Ability_"+icon+"_"+stats[i].name);
-	    var statValue = stats[i].value;
-	    var IsPercent = (statName.charAt(0) == "%");
-        if(IsPercent) {
-            statName = statName.slice(1, statName.length);
-            statValue += "%";
-        }
-	    statsLabels[i].text = statName + statValue;
-	    statsLabels[i].style.visibility = "visible";
-	    latestStatId++;
-	}
-	for(var i = latestStatId; i < tooltip[TOOLTIP_STATS_CONTAINER].GetChildCount(); i++) {
-		statsLabels[i].style.visibility = "collapse";
-	}
+}
+
+function HideItemTooltip() {
+    TooltipManager.HideItemTooltip();
 }
 
 function CreateInventorySlots() {
@@ -786,14 +424,19 @@ function CreateInventorySlots() {
 		for(var j = 0; j < INVENTORY_SLOTS_PER_ROW; j++) {
 			inventorySlot = $.CreatePanel("Panel", inventoryRow, "InventorySlot" + (j+(INVENTORY_SLOTS_PER_ROW * i)));
 			inventorySlot.BLoadLayout("file://{resources}/layout/custom_game/windows/inventory/inventory_slot.xml", false, false);
-			var inventorySlotItemImage = inventorySlot.GetChild(0);
+			var inventorySlotItemImage = inventorySlot.FindChildTraverse('ItemImage');
+			var inventorySlotItemBorder = inventorySlot.FindChildTraverse('ItemBorder');
 			inventorySlot.Data().ShowItemTooltip = ShowItemTooltip;
 			inventorySlot.Data().HideItemTooltip = HideItemTooltip;
 			inventorySlot.Data().OnRightClickOnInventorySlot = OnRightClickOnInventorySlot;
 			inventorySlot.Data().OnDragStart = OnInventorySlotDragStart;
 			inventorySlot.Data().OnDragEnd = OnInventorySlotDragEnd;
-			inventorySlots.push([inventorySlot, inventorySlotItemImage, []]);
+			inventorySlots.push([inventorySlot, inventorySlotItemImage, [], inventorySlotItemBorder]);
+			if(j == 0) {
+		        inventorySlot.SetHasClass("first", true);
+			}
 		}
+		inventorySlot.SetHasClass("last", true);
 	}
 }
 
@@ -825,102 +468,40 @@ function OnInventoryButtonClicked() {
 
 function OnUpdateInventorySlotRequest(event) {
 	HideItemTooltip();
+	var IsItemExists = (event.item !== "");
 	if(!event.equipped) {
 		inventorySlots[event.slot][SLOT_ITEM_IMAGE].itemname = event.item;
 		inventorySlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
+		if(IsItemExists) {
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "1px";
+		    var itemRarity = ItemsDatabase.GetItemRarity(event.item);
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+		} else {
+		    inventorySlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "0px";
+		}
 	} else {
-		var IsItemExists = (event.item !== "");
 		inventoryEquippedSlots[event.slot][SLOT_PANEL].SetHasClass("empty", !IsItemExists);
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].itemname = IsItemExists ? event.item : inventoryEquippedSlots[event.slot][SLOT_ITEM_IMAGE].Data().defaultImage;
 		inventoryEquippedSlots[event.slot][SLOT_ITEM_STATS] = JSON.parse(event.stats);
-	}
-}
-
-function GetHEXPlayerColor(playerId) {
-	var playerColor = Players.GetPlayerColor(playerId).toString(16);
-	return playerColor == null ? '#000000' : ('#' + playerColor.substring(6, 8) + playerColor.substring(4, 6) + playerColor.substring(2, 4) + playerColor.substring(0, 2));
-}
-
-function GetInventoryItemRarity(itemname) {
-	for(var i = 0; i < inventoryItemsData.length; i++) {
-		if(inventoryItemsData[i].item == itemname) {
-			return inventoryItemsData[i].rarity;
+		if(IsItemExists) {
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "2px";
+		    var itemRarity = ItemsDatabase.GetItemRarity(event.item);
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderColor = ItemsDatabase.GetItemRarityColor(itemRarity);
+		} else {
+		    inventoryEquippedSlots[event.slot][SLOT_ITEM_BORDER].style.borderWidth = "0px";
 		}
 	}
-	return -1;
 }
 
-function GetInventoryItemSlot(itemname) {
-	for(var i = 0; i < inventoryItemsData.length; i++) {
-		if(inventoryItemsData[i].item == itemname) {
-			return inventoryItemsData[i].slot;
-		}
-	}
-	return -1;
-}
-
-var modelUpdated = false;
-
-function OnInventoryItemsDataRequest(event) {
-	inventoryItemsData = inventoryItemsData.concat(JSON.parse(event.items_data));
-	if(!modelUpdated) {
-	    UpdateHeroModelAndIcon();
-	    modelUpdated = true;
-	}
-}
-
-function OnItemDrop(event) {
-	var itemDropPanel = $.CreatePanel("Panel", dropContainer, "");
-	itemDropPanel.BLoadLayout("file://{resources}/layout/custom_game/dropped_item.xml", false, false);
-	var itemIcon = itemDropPanel.FindChildTraverse('DropItemIcon');
-    itemIcon.itemname = event.item;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerIcon').heroname = event.hero;
-    itemDropPanel.FindChildTraverse('DropItemHeroContainerLabel').text = "<font color='" + GetHEXPlayerColor(event.player_id) + "'>" + Players.GetPlayerName(event.player_id) + "</font>";
-    itemIcon.SetPanelEvent(
-      "onmouseover",
-      function(){
-        ShowItemDropTooltip(event.item, JSON.parse(event.stats));
-      }
-    )
-    itemIcon.SetPanelEvent(
-      "onmouseout",
-      function(){
-        HideItemTooltip();
-      }
-    )
-    dropContainer.MoveChildBefore(itemDropPanel, dropContainer.GetChild(0));
-}
-
-var DROPPED_ITEM_HITBOX_SIZE = 70;
-var latestShowedItemId = -1;
-
-function ShowDroppedItemTooltip() {
-    var cursorPosition = GameUI.GetCursorPosition();
-    cursorPosition = Game.ScreenXYToWorld(cursorPosition[0], cursorPosition[1]);
-    var itemsInWorld = CustomNetTables.GetAllTableValues("inventory_world_items");
-    var latestShowedItem = CustomNetTables.GetTableValue("inventory_world_items", latestShowedItemId.toString());
-    if(latestShowedItem) {
-        if(Game.Length2D(Entities.GetAbsOrigin(latestShowedItem.itemWorldId), cursorPosition) > DROPPED_ITEM_HITBOX_SIZE) {
-            HideItemTooltip();
-            latestShowedItemId = -1;
-        }
-    } else {
-        latestShowedItemId = -1;
-        $.Each(itemsInWorld, function(item) {
-            var itemPosition = Entities.GetAbsOrigin(item.value.itemWorldId);
-            if((Game.Length2D(itemPosition, cursorPosition) <= DROPPED_ITEM_HITBOX_SIZE)) {
-                var fixedItemStats = []
-                $.Each(item.value.itemStats, function(itemStat) {
-                    fixedItemStats.push(itemStat);
-                });
-                ShowItemDropTooltip(item.value.itemName, fixedItemStats);
-                latestShowedItemId = item.key;
+function SetupAPI() {
+    PlayerInventory.IsLocalPlayerEquippedItem = function(itemName) {
+        for(var i = 0; i < inventoryEquippedSlots.length; i++) {
+            if(inventoryEquippedSlots[i][SLOT_ITEM_IMAGE].itemname == itemName && !inventoryEquippedSlots[i][SLOT_PANEL].BHasClass("empty")) {
+                return true;
             }
-        });
-    }
-    $.Schedule(0.1, function() {
-        ShowDroppedItemTooltip();
-    });
+        }
+        return false;
+    };
 }
 
 (function () {
@@ -929,41 +510,21 @@ function ShowDroppedItemTooltip() {
 	for(var i = 0; i < INVENTORY_SLOT_LAST + 1; i++) {
 		var inventorySlotPanel = $("#InventoryEquippedSlot"+i);
 		var inventorySlotImage = $("#InventoryEquippedSlotImage"+i);
+		var inventorySlotBorder = $("#InventoryEquippedSlotBorder"+i);
 		inventorySlotImage.Data().defaultImage = inventorySlotImage.itemname;
-		inventoryEquippedSlots.push([inventorySlotPanel, inventorySlotImage, []]);
+		inventoryEquippedSlots.push([inventorySlotPanel, inventorySlotImage, [], inventorySlotBorder]);
 	}
 	OnSwitchPageButtonClick(0);
 	CreateInventorySlots();
 	SetupDragAndDropForInventoryEquippedSlots();
 	CreateElementPanels($("#OffensiveElements"), ELEMENTS_OFFENSIVE);
 	CreateElementPanels($("#DefensiveElements"), ELEMENTS_DEFENSIVE);
-	compareWindow = [$("#ConflictDialogPanel"), 
-	$("#ItemTooltipImage1"), $("#ItemTooltipNameLabel1"), $("#ItemTooltipRarityLabel1"), $("#ItemTooltipTypeLabel1"), $("#ItemTooltipLabel1"),
-	$("#ItemTooltipImage2"), $("#ItemTooltipNameLabel2"), $("#ItemTooltipRarityLabel2"), $("#ItemTooltipTypeLabel2"), $("#ItemTooltipLabel2"),
-	$("#ItemTooltipQualityLabel1"), $("#ItemTooltipStatsContainer1"), $("#ItemTooltipQualityLabel2"), $("#ItemTooltipStatsContainer2")];
-	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipRarityLabel"), $("#ItemTooltipTypeLabel"), $("#ItemTooltipLabel"), $("#ItemTooltipQualityLabel"), $("#ItemTooltipStatsContainer")];
-    for (var i = 0; i < initialStatsLabelsInTooltip; i++) {
-        var statsLabel = $.CreatePanel("Label", tooltip[TOOLTIP_STATS_CONTAINER], "");
-        statsLabel.html = true;
-        statsLabel.style.visibility = "collapse";
-        statsLabels.push(statsLabel);
-        statsLabel = $.CreatePanel("Label", compareWindow[COMPARE_PANEL1_STATS_CONTAINER], "");
-        statsLabel.html = true;
-        statsLabel.style.visibility = "collapse";
-        statsLabelsForCompareWindowPanel1.push(statsLabel);
-        statsLabel = $.CreatePanel("Label", compareWindow[COMPARE_PANEL2_STATS_CONTAINER], "");
-        statsLabel.html = true;
-        statsLabel.style.visibility = "collapse";
-        statsLabelsForCompareWindowPanel2.push(statsLabel);
-    }
-    dropContainer = $("#DropContainer");
     GameEvents.Subscribe("rpg_inventory_open_window_from_server", OnInventoryButtonClicked);
 	GameEvents.Subscribe("rpg_inventory_close_window_from_server", OnInventoryWindowCloseRequest);
 	GameEvents.Subscribe("rpg_inventory_update_slot", OnUpdateInventorySlotRequest);
-	GameEvents.Subscribe("rpg_inventory_start_item_replace_dialog_from_server", OnStartItemReplaceDialogRequest);
-	GameEvents.Subscribe("rpg_inventory_items_data", OnInventoryItemsDataRequest);
     GameEvents.Subscribe("rpg_update_hero_stats", OnHeroStatsUpdateRequest);
-    GameEvents.Subscribe("rpg_enemy_item_dropped", OnItemDrop);
-	ShowDroppedItemTooltip();
+    GameEvents.Subscribe("rpg_hero_selection_get_heroes_from_server", OnHeroesTableData);
+	GameEvents.SendCustomGameEventToServer("rpg_hero_selection_get_heroes", {});
     AutoUpdateValues();
+    SetupAPI();
 })();

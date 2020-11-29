@@ -173,6 +173,30 @@ if (IsServer()) then
         table.insert(GameMode.CritHealManaEventHandlersTable, handler)
     end
 
+    ---@param abilityName string
+    ---@param minCooldown number
+    function GameMode:RegisterMinimumAbilityCooldown(abilityName, minCooldown)
+        if (not abilityName or not minCooldown) then
+            DebugPrint("[GAME MECHANICS] Someone passed nil to of arguments of RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        if (type(abilityName) ~= "string") then
+            DebugPrint("[GAME MECHANICS] abilityName must be string in RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        if (type(minCooldown) ~= "number") then
+            DebugPrint("[GAME MECHANICS] abilityName must be number in RegisterMinimumAbilityCooldown()")
+            DebugPrint("[GAME MECHANICS] Source of that shit:")
+            DebugPrintTable(debug.getinfo(2))
+            return
+        end
+        GameMode.MinimumAbilitiesCooldownTable[abilityName] = minCooldown
+    end
+
     --- handle every dmg instance in game. true = allow damage event, false = cancel damage event (damage itself, numbers still showed on client side)
     function GameMode:DamageFilter(args)
         if not IsServer() then
@@ -240,6 +264,16 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
+                    if (not modifier.IsHidden) then
+                        modifier.IsHidden = function(self)
+                            return false
+                        end
+                    end
+                    if (not modifier.IsDebuff) then
+                        modifier.IsDebuff = function(self)
+                            return false
+                        end
+                    end
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -272,6 +306,50 @@ if (IsServer()) then
         return nil
     end
 
+    --- Apply (or refresh if exists) npc based buff
+    ---@param args MODIFIER_TABLE
+    ---@param fireEvent boolean
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedBuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            findedModifier:ForceRefresh()
+        else
+            return GameMode:ApplyBuff(args)
+        end
+        return nil
+    end
+
+    --- Apply (or refresh if exists) npc based buff + increase his stacks count by args.stacks up to args.max_stacks
+    ---@param args STACKING_MODIFIER_TABLE
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedStackingBuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        args.stacks = tonumber(args.stacks)
+        args.max_stacks = tonumber(args.max_stacks)
+        if (not args.stacks or not args.max_stacks) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            local stacks = findedModifier:GetStackCount() + args.stacks
+            findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
+            for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
+            end
+            return findedModifier
+        else
+            return GameMode:ApplyStackingBuff(args)
+        end
+        return nil
+    end
+
     --- Apply (or refresh if exists) debuff
     ---@param args MODIFIER_TABLE
     ---@param fireEvent boolean
@@ -295,19 +373,59 @@ if (IsServer()) then
                         break
                     end
                 end
-                if (isTargetCasting == true) then
-                    local isModifierWillPreventCasting = false
-                    local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
-                    if (crowdControlModifier) then
-                        isModifierWillPreventCasting = (crowdControlModifier.stun == true) or (crowdControlModifier.silence == true) or (crowdControlModifier.hex == true)
-                    else
-                        if (args.modifier_name == "modifier_stunned" or args.modifier_name == "modifier_silence") then
-                            isModifierWillPreventCasting = true
-                        end
+                local isStun = false
+                local isRoot = false
+                local isHex = false
+                local isSilence = false
+                local crowdControlModifier = GameMode.CrowdControlModifiersTable[args.modifier_name]
+                local isModifierWillPreventCasting = false
+                if (crowdControlModifier) then
+                    isStun = (crowdControlModifier.stun == true)
+                    isRoot = (crowdControlModifier.root == true)
+                    isHex = (crowdControlModifier.hex == true)
+                    isSilence = (crowdControlModifier.silence == true)
+                else
+                    if (args.modifier_name == "modifier_stunned") then
+                        isStun = true
                     end
-                    if (isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
-                        return nil
+                    if (args.modifier_name == "modifier_silence") then
+                        isSilence = true
                     end
+                end
+                isModifierWillPreventCasting = (isStun == true) or (isHex == true) or (isSilence == true)
+                local isUnitHaveImmuneToStun = false
+                local isUnitHaveImmuneToRoot = false
+                local isUnitHaveImmuneToHex = false
+                local isUnitHaveImmuneToSilence = false
+                local unitModifiers = args.target:FindAllModifiers()
+                for i = 1, #unitModifiers do
+                    if (unitModifiers[i].GetImmunityToStun and isUnitHaveImmuneToStun == false) then
+                        isUnitHaveImmuneToStun = unitModifiers[i].GetImmunityToStun(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToRoot and isUnitHaveImmuneToRoot == false) then
+                        isUnitHaveImmuneToRoot = unitModifiers[i].GetImmunityToRoot(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToSilence and isUnitHaveImmuneToSilence == false) then
+                        isUnitHaveImmuneToSilence = unitModifiers[i].GetImmunityToSilence(unitModifiers[i]) or false
+                    end
+                    if (unitModifiers[i].GetImmunityToHex and isUnitHaveImmuneToHex == false) then
+                        isUnitHaveImmuneToHex = unitModifiers[i].GetImmunityToHex(unitModifiers[i]) or false
+                    end
+                end
+                if (isStun == true and isUnitHaveImmuneToStun == true) then
+                    return nil
+                end
+                if (isRoot == true and isUnitHaveImmuneToRoot == true) then
+                    return nil
+                end
+                if (isHex == true and isUnitHaveImmuneToHex == true) then
+                    return nil
+                end
+                if (isSilence == true and isUnitHaveImmuneToSilence == true) then
+                    return nil
+                end
+                if (isTargetCasting == true and isModifierWillPreventCasting == true and ability.IsInterruptible and ability:IsInterruptible() == false) then
+                    return nil
                 end
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
                 if (fireEvent == nil) then
@@ -315,6 +433,34 @@ if (IsServer()) then
                 end
                 if (modifier ~= nil) then
                     GameMode:OverwriteModifierFunctions(modifier)
+                    if (not modifier.IsHidden) then
+                        modifier.IsHidden = function(self)
+                            return false
+                        end
+                    end
+                    if (not modifier.IsDebuff) then
+                        modifier.IsDebuff = function(self)
+                            return true
+                        end
+                    end
+                    local modifierStateTable = {}
+                    if (isStun == true) then
+                        modifierStateTable[MODIFIER_STATE_STUNNED] = true
+                    end
+                    if (isHex == true) then
+                        modifierStateTable[MODIFIER_STATE_HEXED] = true
+                    end
+                    if (isSilence == true) then
+                        modifierStateTable[MODIFIER_STATE_SILENCED] = true
+                    end
+                    if (isRoot == true) then
+                        modifierStateTable[MODIFIER_STATE_ROOTED] = true
+                    end
+                    if (not modifier.CheckState) then
+                        modifier.CheckState = function(self)
+                            return modifierStateTable
+                        end
+                    end
                     if (fireEvent == true) then
                         args.stacks = 0
                         args.max_stacks = 0
@@ -347,6 +493,61 @@ if (IsServer()) then
         return nil
     end
 
+    --- Apply (or refresh if exists) npc based debuff
+    ---@param args MODIFIER_TABLE
+    ---@param fireEvent boolean
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedDebuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            findedModifier:ForceRefresh()
+        else
+            return GameMode:ApplyDebuff(args)
+        end
+        return nil
+    end
+
+    --- Apply (or refresh if exists) npc based debuff + increase his stacks count by args.stacks up to args.max_stacks
+    ---@param args STACKING_MODIFIER_TABLE
+    ---@return CDOTA_Modifier_Lua
+    function GameMode:ApplyNPCBasedStackingDebuff(args)
+        if (not args or not args.caster or not args.modifier_name or not args.target) then
+            return nil
+        end
+        args.stacks = tonumber(args.stacks)
+        args.max_stacks = tonumber(args.max_stacks)
+        if (not args.stacks or not args.max_stacks) then
+            return nil
+        end
+        local findedModifier = args.target:FindModifierByNameAndCaster(args.modifier_name, args.caster)
+        if (findedModifier) then
+            local stacks = findedModifier:GetStackCount() + args.stacks
+            findedModifier:SetStackCount(math.min(stacks, args.max_stacks))
+            findedModifier:ForceRefresh()
+            for i = 1, #GameMode.PostApplyModifierEventHandlersTable do
+                GameMode.PostApplyModifierEventHandlersTable[i](findedModifier, args)
+            end
+            return findedModifier
+        else
+            return GameMode:ApplyStackingDebuff(args)
+        end
+        return nil
+    end
+
+    function GameMode:HasNPCBasedModifier(modifier, caster)
+        if (not modifier or not caster or not self.HasNPCBasedModifier) then
+            return false
+        end
+        local findedModifier = self:FindModifierByNameAndCaster(modifier, caster)
+        if (findedModifier) then
+            return true
+        end
+        return false
+    end
+
     ---@class REDUCE_ABILITY_CD_TABLE
     ---@field public target CDOTA_BaseNPC
     ---@field public ability CDOTA_Ability_Lua
@@ -371,17 +572,17 @@ if (IsServer()) then
             if (ability ~= nil) then
                 local abilityLevel = ability:GetLevel()
                 if (abilityLevel > 0) then
-                    local reducedCooldown = ability:GetCooldownTimeRemaining()
-                    if (args.isflat) then
+                    local abilityCooldown = ability:GetCooldownTimeRemaining()
+                    local reducedCooldown = abilityCooldown
+                    if (args.isflat == true) then
                         reducedCooldown = math.max(0, reducedCooldown - reduction)
                     else
                         reducedCooldown = reducedCooldown * reduction
-                        local minCooldown = ability:GetCooldown(abilityLevel) * 0.5
-                        if (reducedCooldown < minCooldown) then
-                            reducedCooldown = minCooldown
-                        end
                     end
-                    if (reducedCooldown == 0) then
+                    if (GameMode.MinimumAbilitiesCooldownTable[args.ability]) then
+                        reducedCooldown = math.max(GameMode.MinimumAbilitiesCooldownTable[args.ability], reducedCooldown)
+                    end
+                    if (reducedCooldown < 0 or reducedCooldown > abilityCooldown) then
                         return
                     end
                     ability:EndCooldown()
@@ -406,7 +607,10 @@ if (IsServer()) then
     ---@field public infernodmg boolean
     ---@field public holydmg boolean
     ---@field public fromsummon boolean
-
+    ---@field public single boolean
+    ---@field public dot boolean
+    ---@field public aoe boolean
+    ---
     ---@param args DAMAGE_TABLE
     function GameMode:DamageUnit(args)
         if (not args) then
@@ -431,6 +635,10 @@ if (IsServer()) then
             holydmg = args.holydmg,
             puredmg = args.puredmg,
             fromsummon = args.fromsummon,
+            fromtalent = args.fromtalent,
+            dot = args.dot,
+            single = args.single,
+            aoe = args.aoe,
             crit = 1.0
         }
         local damageCanceled = false
@@ -456,7 +664,6 @@ if (IsServer()) then
         end
         -- perform all reductions/amplifications, should work fine unless unit recieved really hard mixed dmg instance with all types and have every block like 99%
         local totalReduction = 1
-        local totalBlock = 0
         local IsPureDamage = (damageTable.puredmg == true)
         local IsPhysicalDamage = (damageTable.physdmg == true)
         local IsFireDamage = (damageTable.firedmg == true)
@@ -517,14 +724,6 @@ if (IsServer()) then
             end
             totalReduction = elementalReduction
         end
-        -- post reduction effects
-        if (IsPhysicalDamage == true) then
-            totalBlock = totalBlock + Units:GetBlock(damageTable.victim)
-        end
-        if (args.ability) then
-            totalBlock = totalBlock + Units:GetMagicBlock(damageTable.victim)
-            damageTable.damage = damageTable.damage * (Units:GetSpellDamage(damageTable.attacker))
-        end
         local totalAmplification = 1
         if (IsFireDamage == true) then
             totalAmplification = totalAmplification + Units:GetFireDamage(damageTable.attacker) - 1
@@ -547,14 +746,39 @@ if (IsServer()) then
         if (IsHolyDamage == true) then
             totalAmplification = totalAmplification + Units:GetHolyDamage(damageTable.attacker) - 1
         end
+        if (args.fromsummon == true) then
+            totalAmplification = totalAmplification + Units:GetSummonDamage(damageTable.attacker) - 1
+        end
+        if (args.dot == true) then
+            totalAmplification = totalAmplification + Units:GetDOTDamage(damageTable.attacker) - 1
+        end
+        if (args.single == true) then
+            totalAmplification = totalAmplification + Units:GetSingleDamage(damageTable.attacker) - 1
+        end
+        if (args.aoe == true) then
+            totalAmplification = totalAmplification + Units:GetAOEDamage(damageTable.attacker) - 1
+        end
+        if (args.ability or args.fromtalent) then
+            totalAmplification = totalAmplification + Units:GetSpellDamage(damageTable.attacker, args.ability) - 1
+        end
+        local unitAdditionalConditionalDamage = 0
+        local unitModifiers = damageTable.victim:FindAllModifiers()
+        for i = 1, #unitModifiers do
+            if (unitModifiers[i].GetAdditionalConditionalDamage) then
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
+            end
+        end
+        local unitModifiers = damageTable.attacker:FindAllModifiers()
+        for i = 1, #unitModifiers do
+            if (unitModifiers[i].GetAdditionalConditionalDamage) then
+                unitAdditionalConditionalDamage = unitAdditionalConditionalDamage + tonumber(unitModifiers[i].GetAdditionalConditionalDamage(unitModifiers[i], damageTable) or 0)
+            end
+        end
+        totalAmplification = totalAmplification + unitAdditionalConditionalDamage
         -- Damage reduction reduce even pure dmg
         totalReduction = totalReduction * Units:GetDamageReduction(damageTable.victim)
-        -- well, let them suffer
-        if (totalReduction < 0.01) then
-            totalReduction = 0.01
-        end
         -- final damage
-        damageTable.damage = (damageTable.damage * totalReduction * totalAmplification) - totalBlock
+        damageTable.damage = damageTable.damage * totalReduction
         -- dont trigger pre/post damage event if damage = 0 and dont apply "0" damage instances
         if (damageTable.damage > 0) then
             -- trigger pre/post dmg event for all skills/etc
@@ -577,14 +801,22 @@ if (IsServer()) then
             end
             if (damageCanceled == false) then
                 if (damageTable.crit > 1.0) then
-                    damageTable.damage = damageTable.damage * damageTable.crit * Units:GetCriticalDamage(damageTable.attacker)
+                    totalAmplification = totalAmplification + Units:GetCriticalDamage(damageTable.attacker)
+                    damageTable.damage = damageTable.damage * totalAmplification
+                    damageTable.damage = damageTable.damage * damageTable.crit
                     for i = 1, #GameMode.CritDamageEventHandlersTable do
                         if (not damageTable.victim or damageTable.victim:IsNull() or not damageTable.victim:IsAlive() or not damageTable.attacker or damageTable.attacker:IsNull() or not damageTable.attacker:IsAlive()) then
                             break
                         end
                         GameMode.CritDamageEventHandlersTable[i](nil, damageTable)
                     end
-                    PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    if (args.ability or args.fromtalent) then
+                        PopupSpellCriticalDamage(damageTable.victim, damageTable.damage)
+                    else
+                        PopupCriticalDamage(damageTable.victim, damageTable.damage)
+                    end
+                else
+                    damageTable.damage = damageTable.damage * totalAmplification
                 end
                 ApplyDamage(damageTable)
                 for i = 1, #GameMode.PostDamageEventHandlersTable do
@@ -604,14 +836,14 @@ if (IsServer()) then
     ---@field public heal number
     ---@param args HEAL_TABLE
     function GameMode:HealUnit(args)
-        if (args == null) then
+        if (args == nil) then
             return
         end
         args.heal = tonumber(args.heal)
         if (args.caster == nil or args.target == nil or args.heal == nil) then
             return
         end
-        args.heal = (args.heal + Units:GetHealingCaused(args.caster) + Units:GetHealingReceived(args.target)) * Units:GetHealingCausedPercent(args.caster) * Units:GetHealingReceivedPercent(args.target)
+        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target) - 1)
         args.crit = 1.0
         local preHealHandlerResultTable
         local healCanceled = false
@@ -639,7 +871,7 @@ if (IsServer()) then
                     GameMode.CritHealEventHandlersTable[i](nil, args)
                 end
             end
-            args.target:Heal(args.heal, caster)
+            args.target:Heal(args.heal, args.caster)
             PopupHealing(args.target, args.heal)
             for i = 1, #GameMode.PostHealEventHandlersTable do
                 if (not args.caster or args.caster:IsNull() or not args.caster:IsAlive() or not args.target or args.target:IsNull() or not args.target:IsAlive()) then
@@ -657,7 +889,7 @@ if (IsServer()) then
     ---@field public heal number
     ---@param args HEAL_MANA_TABLE
     function GameMode:HealUnitMana(args)
-        if (args == null) then
+        if (args == nil) then
             return
         end
         args.heal = tonumber(args.heal)
@@ -665,7 +897,7 @@ if (IsServer()) then
             return
         end
         args.crit = 1.0
-        args.heal = (args.heal + Units:GetHealingCaused(args.caster) + Units:GetHealingReceived(args.target)) * Units:GetHealingCausedPercent(args.caster) * Units:GetHealingReceivedPercent(args.target)
+        args.heal = args.heal * (Units:GetHealingCausedPercent(args.caster) + Units:GetHealingReceivedPercent(args.target) - 1)
         local preHealHandlerResultTable
         local healCanceled = false
         for i = 1, #GameMode.PreHealManaEventHandlersTable do
@@ -814,6 +1046,15 @@ if (IsServer()) then
                 end
             end
         end
+        if (not modifier.OnRefresh2) then
+            modifier.OnRefresh2 = modifier.OnRefresh
+            modifier.OnRefresh = function(context, table)
+                context.OnRefresh2(context, table)
+                if (IsServer()) then
+                    Units:ForceStatsCalculation(context:GetParent())
+                end
+            end
+        end
     end
 end
 
@@ -846,8 +1087,14 @@ function modifier_cooldown_reduction_custom:OnAbilityFullyCast(keys)
         return
     end
     if (keys.unit == self.unit) then
+        local charges = self.unit:FindAllModifiersByName("modifier_charges")
+        for _, charge in pairs(charges) do
+            if (charge.ability == keys.ability) then
+                return
+            end
+        end
         local cooldownTable = {}
-        cooldownTable.reduction = Units:GetCooldownReduction(self.unit)
+        cooldownTable.reduction = Units:GetCooldownReduction(self.unit, keys.ability)
         cooldownTable.ability = keys.ability:GetAbilityName()
         cooldownTable.isflat = false
         cooldownTable.target = self.unit
@@ -1019,6 +1266,17 @@ ListenToGameEvent("npc_spawned", function(keys)
     end
     local unit = EntIndexToHScript(keys.entindex)
     local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
+    if (not unit.HasNPCBasedModifier and not isUnitThinker) then
+        unit.HasNPCBasedModifier = GameMode.HasNPCBasedModifier
+    end
+end, nil)
+
+ListenToGameEvent("npc_spawned", function(keys)
+    if (not IsServer()) then
+        return
+    end
+    local unit = EntIndexToHScript(keys.entindex)
+    local isUnitThinker = (unit:GetUnitName() == "npc_dota_thinker")
     if (not unit:HasModifier("modifier_out_of_combat") and not Summons:IsSummmon(unit) and not isUnitThinker and unit.IsRealHero and unit:IsRealHero()) then
         unit:AddNewModifier(unit, nil, "modifier_out_of_combat", { Duration = -1 })
     end
@@ -1028,15 +1286,15 @@ ListenToGameEvent("dota_player_learned_ability", function(keys)
     if (not IsServer()) then
         return
     end
-    if(not keys.PlayerID) then
+    if (not keys.PlayerID) then
         return
     end
     local player = PlayerResource:GetPlayer(keys.PlayerID)
-    if(not player) then
+    if (not player) then
         return
     end
     local hero = player:GetAssignedHero()
-    if(not hero) then
+    if (not hero) then
         return
     end
     Units:ForceStatsCalculation(hero)
@@ -1054,6 +1312,7 @@ if (IsServer() and not GameMode.GAME_MECHANICS_INIT) then
     GameMode.PreHealManaEventHandlersTable = {}
     GameMode.PostHealManaEventHandlersTable = {}
     GameMode.CritHealManaEventHandlersTable = {}
+    GameMode.MinimumAbilitiesCooldownTable = {}
     GameMode.CrowdControlModifiersTable = {}
     GameMode.AuraModifiersTable = {}
     GameMode.IntrinsicModifiersTable = {}

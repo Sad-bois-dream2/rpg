@@ -1,14 +1,15 @@
 local LinkedModifiers = {}
--- terror_lord_malicious_flames modifiers
-modifier_terror_lord_malicious_flames = class({
+
+-- terror_lord_malicious_flames
+modifier_terror_lord_malicious_flames_thinker = class({
     IsDebuff = function(self)
-        return true
-    end,
-    IsHidden = function(self)
         return false
     end,
-    IsPurgable = function(self)
+    IsHidden = function(self)
         return true
+    end,
+    IsPurgable = function(self)
+        return false
     end,
     RemoveOnDeath = function(self)
         return true
@@ -16,12 +17,52 @@ modifier_terror_lord_malicious_flames = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return terror_lord_malicious_flames:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/terror_lord/malicious_flames/malicious_flames.vpcf"
+})
+
+function modifier_terror_lord_malicious_flames_thinker:OnCreated()
+    if (not IsServer()) then
+        return
     end
+    self.ability = self:GetAbility()
+    self.caster = self.ability:GetCaster()
+    self.thinker = self:GetParent()
+    self.position = self.thinker:GetAbsOrigin()
+    self:StartIntervalThink(self.ability.additionalWavesTick)
+end
+
+function modifier_terror_lord_malicious_flames_thinker:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.caster:SetCursorPosition(self.position)
+    self.ability:OnSpellStart(true)
+end
+
+function modifier_terror_lord_malicious_flames_thinker:OnDestroy()
+    UTIL_Remove(self.thinker)
+end
+
+LinkedModifiers["modifier_terror_lord_malicious_flames_thinker"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_malicious_flames = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
 })
 
 function modifier_terror_lord_malicious_flames:OnCreated()
@@ -29,137 +70,176 @@ function modifier_terror_lord_malicious_flames:OnCreated()
         return
     end
     self.ability = self:GetAbility()
-    self.caster = self:GetCaster()
-    self.target = self:GetParent()
-    self.damage = Units:GetAttackDamage(self.caster) * (self.ability:GetSpecialValueFor("damage") / 100)
-    local tick = self.ability:GetSpecialValueFor("tick")
-    self:StartIntervalThink(tick)
+    self.caster = self:GetParent()
 end
 
-function modifier_terror_lord_malicious_flames:GetIgnoreAggroTarget()
-    return self.caster
-end
-
-function modifier_terror_lord_malicious_flames:OnIntervalThink()
-    if (not IsServer()) then
-        return
-    end
-    local damageTable = {}
-    damageTable.caster = self.caster
-    damageTable.target = self.target
-    damageTable.ability = self.ability
-    damageTable.damage = self.damage
-    damageTable.infernodmg = true
-    GameMode:DamageUnit(damageTable)
+function modifier_terror_lord_malicious_flames:GetAggroCausedPercentBonus()
+    local totalResistances = 0
+    totalResistances = totalResistances + Units:GetFireProtection(self.caster)
+    totalResistances = totalResistances + Units:GetFrostProtection(self.caster)
+    totalResistances = totalResistances + Units:GetEarthProtection(self.caster)
+    totalResistances = totalResistances + Units:GetVoidProtection(self.caster)
+    totalResistances = totalResistances + Units:GetHolyProtection(self.caster)
+    totalResistances = totalResistances + Units:GetNatureProtection(self.caster)
+    totalResistances = totalResistances + Units:GetInfernoProtection(self.caster)
+    totalResistances = totalResistances - 7
+    return (totalResistances * (self.ability.primalBuffPerEleArmorAggro or 0)) + (Units:GetArmor(self.caster) * (self.ability.primalBuffPerArmorAggro or 0)) + (self.caster:GetMaxHealth() * (self.ability.primalBuffPerMaxHpAggro or 0))
 end
 
 LinkedModifiers["modifier_terror_lord_malicious_flames"] = LUA_MODIFIER_MOTION_NONE
 
--- terror_lord_malicious_flames
-terror_lord_malicious_flames = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_malicious_flames"
+modifier_terror_lord_malicious_flames_dot = class({
+    IsDebuff = function()
+        return true
+    end,
+    IsHidden = function()
+        return false
+    end,
+    IsPurgable = function()
+        return true
+    end,
+    RemoveOnDeath = function()
+        return true
+    end,
+    AllowIllusionDuplicate = function()
+        return false
+    end,
+    GetEffectName = function()
+        return "particles/units/terror_lord/malicious_flames/malicious_flames_debuff.vpcf"
+    end,
+    GetAttributes = function()
+        return MODIFIER_ATTRIBUTE_MULTIPLE
     end
 })
 
-function terror_lord_malicious_flames:GetAOERadius()
-    return self:GetSpecialValueFor("radius")
-end
-
-function terror_lord_malicious_flames:GetBehavior()
-    if (self:GetLevel() > 3) then
-        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING + DOTA_ABILITY_BEHAVIOR_AOE
-    end
-    return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
-end
-
-function terror_lord_malicious_flames:OnSpellStart(unit, special_cast)
+function modifier_terror_lord_malicious_flames_dot:OnCreated()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
-    local duration = self:GetSpecialValueFor("duration")
-    EmitSoundOn("Hero_OgreMagi.Arcana.ComboDamageSummary", caster)
-    local modifierTable = {}
-    if (self:GetLevel() > 3) then
-        local targetPosition = target:GetAbsOrigin()
-        local enemies = FindUnitsInRadius(DOTA_TEAM_GOODGUYS,
-                targetPosition,
+    self.ability = self:GetAbility()
+    self.damageTable = {
+        caster = self:GetCaster(),
+        target = self:GetParent(),
+        ability = self.ability,
+        damage = self.damage,
+        infernodmg = true,
+        dot = true
+    }
+    self.casterTeam = self.damageTable.caster:GetTeamNumber()
+    self:OnIntervalThink()
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_terror_lord_malicious_flames_dot:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    self.damageTable.damage = Units:GetHeroStrength(self.damageTable.caster) * self.ability.dotDamage
+    GameMode:DamageUnit(self.damageTable)
+    if (self.ability.spreadRadius > 0) then
+        local enemies = FindUnitsInRadius(self.casterTeam,
+                self.damageTable.target:GetAbsOrigin(),
                 nil,
-                self:GetSpecialValueFor("radius"),
+                self.ability.spreadRadius,
                 DOTA_UNIT_TARGET_TEAM_ENEMY,
-                DOTA_UNIT_TARGET_ALL,
+                DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
                 DOTA_UNIT_TARGET_FLAG_NONE,
                 FIND_ANY_ORDER,
                 false)
         for _, enemy in pairs(enemies) do
-            modifierTable = {}
-            modifierTable.ability = self
-            modifierTable.target = enemy
-            modifierTable.caster = caster
-            modifierTable.modifier_name = "modifier_terror_lord_malicious_flames"
-            modifierTable.duration = duration
-            GameMode:ApplyDebuff(modifierTable)
+            if (not enemy:HasModifier("modifier_terror_lord_malicious_flames_dot")) then
+                self.ability.modifierTable.target = enemy
+                GameMode:ApplyNPCBasedDebuff(self.ability.modifierTable)
+            end
         end
-        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx, false)
-            ParticleManager:ReleaseParticleIndex(pidx)
-        end)
-        local pidx1 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx1, 0, targetPosition + Vector(180, 180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx1, false)
-            ParticleManager:ReleaseParticleIndex(pidx1)
-        end)
-        local pidx2 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx2, 0, targetPosition + Vector(180, 0, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx2, false)
-            ParticleManager:ReleaseParticleIndex(pidx2)
-        end)
-        local pidx3 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx3, 0, targetPosition + Vector(-180, -180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx3, false)
-            ParticleManager:ReleaseParticleIndex(pidx3)
-        end)
-        local pidx4 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx4, 0, targetPosition + Vector(-180, 0, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx4, false)
-            ParticleManager:ReleaseParticleIndex(pidx4)
-        end)
-        local pidx5 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx5, 0, targetPosition + Vector(0, 180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx5, false)
-            ParticleManager:ReleaseParticleIndex(pidx5)
-        end)
-        local pidx6 = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, target)
-        ParticleManager:SetParticleControl(pidx6, 0, targetPosition + Vector(0, -180, 0))
-        Timers:CreateTimer(1.0, function()
-            ParticleManager:DestroyParticle(pidx6, false)
-            ParticleManager:ReleaseParticleIndex(pidx6)
-        end)
-        return
     end
-    modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = target
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_terror_lord_malicious_flames"
-    modifierTable.duration = duration
-    GameMode:ApplyDebuff(modifierTable)
-    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/malicious_flames/malicious_flames_impact.vpcf", PATTACH_ABSORIGIN, modifierTable.target)
-    Timers:CreateTimer(1.0, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
 end
 
--- terror_lord_mighty_defiance modifiers
+LinkedModifiers["modifier_terror_lord_malicious_flames_dot"] = LUA_MODIFIER_MOTION_NONE
+
+terror_lord_malicious_flames = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetIntrinsicModifierName = function(self)
+        return "modifier_terror_lord_malicious_flames"
+    end,
+})
+
+function terror_lord_malicious_flames:OnSpellStart(secondCast)
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local casterTeam = caster:GetTeamNumber()
+    self.modifierTable = {
+        ability = self,
+        target = nil,
+        caster = caster,
+        modifier_name = "modifier_terror_lord_malicious_flames_dot",
+        duration = self.duration
+    }
+    local damageTable = {
+        caster = caster,
+        target = nil,
+        ability = self,
+        damage = self.damage * Units:GetHeroStrength(caster),
+        infernodmg = true,
+        aoe = true
+    }
+    local targetPosition = self:GetCursorPosition()
+    local enemies = FindUnitsInRadius(casterTeam,
+            targetPosition,
+            nil,
+            self.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    for _, enemy in pairs(enemies) do
+        self.modifierTable.target = enemy
+        damageTable.target = enemy
+        GameMode:ApplyNPCBasedDebuff(self.modifierTable)
+        GameMode:DamageUnit(damageTable)
+    end
+    local pfx = ParticleManager:CreateParticle("particles/units/heroes/heroes_underlord/abyssal_underlord_firestorm_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
+    ParticleManager:SetParticleControl(pfx, 0, targetPosition)
+    ParticleManager:SetParticleControl(pfx, 4, Vector(self.radius, 1, 1))
+    ParticleManager:SetParticleControl(pfx, 5, Vector(0, 0, 0))
+    ParticleManager:ReleaseParticleIndex(pfx)
+    EmitSoundOnLocationWithCaster(targetPosition, "Hero_AbyssalUnderlord.Firestorm", caster)
+    if (self.additionalWaves > 0 and not secondCast) then
+        CreateModifierThinker(
+                caster,
+                self,
+                "modifier_terror_lord_malicious_flames_thinker",
+                {
+                    duration = self.additionalWaves * self.additionalWavesTick,
+                },
+                targetPosition,
+                casterTeam,
+                false
+        )
+    end
+end
+
+function terror_lord_malicious_flames:OnUpgrade()
+    self.damage = self:GetSpecialValueFor("damage") / 100
+    self.dotDamage = self:GetSpecialValueFor("dot_damage") / 100
+    self.tick = self:GetSpecialValueFor("tick")
+    self.radius = self:GetSpecialValueFor("radius")
+    self.duration = self:GetSpecialValueFor("duration")
+    self.spreadRadius = self:GetSpecialValueFor("spread_radius")
+    self.cdrFlatPerDamage = self:GetSpecialValueFor("cdr_flat_per_damage")
+    self.primalBuffPerArmorAggro = self:GetSpecialValueFor("primal_buff_per_armor_aggro") / 100
+    self.primalBuffPerEleArmorAggro = self:GetSpecialValueFor("primal_buff_per_ele_armor_aggro") / 100
+    self.primalBuffPerMaxHpAggro = self:GetSpecialValueFor("primal_buff_per_max_hp_aggro") / 100
+    self.additionalWaves = self:GetSpecialValueFor("additional_waves")
+    self.additionalWavesTick = self:GetSpecialValueFor("additional_waves_tick")
+end
+
+-- terror_lord_mighty_defiance
 modifier_terror_lord_mighty_defiance = class({
     IsDebuff = function(self)
         return false
@@ -382,6 +462,7 @@ function modifier_terror_lord_destructive_stomp_thinker:OnIntervalThink()
         damageTable.ability = self.ability
         damageTable.damage = self.damage * Units:GetHeroPrimaryAttribute(self.caster)
         damageTable.infernodmg = true
+        damageTable.aoe = true
         GameMode:DamageUnit(damageTable)
     end
 end
@@ -608,11 +689,7 @@ end
 LinkedModifiers["modifier_terror_lord_horror_genesis_thinker_buff"] = LUA_MODIFIER_MOTION_NONE
 
 -- terror_lord_horror_genesis
-terror_lord_horror_genesis = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_horror_genesis"
-    end
-})
+terror_lord_horror_genesis = class({})
 
 function terror_lord_horror_genesis:OnSpellStart(unit, special_cast)
     if (not IsServer()) then
@@ -646,7 +723,237 @@ function terror_lord_horror_genesis:IsRequireCastbar()
     return true
 end
 
+
+-- terror_lord_ruthless_predator
+modifier_terror_lord_ruthless_predator_aura = class({
+    IsHidden = function(self)
+        return true
+    end,
+    IsAuraActiveOnDeath = function(self)
+        return false
+    end,
+    GetAuraRadius = function(self)
+        return self.ability.radius
+    end,
+    GetAuraSearchFlags = function(self)
+        return DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+    end,
+    GetAuraSearchTeam = function(self)
+        return DOTA_UNIT_TARGET_TEAM_FRIENDLY
+    end,
+    IsAura = function(self)
+        return true
+    end,
+    GetAuraSearchType = function(self)
+        return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC
+    end,
+    GetModifierAura = function(self)
+        return "modifier_terror_lord_ruthless_predator_aura_buff"
+    end,
+    GetEffectName = function()
+        return "particles/units/terror_lord/ruthless_predator/ruthless_predator_aura.vpcf"
+    end
+})
+
+function modifier_terror_lord_ruthless_predator_aura:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+end
+
+function modifier_terror_lord_ruthless_predator_aura:GetAuraEntityReject(npc)
+    return npc:HasModifier("modifier_terror_lord_ruthless_predator_aura")
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator_aura"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_ruthless_predator_aura_buff = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return true
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end
+})
+
+function modifier_terror_lord_ruthless_predator_aura_buff:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ownerModifier = self:GetAbility():GetCaster():FindModifierByName("modifier_terror_lord_ruthless_predator")
+end
+
+function modifier_terror_lord_ruthless_predator_aura_buff:GetHealthRegenerationPercentBonus()
+    if (self.ownerModifier and self.ownerModifier.GetHealthRegenerationPercentBonus) then
+        return self.ownerModifier:GetHealthRegenerationPercentBonus()
+    end
+    return 0
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator_aura_buff"] = LUA_MODIFIER_MOTION_NONE
+
+modifier_terror_lord_ruthless_predator = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_TOOLTIP }
+    end
+})
+
+function modifier_terror_lord_ruthless_predator:OnCreated()
+    if (not IsServer()) then
+        return
+    end
+    self.ability = self:GetAbility()
+    self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
+    self.particlesTable = {}
+    self.ability:OnUpgrade()
+    self:OnRefresh()
+end
+
+function modifier_terror_lord_ruthless_predator:OnRefresh()
+    if (not IsServer()) then
+        return
+    end
+    self:StartIntervalThink(self.ability.tick)
+end
+
+function modifier_terror_lord_ruthless_predator:OnIntervalThink()
+    if (not IsServer()) then
+        return
+    end
+    local enemies = FindUnitsInRadius(
+            self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.radius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_ALL,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    local damageTable = {
+        caster = self.caster,
+        target = nil,
+        ability = self.ability,
+        damage = Units:GetHeroStrength(self.caster) * self.ability.damage,
+        infernodmg = true,
+        aoe = true
+    }
+    local stacks = 0
+    for _, pidx in pairs(self.particlesTable) do
+        ParticleManager:DestroyParticle(pidx, false)
+        ParticleManager:ReleaseParticleIndex(pidx)
+    end
+    self.particlesTable = {}
+    for _, enemy in pairs(enemies) do
+        local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/ruthless_predator/ruthless_predator_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, enemy)
+        ParticleManager:SetParticleControlEnt(pidx, 1, enemy, PATTACH_POINT_FOLLOW, "attach_hitloc", enemy:GetAbsOrigin(), true)
+        table.insert(self.particlesTable, pidx)
+        damageTable.target = enemy
+        GameMode:DamageUnit(damageTable)
+        if Enemies:IsBoss(enemy) then
+            stacks = stacks + self.ability.stacksPerBoss
+        elseif Enemies:IsElite(enemy) then
+            stacks = stacks + self.ability.stacksPerElite
+        else
+            stacks = stacks + self.ability.stacksPerNormal
+        end
+    end
+    self:SetStackCount(stacks + self.ability.minStacks)
+end
+
+function modifier_terror_lord_ruthless_predator:GetHealthRegenerationPercentBonus()
+    return math.min(self.ability.bonusHealthRegenerationPerEnemy * self:GetStackCount(), self.ability.bonusHealthRegenerationMax)
+end
+
+function modifier_terror_lord_ruthless_predator:OnTooltip()
+    local ability = self:GetAbility()
+    return math.min(ability:GetSpecialValueFor("bonus_health_regeneration_per_enemy") * self:GetStackCount(), ability:GetSpecialValueFor("bonus_health_regeneration_max"))
+end
+
+LinkedModifiers["modifier_terror_lord_ruthless_predator"] = LUA_MODIFIER_MOTION_NONE
+
+terror_lord_ruthless_predator = class({
+    GetAOERadius = function(self)
+        return self:GetSpecialValueFor("radius")
+    end,
+    GetBehavior = function(self)
+        if (self:GetSpecialValueFor("active_duration") > 0) then
+            return DOTA_ABILITY_BEHAVIOR_NO_TARGET + DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING
+        end
+        return DOTA_ABILITY_BEHAVIOR_AURA + DOTA_ABILITY_BEHAVIOR_PASSIVE
+    end,
+    GetIntrinsicModifierName = function()
+        return "modifier_terror_lord_ruthless_predator"
+    end,
+    GetCooldown = function(self)
+        return self:GetSpecialValueFor("active_cooldown")
+    end
+})
+
+function terror_lord_ruthless_predator:OnUpgrade()
+    self.regenerationReduction = self:GetSpecialValueFor("regeneration_reduction") / 100
+    self.minStacks = self:GetSpecialValueFor("min_stacks")
+    self.stacksPerNormal = self:GetSpecialValueFor("stacks_per_normal")
+    self.stacksPerElite = self:GetSpecialValueFor("stacks_per_elite")
+    self.stacksPerBoss = self:GetSpecialValueFor("stacks_per_boss")
+    self.bonusHealthRegenerationPerEnemy = self:GetSpecialValueFor("bonus_health_regeneration_per_enemy") / 100
+    self.bonusHealthRegenerationMax = self:GetSpecialValueFor("bonus_health_regeneration_max") / 100
+    self.radius = self:GetSpecialValueFor("radius")
+    self.tick = self:GetSpecialValueFor("tick")
+    self.activeDuration = self:GetSpecialValueFor("active_duration")
+    self.damage = self:GetSpecialValueFor("damage") / 100
+end
+
+function terror_lord_ruthless_predator:OnSpellStart()
+    if (not IsServer()) then
+        return
+    end
+    local caster = self:GetCaster()
+    local modifierTable = {
+        ability = self,
+        target = caster,
+        caster = caster,
+        modifier_name = "modifier_terror_lord_ruthless_predator_aura",
+        duration = self.activeDuration
+    }
+    GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("Hero_AbyssalUnderlord.Firestorm.Start", caster)
+end
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_terror_lord", MotionController)
+end
+
+if (IsServer() and not GameMode.TERROR_LORD_INIT) then
+    GameMode.TERROR_LORD_INIT = true
 end

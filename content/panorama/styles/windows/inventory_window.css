@@ -19,7 +19,17 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 100% 100%;
-	border: 1px solid grey;
+	border: 1px solid #ffffff08;
+}
+
+.InventorySlot.first
+{
+	border-left: 0px none white;
+}
+
+.InventorySlot.last
+{
+	border-right: 0px none white;
 }
 
 .InventorySlot DOTAItemImage
@@ -33,13 +43,13 @@
 	width: 77px;
 	height: 57px;
 	margin: 10px; /* change that in OnInventorySlotDragEnd (inventory.js) too (slotSpacingX/Y) */
-	border: 1px solid gray;
-	border-radius: 5px;
+	border: 1px solid #ffffff09;
+	box-shadow: 0px 0px 6px #000000aa;
 }
 
 .InventoryEquippedSlot.Drag
 {
-	border: 1px solid gold;
+	border: 1px solid #ffffff5f;
 }
 
 .InventoryEquippedSlot Label
@@ -185,12 +195,7 @@
 	margin-top: 10px;
 	margin-left: 29px;
 	margin-bottom: 10px;
-}
-
-.WindowCloseIcon 
-{
-	margin-top: 2px;
-	margin-right: 4px;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .HeroNameContainer 
@@ -211,6 +216,11 @@
 	vertical-align: center;
 	padding-left: 6px;
 	padding-bottom: -4px;
+}
+
+.HeroName Label
+{
+    text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .BoxedAttributes 
@@ -250,6 +260,7 @@
 {
 	font-size: 12px;
 	horizontal-align: center;
+	text-shadow: 0px 0px 2px 4 #00000088;
 }
 
 .SwitchPageButtons {
@@ -258,37 +269,6 @@
 	margin-bottom: 4px;
 }
 
-.InventoryButton {
-	width: fit-children;
-	height: 24px;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	border-radius: 5px;
-	border: 1px solid grey;
-	vertical-align: center;
-	margin-right: 10px;
-	padding-right: 10px; 
-	padding-left: 10px;
-}
-
-.InventoryButton.Normal {
-	height: 50px;
-}
-
-.InventoryButton.is_pressed  Label {
-	color: grey;
-}
-
-.InventoryButton:hover {
-	opacity: 0.5;
-}
-
-.InventoryButton Label {
-	color: white;
-	horizontal-align: center;
-	vertical-align: center;
-	font-size: 16px;
-	text-align: center;
-}
 #HeroModelContainer
 {
     width: 100%;
@@ -343,83 +323,14 @@
     background-size: 100%;
 }
 
-#ConflictDialogPanel 
-{
-	width: fit-children;
-	height: fit-children;
-	border: 1px solid gray;
-	background-image: url("s2r://panorama/images/backgrounds/gallery_background_png.vtex");
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	background-size: 100% 100%;
-	border-radius: 4px;
-	flow-children: down;
-	transform-origin: 0% 0%;
-	color: red;
-	horizontal-align: center;
-	vertical-align: center;
-	visibility: collapse;
+.ItemBorder {
+    width: fill-parent-flow(1.0);
+    height: fill-parent-flow(1.0);
+    border: 0px solid white;
+    border-brush: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) );
 }
 
-#ConflictDialogPanel .ItemPanel
-{
-	width: 100%;
-	height: fit-children;
-	flow-children: right;
-}
-
-#ConflictDialogPanel .ItemPanel .Item
-{
-	width: 250px;
-	height: fit-children;
-	flow-children: down;
-	margin: 5px;
-	margin-left: 35px;
-}
-
-#ConflictDialogPanel .ItemPanel .Item .ItemTooltipDescription .ItemTooltipLabel
-{
-	min-height: 140px;
-}
-
-#ConflictDialogPanel .NewLabel 
-{
-	color: white;
-	vertical-align: center;
-	text-align: center;
-	height: 30px;
-	font-size: 18px;
-	margin-left: 40px;
-	margin-top: 20px;
-	padding-top: 5px;
-	font-family: platformfont;
-	font-weight: bold;
-	width: 240px;
-}
-
-#ConflictDialogPanel .OldLabel 
-{
-	color: white;
-	vertical-align: center;
-	text-align: center;
-	height: 30px;
-	width: 240px;
-	padding-top: 5px;
-	font-size: 18px;
-	margin-left: 50px;
-	margin-top: 20px;
-	font-family: platformfont;
-	font-weight: bold;
-}
-
-.OldNewLabelsContainer 
-{
-	flow-children: right;
-}
-
-.ItemTooltipLabel
-{
-    color: white;
-	font-family: platformfont;
-	font-size: 16px;
+.InventorySlotDragged {
+    border: 1px solid white;
+    border-brush: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) );
 }

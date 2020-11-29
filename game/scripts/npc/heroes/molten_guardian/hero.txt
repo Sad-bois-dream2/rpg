@@ -2,13 +2,14 @@
 {
     "npc_dota_hero_mars"
     {
+	    "HeroIndex"		"129"
         "AbilityLayout"     "6"
-        "Ability1"	"molten_guardian_scorching_clash"
-        "Ability2"	"molten_guardian_volcanic_blow"
-        "Ability3"	"molten_guardian_lava_skin"
-        "Ability4"	"mars_arena_of_blood"
-        "Ability5"	"empty5"
-        "Ability6"	"antimage_blink"
+        "Ability1"	"molten_guardian_shields_up"
+        "Ability2"	"molten_guardian_scorching_clash"
+        "Ability3"	"molten_guardian_volcanic_blow"
+        "Ability4"	"molten_guardian_lava_spear"
+        "Ability5"	"molten_guardian_lava_skin"
+        "Ability6"	"molten_guardian_molten_fortress"
 		"AbilityTalentStart"		"7"
         "Ability7"	""
         "Ability8"	""
@@ -23,8 +24,15 @@
         "Ability17"	""
 		"ArmorPhysical"                "0"
 		"MagicalResistance"            "0"
-		"AttackDamageMin"            "34"       // Damage range min.
-		"AttackDamageMax"            "34"       // Damage range max.
+		"AttackDamageMin"            "1"       // Damage range min.
+		"AttackDamageMax"            "1"       // Damage range max.
+        "AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+        "AttackRate"		"1.700000"
+        "AttackAnimationPoint"		"0.560000"
+        "AttackAcquisitionRange"		"600"
+        "AttackRange"		"150"
+        "MovementSpeed"		"315"
+        "MovementTurnRate"		"0.500000"
 		"BountyXP"                    "0"            // Experience earn.
 		"BountyGoldMin"                "0"           // Gold earned min.
 		"BountyGoldMax"                "0"           // Gold earned max.
@@ -46,5 +54,12 @@
             "Support"   "0"
             "Utility"   "1"
         }
+         "HeroSelectionPickSounds"
+         {
+             "1" "mars_mars_spawn_04"
+             "2" "mars_mars_spawn_06"
+             "3" "mars_mars_spawn_08"
+             "4" "mars_mars_hero_intro_03"
+         }
     }
 }

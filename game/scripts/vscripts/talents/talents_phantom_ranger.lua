@@ -118,12 +118,13 @@ function modifier_npc_dota_hero_drow_ranger_talent_38:OnAbilityFullyCast(params)
 
             for _, phantom in pairs(activePhantoms) do
 
-                local emp_explosion_effect = ParticleManager:CreateParticle("particles/units/heroes/hero_invoker/invoker_emp_explode.vpcf",  PATTACH_ABSORIGIN, phantom)
-                ParticleManager:SetParticleControl(emp_explosion_effect, 1, Vector(self.talent38_radius, 0, 0))
+                local emp_explosion_effect = ParticleManager:CreateParticle("particles/units/abyssal_stalker/void_dust/void_dust_explosion.vpcf",  PATTACH_ABSORIGIN, phantom)
+                ParticleManager:SetParticleControl(emp_explosion_effect, 2, Vector(self.talent38_radius, 0, 0))
+                ParticleManager:ReleaseParticleIndex(emp_explosion_effect)
                 phantom:EmitSound("Hero_Invoker.EMP.Discharge")
                 local enemies = FindUnitsInRadius(self.caster:GetTeamNumber(), phantom:GetAbsOrigin(), nil, self.talent38_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
                 for _, enemy in pairs(enemies) do
-                    GameMode:DamageUnit({ caster = self.caster, target = enemy, ability = params.ability, damage = Units:GetAttackDamage(self.caster) * (self.talent38_basePercentAd + talent38_level * self.talent38_percentAdPerLevel) / 100, voiddmg = true, fromsummon = true })
+                    GameMode:DamageUnit({ caster = self.caster, target = enemy, ability = params.ability, damage = Units:GetAttackDamage(self.caster) * (self.talent38_basePercentAd + talent38_level * self.talent38_percentAdPerLevel) / 100, voiddmg = true, fromsummon = true, aoe = true })
                 end
 
             end
@@ -185,7 +186,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_41:OnAttackLanded(params)
     if (params.attacker and params.target and not params.target:IsNull() and (Enemies:IsElite(params.target) or Enemies:IsBoss(params.target)) and params.attacker == self.caster) then
 
         local talent41_level = 3 --TalentTree:GetHeroTalentLevel(self.caster, 41)
-        for i = 0, self.caster:GetAbilityCount() do
+        for i = 0, self.caster:GetAbilityCount()-1 do
 
             local ability = self.caster:GetAbilityByIndex(i)
             if (ability) then
@@ -289,7 +290,7 @@ function modifier_npc_dota_hero_drow_ranger_talent_42:OnTakeDamage(damageTable)
             local enemies = FindUnitsInRadius(drow:GetTeamNumber(), drow:GetAbsOrigin(), nil, modifier.talent42_radius, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
             for _, enemy in pairs(enemies) do
 
-               	GameMode:DamageUnit({ caster = drow, target = enemy, ability = nil, damage = Units:GetAttackDamage(drow) * (modifier.talent42_basePercentAd + talent42_level * modifier.talent42_percentAdPerLevel) / 100, voiddmg = true })
+               	GameMode:DamageUnit({ caster = drow, target = enemy, ability = nil, damage = Units:GetAttackDamage(drow) * (modifier.talent42_basePercentAd + talent42_level * modifier.talent42_percentAdPerLevel) / 100, voiddmg = true, aoe = true })
                	-- local silence = GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_silence", duration = modifier.talent42_ccDuration })
                	-- local disarm = GameMode:ApplyDebuff({ caster = drow, target = enemy, ability = nil, modifier_name = "modifier_disarmed", duration = modifier.talent42_ccDuration })
                 -- silence.GetTexture = function () return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/talent_42.png" end
@@ -929,10 +930,7 @@ end
 --------------------------------------------------------------------------------
 
 function modifier_npc_dota_hero_drow_ranger_talent_51:GetSpellHasteBonus()
-	
-	--return 1 - (100 / Units:GetAttackSpeed(self.hero))
-    return (Units:GetAttackSpeed(self.hero) - 100) / 100 -- fix this remove /100 after fixing spellhaste
-
+    return Units:GetAttackSpeed(self.hero)
 end
 
 
@@ -1031,13 +1029,25 @@ function CreatePhantomAtPoint(point, ability, phantomModifier, phantomSpeed, pha
     modifierTable.modifier_name = phantomModifier
     modifierTable.duration = -1
     modifierTable.modifier_params = { phantomSpeed = phantomSpeed }
-    GameMode:ApplyBuff(modifierTable)
+    local phantomModifier = GameMode:ApplyBuff(modifierTable)
     phantom:SetOwner(ability.caster)
+    local modifierTable = {}
+    modifierTable.ability = ability
+    modifierTable.target = phantom
+    modifierTable.caster = phantom
+    modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+    modifierTable.duration = -1
+    GameMode:ApplyBuff(modifierTable)
     local wearables = GetWearables(ability.caster)
     AddWearables(phantom, wearables)
-    phantom:SetRenderColor(20, 0, 30)
     ForEachWearable(phantom, function(wearable)
-        wearable:SetRenderColor(20, 0, 30)
+        local modifierTable = {}
+        modifierTable.ability = ability
+        modifierTable.target = wearable
+        modifierTable.caster = phantom
+        modifierTable.modifier_name = "modifier_phantom_ranger_soul_echo_phantom_status_effect"
+        modifierTable.duration = -1
+        GameMode:ApplyBuff(modifierTable)
     end)
     local phantomIndex = phantom:entindex()
     -- if (ability:GetAbilityName() == "phantom_ranger_phantom_arrow" and ability.caster:HasModifier("modifier_npc_dota_hero_drow_ranger_talent_46")) then 
@@ -1056,6 +1066,7 @@ function CreatePhantomAtPoint(point, ability, phantomModifier, phantomSpeed, pha
 
         Timers:CreateTimer(phantomDuration, function()
             DestroyPhantom(phantom)
+            phantomModifier:Destroy()
         end)
 
     -- end

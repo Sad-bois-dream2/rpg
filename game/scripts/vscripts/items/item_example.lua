@@ -77,11 +77,12 @@ function modifier_inventory_item_example:GetSpellDamageBonus()
     return 0
 end
 
--- this is flat like AS but capped at 8 this is so that old code dont need fix. Every flat spellhaste related stuff need to be *0.01 in lua from the display value in addon_english
+-- flat value 1-800
 function modifier_inventory_item_example:GetSpellHasteBonus()
     return 0
 end
---this work like % AS 1.0 = 100%
+
+-- 1.0 = 100%
 function modifier_inventory_item_example:GetSpellHastePercentBonus()
     return 0
 end
@@ -204,19 +205,61 @@ function modifier_inventory_item_example:GetInfernoDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetBlockBonus()
+function modifier_inventory_item_example:GetSummonDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetBlockPercentBonus()
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSingleDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetMagicBlockBonus()
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetAOEDamageBonus()
     return 0
 end
 
-function modifier_inventory_item_example:GetMagicBlockPercentBonus()
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetDOTDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFirstAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFirstAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSecondAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetThirdAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFourthAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetFifthAbilitySpellDamageBonus()
+    return 0
+end
+
+-- 1.0 = 100%
+function modifier_inventory_item_example:GetSixthAbilitySpellDamageBonus()
+    return 0
+end
+-- 1.0 = 100%, damageTable = table of incoming damage instance
+function modifier_inventory_item_example:GetAdditionalConditionalDamage(damageTable)
     return 0
 end
 
@@ -239,8 +282,38 @@ function modifier_inventory_item_example:GetIgnoreAggroTarget()
     return self:GetParent()
 end
 
--- 1.0 = 100%, pls no, decrease % cooldown (capped at 50%). Fixed from set % cooldown to decrease % cooldown.
-function modifier_inventory_item_example:GetCooldownReduction()
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFirstAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetSecondAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetThirdAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFourthAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetFifthAbilityCooldownReductionBonus()
+    return 0.0
+end
+
+-- 1.0 = 100% (capped at 50%).
+function modifier_inventory_item_example:GetSixthAbilityCooldownReductionBonus()
     return 0.0
 end
 
@@ -249,16 +322,18 @@ function modifier_inventory_item_example:GetBaseAttackTime()
     return 1.7
 end
 
-function modifier_inventory_item_example:GetHealingReceivedBonus()
-    return 0 -- finalHeal = heal + this
+-- flat bonus, 0.1 = 0.1
+function modifier_inventory_item_example:GetBaseAttackTimeBonus()
+    return 0
+end
+
+-- percent bonus 1.0 = 100%
+function modifier_inventory_item_example:GetBaseAttackTimePercentBonus()
+    return 0
 end
 
 function modifier_inventory_item_example:GetHealingReceivedPercentBonus()
     return 0 -- finalHeal = heal * (1 + this)
-end
-
-function modifier_inventory_item_example:GetHealingCausedBonus()
-    return 0 -- finalHeal = heal + this
 end
 
 function modifier_inventory_item_example:GetHealingCausedPercentBonus()
@@ -290,35 +365,30 @@ function modifier_inventory_item_example:GetCriticalChanceBonus()
     return 0
 end
 
+-- increase all aggro caused of owner, 1.0 = 100%
+function modifier_inventory_item_example:GetAggroCausedPercentBonus()
+    return 0
+end
 
+-- provide immunity to all stun modifiers
+function modifier_inventory_item_example:GetImmunityToStun()
+    return false
+end
+
+-- provide immunity to all root modifiers
+function modifier_inventory_item_example:GetImmunityToRoot()
+    return false
+end
+
+-- provide immunity to all silence modifiers
+function modifier_inventory_item_example:GetImmunityToSilence()
+    return false
+end
+
+-- provide immunity to all hex modifiers
+function modifier_inventory_item_example:GetImmunityToHex()
+    return false
+end
 
 -- Don't forget basic stuff too
 LinkLuaModifier("modifier_inventory_item_example", "items/item_example", LUA_MODIFIER_MOTION_NONE)
-
---Stats that can set as multi "intended for boss debuff"
--- copy the additive one and add multi to the back
---for example
---function modifier_inventory_item_example:GetStrengthPercentBonusMulti()
---    return 2 --this will *2 overall strength (calculate after the % additive)
---end
---function modifier_inventory_item_example:GetSpellHastePercentBonusMulti()
---    return 0.2 --this will set spellhaste to 20%  (calculate after the % additive )
---end
---[[local unitBonusPercentStrMulti = 1
-local unitBonusPercentAgiMulti = 1
-local unitBonusPercentIntMulti = 1
-local unitBonusPercentPrimaryMulti = 1
-local unitBonusPercentAttackDamageMulti = 1
-local unitBonusPercentAttackSpeedMulti = 1
-local unitBonusSpellDamageMulti = 1
-local unitBonusPercentSpellHasteMulti = 1
-local unitBonusPercentAttackRangeMulti = 1
-local unitBonusPercentCastRangeMulti = 1
-local unitBonusPercentMoveSpeedMulti = 1
-local unitBonusPercentHealthRegenerationMulti = 1
-local unitBonusPercentManaRegenerationMulti = 1
-local unitBonusPercentHealthMulti = 1
-local unitBonusPercentManaMulti = 1
-local unitArmorPercentMulti = 1
-local unitHealingReceivedPercentMulti = 1
-local unitHealingCausedPercentMulti = 1 --]]

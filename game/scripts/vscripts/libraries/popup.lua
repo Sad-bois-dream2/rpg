@@ -37,6 +37,10 @@ function PopupCriticalDamage(target, amount)
     PopupNumbers(target, "crit", Vector(255, 0, 0), 1.0, amount, nil, POPUP_SYMBOL_POST_LIGHTNING)
 end
 
+function PopupSpellCriticalDamage(target, amount)
+    PopupNumbers(target, "crit", Vector(100, 149, 237), 1.0, amount, nil, POPUP_SYMBOL_POST_LIGHTNING)
+end
+
 -- e.g. when taking damage over time from a poison type spell
 function PopupDamageOverTime(target, amount)
     PopupNumbers(target, "poison", Vector(215, 50, 248), 1.0, amount, nil, POPUP_SYMBOL_POST_EYE)
@@ -76,8 +80,5 @@ function PopupNumbers(target, pfx, color, lifetime, number, presymbol, postsymbo
     ParticleManager:SetParticleControl(pidx, 1, Vector(tonumber(presymbol), tonumber(number), tonumber(postsymbol)))
     ParticleManager:SetParticleControl(pidx, 2, Vector(lifetime, digits, 0))
     ParticleManager:SetParticleControl(pidx, 3, color)
-    Timers:CreateTimer(lifetime, function()
-        ParticleManager:DestroyParticle(pidx, false)
-        ParticleManager:ReleaseParticleIndex(pidx)
-    end)
+    ParticleManager:ReleaseParticleIndex(pidx)
 end

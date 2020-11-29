@@ -7,67 +7,37 @@ var confirmButton;
 var TIMER = -1;
 var timerStarted = false;
 var hostId = -1;
-var DIFFICULTY_MAX = 20;
+var DIFFICULTY_MAX = 10;
 
 function GetPickedDifficulty(value) {
     if(value  < 0.01) {
         return 1;
     }
-    if(value  < 0.06) {
+    if(value  < 0.11) {
         return 2;
     }
-    if(value  < 0.11) {
+    if(value  < 0.22) {
         return 3;
     }
-    if(value  < 0.16) {
+    if(value  < 0.32) {
         return 4;
     }
-    if(value  < 0.22) {
+    if(value  < 0.43) {
         return 5;
     }
-    if(value  < 0.27) {
+    if(value  < 0.53) {
         return 6;
     }
-    if(value  < 0.32) {
+    if(value  < 0.64) {
         return 7;
     }
-    if(value  < 0.37) {
+    if(value  < 0.74) {
         return 8;
     }
-    if(value  < 0.43) {
+    if(value  < 0.85) {
         return 9;
     }
-    if(value  < 0.48) {
-        return 10;
-    }
-    if(value  < 0.53) {
-        return 11;
-    }
-    if(value  < 0.58) {
-        return 12;
-    }
-    if(value  < 0.64) {
-        return 13;
-    }
-    if(value  < 0.69) {
-        return 14;
-    }
-    if(value  < 0.74) {
-        return 15;
-    }
-    if(value  < 0.79) {
-        return 16;
-    }
-    if(value  < 0.85) {
-        return 17;
-    }
-    if(value  < 0.90) {
-        return 18;
-    }
-    if(value  < 0.95) {
-        return 19;
-    }
-    return 20;
+    return 10;
 }
 
 function GetHealthBonusForDifficulty(difficulty) {
@@ -77,12 +47,12 @@ function GetHealthBonusForDifficulty(difficulty) {
 }
 
 function GetArmorBonusForDifficulty(difficulty) {
-    var result = (difficulty / 20) * 100;
+    var result = (difficulty / DIFFICULTY_MAX) * 100;
     return RoundValue(result);
 }
 
 function GetEleArmorBonusForDifficulty(difficulty) {
-    var result = (difficulty / 20) * 100;
+    var result = (difficulty / DIFFICULTY_MAX) * 100;
     return RoundValue(result);
 }
 
@@ -97,10 +67,10 @@ function GetExperienceBonusForDifficulty(difficulty) {
 
 function GetAbilitiesLevelForDifficulty(difficulty) {
     var result = 1;
-    if (difficulty > 8) {
+    if (difficulty > 4) {
         result = 2;
     }
-    if (difficulty > 14) {
+    if (difficulty > 7) {
         result = 3;
     }
     return result;
@@ -109,8 +79,7 @@ function GetAbilitiesLevelForDifficulty(difficulty) {
 function GetEliteEnemyDropChance(difficulty) {
     var baseDropChance = 35;
     var maxDropChance = 70;
-    var difficultyMax = 10.5;
-    return Math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / difficultyMax)), maxDropChance);
+    return Math.min(baseDropChance + ((maxDropChance - baseDropChance) * ((difficulty * 1.8) / DIFFICULTY_MAX)), maxDropChance);
 }
 
 function GetItemDropChances(difficulty) {

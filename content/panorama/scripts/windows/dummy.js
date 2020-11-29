@@ -105,11 +105,15 @@ function BuildDamageSourceString(event) {
     if(event.fromsummon) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Summon");
     }
-    if(!event.ability && event.physdmg) {
+    if(event.fromtalent) {
+        return $.Localize("#DOTA_Dummy_Damage_Source_Talent").replace("%TALENT%", $.Localize("#DOTA_TalentTree_Talent_" + event.fromtalent));
+    }
+    if(!event.ability) {
         return $.Localize("#DOTA_Dummy_Damage_Source_Autoattack");
     } else {
         return $.Localize("#DOTA_Dummy_Damage_Source_Ability").replace("%ABILITY%", $.Localize("#DOTA_Tooltip_Ability_" + event.abilityName));
     }
+    return "Unknown"
 }
 
 function FormatDamageNumber(number) {
@@ -128,8 +132,10 @@ function OnDamageRegisterRequest(event) {
 	    currentEntryIndex++;
 	    UpdateLogCapacityText();
 	}
+	if(event.timer > 0) {
     storedDamage += event.damage;
     CalculateDPS();
+    }
 }
 
 function UpdateLogCapacityText() {
