@@ -825,6 +825,14 @@ function modifier_luminous_samurai_blade_dance_motion:UpdateHorizontalMotion(me,
                     modifierTable.stacks = 1
                     modifierTable.max_stacks = 99999
                     GameMode:ApplyStackingDebuff(modifierTable)
+                    -- Rank 4 
+                    if (self.ability:GetLevel() > 3 and self.caster:HasModifier("modifier_luminous_samurai_bankai")) then
+
+                        self.caster:AddNewModifier(self.caster, self.ability, "modifier_luminous_samurai_blade_dance_attack_modifier", {})
+                        self.caster:PerformAttack(enemy, true, true, true, true, false, false, true)
+                        self.caster:RemoveModifierByName("modifier_luminous_samurai_blade_dance_attack_modifier")
+
+                    end
                 end
                 table.insert(self.damagedEnemies, enemy)
             end
@@ -836,25 +844,378 @@ end
 
 LinkedModifiers["modifier_luminous_samurai_blade_dance_motion"] = LUA_MODIFIER_MOTION_HORIZONTAL
 
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance_attack_modifier = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE }
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_attack_modifier"] = LUA_MODIFIER_MOTION_NONE
+
+function modifier_luminous_samurai_blade_dance_attack_modifier:GetModifierBaseDamageOutgoing_Percentage()
+    return -100
+end
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED, MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance_after_attack = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_after_attack"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_attack:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.bonusOutputAfterAuto = self:GetAbility().bonusOutputAfterAuto
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_attack:OnTakeDamage(damageTable)
+
+    if not IsServer() then return end
+    local modifier = damageTable.attacker:FindModifierByName("modifier_luminous_samurai_blade_dance_after_attack")
+    if (modifier and damageTable.ability ~= nil and damageTable.damage > 0) then 
+
+        damageTable.damage = damageTable.damage * (100 + modifier.bonusOutputAfterAuto) / 100 
+        modifier:Destroy()
+        return damageTable
+        
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_attack:OnPreHeal(healTable)
+
+    if not IsServer() then return end
+    local modifier = healTable.caster:FindModifierByName("modifier_luminous_samurai_blade_dance_after_attack")
+    if (modifier and healTable.ability ~= nil and healTable.heal > 0) then
+
+        healTable.heal = healTable.heal * (100 + modifier.bonusOutputAfterAuto) / 100 
+        modifier:Destroy()
+        return healTable
+
+    end 
+
+end
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance_after_spell = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_after_spell"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_spell:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.attackSpeedAfterSpell = self:GetAbility().attackSpeedAfterSpell
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_spell:GetAttackSpeedPercentBonusMulti()
+
+    return 100 / (100 - self.attackSpeedAfterSpell)
+    
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_after_spell:OnAttackLanded(params)
+
+    if not IsServer() then return end
+    if (params.attacker ~= nil and params.target ~= nil and params.attacker ~= params.target and params.attacker == self.caster) then self:Destroy() end
+
+end
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance_immune = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return false
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance_immune"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance_immune:OnTakeDamage(damageTable)
+
+    if not IsServer() then return end
+    local modifier = damageTable.victim:FindModifierByName("modifier_luminous_samurai_blade_dance_immune")
+    if (modifier and damageTable.damage > 0) then 
+
+        damageTable.damage = 0
+        return damageTable
+        
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+modifier_luminous_samurai_blade_dance = class({
+    IsDebuff = function(self)
+        return false
+    end,
+    IsHidden = function(self)
+        return true
+    end,
+    IsPurgable = function(self)
+        return false
+    end,
+    RemoveOnDeath = function(self)
+        return false
+    end,
+    AllowIllusionDuplicate = function(self)
+        return false
+    end,
+    GetAttributes = function(self)
+        return MODIFIER_ATTRIBUTE_PERMANENT
+    end,
+    DeclareFunctions = function(self)
+        return { MODIFIER_EVENT_ON_ATTACK_LANDED, MODIFIER_EVENT_ON_ABILITY_FULLY_CAST }
+    end
+})
+
+LinkedModifiers["modifier_luminous_samurai_blade_dance"] = LUA_MODIFIER_MOTION_NONE
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance:OnAttackLanded(params)
+
+    if not IsServer() then return end
+    if (self.caster and params.attacker and params.target and not params.target:IsNull() and params.attacker == self.caster) then
+
+        GameMode:ApplyBuff({ 
+            caster = self.caster, 
+            target = self.caster, 
+            ability = self.ability, 
+            modifier_name = "modifier_luminous_samurai_blade_dance_after_attack", 
+            duration = self.ability.comboBuffDuration
+        })
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance:OnAbilityFullyCast(params)
+
+    if not IsServer() then return end
+    if (self.caster and params.unit and params.unit == self.caster) then
+
+        GameMode:ApplyBuff({ 
+            caster = self.caster, 
+            target = self.caster, 
+            ability = self.ability, 
+            modifier_name = "modifier_luminous_samurai_blade_dance_after_spell", 
+            duration = self.ability.comboBuffDuration
+        })
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function modifier_luminous_samurai_blade_dance:OnCreated()
+
+    if not IsServer() then return end
+    self.caster = self:GetParent()
+    self.ability = self:GetAbility()
+
+end
+
 -- luminous_samurai_blade_dance
 luminous_samurai_blade_dance = class({
     GetAbilityTextureName = function(self)
         return "luminous_samurai_blade_dance"
+    end,
+      GetIntrinsicModifierName = function(self)
+        return "modifier_luminous_samurai_blade_dance"
     end
 })
+
+--------------------------------------------------------------------------------
+
+function luminous_samurai_blade_dance:OnUpgrade()
+
+    self.caster = self:GetCaster()
+    self.slashes = self:GetSpecialValueFor("slashes")
+    self.stackDuration = self:GetSpecialValueFor("stack_duration")
+    self.damageImmunityDuration = self:GetSpecialValueFor("damage_immunity_duration")
+    self.bonusOutputAfterAuto = self:GetSpecialValueFor("bonus_output_after_auto")
+    self.attackSpeedAfterSpell = self:GetSpecialValueFor("attack_speed_after_spell")
+    self.comboBuffDuration = self:GetSpecialValueFor("combo_buff_duration")
+    self.damageImmunityDuration = self:GetSpecialValueFor("damage_immunity_duration")
+    self.cooldownReduction = self:GetSpecialValueFor("cooldown_reduction")
+
+end
+
+--------------------------------------------------------------------------------
 
 function luminous_samurai_blade_dance:OnSpellStart()
     if (not IsServer()) then
         return
     end
-    local caster = self:GetCaster()
-    self.slashes = self:GetSpecialValueFor("slashes")
-    self.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(caster) * 0.01
-    self.stackDuration = self:GetSpecialValueFor("stack_duration")
-    local distanceVector = self:GetCursorPosition() - caster:GetAbsOrigin()
+    self.damage = self:GetSpecialValueFor("damage") * Units:GetAttackDamage(self.caster) * 0.01
+    local distanceVector = self:GetCursorPosition() - self.caster:GetAbsOrigin()
     self.castDistance = distanceVector:Length2D()
-    caster:SetForwardVector(distanceVector:Normalized())
-    caster:AddNewModifier(caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
+    self.caster:SetForwardVector(distanceVector:Normalized())
+    self.caster:AddNewModifier(self.caster, self, "modifier_luminous_samurai_blade_dance_motion", { Duration = -1 })
+    -- Rank 2 
+    GameMode:ApplyBuff({
+        caster = self.caster,
+        target = self.caster,
+        ability = self,
+        modifier_name = "modifier_luminous_samurai_blade_dance_immune",
+        duration = self.damageImmunityDuration
+    })
+    -- Rank 4
+    if (self.caster:HasModifier("modifier_luminous_samurai_bankai")) then
+
+        GameMode:ReduceAbilityCooldown({
+            target = self.caster,  
+            ability = self:GetAbilityName(), 
+            reduction = self.cooldownReduction, 
+            isflat = true, 
+        })
+
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
+function luminous_samurai_blade_dance:GetCooldown(level)
+
+    if not IsServer() then return self.BaseClass.GetCooldown(self, level) end
+    if not self.caster:HasModifier("modifier_luminous_samurai_bankai") then
+
+        return self.BaseClass.GetCooldown(self, level)
+
+    else
+
+        return self.BaseClass.GetCooldown(self, level) - self.cooldownReduction
+
+    end
+
 end
 
 --------------------------------------------------------------------------------
@@ -1311,9 +1672,6 @@ luminous_samurai_light_iai_giri = class({
     end,
     GetIntrinsicModifierName = function(self)
         return "modifier_luminous_samurai_seed"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_LANDED }
     end
 })
 
@@ -1462,7 +1820,7 @@ end
 --------------------------------------------------------------------------------
 -- Rank 3
 
-function modifier_luminous_samurai_breath_of_heaven:GetHealingCausedPercent()
+function modifier_luminous_samurai_breath_of_heaven:GetHealingCausedBonus()
 
     return (Units:GetHolyDamage(self.caster) - 1) * self.ability.holyDamageToHealing / 100
     
@@ -1619,6 +1977,15 @@ function luminous_samurai_breath_of_heaven:OnUpgrade()
     self.critHealPerStack = self:GetSpecialValueFor("crit_heal_per_stack")
 end
 
+--------------------------------------------------------------------------------
+
+luminous_samurai_divine_storm = class({
+    GetAbilityTextureName = function(self)
+        return "luminous_samurai_divine_storm"
+    end
+})
+
+
 -- Internal stuff
 for LinkedModifier, MotionController in pairs(LinkedModifiers) do
     LinkLuaModifier(LinkedModifier, "heroes/hero_luminous_samurai", MotionController)
@@ -1632,6 +1999,8 @@ if (IsServer() and not GameMode.LUMINOUS_SAMURAI_INIT) then
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_light_iai_giri, 'OnCriticalStrike'))
     GameMode:RegisterCritDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_breath_of_heaven, 'OnCriticalStrike'))
     GameMode:RegisterPreHealEventHandler(Dynamic_Wrap(modifier_luminous_samurai_breath_of_heaven_shingan, 'OnPreHeal'))
+    GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_luminous_samurai_blade_dance_after_attack, 'OnTakeDamage'))
+    GameMode:RegisterPreHealEventHandler(Dynamic_Wrap(modifier_luminous_samurai_blade_dance_after_attack, 'OnPreHeal'))
     GameMode.LUMINOUS_SAMURAI_INIT = true
 end
 
