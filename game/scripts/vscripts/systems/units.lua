@@ -103,7 +103,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         local unitCooldownReductionForAbility6 = 1
         local unitHealingReceivedPercent = 1
         local unitHealingCausedPercent = 1
-        local unitBuffAmplification = 1
         local unitDebuffAmplification = 1
         local unitDebuffResistance = 1
         local unitCriticalChance = 1
@@ -323,14 +322,11 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
             if (unitModifiers[i].GetHealingCausedPercentBonus) then
                 unitHealingCausedPercent = unitHealingCausedPercent + tonumber(unitModifiers[i].GetHealingCausedPercentBonus(unitModifiers[i]) or 0)
             end
-            if (unitModifiers[i].GetDebuffAmplificationBonus) then
-                unitDebuffAmplification = unitDebuffAmplification + tonumber(unitModifiers[i].GetDebuffAmplificationBonus(unitModifiers[i]) or 0)
+            if (unitModifiers[i].GetStatusAmplificationBonus) then
+                unitDebuffAmplification = unitDebuffAmplification + tonumber(unitModifiers[i].GetStatusAmplificationBonus(unitModifiers[i]) or 0)
             end
-            if (unitModifiers[i].GetDebuffResistanceBonus) then
-                unitDebuffResistance = unitDebuffResistance * (1 - tonumber(unitModifiers[i].GetDebuffResistanceBonus(unitModifiers[i]) or 0))
-            end
-            if (unitModifiers[i].GetBuffAmplificationBonus) then
-                unitBuffAmplification = unitBuffAmplification + tonumber(unitModifiers[i].GetBuffAmplificationBonus(unitModifiers[i]) or 0)
+            if (unitModifiers[i].GetStatusResistanceBonus) then
+                unitDebuffResistance = unitDebuffResistance * (1 - tonumber(unitModifiers[i].GetStatusResistanceBonus(unitModifiers[i]) or 0))
             end
             if (unitModifiers[i].GetCriticalDamageBonus) then
                 unitCriticalDamage = unitCriticalDamage + tonumber(unitModifiers[i].GetCriticalDamageBonus(unitModifiers[i]) or 0)
@@ -481,7 +477,6 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.healingReceivedPercent = unitHealingReceivedPercent
         statsTable.healingCausedPercent = unitHealingCausedPercent
         -- modifier related bonuses
-        statsTable.buffAmplification = unitBuffAmplification
         statsTable.debuffAmplification = unitDebuffAmplification
         statsTable.debuffResistance = unitDebuffResistance
         -- crit related bonuses
@@ -1228,16 +1223,7 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetBuffAmplification(unit)
-    if (unit ~= nil and unit.stats ~= nil) then
-        return unit.stats.buffAmplification or 1
-    end
-    return 1
-end
-
----@param unit CDOTA_BaseNPC
----@return number
-function Units:GetDebuffAmplification(unit)
+function Units:GetStatusAmplification(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.debuffAmplification or 1
     end
@@ -1246,7 +1232,7 @@ end
 
 ---@param unit CDOTA_BaseNPC
 ---@return number
-function Units:GetDebuffResistance(unit)
+function Units:GetStatusResistance(unit)
     if (unit ~= nil and unit.stats ~= nil) then
         return unit.stats.debuffResistance or 1
     end

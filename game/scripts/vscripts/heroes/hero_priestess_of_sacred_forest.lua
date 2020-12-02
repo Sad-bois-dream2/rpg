@@ -1380,7 +1380,7 @@ function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_sta
     self.ability = self:GetAbility()
 end
 
-function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:GetDebuffResistanceBonus()
+function modifier_priestess_of_sacred_forest_herbaceous_essence_night_debuff_status:GetStatusResistanceBonus()
     return -self.ability.statusResReduction
 end
 

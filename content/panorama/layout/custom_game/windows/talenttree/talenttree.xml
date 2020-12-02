@@ -18,22 +18,6 @@
                 <Label text="#DOTA_TalentTree_Reset_Talents"/>
             </Panel>
         </Panel>
-        <Panel id="ItemTooltip" class="ItemTooltip" style="visibility: collapse;" hittest="false" hittestchildren="false">
-            <Panel class="ItemTooltipHeader">
-                <Panel>
-                    <Image id="ItemTooltipImage" style="width: 64px; height: 64px;" class="ItemTooltipImage"
-                           hittest="false"
-                           scaling="stretch-to-fit-preserve-aspect"
-                           src="file://{images}/spellicons/drow_ranger_wave_of_silence.png"/>
-                </Panel>
-                <Panel class="ItemTooltipName">
-                    <Label id="ItemTooltipNameLabel" html="true" class="ItemTooltipNameLabel" text="Talent Name"/>
-                </Panel>
-            </Panel>
-            <Panel class="ItemTooltipDescription">
-                <Label id="ItemTooltipLabel" class="ItemTooltipLabel" html="true" text="Talent Description"/>
-            </Panel>
-        </Panel>
         <Panel style="visibility: collapse;">
             <Image src="file://{images}/custom_game/hud/talenttree/talent_1.png"/>
             <Image src="file://{images}/custom_game/hud/talenttree/talent_2.png"/>

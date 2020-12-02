@@ -77,7 +77,7 @@ function modifier_light_cardinal_piety_stacks:OnCreated()
     self.ability = self:GetAbility()
 end
 
-function modifier_light_cardinal_piety_stacks:GetBuffAmplificationBonus()
+function modifier_light_cardinal_piety_stacks:GetStatusAmplificationBonus()
     return self.ability.buffsDurationPerStack * self:GetStackCount()
 end
 
@@ -836,7 +836,7 @@ function modifier_light_cardinal_harmony:GetHealthBonus()
     return (self.ability.intToHealth or 0) * Units:GetHeroIntellect(self.caster)
 end
 
-function modifier_light_cardinal_harmony:GetDebuffResistanceBonus()
+function modifier_light_cardinal_harmony:GetStatusResistanceBonus()
     local missingHpPercent = 1 - (self.caster:GetHealth() / self.caster:GetMaxHealth())
     return math.min(missingHpPercent * (self.ability.debuffResistancePerMissingHpPct or 0), (self.ability.debuffResistancePerMissingHpPctMax or 0))
 end

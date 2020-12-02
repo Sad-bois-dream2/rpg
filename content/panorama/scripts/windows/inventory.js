@@ -12,13 +12,13 @@ var ELEMENT_PANEL = 0, ELEMENT_VALUE = 1;
 var pagePanels = [], pageButtons = [];
 var currentHero = -1;
 var ELEMENTS = [
-	["Fire", "file://{images}/custom_game/hud/fire_element.png"],
-	["Frost", "file://{images}/custom_game/hud/frost_element.png"],
-	["Earth", "file://{images}/custom_game/hud/earth_element.png"],
-	["Nature", "file://{images}/custom_game/hud/nature_element.png"],
-	["Void", "file://{images}/custom_game/hud/void_element.png"],
-	["Inferno", "file://{resources}/images/custom_game/hud/inferno_element.png"],
-	["Holy", "file://{images}/custom_game/hud/holy_element.png"]
+	["Fire", "file://{images}/custom_game/hud/stats/fire_element.png"],
+	["Frost", "file://{images}/custom_game/hud/stats/frost_element.png"],
+	["Earth", "file://{images}/custom_game/hud/stats/earth_element.png"],
+	["Nature", "file://{images}/custom_game/hud/stats/nature_element.png"],
+	["Void", "file://{images}/custom_game/hud/stats/void_element.png"],
+	["Inferno", "file://{images}/custom_game/hud/stats/inferno_element.png"],
+	["Holy", "file://{images}/custom_game/hud/stats/holy_element.png"]
 ];
 
 var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
@@ -241,7 +241,6 @@ function OnHeroStatsUpdateRequest(event) {
 		var damageReduction = parsedData.statsTable.damageReduction;
 		var cooldownReduction = parsedData.statsTable.cdr;
 		var attackSpeed = parsedData.statsTable.attackSpeed;
-		var buffAmplification = parsedData.statsTable.buffAmplification;
 		var debuffAmplification = parsedData.statsTable.debuffAmplification;
 		var debuffResistance = parsedData.statsTable.debuffResistance;
 		var criticalDamage = parsedData.statsTable.critDamage;
@@ -293,8 +292,6 @@ function OnHeroStatsUpdateRequest(event) {
 		$("#CooldownReductionLabel").text = (Math.round(cooldownReduction * 10000) / 100) + "%";
 		$("#DebuffAmplificationLabel").text = (Math.round((debuffAmplification - 1) * 10000) / 100) + "%";
 		$("#DebuffResistanceLabel").text = (Math.round((1 -debuffResistance) * 10000) / 100) + "%";
-		buffAmplification = buffAmplification - 1;
-		$("#BuffAmplificationLabel").text = (Math.round(buffAmplification * 10000) / 100) + "%";
 		criticalDamage = criticalDamage - 1;
 		$("#CriticalDamageLabel").text = (Math.round(criticalDamage * 10000) / 100) + "%";
 		criticalChance = criticalChance - 1;
@@ -349,7 +346,6 @@ function UpdateValues() {
 		manaPercent = Math.round(manaPercent * 100) / 100;
 		$("#HealthLabel").text = Entities.GetHealth(currentHero) + " (" + hpPercent + "%)";
 		$("#ManaLabel").text = Entities.GetMana(currentHero) + " (" + manaPercent + "%)";
-		$("#LevelLabel").text = Entities.GetLevel(currentHero) + " / 50";
         var currentExp = Entities.GetCurrentXP(currentHero);
         var maxExp = Entities.GetNeededXPToLevel(currentHero);
         var expPercent = (currentExp / maxExp) * 100;

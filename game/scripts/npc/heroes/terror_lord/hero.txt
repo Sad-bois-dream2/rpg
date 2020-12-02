@@ -7,7 +7,7 @@
         "Ability1"	"terror_lord_malicious_flames"
         "Ability2"	"terror_lord_inferno_impulse"
         "Ability3"	"terror_lord_destructive_stomp"
-        "Ability4"	"terror_lord_immolation"
+        "Ability4"	"terror_lord_mighty_defiance"
         "Ability5"	"terror_lord_ruthless_predator"
         "Ability6"	"terror_lord_horror_genesis"
 		"AbilityTalentStart"		"7"

@@ -12,19 +12,19 @@
                 <Panel id="BossPortraitImage" />
                 <Panel id="BossStats" class="BossStats">
                     <Panel class="BossStatsLabel">
-                        <Image src="s2r://panorama/images/hud/reborn/icon_damage_psd.vtex"/>
+                        <Image src="file://{images}/custom_game/hud/stats/attack_damage.png"/>
                         <Label id="BossAttackDamage" text="0" />
                     </Panel>
                     <Panel class="BossStatsLabel">
-                        <Image src="s2r://panorama/images/hud/reborn/icon_armor_psd.vtex"/>
+                        <Image src="file://{images}/custom_game/hud/stats/armor.png"/>
                         <Label id="BossArmor" text="0" />
                     </Panel>
                     <Panel class="BossStatsLabel">
-                        <Image src="s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex"/>
+                        <Image src="file://{images}/custom_game/hud/stats/magic_resistance.png"/>
                         <Label id="BossElementArmor" text="0" />
                     </Panel>
                     <Panel class="BossStatsLabel">
-                        <Image src="s2r://panorama/images/hud/reborn/icon_speed_psd.vtex"/>
+                        <Image src="file://{images}/custom_game/hud/stats/move_speed.png"/>
                         <Label id="BossMoveSpeed" text="0" />
                     </Panel>
                 </Panel>

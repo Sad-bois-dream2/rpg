@@ -1,61 +1,9 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf31:version{593cd181-a1d6-4c6f-9a8c-0534e8d44db0} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 0
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_light.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_cracks.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_ground_mark.vpcf"
-			m_bDisableChild = true
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_dust.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_shock.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_debris_large.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_debris.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_shock_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_warp.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_ring_wave.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_energy.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_blast.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/econ/items/elder_titan/elder_titan_ti7/elder_titan_echo_stomp_ti7_shock_c.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_end.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_a.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_flames_b.vpcf"
-		},
-	]
+	m_nMaxParticles = 1
+	m_nBehaviorVersion = 10
 	m_controlPointConfigurations = 
 	[
 		{
@@ -65,25 +13,82 @@
 				{
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 400.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
-					m_iControlPoint = 2
+					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 255.0, 255.0, 255.0 ]
-					m_angOffset = [ null, null, null ]
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 5
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 6
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]
 		},
 	]
-	m_nBehaviorVersion = 10
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_projected_dark.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_cracks.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_dust.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_energy_a.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_energy_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_projected.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/centaur/centaur_ti6/centaur_ti6_warstomp_warp.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_progressive.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_ring.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_ring_glow.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/destructive_stomp/destructive_stomp_streak.vpcf"
+			m_bDisableChild = true
+		},
+	]
 }

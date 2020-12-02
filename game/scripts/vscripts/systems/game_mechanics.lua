@@ -255,7 +255,7 @@ if (IsServer()) then
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
                 if (args.duration > 0) then
-                    args.duration = args.duration * Units:GetBuffAmplification(args.caster)
+                    args.duration = args.duration * Units:GetStatusAmplification(args.caster)
                 end
                 modifierParams.Duration = args.duration
                 local modifier = args.target:AddNewModifier(args.caster, args.ability, args.modifier_name, modifierParams)
@@ -360,7 +360,7 @@ if (IsServer()) then
             if (args.caster ~= nil and args.target ~= nil and args.modifier_name ~= nil and args.duration ~= nil) then
                 local modifierParams = args.modifier_params or {}
                 if (args.duration > 0) then
-                    args.duration = args.duration * Units:GetDebuffAmplification(args.caster) * Units:GetDebuffResistance(args.target)
+                    args.duration = args.duration * Units:GetStatusAmplification(args.caster) * Units:GetStatusResistance(args.target)
                 end
                 modifierParams.Duration = args.duration
                 local isTargetCasting = false

@@ -121,7 +121,7 @@
         "AbilityCastPoint"				"0.6"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"45"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -134,32 +134,38 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_as"				"10 20 30 40"
+				"bonus_armor_pct"				"0 25 25 25"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_sph"				"10 20 30 40"
+				"bonus_elearmor_pct"				"0 25 25 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_ms"				"5 10 15 20"
+				"duration"				"5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_dmg"				"5 10 15 20"
+				"str_per_stack"				" 0 0 5 5"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"stacks_radius"				"0 0 600 600"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"horror_genesis_cdr_flat"				"0 0 0 0.2"
 			}
 		}
 		"precache"
 		{
 			"particle" "particles/units/terror_lord/mighty_defiance/mighty_defiance.vpcf"
+			"soundfile" "sounds/weapons/hero/nightstalker/void_nihility.vsnd"
 		}
 	}
 	//=================================================================================================================
@@ -176,17 +182,17 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-        "AbilityCastRange"  "500"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_TELEPORT_END"
         "AbilityCastPoint"				"0.6"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"35"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -199,32 +205,48 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
+				"damage"				"110 120 130 140"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"500"
+				"dot_damage"				"0 50 50 50"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"dot_tick"				"0 1 1 1"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stun_duration"				"0.5 1 1.5 2"
+				"dot_duration"				"0 8 8 8"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"dot_slow"				"0 0 15 15"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"				"1 2 3 4"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"radius"				"500"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"bonus_strength"				"0 0 0 25"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf"
+			"particle"  "particles/units/terror_lord/destructive_stomp/destructive_stomp.vpcf"
+			"particle"  "particles/units/terror_lord/destructive_stomp/destructive_stomp_flames.vpcf"
 			"soundfile" "soundevents/game_sounds_heroes/game_sounds_centaur.vsndevts"
 		}
 	}
@@ -242,7 +264,7 @@
 	    "MaxLevel"               "4"
 	    "RequiredLevel"          "0"
 	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
 
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
@@ -339,12 +361,11 @@
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-        "AbilityCastRange"  "800"
+
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastPoint"				"1.5"
-	    "AnimationPlaybackRate"  "0.8"
+        "AbilityCastPoint"				"0.5"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"60"
@@ -360,42 +381,42 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_reduction"				"10 15 20 25"
+				"dot_damage"				"100 125 150 175"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"spelldmg_reduction"				"10 15 20 25"
+				"armor_reduction"				"0 50 50 50"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor_reduction"				"15 20 25 30"
+				"elearmor_reduction"				"0 50 50 50"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"elementarmor_reduction"				"15 20 25 30"
+				"duration"				"6"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"primary_bonus"				"50 100 150 200"
+				"radius"				"800"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"800"
+				"bonus_primary_pct"				"0 0 50 50"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5"
+				"bonus_primary_ally"				"0 0 0 1"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"0.1"
+				"dot_tick"				"1"
 			}
 		}
 		"precache"
@@ -470,62 +491,6 @@
 		}
 	}
 	//=================================================================================================================
-	// Terror Lord: Immolation
-	//=================================================================================================================
-	"terror_lord_immolation"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
-		"AbilityTextureName"			"terror_lord_immolation"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastRange"				"300"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"5"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"radius"				"300"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
-			}
-		}
-		"precache"
-		{
-			"particle" "particles/units/terror_lord/immolation/immolation.vpcf"
-			"particle" "particles/units/terror_lord/immolation/immolation_impact_v2.vpcf"
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
-		}
-	}
-	//=================================================================================================================
 	// Terror Lord: Inferno Impulse
 	//=================================================================================================================
 	"terror_lord_inferno_impulse"
@@ -533,7 +498,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
+		"ScriptFile"					"heroes/hero_terror_lord"
 		"AbilityTextureName"			"terror_lord_inferno_impulse"
         "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
 	    "MaxLevel"               "4"
@@ -545,72 +510,8 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastRange"				"600"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"30"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"40"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"absorb"				"7 8 9 10"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"absorb_bonus"				"2 3 4 5"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"radius"				"600"
-			}
-			"05"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"armor"				"5 10 15 20"
-			}
-			"06"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"armor_duration"				"5"
-			}
-		}
-		"precache"
-		{
-			"particle" "particles/units/terror_lord/infernal_impulse/infernal_impulse.vpcf"
-		}
-	}
-	//=================================================================================================================
-	// Terror Lord: Pit of Seals
-	//=================================================================================================================
-	"terror_lord_pit_of_seals"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
-		"AbilityTextureName"			"terror_lord_pit_of_seals"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_AOE"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_2"
-        "AbilityCastRange"				"600"
         "AbilityCastPoint"				"0.6"
+
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCooldown"				"20"
@@ -626,90 +527,50 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"root_duration"				"0.5 1 1.5 2"
+				"shield"				"7 8 9 10"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"root_cd"				"5"
+				"shield_duration"				"10"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5 10 15 20"
+				"shield_bonus_per_enemy"				"0 5 5 5"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"armor"				"5 10 15 20"
+				"armor_reduction"				"5 10 15 20"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"elementalarmor"				"5 10 15 20"
+				"ele_armor_reduction"				"0 10 15 20"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"radius"				"400"
+				"armor_duration"				"5"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
+				"radius"				"600"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"0 0 0 150"
 			}
 		}
 		"precache"
 		{
-			"particle" "particles/units/heroes/heroes_underlord/underlord_pitofmalice.vpcf"
-			"particle" "particles/units/heroes/heroes_underlord/abyssal_underlord_pitofmalice_stun.vpcf"
-		}
-	}
-	//=================================================================================================================
-	// Terror Lord: Aura of Seals
-	//=================================================================================================================
-	"terror_lord_aura_of_seals"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
-		"AbilityTextureName"			"terror_lord_aura_of_seals"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AURA | DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-        "AbilityCastRange"				"1000"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"aadamage"				"5 10 15 20"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"spelldamage"				"5 10 15 20"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"radius"				"1000"
-			}
+			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf"
+			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse_shield.vpcf"
+			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse_damage_rope.vpcf"
+			"soundfile" "sounds/weapons/hero/jakiro/dual_breath.vsnd"
 		}
 	}
 }

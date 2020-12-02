@@ -993,7 +993,7 @@ function modifier_ursa_hunt_buff_stats:OnDeath(params)
     end
 end
 
-function modifier_ursa_hunt_buff_stats:GetDebuffResistanceBonus()
+function modifier_ursa_hunt_buff_stats:GetStatusResistanceBonus()
     return 1
 end
 

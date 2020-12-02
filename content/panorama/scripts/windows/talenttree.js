@@ -1,5 +1,4 @@
 var TALENT_PANEL = 0, TALENT_IMAGE = 1, TALENT_LEVEL = 2, TALENT_ID = 3;
-var TOOLTIP_PANEL = 0, TOOLTIP_IMAGE = 1, TOOLTIP_NAME = 2, TOOLTIP_DESCRIPTION = 3;
 var TALENTS_CONTAINER, TALENTS_WINDOW;
 
 var TALENTS_LAYOUT = {
@@ -9,7 +8,7 @@ var talentsData = {
     "talentsCount": 0,
 };
 
-var tooltip = [];
+var TooltipManager = GameUI.CustomUIConfig().TooltipManager;
 
 function OnTalentTreeData(event) {
     var parsedTalents = JSON.parse(event.talents);
@@ -90,33 +89,18 @@ function CreateTalentRow(row, column) {
 }
 
 function ShowTalentTooltip(id) {
-    var cursorPosition = GameUI.GetCursorPosition();
     var talentImage = talentsData[id].Icon
     var talentName = $.Localize("#DOTA_TalentTree_Talent_"+id);
     var talentDescription = $.Localize("#DOTA_TalentTree_Talent_"+id+"_Description");
-    UpdateTalentTooltip(talentImage, talentName, talentDescription, cursorPosition[0], cursorPosition[1]);
+    TooltipManager.ShowTalentTooltip(talentImage, talentName, talentDescription);
 }
 
-function HideTalentTooltip(id) {
-    tooltip[TOOLTIP_PANEL].style.visibility = "collapse";
-}
-
-function UpdateTalentTooltip(icon, name, description, x, y) {
-	tooltip[TOOLTIP_IMAGE].SetImage(icon);
-	tooltip[TOOLTIP_NAME].text = name.toUpperCase();
-	tooltip[TOOLTIP_DESCRIPTION].text = description;
-	if(tooltip[TOOLTIP_PANEL].actuallayoutwidth + x > Game.GetScreenWidth()) {
-	    x -= tooltip[TOOLTIP_PANEL].actuallayoutwidth;
-	}
-	if(tooltip[TOOLTIP_PANEL].actuallayoutheight + y > Game.GetScreenHeight()) {
-	    y -= tooltip[TOOLTIP_PANEL].actuallayoutheight;
-	}
-	tooltip[TOOLTIP_PANEL].style.marginLeft = x + "px";
-	tooltip[TOOLTIP_PANEL].style.marginTop = y + "px";
-	tooltip[TOOLTIP_PANEL].style.visibility = "visible";
+function HideTalentTooltip() {
+    TooltipManager.HideTalentTooltip();
 }
 
 function OnTalentClick(talentId) {
+    HideTalentTooltip()
     GameEvents.SendCustomGameEventToServer( "rpg_talent_tree_level_up_talent", {"id": talentId});
     Game.EmitSound("General.SelectAction");
 }
@@ -135,7 +119,6 @@ function OnTalentTreeResetButtonClick() {
 }
 
 (function() {
-	tooltip = [$("#ItemTooltip"), $("#ItemTooltipImage"), $("#ItemTooltipNameLabel"), $("#ItemTooltipLabel")];
     TALENTS_WINDOW = $("#MainWindow")
     TALENTS_CONTAINER = $("#TalentTree");
     TALENTS_LAYOUT["TalentPointsLabel"] = $("#TotalTalentPointsLabel");

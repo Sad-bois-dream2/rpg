@@ -587,7 +587,7 @@
     flow-children: down;
     width: fit-children;
     height: fit-children;
-    margin-right: 5px;
+    margin-right: 7px;
 }
 
 .TooltipElementLabelContainer.first {
@@ -722,20 +722,26 @@
     margin-bottom: 2px;
 }
 
+.HeroStatsLabel .Container {
+    flow-children: right;
+}
+
+.HeroStatsLabel .Container .StatIcon {
+	width: 20px;
+	height: 20px;
+	margin-right: 3px;
+}
+
 .HeroStatsLabel .Title {
     horizontal-align: left;
-    margin-left: 5px;
     color: white;
     text-overflow: shrink;
 }
 
 .HeroStatsLabel .Value {
     horizontal-align: right;
-    margin-right: 5px;
     color: white;
     text-overflow: shrink;
-    height: 100%;
-    margin-left: 10px;
 }
 
 #HeroAbilitiesPanelFiller {

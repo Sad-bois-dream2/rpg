@@ -509,7 +509,7 @@ function modifier_creep_scaling:OnIntervalThink()
 end
 
 --[[
-function modifier_creep_scaling:GetDebuffResistanceBonus()
+function modifier_creep_scaling:GetStatusResistanceBonus()
     return self.debuff_resist_total
 end
 --]]
@@ -801,7 +801,7 @@ function modifier_enemies_boss_skill_will:OnPostModifierApplied(modifierTable)
     end
 end
 
-function modifier_enemies_boss_skill_will:GetDebuffResistanceBonus()
+function modifier_enemies_boss_skill_will:GetStatusResistanceBonus()
     return self.ability.debuffResPerStack * self:GetStackCount()
 end
 

@@ -774,7 +774,7 @@ function modifier_abyssal_stalker_void_dust_buff:GetInfernoProtectionBonus()
     return self.ability.protection
 end
 
-function modifier_abyssal_stalker_void_dust_buff:GetDebuffResistanceBonus()
+function modifier_abyssal_stalker_void_dust_buff:GetStatusResistanceBonus()
     return self.ability.resist
 end
 
