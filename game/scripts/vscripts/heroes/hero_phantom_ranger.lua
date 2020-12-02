@@ -659,7 +659,7 @@ modifier_phantom_ranger_shadow_waves_silence_cd = class({
         return false
     end,
     GetTexture = function(self)
-        return "file://{images}/custom_game/hud/talenttree/npc_dota_hero_drow_ranger/phantom_ranger_shadow_waves_silence_cd.png"
+        return "raw://resource/flash3/images/spellicons/phantom_ranger_shadow_waves_silence_cd.png"
     end,
     GetAttributes = function(self)
         return MODIFIER_ATTRIBUTE_PERMANENT

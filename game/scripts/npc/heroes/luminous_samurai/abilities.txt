@@ -41,7 +41,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"crit_dmg_per_stack"				"5 6 7 8"
+				"crit_dmg_per_stack"				"7 7 7 7"
 			}
 			"03"
 			{
@@ -56,12 +56,42 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"5 10 15 20"
+				"duration"				"20 20 20 -1"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_duration"				"2 3 4 5"
+				"bonus_duration"		"5 5 5 5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"attack_speed_per_stack"				"0 20 20 20"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_duration"		"0 0 10 10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_dr"		"0 0 80 80"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_attack_dmg"		"0 0 80 80"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lethal_proc_heal"		"0 0 1 1"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"enhance_duration"		"0 0 0 7"
 			}
 		}
 		"precache"
@@ -70,6 +100,57 @@
             "particle"  "particles/units/luminous_samurai/bankai/bankai_buff.vpcf"
             "particle"  "particles/units/luminous_samurai/bankai/bankai_impact.vpcf"
 		}
+	}
+	//=================================================================================================================
+	// Luminous Samurai: Divine Storm
+	//=================================================================================================================
+	"luminous_samurai_divine_storm"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_luminous_samurai"
+		"AbilityTextureName"			"luminous_samurai_divine_storm"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_DONT_CANCEL_MOVEMENT"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+ 		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_1"
+        "AbilityCastPoint"				"0.3"
+
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"damage"				"100 125 150 175"
+     		}
+     		"02"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"pull_radius"			"800"
+     		}
+     		"02"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"blast_radius"			"400"
+     		}
+		}
+
 	}
 	//=================================================================================================================
 	// Luminous Samurai: Jhana
@@ -191,22 +272,47 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_dmg"				"150 200 250 300"
+				"aa_dmg"				"0 200 200 200"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aa_dmg_duration"				"10"
+				"aa_dmg_duration"		"10"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"jumps"				"5"
+				"jumps"					"5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"jump_delay"				"0.10"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"reset_cdr"				"0 60 60 60"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mark_duration"			"0 0 20 20"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mark_max_hp_heal"		"0 0 3 3"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"execute_treshold"		"0 0 0 15"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cd_reset"				"0 60 60 60"
 			}
 		}
 		"precache"
@@ -218,78 +324,103 @@
 		}
 	}
 	//=================================================================================================================
-     	// Luminous Samurai: Blade Dance
-     	//=================================================================================================================
-     	"luminous_samurai_blade_dance"
-     	{
-     		// General
-     		//-------------------------------------------------------------------------------------------------------------
-     		"BaseClass"						"ability_lua"
-     		"ScriptFile"					"heroes/hero_luminous_samurai"
-     		"AbilityTextureName"			"luminous_samurai_blade_dance"
-             "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-     	    "MaxLevel"               "4"
-     	    "RequiredLevel"          "0"
-     	    "LevelsBetweenUpgrades"  "0"
-     		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
-     		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-     		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-     		// Casting
-     		//-------------------------------------------------------------------------------------------------------------
-     		// Time
-     		//-------------------------------------------------------------------------------------------------------------
-     		"AbilityCooldown"				"1.5"
-     		// Cost
-     		//-------------------------------------------------------------------------------------------------------------
-     		"AbilityManaCost"				"40"
+    // Luminous Samurai: Blade Dance
+    //=================================================================================================================
+    "luminous_samurai_blade_dance"
+    {
+     	// General
+     	//-------------------------------------------------------------------------------------------------------------
+     	"BaseClass"						"ability_lua"
+     	"ScriptFile"					"heroes/hero_luminous_samurai"
+     	"AbilityTextureName"			"luminous_samurai_blade_dance"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+     	"MaxLevel"               "4"
+     	"RequiredLevel"          "0"
+     	"LevelsBetweenUpgrades"  "0"
+     	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+     	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+     	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+     	// Casting
+     	//-------------------------------------------------------------------------------------------------------------
+     	// Time
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilityCooldown"				"4"
+     	// Cost
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilityManaCost"				"40"
 
-     		// Special
-     		//-------------------------------------------------------------------------------------------------------------
-     		"AbilitySpecial"
+     	// Special
+     	//-------------------------------------------------------------------------------------------------------------
+     	"AbilitySpecial"
+     	{
+     		"01"
      		{
-     			"01"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"damage"				"35 40 45 50"
-     			}
-     			"02"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"slashes"				"1 1 1 2"
-     			}
-     			"03"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"dash_range"				"450"
-     			}
-     			"04"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"proc_damage"				"150%"
-     			}
-     			"05"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"proc_radius"				"350"
-     			}
-     			"06"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"proc_count"				"5"
-     			}
-     			"07"
-     			{
-     				"var_type"				"FIELD_FLOAT"
-     				"stack_duration"				"5"
-     			}
+     			"var_type"				"FIELD_FLOAT"
+     			"damage"				"35 40 45 50"
      		}
-     		"precache"
+     		"02"
      		{
-     		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf"
-     		    "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_proc.vpcf"
-     		    "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
+     			"var_type"				"FIELD_FLOAT"
+     			"slashes"				"1 1 1 1"
+     		}
+     		"03"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"dash_range"				"450"
+     		}
+     		"04"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"proc_damage"				"150%"
+     		}
+     		"05"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"proc_radius"				"350"
+     		}
+     		"06"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"proc_count"				"5"
+     		}
+     		"07"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"stack_duration"				"5"
+     		}
+     		"08"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"damage_immunity_duration"		"0 0.2 0.2 0.2"
+     		}
+     		"09"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"bonus_output_after_auto"		"0 0 30 30"
+     		}
+     		"10"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"attack_speed_after_spell"		"0 0 30 30"
+     		}
+     		"11"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"combo_buff_duration"		"0 0 1 1"
+     		}
+     		"12"
+     		{
+     			"var_type"				"FIELD_FLOAT"
+     			"cooldown_reduction"		"0 0 0 1"
      		}
      	}
+     	"precache"
+     	{
+     		   "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_slash.vpcf"
+     		   "particle"  "particles/units/luminous_samurai/blade_dance/blade_dance_proc.vpcf"
+     		   "particle"  "particles/units/luminous_samurai/judgment_of_light/judgment_of_light_trail.vpcf"
+     	}
+    }
 	//=================================================================================================================
 	// Luminous Samurai: Light Iai-Giri
 	//=================================================================================================================
@@ -324,27 +455,77 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_damage"				"75 100 125 150"
+				"proc_damage"			"125 150 175 200"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_stacks"				"3"
+				"proc_attacks"				"3"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"max_stacks"				"3 4 5 6"
+				"active_damage"			"25 33 41 50"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_cd"				"4 3 2 1"
+				"bonus_seeds"			"0 1 1 1"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"proc_radius"				"300"
+				"max_seeds"			"5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"seed_cd"				"1 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"active_radius"				"300"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_reduction"		"0 20 20 20"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_reduction_duration"				"0 4 4 4"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"holy_damage_to_dr"		"0 0 20 20"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_dr"				"0 0 40 40"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"buff_chance"			"0 0 0 20"
+			}
+			"13"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"buff_duration"			"0 0 0 8"
+			}
+			"14"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"buff_holy_conversion"	"0 0 0 50"
+			}
+			"15"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"buff_holy_dmg"			"0 0 0 50"
 			}
 		}
 		"precache"
@@ -356,6 +537,98 @@
             "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_5.vpcf"
             "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_buff_circle_6.vpcf"
             "particle"  "particles/units/luminous_samurai/light_iai_giri/light_iai_giri_explosion.vpcf"
+            "soundfile" "soundevents/game_sounds_heroes/game_sounds_juggernaut.vsndevts"
 		}
 	}
+	//=================================================================================================================
+	// Luminous Samurai: Breath of Heaven
+	//=================================================================================================================
+	"luminous_samurai_breath_of_heaven"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"heroes/hero_luminous_samurai"
+		"AbilityTextureName"			"luminous_samurai_breath_of_heaven"
+        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
+	    "MaxLevel"               "4"
+	    "RequiredLevel"          "0"
+	    "LevelsBetweenUpgrades"  "0"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"  "300"
+		// Time
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10"
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"40"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"active_heal"			"90 120 150 180"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"active_radius"				"300"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_heal_search_radius"		"1000"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mana_restore"			"0 5 5 5"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cooldown_reduction"	"0 1 1 1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"holy_dmg_to_healing"	"0 0 100 100"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"base_crit_heal"		"0 0 0 125"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"crit_heal_per_stack"	"0 0 0 25"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"max_stacks"			"0 0 0 3"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stack_duration"		"0 0 0 5"
+			}
+		}
+
+	}
+
 }
