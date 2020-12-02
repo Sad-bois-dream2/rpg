@@ -134,24 +134,14 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_as"				"10 20 30 40"
+				"bonus_armor"				"0 25 25 25"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_sph"				"10 20 30 40"
+				"bonus_elearmor"				"0 25 25 25"
 			}
 			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"bonus_ms"				"5 10 15 20"
-			}
-			"04"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"bonus_dmg"				"5 10 15 20"
-			}
-			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5"
@@ -160,6 +150,7 @@
 		"precache"
 		{
 			"particle" "particles/units/terror_lord/mighty_defiance/mighty_defiance.vpcf"
+			"soundfile" "sounds/weapons/hero/nightstalker/void_nihility.vsnd"
 		}
 	}
 	//=================================================================================================================
@@ -485,62 +476,6 @@
 		}
 	}
 	//=================================================================================================================
-	// Terror Lord: Immolation
-	//=================================================================================================================
-	"terror_lord_immolation"
-	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"BaseClass"						"ability_lua"
-		"ScriptFile"					"talents/talents_terror_lord"
-		"AbilityTextureName"			"terror_lord_immolation"
-        "AbilityType"            "DOTA_ABILITY_TYPE_BASIC"
-	    "MaxLevel"               "4"
-	    "RequiredLevel"          "0"
-	    "LevelsBetweenUpgrades"  "0"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastAnimation"			"ACT_DOTA_CAST_ABILITY_4"
-        "AbilityCastRange"				"300"
-		// Time
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"5"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"
-
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilitySpecial"
-		{
-			"01"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"damage"				"20 30 40 50"
-			}
-			"02"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"radius"				"300"
-			}
-			"03"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"tick"				"1"
-			}
-		}
-		"precache"
-		{
-			"particle" "particles/units/terror_lord/immolation/immolation.vpcf"
-			"particle" "particles/units/terror_lord/immolation/immolation_impact_v2.vpcf"
-            "soundfile" "soundevents/game_sounds_heroes/game_sounds_ember_spirit.vsndevts"
-		}
-	}
-	//=================================================================================================================
 	// Terror Lord: Inferno Impulse
 	//=================================================================================================================
 	"terror_lord_inferno_impulse"
@@ -620,6 +555,7 @@
 			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse.vpcf"
 			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse_shield.vpcf"
 			"particle" "particles/units/terror_lord/inferno_impulse/inferno_impulse_damage_rope.vpcf"
+			"soundfile" "sounds/weapons/hero/jakiro/dual_breath.vsnd"
 		}
 	}
 }

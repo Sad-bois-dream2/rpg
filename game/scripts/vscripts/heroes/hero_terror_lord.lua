@@ -359,19 +359,13 @@ end
 
 LinkedModifiers["modifier_terror_lord_mighty_defiance_debuff"] = LUA_MODIFIER_MOTION_NONE
 
--- terror_lord_mighty_defiance
-terror_lord_mighty_defiance = class({
-    GetAbilityTextureName = function(self)
-        return "terror_lord_mighty_defiance"
-    end
-})
+terror_lord_mighty_defiance = class({})
 
-function terror_lord_mighty_defiance:OnSpellStart(unit, special_cast)
+function terror_lord_mighty_defiance:OnSpellStart()
     if (not IsServer()) then
         return
     end
     local caster = self:GetCaster()
-    caster:EmitSound("abyssal_underlord_abys_atrophyaura_02")
     local modifierTable = {}
     modifierTable = {}
     modifierTable.ability = self
@@ -380,6 +374,10 @@ function terror_lord_mighty_defiance:OnSpellStart(unit, special_cast)
     modifierTable.modifier_name = "modifier_terror_lord_mighty_defiance"
     modifierTable.duration = self:GetSpecialValueFor("duration")
     GameMode:ApplyBuff(modifierTable)
+    EmitSoundOn("Hero_Nightstalker.Void.Nihility", caster)
+    Timers:CreateTimer(1.1, function()
+        StopSoundOn("Hero_Nightstalker.Void.Nihility", caster)
+    end)
 end
 
 -- terror_lord_destructive_stomp
@@ -1333,6 +1331,7 @@ function terror_lord_inferno_impulse:OnSpellStart()
     if (shieldModifier) then
         shieldModifier:SetStackCount(capacity)
     end
+    EmitSoundOn("Hero_Jakiro.DualBreath.Cast", caster)
 end
 
 function terror_lord_inferno_impulse:OnUpgrade()

@@ -1,122 +1,11 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf26:version{26288658-411e-4f14-b698-2e1e5d00dec6} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf31:version{593cd181-a1d6-4c6f-9a8c-0534e8d44db0} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
-	m_nMaxParticles = 12
-	m_nConstantSequenceNumber = 1
-	m_Renderers = 
-	[
-		{
-			_class = "C_OP_RenderSprites"
-			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
-			m_bAdditive = true
-			m_hTexture = resource:"materials/particle/particle_flares/aircraft_blue.vtex"
-			m_nOrientationType = 2
-			m_flAnimationRate = 1.0
-			m_nHSVShiftControlPoint = 62
-		},
-	]
-	m_Operators = 
-	[
-		{
-			_class = "C_OP_BasicMovement"
-		},
-		{
-			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 32.0
-			m_flBias = 0.75
-		},
-		{
-			_class = "C_OP_PositionLock"
-		},
-		{
-			_class = "C_OP_Decay"
-		},
-		{
-			_class = "C_OP_FadeOut"
-			m_flFadeOutTimeMin = 1.0
-			m_flFadeOutTimeMax = 1.0
-			m_bEaseInAndOut = false
-			m_flFadeBias = 0.65
-		},
-		{
-			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 50, 205, 50, 100 ]
-		},
-		{
-			_class = "C_OP_Orient2DRelToCP"
-			m_flRotOffset = 90.0
-		},
-	]
-	m_Initializers = 
-	[
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.6
-			m_fLifetimeMax = 0.6
-		},
-		{
-			_class = "C_INIT_CreateWithinSphere"
-			m_fSpeedMax = 5.0
-		},
-		{
-			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 3.0
-			m_flRadiusMax = 9.0
-		},
-		{
-			_class = "C_INIT_RandomRotation"
-		},
-		{
-			_class = "C_INIT_RandomColor"
-			m_ColorMax = [ 50, 205, 50, 100 ]
-			m_ColorMin = [ 50, 205, 50, 100 ]
-		},
-		{
-			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, 8.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 8.0 ]
-		},
-	]
-	m_Emitters = 
-	[
-		{
-			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 
-			{
-				m_nType = "PF_TYPE_LITERAL"
-				m_flLiteralValue = 10.0
-			}
-		},
-	]
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_wave.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_rings.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_glow.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_light.vpcf"
-		},
-	]
-	m_PreEmissionOperators = 
-	[
-		{
-			_class = "C_OP_HSVShiftToCP"
-			m_DefaultHSVColor = [ 50, 205, 50, 255 ]
-		},
-		{
-			_class = "C_OP_SetControlPointPositions"
-			m_vecCP1Pos = [ 0.0, 0.0, 512.0 ]
-			m_nCP2 = 3
-			m_nCP4 = 3
-		},
-	]
+	m_nMaxParticles = 64
+	m_nGroupID = 3
+	m_flMaxDrawDistance = 2000.0
+	m_bShouldSort = false
 	m_nBehaviorVersion = 10
 	m_nFirstMultipleOverride_BackwardCompat = 5
 	m_controlPointConfigurations = 
@@ -131,21 +20,118 @@
 					m_angOffset = [ 0.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/abyssal_underlord/abyssal_underlord_v2.vmdl"
+				m_nModSpecificData = 617
+				m_sequenceName = "au_cast04_dark_rift"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_flOpTimeOffsetMax = 1.0
+			m_fLifetimeMax = 0.5
+			m_fLifetimeMin = 0.5
+		},
+		{
+			_class = "C_INIT_RingWave"
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_flOpTimeOffsetMax = 1.0
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_BasicMovement"
+			m_flOpTimeOffsetMax = 1.0
+			m_fDrag = 0.05
+		},
+		{
+			_class = "C_OP_Spin"
+			m_flOpTimeOffsetMax = 1.0
+			m_fSpinRateStopTime = 1.0
+			m_nSpinRateDegrees = 4
+		},
+		{
+			_class = "C_OP_FadeOut"
+			m_flOpTimeOffsetMax = 1.0
+			m_flFadeBias = 0.35
+			m_bEaseInAndOut = false
+			m_flFadeOutTimeMax = 1.0
+			m_flFadeOutTimeMin = 1.0
+		},
+		{
+			_class = "C_OP_Decay"
+			m_flOpTimeOffsetMax = 1.0
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flBias = 0.85
+			m_flEndScale = 2.0
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_bRefract = true
+			m_flRefractAmount = 0.0075
+			m_nRefractBlurRadius = 3
+			m_nRefractBlurType = "BLURFILTER_BOX"
+			m_bGammaCorrectVertexColors = false
+			m_nOrientationType = "PARTICLE_ORIENTATION_WORLD_Z_ALIGNED"
+			m_vecColorScale = 
+			{
+				m_nType = "PVEC_TYPE_LITERAL_COLOR"
+				m_LiteralColor = [ 255, 255, 255 ]
+			}
+			m_vecTexturesInput = 
+			[
 				{
-					m_iControlPoint = 60
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 8.0, 229.0, 96.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 61
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ 0.0, 0.0, 0.0 ]
-					m_entityName = "self"
+					m_hTexture = resource:"materials/particle/warp_ripple_normal.vtex"
 				},
 			]
+			m_OutlineColor = [ 255, 255, 255 ]
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/econ/items/axe/axe_ti9_immortal/axe_ti9_beserkers_call_owner_aoe_dome.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_ring.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/units/terror_lord/mighty_defiance/mighty_defiance_glow_burst.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/axe/axe_ti9_immortal/axe_ti9_call_distortion.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/axe/axe_ti9_immortal/axe_ti9_immortal_decal.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/econ/items/axe/axe_ti9_immortal/axe_ti9_call_shake.vpcf"
 		},
 	]
 }
