@@ -121,7 +121,7 @@
         "AbilityCastPoint"				"0.6"
 		// Time
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"45"
+		"AbilityCooldown"				"30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -134,17 +134,32 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_armor"				"0 25 25 25"
+				"bonus_armor_pct"				"0 25 25 25"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bonus_elearmor"				"0 25 25 25"
+				"bonus_elearmor_pct"				"0 25 25 25"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"str_per_stack"				" 0 0 5 5"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stacks_radius"				"0 0 600 600"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"horror_genesis_cdr_flat"				"0 0 0 0.2"
 			}
 		}
 		"precache"

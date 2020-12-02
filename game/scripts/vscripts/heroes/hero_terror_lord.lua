@@ -254,110 +254,90 @@ modifier_terror_lord_mighty_defiance = class({
     AllowIllusionDuplicate = function(self)
         return false
     end,
-    GetTexture = function(self)
-        return terror_lord_mighty_defiance:GetAbilityTextureName()
-    end,
-    GetEffectName = function(self)
-        return "particles/units/terror_lord/mighty_defiance/mighty_defiance.vpcf"
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_START }
+    IsTaunt = function()
+        return true
     end
 })
 
-function modifier_terror_lord_mighty_defiance:OnCreated(keys)
+function modifier_terror_lord_mighty_defiance:OnCreated()
     if not IsServer() then
         return
     end
     self.caster = self:GetParent()
+    self.casterTeam = self.caster:GetTeamNumber()
     self.ability = self:GetAbility()
-    self.duration = self.ability:GetSpecialValueFor("duration")
-    self.bonus_as = self.ability:GetSpecialValueFor("bonus_as") / 100
-    self.bonus_sph = self.ability:GetSpecialValueFor("bonus_sph") / 100
-    self.bonus_ms = self.ability:GetSpecialValueFor("bonus_ms") / 100
-    self.bonus_dmg = self.ability:GetSpecialValueFor("bonus_dmg") * -0.01
+    if (self.ability.stacksRadius > 0) then
+        self:OnIntervalThink()
+        self:StartIntervalThink(0.5)
+    end
 end
 
-function modifier_terror_lord_mighty_defiance:OnAttackStart(keys)
+function modifier_terror_lord_mighty_defiance:OnIntervalThink()
     if not IsServer() then
         return
     end
-    if (keys.target == self.caster and keys.attacker:GetTeamNumber() ~= self.caster:GetTeamNumber()) then
-        local modifierTable = {}
-        modifierTable = {}
-        modifierTable.ability = self.ability
-        modifierTable.target = keys.attacker
-        modifierTable.caster = self.caster
-        modifierTable.modifier_name = "modifier_terror_lord_mighty_defiance_debuff"
-        modifierTable.modifier_params = { bonus_as = self.bonus_as, bonus_sph = self.bonus_sph, bonus_ms = self.bonus_ms, bonus_dmg = self.bonus_dmg }
-        modifierTable.duration = self.duration
-        GameMode:ApplyDebuff(modifierTable)
+    local enemies = FindUnitsInRadius(self.casterTeam,
+            self.caster:GetAbsOrigin(),
+            nil,
+            self.ability.stacksRadius,
+            DOTA_UNIT_TARGET_TEAM_ENEMY,
+            DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_BASIC,
+            DOTA_UNIT_TARGET_FLAG_NONE,
+            FIND_ANY_ORDER,
+            false)
+    self:SetStackCount(#enemies)
+end
+
+function modifier_terror_lord_mighty_defiance:OnPostTakeDamage(damageTable)
+    local ability = damageTable.victim:FindAbilityByName("terror_lord_mighty_defiance")
+    if (ability and ability.horrorGenesisCdrFlat and ability.horrorGenesisCdrFlat > 0) then
+        local cooldownTable = {
+            target = damageTable.victim,
+            ability = "terror_lord_horror_genesis",
+            reduction = ability.horrorGenesisCdrFlat,
+            isflat = true
+        }
+        GameMode:ReduceAbilityCooldown(cooldownTable)
     end
 end
 
-function modifier_terror_lord_mighty_defiance:IsTaunt()
-    return true
+function modifier_terror_lord_mighty_defiance:GetArmorPercentBonus()
+    return self.ability.bonusArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetFireProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetFrostProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetEarthProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetVoidProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetHolyProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetNatureProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetInfernoProtectionBonus()
+    return self.ability.bonusEleArmorPct
+end
+
+function modifier_terror_lord_mighty_defiance:GetStrengthPercentBonus()
+    return self.ability.strPerStack * self:GetStackCount()
 end
 
 LinkedModifiers["modifier_terror_lord_mighty_defiance"] = LUA_MODIFIER_MOTION_NONE
-
-modifier_terror_lord_mighty_defiance_debuff = class({
-    IsDebuff = function(self)
-        return false
-    end,
-    IsHidden = function(self)
-        return false
-    end,
-    IsPurgable = function(self)
-        return false
-    end,
-    RemoveOnDeath = function(self)
-        return true
-    end,
-    AllowIllusionDuplicate = function(self)
-        return false
-    end,
-    GetTexture = function(self)
-        return terror_lord_mighty_defiance:GetAbilityTextureName()
-    end,
-    DeclareFunctions = function(self)
-        return { MODIFIER_EVENT_ON_ATTACK_START }
-    end
-})
-
-function modifier_terror_lord_mighty_defiance_debuff:GetDamageReductionBonus()
-    return self.bonus_dmg or 0
-end
-
-function modifier_terror_lord_mighty_defiance_debuff:GetMoveSpeedPercentBonus()
-    return self.bonus_ms or 0
-end
-
-function modifier_terror_lord_mighty_defiance_debuff:GetSpellHasteBonus()
-    return self.bonus_sph or 0
-end
-
-function modifier_terror_lord_mighty_defiance_debuff:GetAttackSpeedPercentBonus()
-    return self.bonus_as or 0
-end
-
-function modifier_terror_lord_mighty_defiance_debuff:OnCreated(keys)
-    if not IsServer() then
-        return
-    end
-    self.caster = self:GetParent()
-end
-
-function modifier_terror_lord_mighty_defiance_debuff:OnAttackStart(keys)
-    if not IsServer() then
-        return
-    end
-    if (keys.attacker == self.caster and keys.target ~= nil and not keys.target:IsNull() and not keys.target:HasModifier("modifier_terror_lord_mighty_defiance")) then
-        self:Destroy()
-    end
-end
-
-LinkedModifiers["modifier_terror_lord_mighty_defiance_debuff"] = LUA_MODIFIER_MOTION_NONE
 
 terror_lord_mighty_defiance = class({})
 
@@ -366,18 +346,29 @@ function terror_lord_mighty_defiance:OnSpellStart()
         return
     end
     local caster = self:GetCaster()
-    local modifierTable = {}
-    modifierTable = {}
-    modifierTable.ability = self
-    modifierTable.target = caster
-    modifierTable.caster = caster
-    modifierTable.modifier_name = "modifier_terror_lord_mighty_defiance"
-    modifierTable.duration = self:GetSpecialValueFor("duration")
+    local modifierTable = {
+        ability = self,
+        target = caster,
+        caster = caster,
+        modifier_name = "modifier_terror_lord_mighty_defiance",
+        duration = self.duration
+    }
     GameMode:ApplyBuff(modifierTable)
+    local pidx = ParticleManager:CreateParticle("particles/units/terror_lord/mighty_defiance/mighty_defiance.vpcf", PATTACH_ABSORIGIN_FOLLOW, caster)
+    ParticleManager:ReleaseParticleIndex(pidx)
     EmitSoundOn("Hero_Nightstalker.Void.Nihility", caster)
     Timers:CreateTimer(1.1, function()
         StopSoundOn("Hero_Nightstalker.Void.Nihility", caster)
     end)
+end
+
+function terror_lord_mighty_defiance:OnUpgrade()
+    self.bonusArmorPct = self:GetSpecialValueFor("bonus_armor_pct") / 100
+    self.bonusEleArmorPct = self:GetSpecialValueFor("bonus_elearmor_pct") / 100
+    self.duration = self:GetSpecialValueFor("duration")
+    self.strPerStack = self:GetSpecialValueFor("str_per_stack") / 100
+    self.stacksRadius = self:GetSpecialValueFor("stacks_radius")
+    self.horrorGenesisCdrFlat = self:GetSpecialValueFor("horror_genesis_cdr_flat")
 end
 
 -- terror_lord_destructive_stomp
@@ -1353,4 +1344,5 @@ end
 if (IsServer() and not GameMode.TERROR_LORD_INIT) then
     GameMode.TERROR_LORD_INIT = true
     GameMode:RegisterPreDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_inferno_impulse_buff, 'OnTakeDamage'))
+    GameMode:RegisterPostDamageEventHandler(Dynamic_Wrap(modifier_terror_lord_mighty_defiance, 'OnPostTakeDamage'))
 end
