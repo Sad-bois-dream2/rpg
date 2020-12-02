@@ -1175,9 +1175,9 @@
         "DOTA_StatsTooltip_Defense"		"DEFENSE"
         "DOTA_StatsTooltip_StatAmount"		"%VALUE% (Gains %GAIN% per lvl)"
         "DOTA_StatsTooltip_PrimaryStatBonus"		"= %DAMAGE% Attack Damage (Primary Attribute Bonus)"
-        "DOTA_StatsTooltip_StrStatBonus"		"= %VALUE%% Elemental Resistances and 0 Health"
-        "DOTA_StatsTooltip_AgiStatBonus"		"= %VALUE%% Evasion and 0 Armor"
-        "DOTA_StatsTooltip_IntStatBonus"		"= %VALUE%% Spell Damage and 0 Mana"
+        "DOTA_StatsTooltip_StrStatBonus"		"= %BONUS1%% Critical Strike Damage and %BONUS2% Health"
+        "DOTA_StatsTooltip_AgiStatBonus"		"= %BONUS1%% Critical Strike Chance and %BONUS2%% Move Speed"
+        "DOTA_StatsTooltip_IntStatBonus"		"= %BONUS1%% Spell Damage and %BONUS2% Mana"
         // Countless items
 
         "DOTA_Tooltip_Ability_item_two_handed_sword"      "First Sword"

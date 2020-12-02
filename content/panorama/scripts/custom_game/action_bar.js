@@ -279,7 +279,11 @@ function UpdateValues() {
         } else {
             hpBarValue.text = currentHp + " / " + maxHp;
         }
-        hpBarRegValue.text = "+" + hpReg;
+        var heroHealthRegeneration = (Math.round(hpReg * 100) / 100);
+        if(heroHealthRegeneration >= 0) {
+            heroHealthRegeneration = "+" + heroHealthRegeneration;
+        }
+        hpBarRegValue.text = heroHealthRegeneration;
         if(currentMp > 65535) {
             if (IsAltDown) {
                 mpBarValue.text = latestStoredManaPercent + "%";
@@ -295,7 +299,11 @@ function UpdateValues() {
             }
             mpBar.style.width = mpPercent + "%";
         }
-        mpBarRegValue.text = "+" + (Math.round(mpReg * 100) / 100);
+        var heroManaRegeneration = (Math.round(mpReg * 100) / 100);
+        if(heroManaRegeneration >= 0) {
+            heroManaRegeneration = "+" + heroManaRegeneration;
+        }
+        mpBarRegValue.text = heroManaRegeneration;
 		if(isNaN(expPercent) || maxExp == 0) {
 			expPercent = 100;
 			maxExp = currentExp;
@@ -382,15 +390,24 @@ function UpdateValues() {
             $("#StatsTooltipStrengthLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 0);
             $("#StatsTooltipAgilityLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 1);
             $("#StatsTooltipIntellectLabel").SetHasClass("primary", latestStats.primaryAttributeIndex == 2);
-            $("#StatsTooltipStr").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.str).replace("%GAIN%", Math.round(latestStats.strGain * 100)/100);
-            $("#StatsTooltipAgi").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.agi).replace("%GAIN%", Math.round(latestStats.agiGain * 100)/100);
-            $("#StatsTooltipInt").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", latestStats.int).replace("%GAIN%", Math.round(latestStats.intGain * 100)/100);
-            $("#StatsTooltipStrPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.str);
-            $("#StatsTooltipAgiPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.agi);
-            $("#StatsTooltipIntPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", latestStats.int);
-            $("#StatsTooltipStrBonus").text = $.Localize("DOTA_StatsTooltip_StrStatBonus").replace("%VALUE%", 0);
-            $("#StatsTooltipAgiBonus").text = $.Localize("DOTA_StatsTooltip_AgiStatBonus").replace("%VALUE%", 0);
-            $("#StatsTooltipIntBonus").text = $.Localize("DOTA_StatsTooltip_IntStatBonus").replace("%VALUE%", 0);
+            var heroStr = Math.round(latestStats.str);
+            var heroAgi = Math.round(latestStats.agi);
+            var heroInt = Math.round(latestStats.int);
+            $("#StatsTooltipStr").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", heroStr).replace("%GAIN%", Math.round(latestStats.strGain * 100)/100);
+            $("#StatsTooltipAgi").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", heroAgi).replace("%GAIN%", Math.round(latestStats.agiGain * 100)/100);
+            $("#StatsTooltipInt").text = $.Localize("DOTA_StatsTooltip_StatAmount").replace("%VALUE%", heroInt).replace("%GAIN%", Math.round(latestStats.intGain * 100)/100);
+            $("#StatsTooltipStrPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", heroStr);
+            $("#StatsTooltipAgiPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", heroAgi);
+            $("#StatsTooltipIntPrimaryBonus").text = $.Localize("DOTA_StatsTooltip_PrimaryStatBonus").replace("%DAMAGE%", heroInt);
+            var strFirstBonus = 0.1 * heroStr;
+            var strSecondBonus = 20 * heroStr;
+            var agiFirstBonus = 0.05 * heroAgi;
+            var agiSecondBonus = 0.06 * heroAgi;
+            var intFirstBonus = 0.07 * heroInt;
+            var intSecondBonus = 12 * heroInt;
+            $("#StatsTooltipStrBonus").text = $.Localize("DOTA_StatsTooltip_StrStatBonus").replace("%BONUS1%", Math.round(strFirstBonus * 100)/100).replace("%BONUS2%", Math.round(strSecondBonus * 100)/100);
+            $("#StatsTooltipAgiBonus").text = $.Localize("DOTA_StatsTooltip_AgiStatBonus").replace("%BONUS1%", Math.round(agiFirstBonus * 100)/100).replace("%BONUS2%", Math.round(agiSecondBonus * 100)/100);
+            $("#StatsTooltipIntBonus").text = $.Localize("DOTA_StatsTooltip_IntStatBonus").replace("%BONUS1%", Math.round(intFirstBonus * 100)/100).replace("%BONUS2%", Math.round(intSecondBonus * 100)/100);
         }
 		lastSelectedUnit = hero;
     }

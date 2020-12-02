@@ -436,13 +436,13 @@ function Units:CalculateStats(unit, statsTable, secondCalc)
         statsTable.movespeedBonus = math.floor(((baseMoveSpeed + unitBonusMoveSpeed) * unitBonusPercentMoveSpeed) - baseMoveSpeed)
         unit:SetModifierStackCount("modifier_stats_system_movespeed", unit, statsTable.movespeedBonus)
         -- hp regen
-        local healthRegenPerStr = 0.1
+        local healthRegenPerStr = 0
         local baseHpRegen = (statsTable.str * healthRegenPerStr)
-        statsTable.hpRegen = (baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration
+        statsTable.hpRegen = ((baseHpRegen + unitBonusHealthRegeneration) * unitBonusPercentHealthRegeneration)
         -- mana regen
-        local manaRegenPerInt = 0.05
+        local manaRegenPerInt = 0
         local baseMpRegen = (statsTable.int * manaRegenPerInt)
-        statsTable.mpRegen = (baseMpRegen + unitBonusManaRegeneration) * unitBonusPercentManaRegeneration
+        statsTable.mpRegen = ((baseMpRegen + unitBonusManaRegeneration) * unitBonusPercentManaRegeneration)
         -- max hp
         local healthPerStr = 20
         local baseHealthBonus = (statsTable.str * healthPerStr)
