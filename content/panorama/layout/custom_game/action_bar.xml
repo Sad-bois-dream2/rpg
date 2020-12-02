@@ -1,5 +1,7 @@
 <root>
     <styles>
+        <include src="file://{resources}/styles/dotastyles.css"/>
+        <include src="file://{resources}/styles/tooltips/custom/tooltip_item.css"/>
         <include src="file://{resources}/styles/custom_game/action_bar.css"/>
     </styles>
     <scripts>
