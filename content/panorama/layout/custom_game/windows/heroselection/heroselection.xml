@@ -7,7 +7,7 @@
         <include src="file://{resources}/scripts/windows/heroselection.js"/>
     </scripts>
     <Panel class="Root HeroSelection" hittest="false">
-        <DOTAScenePanel id="HeroSelectionScreen" onload="OnHeroSelectionScreenLoaded()" antialias="true" renderdeferred="false" map="hero_selection" particleonly="false" light="global_light" camera=""/>
+        <DOTAScenePanel id="HeroSelectionScreen" onload="OnHeroSelectionScreenLoaded()" map="hero_selection" camera="" light="global_light" renderdeferred="true" antialias="true" particleonly="false"/>
         <Panel id="Spinner" class="lds-default">
             <Panel class="dot1"/>
             <Panel class="dot2"/>
